@@ -1,12 +1,3 @@
-
-
-This project was initially focused on how [saturation](https://en.wikipedia.org/wiki/Saturation_arithmetic) allows for the optimisation of a combinational [multiplier](https://en.wikipedia.org/wiki/Binary_multiplier). Once saturation is introduced, calculating the ceiling, or overflow, becomes extremely fast for one range of inputs. Another range always produces values within the extremes. The remaining range of inputs may or may not fall outside the extremes. Finding ways to predict if a given input results in an overflow, as early as possible, will result in faster calculations.
-
-
-
-
-
-
 # Saturation
 
 A combinational multiplier starts by creating all possible partial products. Then, reduces the number of partial products across multiple stages, eventually all products are reduced to one output.

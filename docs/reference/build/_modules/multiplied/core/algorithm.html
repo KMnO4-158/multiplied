@@ -755,11 +755,12 @@
 
     <span class="n">bits</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">bits</span>
     <span class="k">if</span> <span class="n">checksum</span> <span class="o">==</span> <span class="p">[]:</span>
-        <span class="n">checksum</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">bits</span>
+        <span class="n">checksum</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">bits</span>
 
-
-    <span class="n">y_start</span> <span class="o">=</span> <span class="n">checksum</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">y_end</span>   <span class="o">=</span> <span class="mi">8</span><span class="o">-</span><span class="n">checksum</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="mi">1</span> <span class="ow">in</span> <span class="n">checksum</span> <span class="k">else</span> <span class="n">bits</span>
+    <span class="c1"># -- update when checksum reimplemented ------------------------- #</span>
+    <span class="n">y_start</span> <span class="o">=</span> <span class="mi">0</span>                                                       <span class="c1">#</span>
+    <span class="n">y_end</span>   <span class="o">=</span> <span class="n">bits</span>                                                    <span class="c1">#</span>
+    <span class="c1"># --------------------------------------------------------------- #</span>
     <span class="n">map_</span>    <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">empty_matrix</span><span class="p">(</span><span class="n">bits</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">y_start</span><span class="p">,</span> <span class="n">y_end</span><span class="p">):</span>

@@ -144,31 +144,69 @@
     <span class="k">return</span> <span class="n">m</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">alg</span></div>
 
 
-<div class="viewcode-block" id="test_step">
-<a class="viewcode-back" href="../../../api/multiplied.tests.html#multiplied.tests.test_algorithm.test_step">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">test_step</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="n">m</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">alg</span> <span class="o">=</span> <span class="n">gen_resources</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<div class="viewcode-block" id="test_step_4">
+<a class="viewcode-back" href="../../../api/multiplied.tests.html#multiplied.tests.test_algorithm.test_step_4">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_step_4</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">m</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">alg</span> <span class="o">=</span> <span class="n">gen_resources</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
     <span class="n">alg</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">alg</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
     <span class="n">alg</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
-    <span class="c1"># print(alg.matrix.x_checksum)</span>
-    <span class="c1"># print(alg.matrix.y_checksum)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">alg</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span></div>
 
-    <span class="c1"># print(alg)</span>
 
-<div class="viewcode-block" id="test_exec">
-<a class="viewcode-back" href="../../../api/multiplied.tests.html#multiplied.tests.test_algorithm.test_exec">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">test_exec</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="test_step_8">
+<a class="viewcode-back" href="../../../api/multiplied.tests.html#multiplied.tests.test_algorithm.test_step_8">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_step_8</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">m</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">alg</span> <span class="o">=</span> <span class="n">gen_resources</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">255</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">255</span><span class="p">)</span>
+    <span class="n">alg</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">alg</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
+    <span class="n">alg</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">alg</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span></div>
+
+
+
+
+<div class="viewcode-block" id="manual_test_exec">
+<a class="viewcode-back" href="../../../api/multiplied.tests.html#multiplied.tests.test_algorithm.manual_test_exec">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">manual_test_exec</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">m</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">alg</span> <span class="o">=</span> <span class="n">gen_resources</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">)</span>
     <span class="n">alg</span><span class="o">.</span><span class="n">auto_resolve_stage</span><span class="p">()</span>
-    <span class="c1"># print(alg)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">alg</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">alg</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">))</span>
     <span class="n">results</span> <span class="o">=</span> <span class="p">(</span><span class="n">alg</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;result: &#39;</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="test_exec_4">
+<a class="viewcode-back" href="../../../api/multiplied.tests.html#multiplied.tests.test_algorithm.test_exec_4">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_exec_4</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="mi">15</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="mi">15</span>
+    <span class="n">m</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">alg</span> <span class="o">=</span> <span class="n">gen_resources</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">)</span>
+    <span class="n">alg</span><span class="o">.</span><span class="n">auto_resolve_stage</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">alg</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">alg</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">))</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">(</span><span class="n">alg</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;result: &#39;</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="test_exec_8">
+<a class="viewcode-back" href="../../../api/multiplied.tests.html#multiplied.tests.test_algorithm.test_exec_8">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_exec_8</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="mi">255</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="mi">255</span>
+    <span class="n">m</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">alg</span> <span class="o">=</span> <span class="n">gen_resources</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">)</span>
+    <span class="n">alg</span><span class="o">.</span><span class="n">auto_resolve_stage</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">alg</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">alg</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">))</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">(</span><span class="n">alg</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;result: &#39;</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span></div>
 
 
 
@@ -215,11 +253,9 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">test_auto_resolve_recursive_full_8</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">m</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">alg2</span> <span class="o">=</span> <span class="n">gen_resources</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
     <span class="n">alg2</span><span class="o">.</span><span class="n">auto_resolve_stage</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">alg2</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">m</span><span class="p">)</span></div>
+    <span class="nb">print</span><span class="p">(</span><span class="n">alg2</span><span class="p">)</span></div>
 
-    <span class="c1"># print(m.y_checksum)</span>
-    <span class="c1"># print(m.x_checksum)</span>
+
 
 
 <div class="viewcode-block" id="test_isolate_arithmetic_units">
@@ -285,7 +321,9 @@
 
 <div class="viewcode-block" id="test_algorithm_reuse_8">
 <a class="viewcode-back" href="../../../api/multiplied.tests.html#multiplied.tests.test_algorithm.test_algorithm_reuse_8">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">test_algorithm_reuse_8</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span><span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_algorithm_reuse_8</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="mi">15</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="mi">15</span>
     <span class="n">m</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">alg</span> <span class="o">=</span> <span class="n">gen_resources</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">a</span><span class="p">)</span>
     <span class="n">alg</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
     <span class="n">alg</span><span class="o">.</span><span class="n">auto_resolve_stage</span><span class="p">()</span>
@@ -320,7 +358,9 @@
 
 <div class="viewcode-block" id="test_algorithm_reuse_4">
 <a class="viewcode-back" href="../../../api/multiplied.tests.html#multiplied.tests.test_algorithm.test_algorithm_reuse_4">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">test_algorithm_reuse_4</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span><span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_algorithm_reuse_4</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="mi">15</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="mi">15</span>
     <span class="n">m</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">alg</span> <span class="o">=</span> <span class="n">gen_resources</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">a</span><span class="p">)</span>
     <span class="n">alg</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
     <span class="n">alg</span><span class="o">.</span><span class="n">auto_resolve_stage</span><span class="p">()</span>
@@ -370,10 +410,25 @@
     <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">b</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="test_exec_saturation_4">
+<a class="viewcode-back" href="../../../api/multiplied.tests.html#multiplied.tests.test_algorithm.test_exec_saturation_4">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_exec_saturation_4</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">alg</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Algorithm</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">saturation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">alg</span><span class="o">.</span><span class="n">auto_resolve_stage</span><span class="p">()</span>
+    <span class="n">a</span><span class="o">=</span><span class="mi">2</span>
+    <span class="n">b</span><span class="o">=</span><span class="mi">15</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">alg</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">output</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="c1"># mp.mprint(v[&#39;pseudo&#39;])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">alg</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="mi">2</span><span class="p">),</span> <span class="s1">&#39;&lt;- saturated&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">b</span><span class="p">,</span> <span class="s1">&#39;&lt;- unsaturated&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="test_exec_saturation">
-<a class="viewcode-back" href="../../../api/multiplied.tests.html#multiplied.tests.test_algorithm.test_exec_saturation">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">test_exec_saturation</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+
+<div class="viewcode-block" id="test_exec_saturation_8">
+<a class="viewcode-back" href="../../../api/multiplied.tests.html#multiplied.tests.test_algorithm.test_exec_saturation_8">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_exec_saturation_8</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">alg</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Algorithm</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="n">saturation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">alg</span><span class="o">.</span><span class="n">auto_resolve_stage</span><span class="p">()</span>
     <span class="n">a</span><span class="o">=</span><span class="mi">2</span>
@@ -386,9 +441,25 @@
     <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">b</span><span class="p">,</span> <span class="s1">&#39;&lt;- unsaturated&#39;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="test_exec_dadda">
-<a class="viewcode-back" href="../../../api/multiplied.tests.html#multiplied.tests.test_algorithm.test_exec_dadda">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">test_exec_dadda</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="test_exec_dadda_4">
+<a class="viewcode-back" href="../../../api/multiplied.tests.html#multiplied.tests.test_algorithm.test_exec_dadda_4">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_exec_dadda_4</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">alg</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Algorithm</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">dadda</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">alg</span><span class="o">.</span><span class="n">auto_resolve_stage</span><span class="p">()</span>
+    <span class="n">a</span><span class="o">=</span><span class="mi">7</span>
+    <span class="n">b</span><span class="o">=</span><span class="mi">15</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">alg</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">output</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="c1"># mp.mprint(v[&#39;pseudo&#39;])</span>
+    <span class="nb">print</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">alg</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">b</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="test_exec_dadda_8">
+<a class="viewcode-back" href="../../../api/multiplied.tests.html#multiplied.tests.test_algorithm.test_exec_dadda_8">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_exec_dadda_8</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">alg</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Algorithm</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="n">dadda</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">alg</span><span class="o">.</span><span class="n">auto_resolve_stage</span><span class="p">()</span>
     <span class="n">a</span><span class="o">=</span><span class="mi">27</span>
@@ -402,10 +473,26 @@
     <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">b</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="test_exec_dadda_saturation_4">
+<a class="viewcode-back" href="../../../api/multiplied.tests.html#multiplied.tests.test_algorithm.test_exec_dadda_saturation_4">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_exec_dadda_saturation_4</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">alg</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Algorithm</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">saturation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dadda</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">alg</span><span class="o">.</span><span class="n">auto_resolve_stage</span><span class="p">()</span>
+    <span class="n">a</span><span class="o">=</span><span class="mi">2</span>
+    <span class="n">b</span><span class="o">=</span><span class="mi">15</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">alg</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">output</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="c1"># mp.mprint(v[&#39;pseudo&#39;])</span>
+    <span class="nb">print</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">alg</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="mi">2</span><span class="p">),</span> <span class="s1">&#39;&lt;- saturated&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">b</span><span class="p">,</span> <span class="s1">&#39;&lt;- unsaturated&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="test_exec_dadda_saturation">
-<a class="viewcode-back" href="../../../api/multiplied.tests.html#multiplied.tests.test_algorithm.test_exec_dadda_saturation">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">test_exec_dadda_saturation</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+
+<div class="viewcode-block" id="test_exec_dadda_saturation_8">
+<a class="viewcode-back" href="../../../api/multiplied.tests.html#multiplied.tests.test_algorithm.test_exec_dadda_saturation_8">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_exec_dadda_saturation_8</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">alg</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Algorithm</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="n">saturation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dadda</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">alg</span><span class="o">.</span><span class="n">auto_resolve_stage</span><span class="p">()</span>
     <span class="n">a</span><span class="o">=</span><span class="mi">2</span>
@@ -422,26 +509,11 @@
 
 
 
-
-
 <div class="viewcode-block" id="main">
 <a class="viewcode-back" href="../../../api/multiplied.tests.html#multiplied.tests.test_algorithm.main">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
     <span class="n">test_exec_docs</span><span class="p">()</span>
-    <span class="n">test_exec_saturation</span><span class="p">()</span>
-    <span class="n">test_exec_dadda</span><span class="p">()</span>
-    <span class="n">test_exec_dadda_saturation</span><span class="p">()</span>
-    <span class="c1"># test_step()</span>
-    <span class="c1"># test_exec(15, 15)</span>
-    <span class="c1"># test_exec(255, 255)</span>
-    <span class="c1"># test_exec(23, 17)</span>
-    <span class="c1"># test_algorithm_reuse_8(255, 255)</span>
-    <span class="c1"># test_algorithm_reuse_4(4, 7)</span>
-    <span class="c1"># test_manual_population_8()</span>
-    <span class="c1"># test_auto_resolve_recursive_full_8()</span>
-    <span class="c1"># test_auto_resolve_recursive_full_4()</span>
-    <span class="c1"># test_isolate_arithmetic_units()</span>
-    <span class="c1"># test_err_duplicate_units()</span>
+
     <span class="o">...</span></div>
 
 

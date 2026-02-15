@@ -124,38 +124,35 @@
   </svg>
 </label></header><article class="bz-article-main" role="main">
   <h1>Source code for multiplied.tests.test_to_json</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">multiplied</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mp</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">multiplied</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mp</span>
 <span class="c1"># import pathlib</span>
 
 
-<div class="viewcode-block" id="test_to_json4">
-<a class="viewcode-back" href="../../../api/multiplied.tests.html#multiplied.tests.test_to_json.test_to_json4">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">test_to_json4</span><span class="p">():</span>
-    <span class="n">truth4</span>  <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">truth_scope</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-    <span class="n">matrix4</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-    <span class="n">alg4</span>    <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Algorithm</span><span class="p">(</span><span class="n">matrix4</span><span class="p">)</span>
-    <span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;test_to_json4.json&#39;</span>
-    <span class="n">gen</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">shallow_truth_table</span><span class="p">(</span><span class="n">truth4</span><span class="p">,</span> <span class="n">alg4</span><span class="p">)</span>
-    <span class="n">mp</span><span class="o">.</span><span class="n">json_pretty_store</span><span class="p">(</span><span class="n">gen</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span></div>
+<div class="viewcode-block" id="test_to_json_4">
+<a class="viewcode-back" href="../../../api/multiplied.tests.html#multiplied.tests.test_to_json.test_to_json_4">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_to_json_4</span><span class="p">():</span>
+    <span class="n">scope</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">truth_scope</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">255</span><span class="p">))</span>
+    <span class="n">alg</span>   <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Algorithm</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">path</span>  <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;examples/datasets/example_4b_mult_truthtable.json&#39;</span>
+
+    <span class="n">mp</span><span class="o">.</span><span class="n">json_pretty_store</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">alg</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">))</span></div>
 
 
 
-<div class="viewcode-block" id="test_to_json8">
-<a class="viewcode-back" href="../../../api/multiplied.tests.html#multiplied.tests.test_to_json.test_to_json8">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">test_to_json8</span><span class="p">():</span>
-    <span class="n">truth8</span>  <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">truth_scope</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">200</span><span class="p">))</span>
-    <span class="n">matrix8</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
-    <span class="n">alg8</span>    <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Algorithm</span><span class="p">(</span><span class="n">matrix8</span><span class="p">)</span>
-    <span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;test_to_json8.json&#39;</span>
-    <span class="n">gen</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">shallow_truth_table</span><span class="p">(</span><span class="n">truth8</span><span class="p">,</span> <span class="n">alg8</span><span class="p">)</span>
-    <span class="n">mp</span><span class="o">.</span><span class="n">json_pretty_store</span><span class="p">(</span><span class="n">gen</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span></div>
+<div class="viewcode-block" id="test_to_json_8">
+<a class="viewcode-back" href="../../../api/multiplied.tests.html#multiplied.tests.test_to_json.test_to_json_8">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_to_json_8</span><span class="p">():</span>
+    <span class="n">scope</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">truth_scope</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))</span>
+    <span class="n">alg</span>   <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Algorithm</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+    <span class="n">path</span>  <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;examples/datasets/example_8b_mult_truthtable.json&#39;</span>
+    <span class="n">mp</span><span class="o">.</span><span class="n">json_pretty_store</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">alg</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="main">
 <a class="viewcode-back" href="../../../api/multiplied.tests.html#multiplied.tests.test_to_json.main">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="c1"># test_to_json4()</span>
-    <span class="n">test_to_json8</span><span class="p">()</span></div>
+    <span class="o">...</span></div>
 
 
 

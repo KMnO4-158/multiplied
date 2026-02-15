@@ -31,4 +31,5 @@ dev = [
     "sphinx<=9.1.0",
     "docutils==0.21.2",
     "sphinx-breeze-theme>=0.6.0",
+    "myst-parser>=5.0.0",
 ]
