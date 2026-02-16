@@ -15,14 +15,14 @@ def test_chargen(char_fixture):
     for _ in range(52):
         assert next(chars) in char_fixture
 
-def test_chartff(char_fixture):
+def test_chartff():
     chars = chartff('A')
     assert [next(chars) for _ in range(4)] == ['A', 'a', 'A', 'a']
     chars = chartff('a')
     assert [next(chars) for _ in range(4)] == ['a', 'A', 'a', 'A']
 
 
-def test_allchars(char_fixture):
+def test_allchars():
     arr_2d = [
         ['_', '_', '_', '_', 'a', 'A', 'a', 'A'],
         ['_', '_', '_', 'A', 'a', 'A', 'a', '_'],
