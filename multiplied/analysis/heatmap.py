@@ -242,7 +242,7 @@ def df_global_3d_heatmap(path: str, title: str, df: pd.DataFrame, *, dark=False)
     # -- axis values ------------------------------------------------
     ax.set_xticks(np.arange(-1, total_stages*2-1, 2) ,[f"stage_{i}" for i in range(total_stages)])
     ax.set_yticks(np.arange(result_bits)+1, np.arange((result_bits)-1, -1, -1))
-    ax.set_zticks(np.arange(result_bits >> 1), labels=[f'ppm_{i}' for i in range((result_bits >> 1)-1, -1, -1)])
+    ax.set_zticks(np.arange(result_bits >> 1), labels=[f'ppm_{i}' for i in range((result_bits >> 1)-1, -1, -1)]) # type: ignore
 
 
     # -- titles -----------------------------------------------------
