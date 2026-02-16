@@ -64,7 +64,7 @@ def chartff(ch: str) -> Generator[str]:
     if not ischar(ch):
         raise ValueError("Input must be a single alphabetic character")
 
-    i = True
+    i = True if ord(ch) < 97 else False
     while True:
         if i := not(i): # toggle flip flop
             yield ch.lower()

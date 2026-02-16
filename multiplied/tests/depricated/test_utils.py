@@ -14,6 +14,7 @@ def test_gen_and_tff() -> None:
 def test_allchars() -> None:
     m = mp.Template(mp.Pattern(['a','a','a','b']))
     print(mp.allchars(m.template))
+    print(m.template)
 
 def main():
     test_gen_and_tff()
