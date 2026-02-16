@@ -1,1 +1,13 @@
 import pytest
+
+def test_pretty():
+    ...
+
+def test_pretty_dict():
+    ...
+
+def test_pretty_nested_list():
+    ...
+
+def test_mprint():
+    ...
