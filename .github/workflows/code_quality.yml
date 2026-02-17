@@ -60,6 +60,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [type_consistency, tests, build]
     outputs:
-      passed: ${{ job.status == 'success' }}
+          status: ${{ steps.check.outputs.result }}
     steps:
-      - run: echo "Critical path type_consistency, tests and build completed successfully"
+      - id: check
+        run: echo "result=success" >> $GITHUB_OUTPUT
