@@ -22,7 +22,7 @@
 - [x] Setup sphinx -> web based API reference
 - [ ] Setup Github Wiki? For theory / internal systems
 - [x] Improve API ref site with nicer HTML/CSS
-- [ ] Add markdown(.md) Functionality to API ref
+- [x] Add markdown(.md) Functionality to API ref
 - [ ] Complete user guide
 - [ ] Complete advanced guide
 - [ ] Provide academic sources for algorithm docs
@@ -33,7 +33,7 @@ The sheer amount of data produced for 16-bit+ multiplier truth tables becomes
 astronomical. The program must be robust enough to deal with this efficiently
 before tackling:
 
-- [ ] Testing suite - Pytest
+- [x] Testing suite - Pytest
 - [x] Multiprocessing support to handle higher bit-widths
 - [ ] 16-bit unsaturated multiplier
 - [ ] 16-bit saturated multiplier
