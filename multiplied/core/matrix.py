@@ -7,7 +7,6 @@ import multiplied as mp
 from typing import Any, Iterator
 
 
-
 # ! Review slices and their integration to the wider library
 #
 # IDEAS:
@@ -22,6 +21,7 @@ class Slice:
     matrix : list[Any]
         A slice from any Multiplied object.
     """
+
     # TODO
     """
     >>> Matrix[start:end]
@@ -78,6 +78,7 @@ class Slice:
         self.index += 1
         return self.slice[self.index - 1]
 
+
 # ! Matrix.x_checksum is only useful in the context of Algorithm.__reduce()
 # - Maybe use bounds to create x_checksum within __reduce()'s unit collection
 # - OR within, the same scope, use bounds to execute a given arithmetic unit
@@ -93,9 +94,13 @@ class Matrix:
     b : int=0, optional
         Second operand used in PPM
     """
-    def __init__(self, source: list[Any] | int, *,
-        a: int=0,
-        b: int=0,
+
+    def __init__(
+        self,
+        source: list[Any] | int,
+        *,
+        a: int = 0,
+        b: int = 0,
         # x_checksum=[], # Add handling if supplied
         # y_checksum=[], # Add handling if supplied
     ) -> None:
@@ -135,25 +140,24 @@ class Matrix:
         #         else:
         #             ch += 1
 
-            # self.x_checksum = x_checksum
-            # self.y_checksum = y_checksum
+        # self.x_checksum = x_checksum
+        # self.y_checksum = y_checksum
         return None
 
     def __zero_matrix(self, bits: int) -> None:
         """Build a wallace tree for a bitwidth of self.bits"""
-        row = ['0']*bits
+        row = ["0"] * bits
         matrix = []
         for i in range(bits):
-            matrix.append(["_"]*(bits-i) + row + ["_"]*i)
+            matrix.append(["_"] * (bits - i) + row + ["_"] * i)
         self.matrix = matrix
         return None
-
 
     def __build_matrix(self, operand_a: int, operand_b: int) -> None:
         """Build Logical AND matrix using source operands and it's checksum."""
 
         mp.validate_bitwidth((bits := self.bits))
-        if (operand_a > ((2**bits)-1)) or (operand_b > ((2**bits)-1)):
+        if (operand_a > ((2**bits) - 1)) or (operand_b > ((2**bits) - 1)):
             raise ValueError("Operand bit width exceeds matrix bit width")
 
         # -- catch multiply by zero ---------------------------------
@@ -163,24 +167,23 @@ class Matrix:
             # self.x_checksum = [0]*(bits*2)
             return None
 
-
         # -- generate -----------------------------------------------
         # convert to binary, removing '0b' and padding with zeros
         a = bin(operand_a)[2:].zfill(bits)
         b = bin(operand_b)[2:].zfill(bits)
         # y_checksum = [0]*bits
         # x_checksum = [0]*(bits*2)
-        matrix   = []
-        for i in range(bits-1, -1, -1):
-            if b[i] == '0':
-                matrix.append(["_"]*(i+1) + ['0']*(bits) + ["_"]*(bits-i-1))
-            elif b[i] == '1':
-                matrix.append(["_"]*(i+1) + list(a) + ["_"]*(bits-i-1))
+        matrix = []
+        for i in range(bits - 1, -1, -1):
+            if b[i] == "0":
+                matrix.append(["_"] * (i + 1) + ["0"] * (bits) + ["_"] * (bits - i - 1))
+            elif b[i] == "1":
+                matrix.append(["_"] * (i + 1) + list(a) + ["_"] * (bits - i - 1))
                 # y_checksum[i] = 1
                 # for j, bit in enumerate(list(a)):
-                    # x_checksum[i+j] = 1
+                # x_checksum[i+j] = 1
 
-        self.matrix     = matrix
+        self.matrix = matrix
         # self.y_checksum = y_checksum
         # self.x_checksum = x_checksum
         return None
@@ -188,7 +191,7 @@ class Matrix:
     def __checksum(self) -> None:
         """Calculate checksums for rows and columns of the matrix"""
 
-        row_len  = self.bits << 1
+        row_len = self.bits << 1
         y_checksum = [0] * self.bits
         x_checksum = [0] * row_len
         for i, row in enumerate(self.matrix):
@@ -197,10 +200,10 @@ class Matrix:
 
             ch = 0
             while ch < row_len:
-                if row[ch] == '0' or row[ch] == '1':
+                if row[ch] == "0" or row[ch] == "1":
                     y_checksum[ch] = 1
                     for x in range(ch, row_len):
-                        if row[x] == '_':
+                        if row[x] == "_":
                             break
                         x_checksum[x] = 1
                     break
@@ -211,9 +214,7 @@ class Matrix:
         self.y_checksum = y_checksum
         return None
 
-
-    def resolve_rmap(self, *, ignore_zeros: bool=True
-    ) -> mp.Map:
+    def resolve_rmap(self, *, ignore_zeros: bool = True) -> mp.Map:
         """Find empty rows, create simple map to efficiently pack rows
 
         Parameters
@@ -228,15 +229,15 @@ class Matrix:
 
         """
 
-        option = '0' if ignore_zeros else '_'
+        option = "0" if ignore_zeros else "_"
         offset = 0
-        rmap   = []
+        rmap = []
         for i in range(self.bits):
-            if all([bit == '_' and bit != option for bit in self.matrix[i]]):
+            if all([bit == "_" and bit != option for bit in self.matrix[i]]):
                 offset += 1
                 val = 0
             else:
-                val = ((offset ^ 255) + 1) # 2s complement
+                val = (offset ^ 255) + 1  # 2s complement
             rmap.append(f"{val:02X}"[-2:])
         return mp.Map(rmap)
 
@@ -267,10 +268,13 @@ class Matrix:
             # matrix = deepcopy(self.matrix) # TODO make this modify in-place
             for i in range(self.bits):
                 # convert signed hex to 2s complement if -ve
-                if ((val := int(rmap[i], 16)) & 128):
-                    val = (~val + 1) & 255 # 2s complement
+                if (val := int(rmap[i], 16)) & 128:
+                    val = (~val + 1) & 255  # 2s complement
                 # matrix[i]     = ["_"] * (self.bits*2)
-                self.matrix[i-val], self.matrix[i] = self.matrix[i], self.matrix[i-val]
+                self.matrix[i - val], self.matrix[i] = (
+                    self.matrix[i],
+                    self.matrix[i - val],
+                )
 
                 # deprecate checksum in favor of coordinates
                 # self.y_checksum[i]     = 0
@@ -284,15 +288,14 @@ class Matrix:
         for y in range(self.bits):
             for x in range(self.bits << 1):
                 # convert signed hex to 2s complement if -ve
-                if ((val := int(map_.map[y][x], 16)) & 128):
-                    val = (~val + 1) & 255 # 2s complement
+                if (val := int(map_.map[y][x], 16)) & 128:
+                    val = (~val + 1) & 255  # 2s complement
                 if val != 0:
-                    self.matrix[y-val][x] = self.matrix[y][x]
-                    self.matrix[y][x] = '_'
+                    self.matrix[y - val][x] = self.matrix[y][x]
+                    self.matrix[y][x] = "_"
 
         self.checksum = [0] * self.bits
         return None
-
 
     def __repr__(self) -> str:
         return f"<multiplied.{self.__class__.__name__} object at {hex(id(self))}>"
@@ -329,13 +332,15 @@ class Matrix:
 
 # -- helper functions -----------------------------------------------
 
+
 def empty_rows(matrix: Matrix) -> int:
     """Return the number of empty rows in a matrix"""
     if not isinstance(matrix, Matrix):
         raise TypeError(f"Expected Matrix, got {type(matrix)}")
 
-    empty_row = ['_' for i in range(matrix.bits*2)]
+    empty_row = ["_" for i in range(matrix.bits * 2)]
     return sum([matrix.matrix[i] == empty_row for i in range(matrix.bits)])
+
 
 def empty_matrix(bits: int) -> list[list[str]]:
     """Build an empty 2d array for a given bitwidth
@@ -358,14 +363,16 @@ def empty_matrix(bits: int) -> list[list[str]]:
     mp.validate_bitwidth(bits)
     matrix = []
     for i in range(bits):
-        matrix.append(["_"]*(bits*2))
+        matrix.append(["_"] * (bits * 2))
     return matrix
 
+
 # TODO: update example
-def matrix_merge(source: dict[str, Matrix],
+def matrix_merge(
+    source: dict[str, Matrix],
     bounds: dict[str, list[tuple[int, int]]],
     *,
-    carry: bool = True
+    carry: bool = True,
 ) -> Matrix:
     """Merge multiple matrices into a single matrix using pre calculated bounds
 
@@ -397,32 +404,30 @@ def matrix_merge(source: dict[str, Matrix],
         raise TypeError("All values of source must be of type Matrix")
     if len(source) < 2:
         raise ValueError("Source must contain at least two matrices")
-    if len(bounds)-1 != len(source):
+    if len(bounds) - 1 != len(source):
         # new error message needed
         raise ValueError("Source must contain the same number of matrices as bounds")
-
 
     bits = list(source.values())[0].bits
     output = empty_matrix(bits)
     for unit, matrix in source.items():
-        if bounds[unit] == '_':
+        if bounds[unit] == "_":
             continue
 
         # new bounding box covering whole result
         box_left = min(i[0] for i in bounds[unit])
         box_right = max(i[0] for i in bounds[unit])
         i = 0
-        while i < len(bounds[unit])-1:
-
+        while i < len(bounds[unit]) - 1:
             # ..., left coord : right coord, ...
-            left, right = bounds[unit][i], bounds[unit][i+1]
+            left, right = bounds[unit][i], bounds[unit][i + 1]
             if (y := left[1]) != right[1]:
                 raise ValueError(f"Missing bound pair for row {y}")
-            for j in range(box_left, box_right+1):
+            for j in range(box_left, box_right + 1):
                 output[y][j] = matrix.matrix[y][j]
             if bounds[unit][-1][1] - bounds[unit][0][1] == 1:
-                if y ==  bounds[unit][0][1] and 0 <=box_left-1:
-                    cout = box_left-1
+                if y == bounds[unit][0][1] and 0 <= box_left - 1:
+                    cout = box_left - 1
                     output[y][cout] = matrix.matrix[y][cout]
 
             i += 2

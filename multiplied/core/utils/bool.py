@@ -12,9 +12,8 @@ def validate_bitwidth(bits: int) -> None | ValueError:
     """Raise ValueError if bitwidth is supported by Multiplied"""
 
     if not isinstance(bits, int) or bits not in SUPPORTED_BITWIDTHS:
-       raise ValueError(
-            f"Unsupported bitwidth {bits}. Expected {SUPPORTED_BITWIDTHS}"
-       )
+        raise ValueError(f"Unsupported bitwidth {bits}. Expected {SUPPORTED_BITWIDTHS}")
+
 
 def isint(source: Any) -> bool:
     """Return True if source converts to int"""
@@ -43,6 +42,7 @@ def ishex2(val: str) -> bool:
             return False
     return False
 
+
 def ischar(ch: str) -> bool:
     """Return True if string is exactly one character"""
     try:
@@ -50,6 +50,7 @@ def ischar(ch: str) -> bool:
         return True
     except (ValueError, TypeError):
         return False
+
 
 def isalpha(ch: str) -> bool:
     """Return True if string is exactly one alphabetic character"""

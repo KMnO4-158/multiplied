@@ -4,25 +4,35 @@ import multiplied as mp
 import pandas as pd
 import pyarrow as pa
 
-def gen_resources(bits: int, *, a=0, b=0
-) -> tuple[mp.Matrix, mp.Pattern, mp.Algorithm]:
+
+def gen_resources(bits: int, *, a=0, b=0) -> tuple[mp.Matrix, mp.Pattern, mp.Algorithm]:
     m = mp.Matrix(bits, a=a, b=b)
     match bits:
         case 4:
-            p = mp.Pattern(['a','a','b','b',])
+            p = mp.Pattern(
+                [
+                    "a",
+                    "a",
+                    "b",
+                    "b",
+                ]
+            )
         case 8:
-            p = mp.Pattern(['a','a','a','b','b','b','c','c'])
+            p = mp.Pattern(["a", "a", "a", "b", "b", "b", "c", "c"])
         case _:
             raise ValueError(f"Unsupported number of bits: {bits}")
     alg = mp.Algorithm(bits)
     return m, p, alg
 
+
 def test_export_algorithm() -> None:
     m, p, alg = gen_resources(4)
     alg.auto_resolve_stage()
-    path = Path(__file__).parent.parent.parent / 'examples/algorithms/example_4b_algorithm.json'
+    path = (
+        Path(__file__).parent.parent.parent
+        / "examples/algorithms/example_4b_algorithm.json"
+    )
     mp.export_algorithm(alg, str(path))
-
 
 
 # def test_import_algorithm() -> None:
@@ -42,11 +52,14 @@ def test_export_parquet_4() -> None:
     scope = mp.truth_scope((1, 15), (1, 255))
     df = mp.truth_dataframe(scope, alg)
     end_t = time.perf_counter()
-    pd.set_option('display.max_columns', None)
+    pd.set_option("display.max_columns", None)
     print(df.head())
     print(df.info())
     print(f"{end_t - start_t:.6f} seconds")
-    path = Path(__file__).parent.parent.parent / 'examples/datasets/example_4b_mult_truthtable.parquet'
+    path = (
+        Path(__file__).parent.parent.parent
+        / "examples/datasets/example_4b_mult_truthtable.parquet"
+    )
     print(path)
     start_t = time.perf_counter()
     df.to_parquet(path)
@@ -61,6 +74,7 @@ def test_export_parquet_4() -> None:
     # row = df1.loc[600]
     # print(", ".join(f"{v}" for k, v in row.items()))
 
+
 @cache
 def test_export_parquet_8() -> None:
     from pathlib import Path
@@ -72,11 +86,14 @@ def test_export_parquet_8() -> None:
     scope = mp.truth_scope((1, 255), (1, 65535))
     df = mp.truth_dataframe(scope, alg)
     end_t = time.perf_counter()
-    pd.set_option('display.max_columns', None)
+    pd.set_option("display.max_columns", None)
     print(df.head())
     print(df.info())
     print(f"{end_t - start_t:.6f} seconds")
-    path = Path(__file__).parent.parent.parent / 'examples/datasets/example_8b_mult_truthtable.parquet'
+    path = (
+        Path(__file__).parent.parent.parent
+        / "examples/datasets/example_8b_mult_truthtable.parquet"
+    )
     print(path)
     start_t = time.perf_counter()
     df.to_parquet(path)
@@ -85,8 +102,6 @@ def test_export_parquet_8() -> None:
     # df1 = pd.read_parquet(path)
     # row = df1.loc[600]
     # print(", ".join(f"{v}" for k, v in row.items()))
-
-
 
 
 def main() -> None:
@@ -99,7 +114,6 @@ def main() -> None:
     # test_export_parquet_8()
     # test.disable()
     # pstats.Stats(test).strip_dirs().sort_stats("time").print_stats(30)
-
 
 
 if __name__ == "__main__":

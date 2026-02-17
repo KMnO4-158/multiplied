@@ -28,8 +28,9 @@ def _validate_path(path: str) -> None:
 
     if not isinstance(path, str):
         raise TypeError("path must be a string")
-    if not path.endswith('.parquet'):
+    if not path.endswith(".parquet"):
         raise ValueError("path must end with .parquet")
+
 
 def pq_extract_bits(path: str, bits: list[int], stages: list[int]) -> pd.DataFrame:
     """Return a DataFrame of specified bits across multiple stages from .parquet"""
@@ -37,10 +38,9 @@ def pq_extract_bits(path: str, bits: list[int], stages: list[int]) -> pd.DataFra
     raise NotImplementedError
 
 
-
 # -- Sources --
 # https://stackoverflow.com/questions/53982871/pandas-reading-first-n-rows-from-parquet-file#69888274
-def pq_extract_stages(path: str, *, stages: list[int]=[]) -> pd.DataFrame:
+def pq_extract_stages(path: str, *, stages: list[int] = []) -> pd.DataFrame:
     """Return a DataFrame of specified stages from .parquet
 
     Parameters
@@ -63,8 +63,9 @@ def pq_extract_stages(path: str, *, stages: list[int]=[]) -> pd.DataFrame:
     # -- row[0] without loading entire file -------------------------
     _validate_path(path)
     from pyarrow.parquet import ParquetFile
+
     pf = ParquetFile(path)
-    first = next(pf.iter_batches(batch_size = 1))
+    first = next(pf.iter_batches(batch_size=1))
     row = pa.Table.from_batches([first]).to_pandas()
     # pd.set_option('display.max_columns', None)
 
@@ -77,9 +78,8 @@ def pq_extract_stages(path: str, *, stages: list[int]=[]) -> pd.DataFrame:
     # This is not optimal at all -- problem for future me ----------- #
     # TODO: manage metadata for .parquet <> DataFrame
     # trim and extract integer
-    total_stages = int(copy(row.columns[-1]).split('_')[-1]) + 1
-    bits         = (int(str(copy(row.columns[3])).split('_')[-1]) + 1) >> 1
-
+    total_stages = int(copy(row.columns[-1]).split("_")[-1]) + 1
+    bits = (int(str(copy(row.columns[3])).split("_")[-1]) + 1) >> 1
 
     # print(total_stages,  bits)
     # --------------------------------------------------------------- #
@@ -92,7 +92,7 @@ def pq_extract_stages(path: str, *, stages: list[int]=[]) -> pd.DataFrame:
     columns = []
     for s in stages:
         for p in range(bits):
-            for b in range((bits << 1)-1, -1, -1):
+            for b in range((bits << 1) - 1, -1, -1):
                 # TODO: flatten columns to strings since they're converted anyway
                 # e.g: 'stage_0_ppm_4_b_3'
                 columns.append(str((f"stage_{s}_ppm_{p}_b_{b}")))
@@ -102,14 +102,11 @@ def pq_extract_stages(path: str, *, stages: list[int]=[]) -> pd.DataFrame:
     return df
 
 
-
-
-
-
 def pq_extract_formatted_all(path: str) -> pd.DataFrame:
     """Return DataFrame of all formatted strings from .parquet"""
     _validate_path(path)
     raise NotImplementedError
+
 
 def pq_extract_formatted_stages(path: str, stages: list[int]) -> pd.DataFrame:
     """Return DataFrame of formatted strings across multiple stages from .parquet"""
