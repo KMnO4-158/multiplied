@@ -7,7 +7,23 @@ import matplotlib as mpl
 
 
 def df_global_heatmap(path: str, title: str, df: pd.DataFrame, *, dark=False) -> None:
-    """Export pyplot of global heatmap"""
+    """Export image of pyplot of global heatmap
+
+    Parameters
+    ----------
+    path : str
+        Path to save the heatmap, ending with a chosen image format.
+    title : str
+        Title of the heatmap.
+    df : pd.DataFrame
+        DataFrame containing the data to be plotted. All available columns are used.
+    dark : bool, optional
+        Whether to use a dark theme for the plot, by default False.
+
+    Returns
+    -------
+    None
+    """
 
     if not isinstance(df, pd.DataFrame):
         raise TypeError("df must be a pandas DataFrame")
@@ -101,7 +117,23 @@ def df_global_heatmap(path: str, title: str, df: pd.DataFrame, *, dark=False) ->
     return None
 
 def df_global_3d_heatmap(path: str, title: str, df: pd.DataFrame, *, dark=False) -> None:
-    """Export 3d plot with heatmap for each stage stacked along the x-axis"""
+    """Export image of 3d plot with heatmap for each stage stacked along the x-axis
+
+    Parameters
+    ----------
+    path : str
+        Path to save the heatmap, ending with a chosen image format.
+    title : str
+        Title of the heatmap.
+    df : pd.DataFrame
+        DataFrame containing the data to be plotted. All available columns are used.
+    dark : bool, optional
+        Whether to use a dark theme for the plot, by default False.
+
+    Returns
+    -------
+    None
+    """
 
     if not isinstance(df, pd.DataFrame):
         raise TypeError("df must be a pandas DataFrame")
@@ -210,7 +242,7 @@ def df_global_3d_heatmap(path: str, title: str, df: pd.DataFrame, *, dark=False)
     # -- axis values ------------------------------------------------
     ax.set_xticks(np.arange(-1, total_stages*2-1, 2) ,[f"stage_{i}" for i in range(total_stages)])
     ax.set_yticks(np.arange(result_bits)+1, np.arange((result_bits)-1, -1, -1))
-    ax.set_zticks(np.arange(result_bits >> 1), labels=[f'ppm_{i}' for i in range((result_bits >> 1)-1, -1, -1)])
+    ax.set_zticks(np.arange(result_bits >> 1), labels=[f'ppm_{i}' for i in range((result_bits >> 1)-1, -1, -1)]) # type: ignore
 
 
     # -- titles -----------------------------------------------------

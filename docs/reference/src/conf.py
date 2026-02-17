@@ -39,10 +39,13 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.autosummary',
     'sphinx.ext.extlinks',
+    'sphinx.ext.napoleon',
+    'myst_parser',
 ]
 
-templates_path = ['_templates']
 exclude_patterns = ['multiplied.tests.rst']
+templates_path   = ['_templates']
+source_suffix    = ['.rst', '.md']
 
 
 # -- Options for HTML output -------------------------------------------------

@@ -131,10 +131,28 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Generator</span>
 
 
+
 <div class="viewcode-block" id="chargen">
 <a class="viewcode-back" href="../../../../api/multiplied.core.utils.html#multiplied.chargen">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">chargen</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Continuously generate characters from A to Z&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return Generator  characters from A to Z.</span>
+
+<span class="sd">    Yields</span>
+<span class="sd">    ------</span>
+<span class="sd">    str</span>
+
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; x = chargen()</span>
+
+<span class="sd">    &gt;&gt;&gt; next(x)</span>
+<span class="sd">    &#39;A&#39;</span>
+<span class="sd">    &gt;&gt;&gt; next(x)</span>
+<span class="sd">    &#39;B&#39;</span>
+<span class="sd">    &gt;&gt;&gt; next(x)</span>
+<span class="sd">    &#39;C&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
@@ -145,9 +163,25 @@
 <div class="viewcode-block" id="chartff">
 <a class="viewcode-back" href="../../../../api/multiplied.core.utils.html#multiplied.chartff">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">chartff</span><span class="p">(</span><span class="n">ch</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Generator to flip flop between upper and lowercase characters.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generator to flip flop between upper and lowercase characters.</span>
 
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ch: str</span>
+<span class="sd">        Single alphabetic character to flip flop.</span>
+
+<span class="sd">    Yields</span>
+<span class="sd">    ------</span>
+<span class="sd">    str</span>
+<span class="sd">        Upper or lowercase version of the input character.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If input is not a single alphabetic character.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = chartff(&#39;a&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; next(x)</span>
 <span class="sd">    &#39;a&#39;</span>
@@ -171,17 +205,35 @@
 
 <div class="viewcode-block" id="allchars">
 <a class="viewcode-back" href="../../../../api/multiplied.core.utils.html#multiplied.allchars">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">allchars</span><span class="p">(</span><span class="n">matrix</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="o">*</span><span class="p">,</span> <span class="nb">hash</span> <span class="o">=</span> <span class="p">[])</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns set of unique characters from a matrix.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">allchars</span><span class="p">(</span><span class="n">matrix</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="o">*</span><span class="p">,</span> <span class="nb">hash</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="p">[])</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns set of unique characters from a nested list.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    matrix: list[list[str]]</span>
+<span class="sd">        Matrix of characters to extract unique characters from.</span>
+<span class="sd">    hash: list[int | bool], optional</span>
+<span class="sd">        List of bools or 0s and 1s indicating if a row contains characters.</span>
+
+<span class="sd">    Return</span>
+<span class="sd">    ------</span>
+<span class="sd">    set[str]</span>
+
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
 <span class="sd">    Ignores underscore characters and converts characters to uppercase</span>
 
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    Matrix : Multiplied 2D Matrix Object</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; allchars([[&#39;A&#39;, &#39;B&#39;], [&#39;C&#39;, &#39;D&#39;]])</span>
 <span class="sd">    {&#39;A&#39;, &#39;B&#39;, &#39;C&#39;, &#39;D&#39;}</span>
-
-<span class="sd">    options:</span>
-<span class="sd">        hash: use checksum to assist in calculations</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">matrix</span><span class="p">]):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Input must be type list[list[char]]&quot;</span><span class="p">)</span>
 
@@ -208,9 +260,25 @@
 <div class="viewcode-block" id="to_int_matrix">
 <a class="viewcode-back" href="../../../../api/multiplied.core.utils.html#multiplied.to_int_matrix">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">to_int_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Converts a matrix of characters to a matrix of integers.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts a matrix of characters to a matrix of integers</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    matrix : list[list[str]]</span>
+<span class="sd">        Matrix of characters to convert from 2D Multiplied formatted matrix</span>
+<span class="sd">        into to list of integers.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list[int]</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; to_int_matrix([[&#39;_&#39;, &#39;1&#39;, &#39;_&#39;], [&#39;1&#39;, &#39;0&#39;, &#39;1&#39;]])</span>
+<span class="sd">    [2, 5]</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">matrix</span><span class="p">]):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Input must be type list[list[char]]&quot;</span><span class="p">)</span>
 

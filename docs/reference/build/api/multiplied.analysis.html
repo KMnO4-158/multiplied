@@ -206,17 +206,26 @@ accommodate other analysis functions.</p>
 <dl>
 <dd><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>,</dd>
 <dd><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>,</dd>
-<dd><em class="sig-param"><span class="n"><span class="pre">stages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">stages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>,</dd>
 </dl>
 
 <span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="../_modules/multiplied/analysis/extract.html#pq_extract_stages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.analysis.extract.pq_extract_stages" title="Link to this definition">#</a></dt>
 <dd><p>Return a DataFrame of specified stages from .parquet</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – Path to Multiplied-generated .parquet file</p></li>
+<li><p><strong>stages</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – List of stages to extract</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A subset of the original .parquet table</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
 </dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="multiplied.analysis.extract.validate_path">
-<span class="sig-prename descclassname"><span class="pre">multiplied.analysis.extract.</span></span><span class="sig-name descname"><span class="pre">validate_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/multiplied/analysis/extract.html#validate_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.analysis.extract.validate_path" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
 
 </section>
 <section id="module-multiplied.analysis.heatmap">
@@ -234,7 +243,20 @@ accommodate other analysis functions.</p>
 </dl>
 
 <span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/multiplied/analysis/heatmap.html#df_global_3d_heatmap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.analysis.heatmap.df_global_3d_heatmap" title="Link to this definition">#</a></dt>
-<dd><p>Export 3d plot with heatmap for each stage stacked along the x-axis</p>
+<dd><p>Export image of 3d plot with heatmap for each stage stacked along the x-axis</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – Path to save the heatmap, ending with a chosen image format.</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Title of the heatmap.</p></li>
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – DataFrame containing the data to be plotted. All available columns are used.</p></li>
+<li><p><strong>dark</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to use a dark theme for the plot, by default False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -250,7 +272,20 @@ accommodate other analysis functions.</p>
 </dl>
 
 <span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/multiplied/analysis/heatmap.html#df_global_heatmap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.analysis.heatmap.df_global_heatmap" title="Link to this definition">#</a></dt>
-<dd><p>Export pyplot of global heatmap</p>
+<dd><p>Export image of pyplot of global heatmap</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – Path to save the heatmap, ending with a chosen image format.</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Title of the heatmap.</p></li>
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – DataFrame containing the data to be plotted. All available columns are used.</p></li>
+<li><p><strong>dark</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to use a dark theme for the plot, by default False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -337,7 +372,6 @@ accommodate other analysis functions.</p>
 <li><a class="reference internal" href="#multiplied.analysis.extract.pq_extract_formatted_all"><code class="docutils literal notranslate"><span class="pre">pq_​extract_​formatted_​all()</span></code></a></li>
 <li><a class="reference internal" href="#multiplied.analysis.extract.pq_extract_formatted_stages"><code class="docutils literal notranslate"><span class="pre">pq_​extract_​formatted_​stages()</span></code></a></li>
 <li><a class="reference internal" href="#multiplied.analysis.extract.pq_extract_stages"><code class="docutils literal notranslate"><span class="pre">pq_​extract_​stages()</span></code></a></li>
-<li><a class="reference internal" href="#multiplied.analysis.extract.validate_path"><code class="docutils literal notranslate"><span class="pre">validate_​path()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-multiplied.analysis.heatmap">multiplied​.analysis​.heatmap module</a><ul>

@@ -8,8 +8,25 @@ from typing import Any, Iterator
 
 
 class Map:
-    """
-    Generates Map object from row map or standard map.
+    """Generates Map object from row map or standard map.
+
+    Each Mapping is defined by a 2-bit hexadecimal value. Positive
+    mappings move bits downwards, negative mappings move bits upwards.
+
+    Parameters
+    ----------
+    map : list[Any]
+        Simplified row map or 2D matrix.
+
+    Examples
+    --------
+    >>> rmap = [00, FF, FF, 00]
+    >>> Map(rmap)
+    [[00,00,00,00,00,00,00,00],
+     [FF,FF,FF,FF,FF,FF,FF,FF],
+     [FF,FF,FF,FF,FF,FF,FF,FF],
+     [00,00,00,00,00,00,00,00]]
+
     """
 
     def __init__(self, map: list[Any]) -> None:
@@ -38,9 +55,18 @@ class Map:
 
 
     def build_map(self, rmap: list[str]) -> list[list[str]]:
-        """
-        Use row map to generate standard map. Each element of simple map
+        """Use row map to generate standard map. Each element of simple map
         is a 2-bit, signed hex value. +ve = up, -ve = down.
+
+        Parameters
+        ----------
+        rmap : list[str]
+            Row map of the multiplied matrix.
+
+        Returns
+        -------
+        list[list[str]]
+            Standard map of the multiplied matrix.
         """
 
         mp.validate_bitwidth(n := len(rmap))
@@ -74,9 +100,7 @@ def empty_map(bits: int)-> Map:
 
 
 def build_dadda_map(bits: int) -> Map:
-    """
-    Return map representing the starting point of Dadda tree algorithm.
-    """
+    """Return map representing the starting point of Dadda tree algorithm."""
     mp.validate_bitwidth(bits)
 
     # TODO: Use hoist() to generate dadda maps

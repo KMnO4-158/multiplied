@@ -5,8 +5,26 @@
 from collections.abc import Generator
 
 
+
 def chargen() -> Generator[str]:
-    """Continuously generate characters from A to Z"""
+    """Return Generator  characters from A to Z.
+
+    Yields
+    ------
+    str
+
+
+    Example
+    -------
+    >>> x = chargen()
+
+    >>> next(x)
+    'A'
+    >>> next(x)
+    'B'
+    >>> next(x)
+    'C'
+    """
 
     i = 0
     while True:
@@ -14,9 +32,25 @@ def chargen() -> Generator[str]:
         i += 1
 
 def chartff(ch: str) -> Generator[str]:
-    """
-    Generator to flip flop between upper and lowercase characters.
+    """Generator to flip flop between upper and lowercase characters.
 
+    Parameters
+    ----------
+    ch: str
+        Single alphabetic character to flip flop.
+
+    Yields
+    ------
+    str
+        Upper or lowercase version of the input character.
+
+    Raises
+    ------
+    ValueError
+        If input is not a single alphabetic character.
+
+    Examples
+    --------
     >>> x = chartff('a')
     >>> next(x)
     'a'
@@ -30,24 +64,42 @@ def chartff(ch: str) -> Generator[str]:
     if not ischar(ch):
         raise ValueError("Input must be a single alphabetic character")
 
-    i = True
+    i = True if ord(ch) < 97 else False
     while True:
         if i := not(i): # toggle flip flop
             yield ch.lower()
         else:
             yield ch.upper()
 
-def allchars(matrix: list[list[str]], *, hash = []) -> set[str]:
-    """
-    Returns set of unique characters from a matrix.
+def allchars(matrix: list[list[str]], *, hash: list[int | bool] = []) -> set[str]:
+    """Returns set of unique characters from a nested list.
+
+    Parameters
+    ----------
+    matrix: list[list[str]]
+        Matrix of characters to extract unique characters from.
+    hash: list[int | bool], optional
+        List of bools or 0s and 1s indicating if a row contains characters.
+
+    Return
+    ------
+    set[str]
+
+
+    Notes
+    -----
     Ignores underscore characters and converts characters to uppercase
 
+    See Also
+    --------
+    Matrix : Multiplied 2D Matrix Object
+
+    Examples
+    --------
     >>> allchars([['A', 'B'], ['C', 'D']])
     {'A', 'B', 'C', 'D'}
-
-    options:
-        hash: use checksum to assist in calculations
     """
+
     if not isinstance(matrix, list) or not all([isinstance(row, list) for row in matrix]):
         raise TypeError("Input must be type list[list[char]]")
 
@@ -71,9 +123,25 @@ def allchars(matrix: list[list[str]], *, hash = []) -> set[str]:
         return set(ch.upper() for ch in chars)
 
 def to_int_matrix(matrix: list[list[str]]) -> list[int]:
+    """Converts a matrix of characters to a matrix of integers
+
+    Parameters
+    ----------
+    matrix : list[list[str]]
+        Matrix of characters to convert from 2D Multiplied formatted matrix
+        into to list of integers.
+
+    Returns
+    -------
+    list[int]
+
+    Examples
+    --------
+    >>> to_int_matrix([['_', '1', '_'], ['1', '0', '1']])
+    [2, 5]
+
     """
-    Converts a matrix of characters to a matrix of integers.
-    """
+
     if not isinstance(matrix, list) or not all([isinstance(row, list) for row in matrix]):
         raise TypeError("Input must be type list[list[char]]")
 

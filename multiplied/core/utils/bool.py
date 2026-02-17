@@ -9,17 +9,10 @@ SUPPORTED_BITWIDTHS = {4, 8}
 
 
 def validate_bitwidth(bits: int) -> None | ValueError:
-    """Raise ValueError if bitwidth is unsupported
+    """Raise ValueError if bitwidth is supported by Multiplied"""
 
-    Parameters
-    ----------
-        bits : Bitwidth to validate
-
-    Returns:
-        None if bitwidth is supported, ValueError otherwise
-    """
     if not isinstance(bits, int) or bits not in SUPPORTED_BITWIDTHS:
-       return ValueError(
+       raise ValueError(
             f"Unsupported bitwidth {bits}. Expected {SUPPORTED_BITWIDTHS}"
        )
 
@@ -40,9 +33,15 @@ def isint(source: Any) -> bool:
 
 def ishex2(val: str) -> bool:
     """Return True if string represents a 2-bit hex value"""
-    if 2 < len(val) or not(0 <= int(val, 16) <= 255):
+    if not isinstance(val, str):
         return False
-    return True
+    if len(val) == 2:
+        try:
+            int(val, 16)
+            return True
+        except (ValueError, TypeError):
+            return False
+    return False
 
 def ischar(ch: str) -> bool:
     """Return True if string is exactly one character"""

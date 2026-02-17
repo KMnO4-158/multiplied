@@ -1,6 +1,16 @@
 import multiplied as mp
 
-def test_dadda_map(bits) -> None:
+def test_dadda_map_4() -> None:
+    bits = 4
+    try:
+        mp.build_dadda_map(0)
+    except KeyError:
+        pass
+    m = mp.build_dadda_map(bits)
+    mp.mprint(m)
+
+def test_dadda_map_8() -> None:
+    bits = 8
     try:
         mp.build_dadda_map(0)
     except KeyError:
@@ -25,7 +35,13 @@ def test_resolve_simple_map() -> None:
     print(m1map.rmap)
     mp.mprint(m1map)
 
-def test_empty_map(bits: int) -> None:
+def test_empty_map_4() -> None:
+    bits = 4
+    m = mp.empty_map(bits)
+    mp.mprint(m)
+
+def test_empty_map_8() -> None:
+    bits = 8
     m = mp.empty_map(bits)
     mp.mprint(m)
 

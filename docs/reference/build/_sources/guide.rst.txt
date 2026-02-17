@@ -7,17 +7,8 @@ User Guide
 
 (soon™ incomplete guide below)
 
-
-Contents
---------
-
-- :ref:`setup`
-- :ref:`reduce`
-- :ref:`map`
-- :ref:`define_algorithm`
-- :ref:`use_algorithm`
-
-
+.. toctree::
+    guide/overview.md
 
 Multiplied focuses on combinational multiplication, fine-grained control over algorithms, and the choice of making algorithms entirely by hand or using build-in building blocks.
 

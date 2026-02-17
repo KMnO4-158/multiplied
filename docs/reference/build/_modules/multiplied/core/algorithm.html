@@ -139,15 +139,23 @@
 <div class="viewcode-block" id="Algorithm">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.Algorithm">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Algorithm</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Manages and sequences operations via a series of stages defined by templates and maps.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Manages and sequences operations via a series of stages defined by templates and maps.</span>
 
-<span class="sd">    parameters</span>
+<span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
-<span class="sd">    matrix : mp.Matrix</span>
+<span class="sd">    bits : int</span>
+<span class="sd">        The bitwidth of the matrix to be multiplied.</span>
+<span class="sd">    matrix : Matrix</span>
 <span class="sd">        The matrix to be multiplied.</span>
+<span class="sd">    dadda : bool</span>
+<span class="sd">        Whether to use the Dadda-Tree algorithm.</span>
+<span class="sd">    state : int</span>
+<span class="sd">        The current state of the algorithm.</span>
+<span class="sd">    algorithm : dict[int, dict[str, Template | Matrix | Map]]</span>
+<span class="sd">        The algorithm to be used.</span>
+<span class="sd">    saturation : bool</span>
+<span class="sd">        Whether to use saturation arithmetic. Always to original bitwidth.</span>
 
-<span class="sd">    ...</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bits</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span><span class="o">*</span><span class="p">,</span> <span class="n">matrix</span><span class="p">:</span> <span class="n">Any</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">saturation</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dadda</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -185,10 +193,26 @@
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.Algorithm.push">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">push</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="n">mp</span><span class="o">.</span><span class="n">Template</span> <span class="o">|</span> <span class="n">mp</span><span class="o">.</span><span class="n">Pattern</span><span class="p">,</span> <span class="n">map_</span><span class="p">:</span> <span class="n">Any</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dadda</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Populates stage of an algorithm based on template. Generates pseudo</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Populate algorithm stage based on template. Generates pseudo</span>
 <span class="sd">        result to represent output matrix</span>
 
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        source : mp.Template | mp.Pattern</span>
+<span class="sd">            The template or pattern to be used for the algorithm stage.</span>
+<span class="sd">        map_ : Any, optional</span>
+<span class="sd">            The map to be used for the algorithm stage, by default None</span>
+<span class="sd">        dadda : bool, optional</span>
+<span class="sd">            Whether to use the Dadda-Tree algorithm, by default False</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+
+<span class="sd">        Layout:</span>
 <span class="sd">        &gt;&gt;&gt; self.algorithm[x] = {</span>
 <span class="sd">        &gt;&gt;&gt;     &quot;template&quot; : mp.Template,</span>
 <span class="sd">        &gt;&gt;&gt;     &quot;pseudo&quot;   : mp.Matrix,</span>
@@ -239,9 +263,8 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__clamp_bitwidth</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Saturates matrix if current matrix has carried past original bitwidth</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Saturates matrix if current matrix has carried past original bitwidth&quot;&quot;&quot;</span>
+
         <span class="n">boundary</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">bits</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
         <span class="n">as_int</span>   <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">to_int_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
         <span class="n">test</span>     <span class="o">=</span> <span class="p">[</span><span class="n">boundary</span> <span class="o">&lt;</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">as_int</span><span class="p">]</span>
@@ -261,9 +284,7 @@
     <span class="c1"># Mangled as execution order is sensitive and __reduce should only</span>
     <span class="c1"># be called by the algorithm itself via: self.step(), or self.exec()</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">__reduce</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        use template or pattern to reduce a given matrix.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;use template or pattern to reduce a given matrix.&quot;&quot;&quot;</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">copy</span>
 
         <span class="c1"># -- implementation -----------------------------------------</span>
@@ -455,11 +476,17 @@
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.Algorithm.auto_resolve_stage">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">auto_resolve_stage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Automatically creates new algorithm stage to reduce the previous stage.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Automatically creates new algorithm stage to reduce the previous stage.</span>
 
-<span class="sd">        Options:</span>
-<span class="sd">            recursive: Recursively resolve until no partial products remain</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        recursive : bool</span>
+<span class="sd">            Recursively resolve until no partial products remain else resolve a single</span>
+<span class="sd">            stage.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">stage</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">algorithm</span><span class="p">)</span>
         <span class="c1"># -- non recursive ------------------------------------------</span>
@@ -491,9 +518,7 @@
 <div class="viewcode-block" id="Algorithm.step">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.Algorithm.step">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">mp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Execute the next stage of the algorithm and update internal matrix</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute the next stage of the algorithm and update internal matrix&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">saturation</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__clamp_bitwidth</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__reduce</span><span class="p">()</span>
@@ -506,9 +531,19 @@
 <div class="viewcode-block" id="Algorithm.exec">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.Algorithm.exec">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">exec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">mp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Run entire algorithm with a single set of inputs then reset internal state.</span>
-<span class="sd">        Returns list of results from all stages of the algorithm</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run entire algorithm with a single set of inputs then reset internal state.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        a : int</span>
+<span class="sd">            First operand</span>
+<span class="sd">        b : int</span>
+<span class="sd">            Second operand</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict[int, mp.Matrix]</span>
+<span class="sd">            resultant matrix indexed by stage, including initial state</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected int, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -536,9 +571,8 @@
 <div class="viewcode-block" id="Algorithm.reset">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.Algorithm.reset">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matrix</span><span class="p">:</span> <span class="n">mp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Reset internal state and submit new initial matrix</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset internal state and submit new initial matrix&quot;&quot;&quot;</span>
+
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">mp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected Matrix, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">matrix</span>
@@ -598,11 +632,28 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">collect_template_units</span><span class="p">(</span>
     <span class="n">source</span><span class="p">:</span> <span class="n">mp</span><span class="o">.</span><span class="n">Template</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">mp</span><span class="o">.</span><span class="n">Template</span><span class="p">],</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span><span class="nb">int</span><span class="p">]]]]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Return dict of isolated arithmetic units and their bounding box.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return dict of isolated arithmetic units and their bounding box.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    source : Template</span>
+<span class="sd">        The source template to extract arithmetic units from.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple[dict[str, mp.Template], dict[str, list[tuple[int,int]]]]</span>
+<span class="sd">        A tuple containing a dictionary of isolated arithmetic units and their bounding box.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    TypeError</span>
+<span class="sd">        If the source is not of type Template or Matrix.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="p">(</span><span class="n">mp</span><span class="o">.</span><span class="n">Template</span><span class="p">,</span> <span class="n">mp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">,</span> <span class="n">mp</span><span class="o">.</span><span class="n">Map</span><span class="p">)):</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected type Template, Matrix or Map got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">source</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="p">(</span><span class="n">mp</span><span class="o">.</span><span class="n">Template</span><span class="p">,</span> <span class="n">mp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected type Template, Matrix got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">source</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="kn">from</span><span class="w"> </span><span class="nn">.utils.char</span><span class="w"> </span><span class="kn">import</span> <span class="n">chartff</span>
     <span class="n">bounds</span>   <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">bounds</span>
@@ -674,8 +725,21 @@
     <span class="n">checksum</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">=</span><span class="p">[],</span>
     <span class="n">relative</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">mp</span><span class="o">.</span><span class="n">Map</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    collect non-empty bits to the top of matrix in-place and produce a corresponding map</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;collect bits to the top of the matrix and produce corresponding map.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    source : mp.Matrix | mp.Template</span>
+<span class="sd">        The source matrix or template to hoist.</span>
+<span class="sd">    checksum : list[int], optional</span>
+<span class="sd">        The checksum to use for hoisting, by default [].</span>
+<span class="sd">    relative : bool, optional</span>
+<span class="sd">        Whether to use relative coordinates, by default False.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    mp.Map</span>
+<span class="sd">        The resulting map after hoisting.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">checksum</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
@@ -691,11 +755,12 @@
 
     <span class="n">bits</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">bits</span>
     <span class="k">if</span> <span class="n">checksum</span> <span class="o">==</span> <span class="p">[]:</span>
-        <span class="n">checksum</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">bits</span>
+        <span class="n">checksum</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">bits</span>
 
-
-    <span class="n">y_start</span> <span class="o">=</span> <span class="n">checksum</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">y_end</span>   <span class="o">=</span> <span class="mi">8</span><span class="o">-</span><span class="n">checksum</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="mi">1</span> <span class="ow">in</span> <span class="n">checksum</span> <span class="k">else</span> <span class="n">bits</span>
+    <span class="c1"># -- update when checksum reimplemented ------------------------- #</span>
+    <span class="n">y_start</span> <span class="o">=</span> <span class="mi">0</span>                                                       <span class="c1">#</span>
+    <span class="n">y_end</span>   <span class="o">=</span> <span class="n">bits</span>                                                    <span class="c1">#</span>
+    <span class="c1"># --------------------------------------------------------------- #</span>
     <span class="n">map_</span>    <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">empty_matrix</span><span class="p">(</span><span class="n">bits</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">y_start</span><span class="p">,</span> <span class="n">y_end</span><span class="p">):</span>

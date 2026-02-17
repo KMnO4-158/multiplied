@@ -1,4 +1,5 @@
 from functools import cache
+from pathlib import Path
 import multiplied as mp
 import pandas as pd
 import pyarrow as pa
@@ -19,8 +20,8 @@ def gen_resources(bits: int, *, a=0, b=0
 def test_export_algorithm() -> None:
     m, p, alg = gen_resources(4)
     alg.auto_resolve_stage()
-    path = ''
-    mp.export_algorithm(alg, path)
+    path = Path(__file__).parent.parent.parent / 'examples/algorithms/example_4b_algorithm.json'
+    mp.export_algorithm(alg, str(path))
 
 
 

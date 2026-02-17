@@ -5,15 +5,28 @@ import io
 
 
 
-def pretty(listy_object: Any) -> str:
-    """
-    Format Multiplied types, or list as a string:
+def pretty(listy_object: Any | Algorithm | Template | Matrix | Slice | Map) -> str:
+    """Format Multiplied types, or list as a string.
 
-    >>> ____0000
-    >>> ___0000_
-    >>> __0000__
-    >>> _0000___
+    Parameters
+    ----------
+    listy_object : Any
+        List or Dict style object to format as a string.
+
+    Returns
+    -------
+    str
+
+    Examples
+    --------
+
+    >>> pretty(mp.Matrix(4))
+    ____0000
+    ___0000_
+    __0000__
+    _0000___
     """
+
     if not isinstance(listy_object, (
         Algorithm, Template, Matrix, Slice, Map,
         list, dict,
@@ -21,7 +34,7 @@ def pretty(listy_object: Any) -> str:
         raise TypeError(f"Unsupported type {type(listy_object)}")
 
     match listy_object:
-        case (Matrix() |Slice() | Map() | list()):
+        case (Matrix() | Slice() | Map() | list()):
             return pretty_nested_list(listy_object)
         case Template():
             return pretty_nested_list(listy_object.template)
@@ -31,14 +44,12 @@ def pretty(listy_object: Any) -> str:
             raise TypeError(f"Unsupported type {type(listy_object)}")
 
 def pretty_dict(listy_dict: Any) -> str:
-    """
-    Format mp.Map as a string:
+    """Format Dict type object as a string:
 
     >>> {0: [[1, _, _],[_, 2, _],[_, _, 3]],
     >>>  1: [[a, _, _],[_, b, _],[_, _, c]],
     >>>  2: [[x, y, z],[x, y, z],[x, y, z]]}
     0:{
-
     1__
     _2_
     __3
@@ -66,10 +77,19 @@ def pretty_dict(listy_dict: Any) -> str:
     return pretty.getvalue()
 
 def pretty_nested_list(listy_object: Any, *, whitespace=False) -> str:
-    """
-    Format nested list as a string:
+    """Format nested list as a string.
 
-    >>> [[1, _, _],[_, 2, _],[_, _, 3]]
+    Parameters
+    ----------
+    listy_object : Any
+        The nested list to be formatted.
+    whitespace : bool, optional
+        Whether to add whitespace between elements, by default False.
+
+
+    Examples
+    --------
+    >>> pretty_nested_list([[1, _, _],[_, 2, _],[_, _, 3]])
     1__
     _2_
     __3

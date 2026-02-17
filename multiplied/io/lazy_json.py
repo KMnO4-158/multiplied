@@ -1,5 +1,5 @@
 from collections.abc import Generator
-from multiplied import Algorithm
+from multiplied import Algorithm, Matrix
 import json
 
 
@@ -10,15 +10,15 @@ def validate_path(path: str) -> None:
         raise ValueError("path must end with .json")
 
 # ! Need revisiting once loading and storing to .parquet established
-def json_pretty_store(gen: Generator, path: str) -> None:
-    """
-    Format objects produced by generator then send to JSON file
-    """
+def json_pretty_store(scope: Generator, alg: Algorithm, path: str) -> None:
+    """Format objects produced by generator then send to JSON file"""
+
     validate_path(path)
-    if not isinstance(gen, Generator):
+    if not isinstance(scope, Generator):
         raise TypeError("gen must be a generator")
     with open(path, 'w') as f:
-        for matrix, a, b in gen:
+        for a, b in scope:
+            matrix = Matrix(alg.bits, a=a, b=b)
             pretty = []
             for i in matrix:
                 row = [str(x) for x in i]
@@ -26,7 +26,7 @@ def json_pretty_store(gen: Generator, path: str) -> None:
             payload = {
                 "A": a,
                 "B": b,
-                "Product": int(a, 2) * int(b, 2),
+                "Product": a * b,
                 'Stage_0': {
                     'Matrix': pretty,
                     },

@@ -19,13 +19,20 @@ simplification, etc., before applying multiprocessing and beyond.
 
 
 def truth_scope(domain_: tuple[int,int], range_: tuple[int,int]
-) -> Generator[tuple]:
+) -> Generator[tuple[int,int]]:
     """Yields (a, b) from domain such that it's product (ab) lies within range
 
-    Domain: A tuple of integers representing the domain of input values.
-    Range: A tuple of integers representing the range of output values.
+    Parameters
+    ----------
+    domain_: tuple[int,int]
+        A tuple of integers representing the domain of input values.
+    range_: tuple[int,int]
+        A tuple of integers representing the range of output values.
 
-    Yields tuple: (operand_a, operand_b)
+    Yields
+    ------
+    tuple:
+        (operand_a, operand_b)
     """
 
     if not all([isinstance(d, int) for d in domain_]):
@@ -94,17 +101,30 @@ def truth_scope(domain_: tuple[int,int], range_: tuple[int,int]
 
 def shallow_truth_table(scope: Generator[tuple], alg: Algorithm
 ) -> Generator[Matrix]:
-    """
-    Return Generator of partial product matrices for all operand tuples
-    """
+    """Return Generator of partial product matrices for all operand tuples"""
 
     return (Matrix(alg.bits, a=a, b=b) for a, b in scope)
 
 def truth_table(scope: Generator, alg: Algorithm
 ) -> Generator[dict]:
-    """
-    A generator which yields all stages of an algorithm for a given
+    """A generator which yields all stages of an algorithm for a given
     set of operands a, b.
+
+    Parameters
+    ----------
+    scope : Generator
+        A generator which yields tuples of operands a, b.
+    alg : Algorithm
+        An instance of the Algorithm class.
+
+
+    Returns
+    -------
+    Generator[dict]
+        A generator which yields all stages of an algorithm for a given
+        set of operands a, b.
+
+
     """
     if not isinstance(scope, Generator):
         raise TypeError("Scope must be a generator.")
@@ -137,9 +157,19 @@ def _dataframe_entry_worker(a: int, b: int , alg: Algorithm) -> dict:
 
 def truth_dataframe(scope: Generator[tuple[int, int]], alg: Algorithm
 ) -> pd.DataFrame:
-    """
-    Return a pandas DataFrame of all stages of an algorithm for a given
-    set of operands a, b.
+    """Execute algorithm using each pair of operands from the scope.
+
+    Parameters
+    ----------
+    scope : Generator[tuple[int, int]]
+        A generator that yields pairs of integers (a, b) to be used as operands.
+    alg : Algorithm
+        An instance of the Algorithm class representing the algorithm to be executed.
+
+    Returns
+    -------
+    DataFrame
+        A pandas DataFrame containing the truth table for the given algorithm.
     """
     if not isinstance(scope, Generator):
         raise TypeError("Scope must be a generator.")

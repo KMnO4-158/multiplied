@@ -136,8 +136,25 @@
 <div class="viewcode-block" id="Map">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.Map">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Map</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Generates Map object from row map or standard map.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generates Map object from row map or standard map.</span>
+
+<span class="sd">    Each Mapping is defined by a 2-bit hexadecimal value. Positive</span>
+<span class="sd">    mappings move bits downwards, negative mappings move bits upwards.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    map : list[Any]</span>
+<span class="sd">        Simplified row map or 2D matrix.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; rmap = [00, FF, FF, 00]</span>
+<span class="sd">    &gt;&gt;&gt; Map(rmap)</span>
+<span class="sd">    [[00,00,00,00,00,00,00,00],</span>
+<span class="sd">     [FF,FF,FF,FF,FF,FF,FF,FF],</span>
+<span class="sd">     [FF,FF,FF,FF,FF,FF,FF,FF],</span>
+<span class="sd">     [00,00,00,00,00,00,00,00]]</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">map</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -168,9 +185,18 @@
 <div class="viewcode-block" id="Map.build_map">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.Map.build_map">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">build_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rmap</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Use row map to generate standard map. Each element of simple map</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Use row map to generate standard map. Each element of simple map</span>
 <span class="sd">        is a 2-bit, signed hex value. +ve = up, -ve = down.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        rmap : list[str]</span>
+<span class="sd">            Row map of the multiplied matrix.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list[list[str]]</span>
+<span class="sd">            Standard map of the multiplied matrix.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">mp</span><span class="o">.</span><span class="n">validate_bitwidth</span><span class="p">(</span><span class="n">n</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="n">rmap</span><span class="p">))</span>
@@ -211,9 +237,7 @@
 <div class="viewcode-block" id="build_dadda_map">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.build_dadda_map">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">build_dadda_map</span><span class="p">(</span><span class="n">bits</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Map</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Return map representing the starting point of Dadda tree algorithm.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return map representing the starting point of Dadda tree algorithm.&quot;&quot;&quot;</span>
     <span class="n">mp</span><span class="o">.</span><span class="n">validate_bitwidth</span><span class="p">(</span><span class="n">bits</span><span class="p">)</span>
 
     <span class="c1"># TODO: Use hoist() to generate dadda maps</span>

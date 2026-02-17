@@ -11,15 +11,23 @@ import multiplied as mp
 # - Use setattr to block changes to self.matrix if state != 0, suggest self.reset().
 #   Actually, this also applies to all attributes
 class Algorithm():
-    """
-    Manages and sequences operations via a series of stages defined by templates and maps.
+    """Manages and sequences operations via a series of stages defined by templates and maps.
 
-    parameters
+    Attributes
     ----------
-    matrix : mp.Matrix
+    bits : int
+        The bitwidth of the matrix to be multiplied.
+    matrix : Matrix
         The matrix to be multiplied.
+    dadda : bool
+        Whether to use the Dadda-Tree algorithm.
+    state : int
+        The current state of the algorithm.
+    algorithm : dict[int, dict[str, Template | Matrix | Map]]
+        The algorithm to be used.
+    saturation : bool
+        Whether to use saturation arithmetic. Always to original bitwidth.
 
-    ...
     """
 
     def __init__(self, bits: int,*, matrix: Any=None, saturation: bool=False, dadda=False) -> None:
@@ -55,10 +63,26 @@ class Algorithm():
 
     def push(self, source: mp.Template | mp.Pattern, map_: Any=None, dadda=False
     ) -> None:
-        """
-        Populates stage of an algorithm based on template. Generates pseudo
+        """Populate algorithm stage based on template. Generates pseudo
         result to represent output matrix
 
+        Parameters
+        ----------
+        source : mp.Template | mp.Pattern
+            The template or pattern to be used for the algorithm stage.
+        map_ : Any, optional
+            The map to be used for the algorithm stage, by default None
+        dadda : bool, optional
+            Whether to use the Dadda-Tree algorithm, by default False
+
+        Returns
+        -------
+        None
+
+        Notes
+        -----
+
+        Layout:
         >>> self.algorithm[x] = {
         >>>     "template" : mp.Template,
         >>>     "pseudo"   : mp.Matrix,
@@ -108,9 +132,8 @@ class Algorithm():
         return None
 
     def __clamp_bitwidth(self) -> bool:
-        """
-        Saturates matrix if current matrix has carried past original bitwidth
-        """
+        """Saturates matrix if current matrix has carried past original bitwidth"""
+
         boundary = (2**self.bits)-1
         as_int   = mp.to_int_matrix(self.matrix.matrix)
         test     = [boundary < i for i in as_int]
@@ -130,9 +153,7 @@ class Algorithm():
     # Mangled as execution order is sensitive and __reduce should only
     # be called by the algorithm itself via: self.step(), or self.exec()
     def __reduce(self) -> None:
-        """
-        use template or pattern to reduce a given matrix.
-        """
+        """use template or pattern to reduce a given matrix."""
         from copy import copy
 
         # -- implementation -----------------------------------------
@@ -322,11 +343,17 @@ class Algorithm():
 
     def auto_resolve_stage(self, *, recursive=True,
     ) -> None:
-        """
-        Automatically creates new algorithm stage to reduce the previous stage.
+        """Automatically creates new algorithm stage to reduce the previous stage.
 
-        Options:
-            recursive: Recursively resolve until no partial products remain
+        Parameters
+        ----------
+        recursive : bool
+            Recursively resolve until no partial products remain else resolve a single
+            stage.
+
+        Returns
+        -------
+        None
         """
         stage = len(self.algorithm)
         # -- non recursive ------------------------------------------
@@ -355,9 +382,7 @@ class Algorithm():
         return None
 
     def step(self) -> mp.Matrix:
-        """
-        Execute the next stage of the algorithm and update internal matrix
-        """
+        """Execute the next stage of the algorithm and update internal matrix"""
         if self.saturation:
             self.__clamp_bitwidth()
             self.__reduce()
@@ -367,9 +392,19 @@ class Algorithm():
         return self.matrix
 
     def exec(self, a: int, b: int) -> dict[int, mp.Matrix]:
-        """
-        Run entire algorithm with a single set of inputs then reset internal state.
-        Returns list of results from all stages of the algorithm
+        """Run entire algorithm with a single set of inputs then reset internal state.
+
+        Parameters
+        ----------
+        a : int
+            First operand
+        b : int
+            Second operand
+
+        Returns
+        -------
+        dict[int, mp.Matrix]
+            resultant matrix indexed by stage, including initial state
         """
         if not isinstance(a, int) or not isinstance(b, int):
             raise TypeError(f"Expected int, got {type(a)} and {type(b)}")
@@ -394,9 +429,8 @@ class Algorithm():
         return truth
 
     def reset(self, matrix: mp.Matrix) -> None:
-        """
-        Reset internal state and submit new initial matrix
-        """
+        """Reset internal state and submit new initial matrix"""
+
         if not isinstance(matrix, mp.Matrix):
             raise TypeError(f"Expected Matrix, got {type(matrix)}")
         self.matrix = matrix
@@ -449,11 +483,28 @@ def collect_arithmetic_units(
 def collect_template_units(
     source: mp.Template,
 ) -> tuple[dict[str, mp.Template], dict[str, list[tuple[int,int]]]]:
+    """Return dict of isolated arithmetic units and their bounding box.
+
+    Parameters
+    ----------
+    source : Template
+        The source template to extract arithmetic units from.
+
+    Returns
+    -------
+    tuple[dict[str, mp.Template], dict[str, list[tuple[int,int]]]]
+        A tuple containing a dictionary of isolated arithmetic units and their bounding box.
+
+    Raises
+    ------
+    TypeError
+        If the source is not of type Template or Matrix.
+
     """
-    Return dict of isolated arithmetic units and their bounding box.
-    """
-    if not isinstance(source, (mp.Template, mp.Matrix, mp.Map)):
-        raise TypeError(f"Expected type Template, Matrix or Map got {type(source)}")
+
+
+    if not isinstance(source, (mp.Template, mp.Matrix)):
+        raise TypeError(f"Expected type Template, Matrix got {type(source)}")
 
     from .utils.char import chartff
     bounds   = source.bounds
@@ -522,8 +573,21 @@ def hoist(source: mp.Matrix | mp.Template, *,
     checksum: list[int]=[],
     relative: bool=False,
 ) -> mp.Map:
-    """
-    collect non-empty bits to the top of matrix in-place and produce a corresponding map
+    """collect bits to the top of the matrix and produce corresponding map.
+
+    Parameters
+    ----------
+    source : mp.Matrix | mp.Template
+        The source matrix or template to hoist.
+    checksum : list[int], optional
+        The checksum to use for hoisting, by default [].
+    relative : bool, optional
+        Whether to use relative coordinates, by default False.
+
+    Returns
+    -------
+    mp.Map
+        The resulting map after hoisting.
     """
 
     if not isinstance(checksum, list):
@@ -539,11 +603,12 @@ def hoist(source: mp.Matrix | mp.Template, *,
 
     bits = source.bits
     if checksum == []:
-        checksum = [1]*bits
+        checksum = [0]*bits
 
-
-    y_start = checksum.index(1)
-    y_end   = 8-checksum[::-1].index(1) if 1 in checksum else bits
+    # -- update when checksum reimplemented ------------------------- #
+    y_start = 0                                                       #
+    y_end   = bits                                                    #
+    # --------------------------------------------------------------- #
     map_    = mp.empty_matrix(bits)
 
     for y in range(y_start, y_end):

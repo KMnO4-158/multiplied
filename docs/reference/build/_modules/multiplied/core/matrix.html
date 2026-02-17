@@ -142,9 +142,13 @@
 <div class="viewcode-block" id="Slice">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.Slice">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Slice</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Matrix slice which adheres to multiplied formatting rules.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Matrix slice which adheres to multiplied formatting rules.</span>
 <span class="sd">    Retains metadata slice from source object:</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    matrix : list[Any]</span>
+<span class="sd">        A slice from any Multiplied object.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># TODO</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -209,8 +213,16 @@
 <div class="viewcode-block" id="Matrix">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.Matrix">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Matrix</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Partial Product Matrix</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Partial Product Matrix</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    matrix : list[Any] | int</span>
+<span class="sd">        A 2D nested list or an integer representing the bitwidth.</span>
+<span class="sd">    a : int=0, optional</span>
+<span class="sd">        First operand used in partial product generation(PPM)</span>
+<span class="sd">    b : int=0, optional</span>
+<span class="sd">        Second operand used in PPM</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="nb">int</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
         <span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
@@ -259,9 +271,7 @@
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__zero_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bits</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Build a wallace tree for a bitwidth of self.bits</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build a wallace tree for a bitwidth of self.bits&quot;&quot;&quot;</span>
         <span class="n">row</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;0&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">bits</span>
         <span class="n">matrix</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bits</span><span class="p">):</span>
@@ -271,9 +281,7 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__build_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operand_a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">operand_b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Build Logical AND matrix using source operands and it&#39;s checksum.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build Logical AND matrix using source operands and it&#39;s checksum.&quot;&quot;&quot;</span>
 
         <span class="n">mp</span><span class="o">.</span><span class="n">validate_bitwidth</span><span class="p">((</span><span class="n">bits</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bits</span><span class="p">))</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">operand_a</span> <span class="o">&gt;</span> <span class="p">((</span><span class="mi">2</span><span class="o">**</span><span class="n">bits</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="n">operand_b</span> <span class="o">&gt;</span> <span class="p">((</span><span class="mi">2</span><span class="o">**</span><span class="n">bits</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
@@ -309,9 +317,7 @@
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__checksum</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Calculate checksums for rows and columns of the matrix</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate checksums for rows and columns of the matrix&quot;&quot;&quot;</span>
 
         <span class="n">row_len</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bits</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span>
         <span class="n">y_checksum</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">bits</span>
@@ -341,11 +347,18 @@
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.Matrix.resolve_rmap">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">resolve_rmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">ignore_zeros</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">mp</span><span class="o">.</span><span class="n">Map</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Find empty rows, create simple map to efficiently pack rows</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find empty rows, create simple map to efficiently pack rows</span>
 
-<span class="sd">        options:</span>
-<span class="sd">            ignore_zeros: If True, ignore rows with only zeros</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ignore_zeros : bool</span>
+<span class="sd">            If True, ignore rows with only zeros</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Map</span>
+<span class="sd">            Map object containing the generated row mapping</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">option</span> <span class="o">=</span> <span class="s1">&#39;0&#39;</span> <span class="k">if</span> <span class="n">ignore_zeros</span> <span class="k">else</span> <span class="s1">&#39;_&#39;</span>
@@ -365,8 +378,17 @@
 <div class="viewcode-block" id="Matrix.apply_map">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.Matrix.apply_map">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">apply_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">map_</span><span class="p">:</span> <span class="n">mp</span><span class="o">.</span><span class="n">Map</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Use Multiplied Map object to apply mapping to matrix</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Use Multiplied Map object to apply mapping to matrix</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        map_ : Map</span>
+<span class="sd">            Map object containing the generated row mapping</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">map_</span><span class="p">,</span> <span class="n">mp</span><span class="o">.</span><span class="n">Map</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected Map, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">map_</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -448,6 +470,7 @@
 <div class="viewcode-block" id="empty_rows">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.empty_rows">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">empty_rows</span><span class="p">(</span><span class="n">matrix</span><span class="p">:</span> <span class="n">Matrix</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the number of empty rows in a matrix&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">Matrix</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected Matrix, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
@@ -458,8 +481,22 @@
 <div class="viewcode-block" id="empty_matrix">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.empty_matrix">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">empty_matrix</span><span class="p">(</span><span class="n">bits</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Build an empty 2d array for a given bitwidth</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build an empty 2d array for a given bitwidth</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    bits : int</span>
+<span class="sd">        The bitwidth of the matrix</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list[list[str]]</span>
+<span class="sd">        An empty 2d array for the given bitwidth</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    An empty matrix is completely filled with underscores, following Multipied&#39;s convention</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">mp</span><span class="o">.</span><span class="n">validate_bitwidth</span><span class="p">(</span><span class="n">bits</span><span class="p">)</span>
     <span class="n">matrix</span> <span class="o">=</span> <span class="p">[]</span>
@@ -468,7 +505,7 @@
     <span class="k">return</span> <span class="n">matrix</span></div>
 
 
-
+<span class="c1"># TODO: update example</span>
 <div class="viewcode-block" id="matrix_merge">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.matrix_merge">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">matrix_merge</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Matrix</span><span class="p">],</span>
@@ -476,8 +513,29 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">carry</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Matrix</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Merge multiple matrices into a single matrix using pre calculated bounds</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Merge multiple matrices into a single matrix using pre calculated bounds</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    source : dict[str, Matrix]</span>
+<span class="sd">        A dictionary of matrices to merge</span>
+<span class="sd">    bounds : dict[str, list[tuple[int, int]]]</span>
+<span class="sd">        A dictionary of bounds for each matrix</span>
+<span class="sd">    carry : bool=True, optional</span>
+<span class="sd">        Whether to carry over the carry bit, by default True</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Matrix</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; source = {&#39;A&#39;: Matrix([[1, 2], [3, 4]]), &#39;B&#39;: Matrix([[5, 6], [7, 8]])}</span>
+<span class="sd">    &gt;&gt;&gt; bounds = {&#39;A&#39;: [(0, 1), (2, 3)], &#39;B&#39;: [(0, 1), (2, 3)]}</span>
+<span class="sd">    &gt;&gt;&gt; matrix_merge(source, bounds)</span>
+<span class="sd">    Matrix([[1, 2, 5, 6], [3, 4, 7, 8], [5, 6, 1, 2], [7, 8, 3, 4]])</span>
+<span class="sd">    .. warning:: simplified example, 2-bit operations are not supported</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Source must be a dictionary&quot;</span><span class="p">)</span>

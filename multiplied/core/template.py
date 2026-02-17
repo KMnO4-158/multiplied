@@ -11,10 +11,22 @@ import multiplied as mp
 
 def build_csa(char: str, source_slice: mp.Slice
 ) -> tuple[mp.Slice, mp.Slice]: # Carry Save Adder -> (template, result)
-    """
-    Create CSA template slice with zero initialised slice and chosen char.
-    Returns template "slices" for a csa reduction and the resulting slice.
+    """Create CSA template slice with source slice and chosen char.
 
+    Parameters
+    ----------
+    char : str
+        Character to use for the CSA template.
+    source_slice : Slice
+        Source slice object to use for the CSA template.
+
+    Returns
+    -------
+    tuple[Slice, Slice]
+        Template "slices" marked for a csa reduction and the resulting slice.
+
+    Examples
+    --------
     >>> [slice-] || [csa---] || [result]
     >>> ____0000 || ____AaAa || __AaAaAa
     >>> ___0000_ || ___aAaA_ || __aAaA__
@@ -49,10 +61,22 @@ def build_csa(char: str, source_slice: mp.Slice
 
 def build_adder(char: str, source_slice: mp.Slice
 ) -> tuple[mp.Slice, mp.Slice]: # Carry Save Adder -> (template, result)
-    """
-    Create Adder template slice with zero initialised slice and chosen char.
-    Returns template "slices" for addition and the resulting slice.
+    """Create Adder template slice with zero initialised slice and chosen char.
 
+    Parameters
+    ----------
+    char : str
+        The character to use for the template.
+    source_slice : Slice
+        The source slice to use for the template.
+
+    Returns
+    -------
+    tuple[Slice, Slice]
+        The template "slices" for addition and the resulting slice.
+
+    Examples
+    --------
     >>> [slice-] || [adder-] || [result]
     >>> ___0000_ || ___aAaA_ || _aAaAaA_
     >>> __0000__ || __AaAa__ || ________
@@ -92,10 +116,23 @@ def build_adder(char: str, source_slice: mp.Slice
 
 def build_noop(char: str, source_slice: mp.Slice
 ) -> tuple[mp.Slice, mp.Slice]:
-    """
-    Create a No-op template slice with zero initialised slice and chosen char.
-    Returns template "slices" and resulting slice. Target row unaffected
+    """Create a No-op template slice with zero initialised slice and chosen char.
 
+    Parameters
+    ----------
+    char : str
+        Character to use for the No-op template.
+    source_slice : Slice
+        Source slice to use for the No-op template.
+
+
+    Returns
+    -------
+    tuple[Slice, Slice]
+        Template "slices" and resulting slice. Target row unaffected
+
+    Examples
+    --------
     >>> [slice-] || [noop--] || [result]
     >>> ___0000_ || ___aAaA_ || ___aAaA_
     """
@@ -115,10 +152,27 @@ def build_noop(char: str, source_slice: mp.Slice
     return noop_slice, deepcopy(noop_slice) # avoids pointing to same object
 
 def build_empty_slice(source_slice: mp.Slice) -> tuple[mp.Slice, mp.Slice]:
-    """
-    Create an empty template slice. Returns template "slices" and resulting slice.
-    Variable length determined by source slice.
+    """Create an empty template slice. Returns template "slices" and resulting slice.
+    Variable length, determined by source slice.
 
+    Parameters
+    ----------
+    source_slice : Slice
+        Source slice to use for the empty template.
+
+    Returns
+    -------
+    tuple[Slice, Slice]
+        Tuple of template slices and resulting slice.
+
+
+    Notes
+    -----
+    Used for building Templates with large runs of underscore characters.
+    Underscores are used to represent empty spaces in the template.
+
+    Examples
+    --------
     >>> [slice-] || [empty-] || [result]
     >>> ???????? || ________ || ________
     >>> ???????? || ________ || ________
@@ -136,8 +190,20 @@ def build_empty_slice(source_slice: mp.Slice) -> tuple[mp.Slice, mp.Slice]:
 
 
 class Pattern:
-    """
-    Simplified representation of a Template.
+    """Simplified representation of a Template.
+
+    Parameters
+    ----------
+    pattern : list[str]
+        Pattern to use for the template.
+
+    Attributes
+    ----------
+    pattern : list[str]
+        Pattern to use for the template.
+    bits : int
+        Number of bits in the pattern.
+
     """
     def __init__(self, pattern: list[str]):
         if not(isinstance(pattern, list) and all(ischar(row) for row in pattern)):
@@ -146,8 +212,12 @@ class Pattern:
         self.bits    = len(pattern)
 
     def get_runs(self) -> list[tuple[int, int, int]]:
-        """
-        Returns list of tuples of length, position, and run of a given char in pattern
+        """Returns list of tuples of length, position, and run of a given char in pattern
+
+        Examples
+        --------
+        >>> Pattern(["A", "A", "A", "B", "B", "B", "B", "C", "C", "C", "C", "C"]).get_runs()
+        [(3, 0, 3), (4, 3, 4), (5, 7, 5)]
         """
         metadata = []
         i = 1
@@ -203,9 +273,18 @@ class Pattern:
 #   Improves clarity as library becomes increasingly complex.
 #
 class Template:
-    """
-    A structure representing collections of arithmetic units using characters.
+    """A structure representing collections of arithmetic units using characters.
     Generated using a partial product matrix and a Pattern or custom template
+
+    Parameters
+    ----------
+    source : Pattern | list[list[str]]
+        The source of the template.
+    result : list[Any], optional
+        The result of the template, by default []
+    matrix : Any, optional
+        The matrix of the template, by default None
+
     """
 
     # ! THIS is where checksums need to be implemented ! #
@@ -277,10 +356,27 @@ class Template:
     # Templates must be built using matrix
     def build_from_pattern(self, pattern: Pattern, matrix: mp.Matrix
     ) -> None:
-        """
-        Build a simple template and it's result for a given bitwidth based
+        """Build a simple template and it's result for a given bitwidth based
         on matrix. Defaults to empty matrix if matrix=None.
 
+        Parameters
+        ----------
+        pattern : Pattern
+            The pattern to build the template from.
+        matrix : mp.Matrix
+            The matrix to build the template from.
+
+        Returns
+        -------
+        None
+
+        Raises
+        ------
+        ValueError
+            If the pattern is not a valid Pattern object.
+
+        Examples
+        --------
         >>> [matrix] || [pattern] || [templ.] [result]
         >>> ____0000 || [  'a',   || ____AaAa __aAaAaA
         >>> ___0000_ ||    'a',   || ___AaAa_ ________
@@ -341,15 +437,7 @@ class Template:
     #  > or just detect empty, '_', characters as the boundary
     #       > This option means figuring out the correct key to use
     def find_bounding_box(self) -> dict[str, list[tuple[int, int]]]:
-        """
-        Returns dictionary of arithmetic unit and coordinates for their boundaries.
-
-        Note: key='_' represents bounds for empty character slots
-
-        Parameters:
-        - matrix: nested list of m-bits, defined as 2d array of 2m * m
-        - transit: Function to return bool for a given boundary transition
-        """
+        """Returns dictionary of arithmetic unit and coordinates for their boundaries."""
 
         matrix = self.template
         rows   = self.bits
@@ -399,9 +487,7 @@ class Template:
     # - Should help when error checking, though I don't see a use for y_signature
     #
     def collect_template_units(self) -> tuple[dict[str, list], dict[str, list[tuple[int,int]]]]:
-        """
-        Return dict of isolated arithmetic units and their bounding box.
-        """
+        """Return dict of isolated arithmetic units and their bounding box."""
 
         from .utils.char import chartff
         bounds   = self.find_bounding_box()
@@ -480,11 +566,22 @@ class Template:
 
 
 
-
+# TODO: add examples
 def resolve_pattern(matrix: mp.Matrix) -> Pattern:
+    """For a given matrix, progressively allocate CSAs then adders to pattern
+
+    Parameters
+    ----------
+    matrix : mp.Matrix
+        The matrix to resolve the pattern for.
+
+    Returns
+    -------
+    Pattern
+        The resolved pattern.
+
     """
-    For a given matrix, progressively allocate CSAs then adders to pattern
-    """
+
     from multiplied.core.utils.char import chargen
     char  = chargen()
     if (empty_rows := mp.empty_rows(matrix)) == matrix.bits:
@@ -510,9 +607,7 @@ def resolve_pattern(matrix: mp.Matrix) -> Pattern:
 
 
 def build_noop_template(self, pattern: Pattern, *, dadda=False) -> None:
-    """
-    Create template for zeroed matrix using pattern
-    """
+    """Create template for zeroed matrix using pattern"""
 
 
 """

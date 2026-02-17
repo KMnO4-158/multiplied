@@ -14,9 +14,13 @@ from typing import Any, Iterator
 # - work exclusively with multiplied objects
 # - Slice also slices metadata from source object
 class Slice:
-    """
-    Matrix slice which adheres to multiplied formatting rules.
+    """Matrix slice which adheres to multiplied formatting rules.
     Retains metadata slice from source object:
+
+    Parameters
+    ----------
+    matrix : list[Any]
+        A slice from any Multiplied object.
     """
     # TODO
     """
@@ -78,8 +82,16 @@ class Slice:
 # - Maybe use bounds to create x_checksum within __reduce()'s unit collection
 # - OR within, the same scope, use bounds to execute a given arithmetic unit
 class Matrix:
-    """
-    Partial Product Matrix
+    """Partial Product Matrix
+
+    Parameters
+    ----------
+    matrix : list[Any] | int
+        A 2D nested list or an integer representing the bitwidth.
+    a : int=0, optional
+        First operand used in partial product generation(PPM)
+    b : int=0, optional
+        Second operand used in PPM
     """
     def __init__(self, source: list[Any] | int, *,
         a: int=0,
@@ -128,9 +140,7 @@ class Matrix:
         return None
 
     def __zero_matrix(self, bits: int) -> None:
-        """
-        Build a wallace tree for a bitwidth of self.bits
-        """
+        """Build a wallace tree for a bitwidth of self.bits"""
         row = ['0']*bits
         matrix = []
         for i in range(bits):
@@ -140,9 +150,7 @@ class Matrix:
 
 
     def __build_matrix(self, operand_a: int, operand_b: int) -> None:
-        """
-        Build Logical AND matrix using source operands and it's checksum.
-        """
+        """Build Logical AND matrix using source operands and it's checksum."""
 
         mp.validate_bitwidth((bits := self.bits))
         if (operand_a > ((2**bits)-1)) or (operand_b > ((2**bits)-1)):
@@ -178,9 +186,7 @@ class Matrix:
         return None
 
     def __checksum(self) -> None:
-        """
-        Calculate checksums for rows and columns of the matrix
-        """
+        """Calculate checksums for rows and columns of the matrix"""
 
         row_len  = self.bits << 1
         y_checksum = [0] * self.bits
@@ -208,11 +214,18 @@ class Matrix:
 
     def resolve_rmap(self, *, ignore_zeros: bool=True
     ) -> mp.Map:
-        """
-        Find empty rows, create simple map to efficiently pack rows
+        """Find empty rows, create simple map to efficiently pack rows
 
-        options:
-            ignore_zeros: If True, ignore rows with only zeros
+        Parameters
+        ----------
+        ignore_zeros : bool
+            If True, ignore rows with only zeros
+
+        Returns
+        -------
+        Map
+            Map object containing the generated row mapping
+
         """
 
         option = '0' if ignore_zeros else '_'
@@ -229,8 +242,17 @@ class Matrix:
 
     # ! Update to use checksums  or coordinates
     def apply_map(self, map_: mp.Map) -> None:
-        """
-        Use Multiplied Map object to apply mapping to matrix
+        """Use Multiplied Map object to apply mapping to matrix
+
+        Parameters
+        ----------
+        map_ : Map
+            Map object containing the generated row mapping
+
+        Returns
+        -------
+        None
+
         """
         if not isinstance(map_, mp.Map):
             raise TypeError(f"Expected Map, got {type(map_)}")
@@ -308,6 +330,7 @@ class Matrix:
 # -- helper functions -----------------------------------------------
 
 def empty_rows(matrix: Matrix) -> int:
+    """Return the number of empty rows in a matrix"""
     if not isinstance(matrix, Matrix):
         raise TypeError(f"Expected Matrix, got {type(matrix)}")
 
@@ -315,8 +338,22 @@ def empty_rows(matrix: Matrix) -> int:
     return sum([matrix.matrix[i] == empty_row for i in range(matrix.bits)])
 
 def empty_matrix(bits: int) -> list[list[str]]:
-    """
-    Build an empty 2d array for a given bitwidth
+    """Build an empty 2d array for a given bitwidth
+
+    Parameters
+    ----------
+    bits : int
+        The bitwidth of the matrix
+
+    Returns
+    -------
+    list[list[str]]
+        An empty 2d array for the given bitwidth
+
+    Notes
+    -----
+    An empty matrix is completely filled with underscores, following Multipied's convention
+
     """
     mp.validate_bitwidth(bits)
     matrix = []
@@ -324,14 +361,35 @@ def empty_matrix(bits: int) -> list[list[str]]:
         matrix.append(["_"]*(bits*2))
     return matrix
 
-
+# TODO: update example
 def matrix_merge(source: dict[str, Matrix],
     bounds: dict[str, list[tuple[int, int]]],
     *,
     carry: bool = True
 ) -> Matrix:
-    """
-    Merge multiple matrices into a single matrix using pre calculated bounds
+    """Merge multiple matrices into a single matrix using pre calculated bounds
+
+    Parameters
+    ----------
+    source : dict[str, Matrix]
+        A dictionary of matrices to merge
+    bounds : dict[str, list[tuple[int, int]]]
+        A dictionary of bounds for each matrix
+    carry : bool=True, optional
+        Whether to carry over the carry bit, by default True
+
+    Returns
+    -------
+    Matrix
+
+    Examples
+    --------
+    >>> source = {'A': Matrix([[1, 2], [3, 4]]), 'B': Matrix([[5, 6], [7, 8]])}
+    >>> bounds = {'A': [(0, 1), (2, 3)], 'B': [(0, 1), (2, 3)]}
+    >>> matrix_merge(source, bounds)
+    Matrix([[1, 2, 5, 6], [3, 4, 7, 8], [5, 6, 1, 2], [7, 8, 3, 4]])
+    .. warning:: simplified example, 2-bit operations are not supported
+
     """
     if not isinstance(source, dict):
         raise TypeError("Source must be a dictionary")

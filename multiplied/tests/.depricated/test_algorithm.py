@@ -15,26 +15,55 @@ def gen_resources(bits: int, *, a=0, b=0
     alg = mp.Algorithm(bits)
     return m, p, alg
 
-def test_step() -> None:
-    m, p, alg = gen_resources(8, a=15, b=15)
+def test_step_4() -> None:
+    m, p, alg = gen_resources(4, a=15, b=15)
     alg.push(p)
     print(alg.matrix)
     alg.step()
-    # print(alg.matrix.x_checksum)
-    # print(alg.matrix.y_checksum)
     print(alg.matrix)
-    # print(alg)
 
-def test_exec(a: int, b: int) -> None:
+def test_step_8() -> None:
+    m, p, alg = gen_resources(8, a=255, b=255)
+    alg.push(p)
+    print(alg.matrix)
+    alg.step()
+    print(alg.matrix)
+
+
+
+def manual_test_exec(a: int, b: int) -> None:
     m, p, alg = gen_resources(8, a=a, b=b)
     alg.auto_resolve_stage()
-    # print(alg)
+    print(alg)
     print(alg.exec(a, b))
     results = (alg.exec(a, b))
     for k, i in results.items():
         print('result: ', k)
         print(i)
 
+def test_exec_4() -> None:
+    a = 15
+    b = 15
+    m, p, alg = gen_resources(8, a=a, b=b)
+    alg.auto_resolve_stage()
+    print(alg)
+    print(alg.exec(a, b))
+    results = (alg.exec(a, b))
+    for k, i in results.items():
+        print('result: ', k)
+        print(i)
+
+def test_exec_8() -> None:
+    a = 255
+    b = 255
+    m, p, alg = gen_resources(8, a=a, b=b)
+    alg.auto_resolve_stage()
+    print(alg)
+    print(alg.exec(a, b))
+    results = (alg.exec(a, b))
+    for k, i in results.items():
+        print('result: ', k)
+        print(i)
 
 
 def test_auto_resolve_single_4() -> None:
@@ -70,9 +99,7 @@ def test_auto_resolve_recursive_full_8() -> None:
     m, p, alg2 = gen_resources(8, a=12, b=42)
     alg2.auto_resolve_stage()
     print(alg2)
-    print(m)
-    # print(m.y_checksum)
-    # print(m.x_checksum)
+
 
 
 def test_isolate_arithmetic_units() -> None:
@@ -130,7 +157,9 @@ def test_err_duplicate_units() -> None:
         print(i)
         # print(i.checksum)
 
-def test_algorithm_reuse_8(a: int, b:int) -> None:
+def test_algorithm_reuse_8() -> None:
+    a = 15
+    b = 15
     m, p, alg = gen_resources(8, a=a, b=a)
     alg.push(p)
     alg.auto_resolve_stage()
@@ -162,7 +191,9 @@ def test_algorithm_reuse_8(a: int, b:int) -> None:
     print(int("".join(alg.matrix.matrix[0]), 2))
     print(a*b)
 
-def test_algorithm_reuse_4(a: int, b:int) -> None:
+def test_algorithm_reuse_4() -> None:
+    a = 15
+    b = 15
     m, p, alg = gen_resources(4, a=a, b=a)
     alg.push(p)
     alg.auto_resolve_stage()
@@ -208,8 +239,20 @@ def test_exec_docs() -> None:
     print(int("".join(alg.matrix.matrix[0]), 2))
     print(a*b)
 
+def test_exec_saturation_4() -> None:
+    alg = mp.Algorithm(4, saturation=True)
+    alg.auto_resolve_stage()
+    a=2
+    b=15
+    output = alg.exec(a, b)
+    for k, v in output.items():
+        print(v)
+        # mp.mprint(v['pseudo'])
+    print(int("".join(alg.matrix.matrix[0]), 2), '<- saturated')
+    print(a*b, '<- unsaturated')
 
-def test_exec_saturation() -> None:
+
+def test_exec_saturation_8() -> None:
     alg = mp.Algorithm(8, saturation=True)
     alg.auto_resolve_stage()
     a=2
@@ -221,7 +264,20 @@ def test_exec_saturation() -> None:
     print(int("".join(alg.matrix.matrix[0]), 2), '<- saturated')
     print(a*b, '<- unsaturated')
 
-def test_exec_dadda() -> None:
+def test_exec_dadda_4() -> None:
+    alg = mp.Algorithm(4, dadda=True)
+    alg.auto_resolve_stage()
+    a=7
+    b=15
+    output = alg.exec(a, b)
+    for k, v in output.items():
+        print(v)
+        # mp.mprint(v['pseudo'])
+    print()
+    print(int("".join(alg.matrix.matrix[0]), 2))
+    print(a*b)
+
+def test_exec_dadda_8() -> None:
     alg = mp.Algorithm(8, dadda=True)
     alg.auto_resolve_stage()
     a=27
@@ -234,8 +290,21 @@ def test_exec_dadda() -> None:
     print(int("".join(alg.matrix.matrix[0]), 2))
     print(a*b)
 
+def test_exec_dadda_saturation_4() -> None:
+    alg = mp.Algorithm(4, saturation=True, dadda=True)
+    alg.auto_resolve_stage()
+    a=2
+    b=15
+    output = alg.exec(a, b)
+    for k, v in output.items():
+        print(v)
+        # mp.mprint(v['pseudo'])
+    print()
+    print(int("".join(alg.matrix.matrix[0]), 2), '<- saturated')
+    print(a*b, '<- unsaturated')
 
-def test_exec_dadda_saturation() -> None:
+
+def test_exec_dadda_saturation_8() -> None:
     alg = mp.Algorithm(8, saturation=True, dadda=True)
     alg.auto_resolve_stage()
     a=2
@@ -251,24 +320,9 @@ def test_exec_dadda_saturation() -> None:
 
 
 
-
-
 def main():
     test_exec_docs()
-    test_exec_saturation()
-    test_exec_dadda()
-    test_exec_dadda_saturation()
-    # test_step()
-    # test_exec(15, 15)
-    # test_exec(255, 255)
-    # test_exec(23, 17)
-    # test_algorithm_reuse_8(255, 255)
-    # test_algorithm_reuse_4(4, 7)
-    # test_manual_population_8()
-    # test_auto_resolve_recursive_full_8()
-    # test_auto_resolve_recursive_full_4()
-    # test_isolate_arithmetic_units()
-    # test_err_duplicate_units()
+
     ...
 
 if __name__ == "__main__":
