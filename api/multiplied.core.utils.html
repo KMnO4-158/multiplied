@@ -186,17 +186,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="multiplied.core.utils.bool.validate_bitwidth">
 <span class="sig-prename descclassname"><span class="pre">multiplied.core.utils.bool.</span></span><span class="sig-name descname"><span class="pre">validate_bitwidth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ValueError</span></span></span><a class="reference internal" href="../_modules/multiplied/core/utils/bool.html#validate_bitwidth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.core.utils.bool.validate_bitwidth" title="Link to this definition">#</a></dt>
-<dd><p>Raise ValueError if bitwidth is unsupported</p>
-<section id="parameters">
-<h3>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">#</a></h3>
-<blockquote>
-<div><p>bits : Bitwidth to validate</p>
-</div></blockquote>
-<dl class="simple">
-<dt>Returns:</dt><dd><p>None if bitwidth is supported, ValueError otherwise</p>
-</dd>
-</dl>
-</section>
+<dd><p>Raise ValueError if bitwidth is supported by Multiplied</p>
 </dd></dl>
 
 </section>
@@ -204,29 +194,82 @@
 <span id="multiplied-core-utils-char-module"></span><h2>multiplied.core.utils.char module<a class="headerlink" href="#module-multiplied.core.utils.char" title="Link to this heading">#</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="multiplied.core.utils.char.allchars">
-<span class="sig-prename descclassname"><span class="pre">multiplied.core.utils.char.</span></span><span class="sig-name descname"><span class="pre">allchars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">hash</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/multiplied/core/utils/char.html#allchars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.core.utils.char.allchars" title="Link to this definition">#</a></dt>
-<dd><p>Returns set of unique characters from a matrix.
-Ignores underscore characters and converts characters to uppercase</p>
+<span class="sig-prename descclassname"><span class="pre">multiplied.core.utils.char.</span></span><span class="sig-name descname"><span class="pre">allchars</span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>,</dd>
+<dd><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">hash</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>,</dd>
+</dl>
+
+<span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/multiplied/core/utils/char.html#allchars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.core.utils.char.allchars" title="Link to this definition">#</a></dt>
+<dd><p>Returns set of unique characters from a nested list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>matrix</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>str</em><em>]</em><em>]</em>) – Matrix of characters to extract unique characters from.</p></li>
+<li><p><strong>hash</strong> (<em>list</em><em>[</em><em>int</em><em> | </em><em>bool</em><em>]</em><em>, </em><em>optional</em>) – List of bools or 0s and 1s indicating if a row contains characters.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>set[str]</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Ignores underscore characters and converts characters to uppercase</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">Matrix</span></code></dt><dd><p>Multiplied 2D Matrix Object</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">allchars</span><span class="p">([[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">]])</span>
 <span class="go">{&#39;A&#39;, &#39;B&#39;, &#39;C&#39;, &#39;D&#39;}</span>
 </pre></div>
 </div>
-<dl class="simple">
-<dt>options:</dt><dd><p>hash: use checksum to assist in calculations</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="multiplied.core.utils.char.chargen">
 <span class="sig-prename descclassname"><span class="pre">multiplied.core.utils.char.</span></span><span class="sig-name descname"><span class="pre">chargen</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/multiplied/core/utils/char.html#chargen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.core.utils.char.chargen" title="Link to this definition">#</a></dt>
-<dd><p>Continuously generate characters from A to Z</p>
+<dd><p>Return Generator  characters from A to Z.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Yields<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>str</em></p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">chargen</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">next</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">&#39;A&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">next</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">&#39;B&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">next</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">&#39;C&#39;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="multiplied.core.utils.char.chartff">
 <span class="sig-prename descclassname"><span class="pre">multiplied.core.utils.char.</span></span><span class="sig-name descname"><span class="pre">chartff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/multiplied/core/utils/char.html#chartff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.core.utils.char.chartff" title="Link to this definition">#</a></dt>
 <dd><p>Generator to flip flop between upper and lowercase characters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ch</strong> (<em>str</em>) – Single alphabetic character to flip flop.</p>
+</dd>
+<dt class="field-even">Yields<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>str</em> – Upper or lowercase version of the input character.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If input is not a single alphabetic character.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">chartff</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">next</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="go">&#39;a&#39;</span>
@@ -241,7 +284,21 @@ Ignores underscore characters and converts characters to uppercase</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="multiplied.core.utils.char.to_int_matrix">
 <span class="sig-prename descclassname"><span class="pre">multiplied.core.utils.char.</span></span><span class="sig-name descname"><span class="pre">to_int_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/multiplied/core/utils/char.html#to_int_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.core.utils.char.to_int_matrix" title="Link to this definition">#</a></dt>
-<dd><p>Converts a matrix of characters to a matrix of integers.</p>
+<dd><p>Converts a matrix of characters to a matrix of integers</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>matrix</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>str</em><em>]</em><em>]</em>) – Matrix of characters to convert from 2D Multiplied formatted matrix
+into to list of integers.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[int]</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">to_int_matrix</span><span class="p">([[</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">]])</span>
+<span class="go">[2, 5]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>
@@ -255,12 +312,28 @@ Ignores underscore characters and converts characters to uppercase</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="multiplied.core.utils.pretty.pretty">
-<span class="sig-prename descclassname"><span class="pre">multiplied.core.utils.pretty.</span></span><span class="sig-name descname"><span class="pre">pretty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">listy_object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/multiplied/core/utils/pretty.html#pretty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.core.utils.pretty.pretty" title="Link to this definition">#</a></dt>
-<dd><p>Format Multiplied types, or list as a string:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">____0000</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">___0000_</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">__0000__</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">_0000___</span>
+<span class="sig-prename descclassname"><span class="pre">multiplied.core.utils.pretty.</span></span><span class="sig-name descname"><span class="pre">pretty</span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><em class="sig-param"><span class="n"><span class="pre">listy_object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="multiplied.core.html#multiplied.core.algorithm.Algorithm" title="multiplied.core.algorithm.Algorithm"><span class="pre">Algorithm</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="multiplied.core.html#multiplied.core.template.Template" title="multiplied.core.template.Template"><span class="pre">Template</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="multiplied.core.html#multiplied.core.matrix.Matrix" title="multiplied.core.matrix.Matrix"><span class="pre">Matrix</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="multiplied.core.html#multiplied.core.matrix.Slice" title="multiplied.core.matrix.Slice"><span class="pre">Slice</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="multiplied.core.html#multiplied.core.map.Map" title="multiplied.core.map.Map"><span class="pre">Map</span></a></span></em>,</dd>
+</dl>
+
+<span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/multiplied/core/utils/pretty.html#pretty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.core.utils.pretty.pretty" title="Link to this definition">#</a></dt>
+<dd><p>Format Multiplied types, or list as a string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>listy_object</strong> (<em>Any</em>) – List or Dict style object to format as a string.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pretty</span><span class="p">(</span><span class="n">mp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+<span class="go">____0000</span>
+<span class="go">___0000_</span>
+<span class="go">__0000__</span>
+<span class="go">_0000___</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -268,18 +341,18 @@ Ignores underscore characters and converts characters to uppercase</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="multiplied.core.utils.pretty.pretty_dict">
 <span class="sig-prename descclassname"><span class="pre">multiplied.core.utils.pretty.</span></span><span class="sig-name descname"><span class="pre">pretty_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">listy_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/multiplied/core/utils/pretty.html#pretty_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.core.utils.pretty.pretty_dict" title="Link to this definition">#</a></dt>
-<dd><p>Format mp.Map as a string:</p>
+<dd><p>Format Dict type object as a string:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">],[</span><span class="n">_</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">_</span><span class="p">],[</span><span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="mi">3</span><span class="p">]],</span>
 <span class="gp">&gt;&gt;&gt; </span> <span class="mi">1</span><span class="p">:</span> <span class="p">[[</span><span class="n">a</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">],[</span><span class="n">_</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">_</span><span class="p">],[</span><span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">c</span><span class="p">]],</span>
 <span class="gp">&gt;&gt;&gt; </span> <span class="mi">2</span><span class="p">:</span> <span class="p">[[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">],[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">],[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">]]}</span>
 <span class="go">0:{</span>
+<span class="go">1__</span>
+<span class="go">_2_</span>
+<span class="go">__3</span>
+<span class="go">}</span>
+<span class="go">...</span>
 </pre></div>
 </div>
-<p><a href="#id1"><span class="problematic" id="id2">1__</span></a>
-_2_
-__3
-}
-…</p>
 </dd></dl>
 
 <dl class="py function">
@@ -293,8 +366,17 @@ __3
 </dl>
 
 <span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/multiplied/core/utils/pretty.html#pretty_nested_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.core.utils.pretty.pretty_nested_list" title="Link to this definition">#</a></dt>
-<dd><p>Format nested list as a string:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">],[</span><span class="n">_</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">_</span><span class="p">],[</span><span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span>
+<dd><p>Format nested list as a string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>listy_object</strong> (<em>Any</em>) – The nested list to be formatted.</p></li>
+<li><p><strong>whitespace</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to add whitespace between elements, by default False.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pretty_nested_list</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">],[</span><span class="n">_</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">_</span><span class="p">],[</span><span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="mi">3</span><span class="p">]])</span>
 <span class="go">1__</span>
 <span class="go">_2_</span>
 <span class="go">__3</span>
@@ -416,5 +498,5 @@ __3
   <label class="bz-overlay bz-overlay-primary" for="bz-sidebar-primary"></label>
   <label class="bz-overlay bz-overlay-secondary" for="bz-sidebar-secondary"></label>
   <input type="checkbox" name="bz-sidebar-primary" id="bz-sidebar-primary" aria-label="Toggle section navigation">
-  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../_static/documentation_options.js?v=1c28bd9a"></script><script src="../_static/doctools.js?v=fd6eb6e6"></script><script src="../_static/sphinx_highlight.js?v=6ffebe34"></script></body>
+  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../_static/documentation_options.js?v=fe7df9b0"></script><script src="../_static/doctools.js?v=fd6eb6e6"></script><script src="../_static/sphinx_highlight.js?v=6ffebe34"></script></body>
 </html>

@@ -2,18 +2,18 @@
 <html lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta property="og:title" content="multiplied.tests package" />
+<meta property="og:title" content="multiplied Overview" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="api/multiplied.tests.html" />
+<meta property="og:url" content="guide/overview.html" />
 <meta property="og:site_name" content="multiplied" />
-<meta property="og:description" content="Submodules: multiplied.tests.test_algorithm module: multiplied.tests.test_analysis module: multiplied.tests.test_io module: multiplied.tests.test_maps module: multiplied.tests.test_population modul..." />
+<meta property="og:description" content="This project was initially focused on how saturation allows for the optimisation of a combinational multiplier. Generating and analysing designs by hand is labour intensive even for small datasets...." />
 <meta property="og:image:width" content="1146" />
 <meta property="og:image:height" content="600" />
-<meta property="og:image" content="_images/social_previews/summary_api_multiplied.tests_584aa399.png" />
-<meta property="og:image:alt" content="Submodules: multiplied.tests.test_algorithm module: multiplied.tests.test_analysis module: multiplied.tests.test_io module: multiplied.tests.test_maps module: multiplied.tests.test_population modul..." />
-<meta name="description" content="Submodules: multiplied.tests.test_algorithm module: multiplied.tests.test_analysis module: multiplied.tests.test_io module: multiplied.tests.test_maps module: multiplied.tests.test_population modul..." />
+<meta property="og:image" content="_images/social_previews/summary_guide_overview_3f1dafe9.png" />
+<meta property="og:image:alt" content="This project was initially focused on how saturation allows for the optimisation of a combinational multiplier. Generating and analysing designs by hand is labour intensive even for small datasets...." />
+<meta name="description" content="This project was initially focused on how saturation allows for the optimisation of a combinational multiplier. Generating and analysing designs by hand is labour intensive even for small datasets...." />
 <meta name="twitter:card" content="summary_large_image" />
-<title>multiplied.tests package - multiplied</title><link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><script data-cfasync="false">(function(){
+<title>multiplied Overview - multiplied</title><link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Changelog" href="../changelog.html"><link rel="prev" title="User Guide" href="../guide.html"><script data-cfasync="false">(function(){
     const m = localStorage.getItem("breeze-mode") || "auto";
     const d = document.documentElement.dataset;
     d.mode = m;
@@ -79,7 +79,7 @@
       d="M3.75 6.75h16.5M3.75 12H12m-8.25 5.25h12.5"
     />
   </svg>
-</label><ul><li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li><li class="toctree-l1"><a class="reference internal" href="../start.html">Get Started</a></li><li class="toctree-l1"><a class="reference internal" href="../guide.html">User Guide</a></li><li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li><li class="toctree-l1"><a class="reference internal" href="../reference.html">API Reference</a></li><li class="toctree-l1"><a class="reference internal" href="../contact.html">Contact</a></li></ul><div class="bz-dropdown">
+</label><ul><li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li><li class="toctree-l1"><a class="reference internal" href="../start.html">Get Started</a></li><li class="toctree-l1 current"><a class="reference internal" href="../guide.html">User Guide</a></li><li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li><li class="toctree-l1"><a class="reference internal" href="../reference.html">API Reference</a></li><li class="toctree-l1"><a class="reference internal" href="../contact.html">Contact</a></li></ul><div class="bz-dropdown">
     <button aria-haspopup="true" aria-expanded="false">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
         <g
@@ -102,14 +102,11 @@
   
   
     <nav class="bz-sidebar-nav" aria-label="Section Navigation"><ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="multiplied.analysis.html">multiplied.analysis package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="multiplied.core.html">multiplied.core package</a>
-<details><summary aria-label="Toggle submenu"></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="multiplied.core.templates.html">multiplied.core.templates package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="multiplied.core.utils.html">multiplied.core.utils package</a></li>
-</ul></details></li>
-<li class="toctree-l1"><a class="reference internal" href="multiplied.io.html">multiplied.io package</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">multiplied.tests package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">multiplied Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#algorithms">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#templates">Templates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#complex-templates">Complex Templates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#analysis">Analysis</a></li>
 </ul>
 </nav>
   
@@ -125,8 +122,10 @@
           <path d="M8.543 2.232a.75.75 0 0 0-1.085 0l-5.25 5.5A.75.75 0 0 0 2.75 9H4v4a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1a1 1 0 1 1 2 0v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1V9h1.25a.75.75 0 0 0 .543-1.268l-5.25-5.5Z" />
         </svg>
       </a>
+    </li><li class="bz-breadcrumbs-parent">
+      <a href="../guide.html">User Guide</a>
     </li><li class="bz-breadcrumbs-current">
-      <span>multiplied.tests package</span>
+      <span>multiplied Overview</span>
     </li>
   </ol>
 </nav>
@@ -149,47 +148,125 @@
     />
   </svg>
 </label></header><article class="bz-article-main" role="main">
-  <section id="multiplied-tests-package">
-<h1>multiplied.tests package<a class="headerlink" href="#multiplied-tests-package" title="Link to this heading">#</a></h1>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
+  <section id="multiplied-overview">
+<h1>multiplied Overview<a class="headerlink" href="#multiplied-overview" title="Link to this heading">#</a></h1>
+<p>This project was initially focused on how <a class="reference external" href="https://en.wikipedia.org/wiki/Saturation_arithmetic">saturation</a>
+allows for the optimisation of a combinational <a class="reference external" href="https://en.wikipedia.org/wiki/Binary_multiplier">multiplier</a>.</p>
+<p>Generating and analysing designs by hand is labour intensive even for small datasets.
+For entire <a class="reference external" href="https://en.wikipedia.org/wiki/Truth_table">truth tables</a>, this becomes
+close to impossible after 8-bits.</p>
 </section>
-<section id="multiplied-tests-test-algorithm-module">
-<h2>multiplied.tests.test_algorithm module<a class="headerlink" href="#multiplied-tests-test-algorithm-module" title="Link to this heading">#</a></h2>
+<section id="algorithms">
+<h1>Algorithms<a class="headerlink" href="#algorithms" title="Link to this heading">#</a></h1>
+<p>The first “stage” of s combinational multiplier creates all possible partial products.
+These producs are then reduced across multiple stages using a range of methods.
+Eventually all products are reduced to one output.</p>
+<p>A <a class="reference external" href="https://en.wikipedia.org/wiki/Wallace_tree">Wallace tree</a> is one of many
+multiplication strategies. Let’s multiply 11 * 12:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>11 * 12 -&gt; 0b1011 * 0b1100
+</pre></div>
+</div>
+<p>Can be represented like so:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>   [ S0:AND ]  -&gt;  [ S1:ADD ]  -&gt;  [ S2:ADD ]
+        1011      
+   [____0000] 0       
+   [___0000_] 0    [__000000] 
+   [__1011__] 1   
+   [_1011___] 1    [100001__]      [10000100]
+   ----------         
+0b [10000100] -&gt; 132
+</pre></div>
+</div>
+<p>This is only 4-bits, but you get the idea. First partial products “fan out” and
+then reduced in subsequent layers.</p>
+<p>Note that for any multiplication the output can be up to <strong>2x</strong> the input width.</p>
+<section id="saturation">
+<h2>Saturation<a class="headerlink" href="#saturation" title="Link to this heading">#</a></h2>
+<p>Using the 11 * 12 example above, if the output was saturated to 4-bits, the result
+would be 15 since the maximum value is 0b1111 -&gt; 15.
+Typically, saturation restricts the output bit width to the input bit width:
+x-bits –&gt; 2x-bits -(clamp)-&gt; x-bits. Multiplications which produce an <a class="reference external" href="https://en.wikipedia.org/wiki/Integer_overflow">overflow</a>
+trigger a signal to flood the output bits to 1, resulting in the maximum value of
+the bit width.</p>
+<p>As demonstrated in the example above:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>11 * 12 -&gt; 0b1011 * 0b1100 -&gt; 0b10000100 -[Clamp=4b]-&gt; 0b1111
+
+    Cout|1011
+   -----+-----   
+   [____|0000] 0
+   [___0|000_] 0
+   [__10|11__] 1
+   [_101|1___] 1
+   -----+-----
+IF !0 -&gt;|1111  -&gt; 15
+</pre></div>
+</div>
+<p>Most of the complex templates will be directed to find optimisation strategies to
+make te most of saturation. Many overflow edge cases can be found very early in
+the reduction process, take the AND matrix stage, while some are harder to isolate
+and arise deeper in the combinational logic.</p>
 </section>
-<section id="multiplied-tests-test-analysis-module">
-<h2>multiplied.tests.test_analysis module<a class="headerlink" href="#multiplied-tests-test-analysis-module" title="Link to this heading">#</a></h2>
 </section>
-<section id="multiplied-tests-test-io-module">
-<h2>multiplied.tests.test_io module<a class="headerlink" href="#multiplied-tests-test-io-module" title="Link to this heading">#</a></h2>
+<section id="templates">
+<h1>Templates<a class="headerlink" href="#templates" title="Link to this heading">#</a></h1>
+<p>Describing how each stages reduces partial products.</p>
+<section id="simple-templates-patterns">
+<h2>Simple Templates – Patterns<a class="headerlink" href="#simple-templates-patterns" title="Link to this heading">#</a></h2>
+<p>Patterns should be represented as a list with each element on
+a new line, this makes it clear how each layer is reduced:
+(Becomes tedious for 16-bit+, that said, complex templates will be 100x worse
+dependng on the coplexity)</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_pattern</span> <span class="o">=</span> <span class="p">[</span>
+<span class="go">    1,</span>
+<span class="go">    1,</span>
+<span class="go">    2,</span>
+<span class="go">    2,</span>
+<span class="go">    2,</span>
+<span class="go">    .</span>
+<span class="go">    .</span>
+<span class="go">    .</span>
+<span class="go">]</span>
+</pre></div>
+</div>
+<p>The “run” of a given element determines where adders, run=2, or a
+combination of CSAs and HAs, run=3, are used. Elements can be
+int or strings, as long as they follow the “run” principle.</p>
+<p>E.g:
+my_pattern’s first run is equal to 2, it’s second is 3.</p>
+<p>Complex templates require a more rigorous approach.</p>
 </section>
-<section id="multiplied-tests-test-maps-module">
-<h2>multiplied.tests.test_maps module<a class="headerlink" href="#multiplied-tests-test-maps-module" title="Link to this heading">#</a></h2>
 </section>
-<section id="multiplied-tests-test-population-module">
-<h2>multiplied.tests.test_population module<a class="headerlink" href="#multiplied-tests-test-population-module" title="Link to this heading">#</a></h2>
+<section id="complex-templates">
+<h1>Complex Templates<a class="headerlink" href="#complex-templates" title="Link to this heading">#</a></h1>
+<p>Simple templates used a vector, internally these are translated to a hard coded
+complex template. Complex templates are matrices outlining what operations occur
+and where they occur. They also have a range of tools inaccessible to simple templates,
+such as user defined positions for CSAs, Adders, Decoders and Bit-Mapping.</p>
 </section>
-<section id="multiplied-tests-test-templates-module">
-<h2>multiplied.tests.test_templates module<a class="headerlink" href="#multiplied-tests-test-templates-module" title="Link to this heading">#</a></h2>
-</section>
-<section id="multiplied-tests-test-to-json-module">
-<h2>multiplied.tests.test_to_json module<a class="headerlink" href="#multiplied-tests-test-to-json-module" title="Link to this heading">#</a></h2>
-</section>
-<section id="multiplied-tests-test-truth-module">
-<h2>multiplied.tests.test_truth module<a class="headerlink" href="#multiplied-tests-test-truth-module" title="Link to this heading">#</a></h2>
-</section>
-<section id="multiplied-tests-test-utils-module">
-<h2>multiplied.tests.test_utils module<a class="headerlink" href="#multiplied-tests-test-utils-module" title="Link to this heading">#</a></h2>
-</section>
-<section id="module-multiplied.tests">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-multiplied.tests" title="Link to this heading">#</a></h2>
+<section id="analysis">
+<h1>Analysis<a class="headerlink" href="#analysis" title="Link to this heading">#</a></h1>
+<p>Json is availiable for small truthtables and quickly visualising designs
+Parquet is recommended for large truth tables and intensive analysis</p>
+<section id="further-reading">
+<h2>Further Reading<a class="headerlink" href="#further-reading" title="Link to this heading">#</a></h2>
+<p>multiplied:
+<a class="reference external" href="https://github.com/EphraimCompEng/multiplied/tree/master/docs/structures">Structures</a>
+<a class="reference external" href="https://github.com/EphraimCompEng/multiplied/tree/master/docs/algorithms">Algorithms</a>
+<a class="reference external" href="https://github.com/EphraimCompEng/multiplied/tree/master/docs/analysis">Analysis</a></p>
+<p>Multiplication:</p>
+<p>Useful video: Sanjay Vidhyadharan, “<a class="reference external" href="https://youtu.be/yZbLL1q76X8">Advanced VLSI Design: Arithmetic Circuits:
+Part-2</a>”</p>
 </section>
 </section>
 
 </article><footer class="bz-article-footer">
   
   
-    <nav class="bz-related-pages" aria-label="Related pages navigation"></nav>
+    <nav class="bz-related-pages" aria-label="Related pages navigation"><a class="bz-related-pages-previous" href="../guide.html" rel="prev">
+    <span>Previous</span><span class="bz-related-pages-title">User Guide</span></a><a class="bz-related-pages-next" href="../changelog.html" rel="next">
+    <span>Next</span>
+    <span class="bz-related-pages-title">Changelog</span>
+  </a></nav>
   
 
 </footer><aside class="bz-sidebar-secondary" data-drawer="bz-sidebar-secondary">
@@ -197,17 +274,20 @@
   
     <nav class="bz-sidebar-toc" aria-label="Table of contents">
   <p>On this page</p><ul>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#multiplied-tests-test-algorithm-module">multiplied​.tests​.test_​algorithm module</a></li>
-<li><a class="reference internal" href="#multiplied-tests-test-analysis-module">multiplied​.tests​.test_​analysis module</a></li>
-<li><a class="reference internal" href="#multiplied-tests-test-io-module">multiplied​.tests​.test_​io module</a></li>
-<li><a class="reference internal" href="#multiplied-tests-test-maps-module">multiplied​.tests​.test_​maps module</a></li>
-<li><a class="reference internal" href="#multiplied-tests-test-population-module">multiplied​.tests​.test_​population module</a></li>
-<li><a class="reference internal" href="#multiplied-tests-test-templates-module">multiplied​.tests​.test_​templates module</a></li>
-<li><a class="reference internal" href="#multiplied-tests-test-to-json-module">multiplied​.tests​.test_​to_​json module</a></li>
-<li><a class="reference internal" href="#multiplied-tests-test-truth-module">multiplied​.tests​.test_​truth module</a></li>
-<li><a class="reference internal" href="#multiplied-tests-test-utils-module">multiplied​.tests​.test_​utils module</a></li>
-<li><a class="reference internal" href="#module-multiplied.tests">Module contents</a></li>
+<li><a class="reference internal" href="#">multiplied Overview</a></li>
+<li><a class="reference internal" href="#algorithms">Algorithms</a><ul>
+<li><a class="reference internal" href="#saturation">Saturation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#templates">Templates</a><ul>
+<li><a class="reference internal" href="#simple-templates-patterns">Simple Templates – Patterns</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#complex-templates">Complex Templates</a></li>
+<li><a class="reference internal" href="#analysis">Analysis</a><ul>
+<li><a class="reference internal" href="#further-reading">Further Reading</a></li>
+</ul>
+</li>
 </ul></nav>
   
     
@@ -248,7 +328,7 @@
 
   
     <div class="bz-edit-this-page">
-  <a href="https://github.com/EphraimCompEng/multiplied/edit/main/api/multiplied.tests.rst">
+  <a href="https://github.com/EphraimCompEng/multiplied/edit/main/guide/overview.md">
     Edit this page
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8.22 2.97a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l2.97-2.97H3.75a.75.75 0 0 1 0-1.5h7.44L8.22 4.03a.75.75 0 0 1 0-1.06Z"></path></svg>
   </a>

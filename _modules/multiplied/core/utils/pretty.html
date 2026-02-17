@@ -133,15 +133,28 @@
 
 <div class="viewcode-block" id="pretty">
 <a class="viewcode-back" href="../../../../api/multiplied.core.utils.html#multiplied.pretty">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">pretty</span><span class="p">(</span><span class="n">listy_object</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Format Multiplied types, or list as a string:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">pretty</span><span class="p">(</span><span class="n">listy_object</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="n">Algorithm</span> <span class="o">|</span> <span class="n">Template</span> <span class="o">|</span> <span class="n">Matrix</span> <span class="o">|</span> <span class="n">Slice</span> <span class="o">|</span> <span class="n">Map</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Format Multiplied types, or list as a string.</span>
 
-<span class="sd">    &gt;&gt;&gt; ____0000</span>
-<span class="sd">    &gt;&gt;&gt; ___0000_</span>
-<span class="sd">    &gt;&gt;&gt; __0000__</span>
-<span class="sd">    &gt;&gt;&gt; _0000___</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    listy_object : Any</span>
+<span class="sd">        List or Dict style object to format as a string.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    &gt;&gt;&gt; pretty(mp.Matrix(4))</span>
+<span class="sd">    ____0000</span>
+<span class="sd">    ___0000_</span>
+<span class="sd">    __0000__</span>
+<span class="sd">    _0000___</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">listy_object</span><span class="p">,</span> <span class="p">(</span>
         <span class="n">Algorithm</span><span class="p">,</span> <span class="n">Template</span><span class="p">,</span> <span class="n">Matrix</span><span class="p">,</span> <span class="n">Slice</span><span class="p">,</span> <span class="n">Map</span><span class="p">,</span>
         <span class="nb">list</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span>
@@ -149,7 +162,7 @@
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">listy_object</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">match</span> <span class="n">listy_object</span><span class="p">:</span>
-        <span class="k">case</span> <span class="p">(</span><span class="n">Matrix</span><span class="p">()</span> <span class="o">|</span><span class="n">Slice</span><span class="p">()</span> <span class="o">|</span> <span class="n">Map</span><span class="p">()</span> <span class="o">|</span> <span class="nb">list</span><span class="p">()):</span>
+        <span class="k">case</span> <span class="p">(</span><span class="n">Matrix</span><span class="p">()</span> <span class="o">|</span> <span class="n">Slice</span><span class="p">()</span> <span class="o">|</span> <span class="n">Map</span><span class="p">()</span> <span class="o">|</span> <span class="nb">list</span><span class="p">()):</span>
             <span class="k">return</span> <span class="n">pretty_nested_list</span><span class="p">(</span><span class="n">listy_object</span><span class="p">)</span>
         <span class="k">case</span> <span class="n">Template</span><span class="p">():</span>
             <span class="k">return</span> <span class="n">pretty_nested_list</span><span class="p">(</span><span class="n">listy_object</span><span class="o">.</span><span class="n">template</span><span class="p">)</span>
@@ -162,14 +175,12 @@
 <div class="viewcode-block" id="pretty_dict">
 <a class="viewcode-back" href="../../../../api/multiplied.core.utils.html#multiplied.pretty_dict">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">pretty_dict</span><span class="p">(</span><span class="n">listy_dict</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Format mp.Map as a string:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Format Dict type object as a string:</span>
 
 <span class="sd">    &gt;&gt;&gt; {0: [[1, _, _],[_, 2, _],[_, _, 3]],</span>
 <span class="sd">    &gt;&gt;&gt;  1: [[a, _, _],[_, b, _],[_, _, c]],</span>
 <span class="sd">    &gt;&gt;&gt;  2: [[x, y, z],[x, y, z],[x, y, z]]}</span>
 <span class="sd">    0:{</span>
-
 <span class="sd">    1__</span>
 <span class="sd">    _2_</span>
 <span class="sd">    __3</span>
@@ -200,10 +211,19 @@
 <div class="viewcode-block" id="pretty_nested_list">
 <a class="viewcode-back" href="../../../../api/multiplied.core.utils.html#multiplied.pretty_nested_list">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">pretty_nested_list</span><span class="p">(</span><span class="n">listy_object</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">whitespace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Format nested list as a string:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Format nested list as a string.</span>
 
-<span class="sd">    &gt;&gt;&gt; [[1, _, _],[_, 2, _],[_, _, 3]]</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    listy_object : Any</span>
+<span class="sd">        The nested list to be formatted.</span>
+<span class="sd">    whitespace : bool, optional</span>
+<span class="sd">        Whether to add whitespace between elements, by default False.</span>
+
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; pretty_nested_list([[1, _, _],[_, 2, _],[_, _, 3]])</span>
 <span class="sd">    1__</span>
 <span class="sd">    _2_</span>
 <span class="sd">    __3</span>
@@ -297,5 +317,5 @@
   <label class="bz-overlay bz-overlay-primary" for="bz-sidebar-primary"></label>
   <label class="bz-overlay bz-overlay-secondary" for="bz-sidebar-secondary"></label>
   <input type="checkbox" name="bz-sidebar-primary" id="bz-sidebar-primary" aria-label="Toggle section navigation">
-  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../../../../_static/documentation_options.js?v=1c28bd9a"></script><script src="../../../../_static/doctools.js?v=fd6eb6e6"></script><script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script></body>
+  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../../../../_static/documentation_options.js?v=fe7df9b0"></script><script src="../../../../_static/doctools.js?v=fd6eb6e6"></script><script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script></body>
 </html>

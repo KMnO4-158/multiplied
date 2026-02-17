@@ -6,14 +6,14 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="guide.html" />
 <meta property="og:site_name" content="multiplied" />
-<meta property="og:description" content="(soon™ incomplete guide below) Contents: Setup, Reduce, Map, Define Algorithm, Use Algorithm. Multiplied focuses on combinational multiplication, fine-grained control over algorithms, and the choic..." />
+<meta property="og:description" content="(soon™ incomplete guide below) multiplied Overview, Algorithms- Saturation., Templates- Simple Templates – Patterns., Complex Templates, Analysis- Further Reading.. Multiplied focuses on combinatio..." />
 <meta property="og:image:width" content="1146" />
 <meta property="og:image:height" content="600" />
-<meta property="og:image" content="_images/social_previews/summary_guide_cee8952a.png" />
-<meta property="og:image:alt" content="(soon™ incomplete guide below) Contents: Setup, Reduce, Map, Define Algorithm, Use Algorithm. Multiplied focuses on combinational multiplication, fine-grained control over algorithms, and the choic..." />
-<meta name="description" content="(soon™ incomplete guide below) Contents: Setup, Reduce, Map, Define Algorithm, Use Algorithm. Multiplied focuses on combinational multiplication, fine-grained control over algorithms, and the choic..." />
+<meta property="og:image" content="_images/social_previews/summary_guide_8e277b83.png" />
+<meta property="og:image:alt" content="(soon™ incomplete guide below) multiplied Overview, Algorithms- Saturation., Templates- Simple Templates – Patterns., Complex Templates, Analysis- Further Reading.. Multiplied focuses on combinatio..." />
+<meta name="description" content="(soon™ incomplete guide below) multiplied Overview, Algorithms- Saturation., Templates- Simple Templates – Patterns., Complex Templates, Analysis- Further Reading.. Multiplied focuses on combinatio..." />
 <meta name="twitter:card" content="summary_large_image" />
-<title>User Guide - multiplied</title><link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Changelog" href="changelog.html"><link rel="prev" title="Get Started" href="start.html"><script data-cfasync="false">(function(){
+<title>User Guide - multiplied</title><link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="multiplied Overview" href="guide/overview.html"><link rel="prev" title="Get Started" href="start.html"><script data-cfasync="false">(function(){
     const m = localStorage.getItem("breeze-mode") || "auto";
     const d = document.documentElement.dataset;
     d.mode = m;
@@ -98,7 +98,20 @@
     <ul role="menu" aria-hidden="true"></ul>
   </div>
 </nav><hr class="bz-header-hr">
-  <div class="bz-content"><main id="bz-main-content"><header class="bz-article-header">
+  <div class="bz-content"><aside class="bz-sidebar-primary" data-drawer="bz-sidebar-primary">
+  
+  
+    <nav class="bz-sidebar-nav" aria-label="Section Navigation"><ul>
+<li class="toctree-l1"><a class="reference internal" href="guide/overview.html">multiplied Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guide/overview.html#algorithms">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guide/overview.html#templates">Templates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guide/overview.html#complex-templates">Complex Templates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guide/overview.html#analysis">Analysis</a></li>
+</ul>
+</nav>
+  
+
+</aside><main id="bz-main-content"><header class="bz-article-header">
   
   
     <nav class="bz-breadcrumbs" aria-label="Breadcrumb">
@@ -136,15 +149,24 @@
   <section id="user-guide">
 <span id="guide"></span><h1>User Guide<a class="headerlink" href="#user-guide" title="Link to this heading">#</a></h1>
 <p>(soon<span class="bz-emoji">™</span> incomplete guide below)</p>
-<section id="contents">
-<h2>Contents<a class="headerlink" href="#contents" title="Link to this heading">#</a></h2>
-<ul class="simple">
-<li><p><a class="reference internal" href="#setup"><span class="std std-ref">Setup</span></a></p></li>
-<li><p><a class="reference internal" href="#reduce"><span class="std std-ref">Reduce</span></a></p></li>
-<li><p><a class="reference internal" href="#map"><span class="std std-ref">Map</span></a></p></li>
-<li><p><a class="reference internal" href="#define-algorithm"><span class="std std-ref">Define Algorithm</span></a></p></li>
-<li><p><a class="reference internal" href="#use-algorithm"><span class="std std-ref">Use Algorithm</span></a></p></li>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="guide/overview.html">multiplied Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guide/overview.html#algorithms">Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guide/overview.html#saturation">Saturation</a></li>
 </ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="guide/overview.html#templates">Templates</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guide/overview.html#simple-templates-patterns">Simple Templates – Patterns</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="guide/overview.html#complex-templates">Complex Templates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guide/overview.html#analysis">Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guide/overview.html#further-reading">Further Reading</a></li>
+</ul>
+</li>
+</ul>
+</div>
 <p>Multiplied focuses on combinational multiplication, fine-grained control over algorithms, and the choice of making algorithms entirely by hand or using build-in building blocks.</p>
 <p>Recommended resources before starting:</p>
 <table class="hlist"><tr><td><ul class="simple">
@@ -157,7 +179,6 @@
 <li><p><a class="reference external" href="https://youtu.be/4FwESTOVT-o/">Teman, A. Fast Multipliers</a></p></li>
 </ul>
 </td></tr></table>
-</section>
 <section id="setup">
 <span id="id1"></span><h2>Setup<a class="headerlink" href="#setup" title="Link to this heading">#</a></h2>
 <p>First, import multiplied and decide on a bitwidth for our algorithm, to keep it simple let’s pick 4-bits:</p>
@@ -303,9 +324,9 @@ b r     c       d       x               b r
   
   
     <nav class="bz-related-pages" aria-label="Related pages navigation"><a class="bz-related-pages-previous" href="start.html" rel="prev">
-    <span>Previous</span><span class="bz-related-pages-title">Get Started</span></a><a class="bz-related-pages-next" href="changelog.html" rel="next">
+    <span>Previous</span><span class="bz-related-pages-title">Get Started</span></a><a class="bz-related-pages-next" href="guide/overview.html" rel="next">
     <span>Next</span>
-    <span class="bz-related-pages-title">Changelog</span>
+    <span class="bz-related-pages-title">multiplied Overview</span>
   </a></nav>
   
 
@@ -314,7 +335,6 @@ b r     c       d       x               b r
   
     <nav class="bz-sidebar-toc" aria-label="Table of contents">
   <p>On this page</p><ul>
-<li><a class="reference internal" href="#contents">Contents</a></li>
 <li><a class="reference internal" href="#setup">Setup</a></li>
 <li><a class="reference internal" href="#reduce">Reduce</a></li>
 <li><a class="reference internal" href="#map">Map</a></li>
@@ -389,5 +409,5 @@ b r     c       d       x               b r
   <label class="bz-overlay bz-overlay-primary" for="bz-sidebar-primary"></label>
   <label class="bz-overlay bz-overlay-secondary" for="bz-sidebar-secondary"></label>
   <input type="checkbox" name="bz-sidebar-primary" id="bz-sidebar-primary" aria-label="Toggle section navigation">
-  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="_static/documentation_options.js?v=1c28bd9a"></script><script src="_static/doctools.js?v=fd6eb6e6"></script><script src="_static/sphinx_highlight.js?v=6ffebe34"></script></body>
+  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="_static/documentation_options.js?v=fe7df9b0"></script><script src="_static/doctools.js?v=fd6eb6e6"></script><script src="_static/sphinx_highlight.js?v=6ffebe34"></script></body>
 </html>

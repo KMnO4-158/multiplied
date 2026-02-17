@@ -149,20 +149,19 @@
 <span class="c1"># TODO add metadata to .parquet datasets to extract bit width, alg length etc</span>
 
 
-<div class="viewcode-block" id="validate_path">
-<a class="viewcode-back" href="../../../api/multiplied.analysis.html#multiplied.validate_path">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">validate_path</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_path</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Temporary path validation function&quot;&quot;&quot;</span>
+
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;path must be a string&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.parquet&#39;</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;path must end with .parquet&quot;</span><span class="p">)</span></div>
-
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;path must end with .parquet&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="pq_extract_bits">
 <a class="viewcode-back" href="../../../api/multiplied.analysis.html#multiplied.pq_extract_bits">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">pq_extract_bits</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">bits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">stages</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a DataFrame of specified bits across multiple stages from .parquet&quot;&quot;&quot;</span>
-    <span class="n">validate_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">_validate_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 
@@ -172,14 +171,28 @@
 <span class="c1"># https://stackoverflow.com/questions/53982871/pandas-reading-first-n-rows-from-parquet-file#69888274</span>
 <div class="viewcode-block" id="pq_extract_stages">
 <a class="viewcode-back" href="../../../api/multiplied.analysis.html#multiplied.pq_extract_stages">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">pq_extract_stages</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">stages</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="p">[])</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a DataFrame of specified stages from .parquet&quot;&quot;&quot;</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">pq_extract_stages</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">stages</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">=</span><span class="p">[])</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a DataFrame of specified stages from .parquet</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    path : str</span>
+<span class="sd">        Path to Multiplied-generated .parquet file</span>
+<span class="sd">    stages : list[int]</span>
+<span class="sd">        List of stages to extract</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pd.DataFrame</span>
+<span class="sd">        A subset of the original .parquet table</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Documentation is getting really annoying to find so the following is</span>
     <span class="c1"># just an attempt to get things to work</span>
 
     <span class="c1"># -- row[0] without loading entire file -------------------------</span>
-    <span class="n">validate_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">_validate_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">pyarrow.parquet</span><span class="w"> </span><span class="kn">import</span> <span class="n">ParquetFile</span>
     <span class="n">pf</span> <span class="o">=</span> <span class="n">ParquetFile</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="n">first</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">pf</span><span class="o">.</span><span class="n">iter_batches</span><span class="p">(</span><span class="n">batch_size</span> <span class="o">=</span> <span class="mi">1</span><span class="p">))</span>
@@ -205,7 +218,7 @@
     <span class="c1"># loop through stages and push to DataFrame</span>
 
     <span class="k">if</span> <span class="n">stages</span> <span class="o">==</span> <span class="p">[]:</span>
-        <span class="n">stages</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;stage_</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">total_stages</span><span class="p">)]</span>
+        <span class="n">stages</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">total_stages</span><span class="p">)]</span>
 
     <span class="n">columns</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">stages</span><span class="p">:</span>
@@ -213,11 +226,10 @@
             <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">((</span><span class="n">bits</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
                 <span class="c1"># TODO: flatten columns to strings since they&#39;re converted anyway</span>
                 <span class="c1"># e.g: &#39;stage_0_ppm_4_b_3&#39;</span>
-                <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">((</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">_ppm_</span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s2">_b_</span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)))</span>
+                <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">((</span><span class="sa">f</span><span class="s2">&quot;stage_</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">_ppm_</span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s2">_b_</span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)))</span>
 
     <span class="c1"># Initialize DataFrame with stages as columns</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
-    <span class="c1"># print(df)</span>
     <span class="k">return</span> <span class="n">df</span></div>
 
 
@@ -230,7 +242,7 @@
 <a class="viewcode-back" href="../../../api/multiplied.analysis.html#multiplied.pq_extract_formatted_all">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">pq_extract_formatted_all</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return DataFrame of all formatted strings from .parquet&quot;&quot;&quot;</span>
-    <span class="n">validate_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">_validate_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 
@@ -238,7 +250,7 @@
 <a class="viewcode-back" href="../../../api/multiplied.analysis.html#multiplied.pq_extract_formatted_stages">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">pq_extract_formatted_stages</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">stages</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return DataFrame of formatted strings across multiple stages from .parquet&quot;&quot;&quot;</span>
-    <span class="n">validate_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">_validate_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 </pre></div>
@@ -315,5 +327,5 @@
   <label class="bz-overlay bz-overlay-primary" for="bz-sidebar-primary"></label>
   <label class="bz-overlay bz-overlay-secondary" for="bz-sidebar-secondary"></label>
   <input type="checkbox" name="bz-sidebar-primary" id="bz-sidebar-primary" aria-label="Toggle section navigation">
-  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../../../_static/documentation_options.js?v=1c28bd9a"></script><script src="../../../_static/doctools.js?v=fd6eb6e6"></script><script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script></body>
+  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../../../_static/documentation_options.js?v=fe7df9b0"></script><script src="../../../_static/doctools.js?v=fd6eb6e6"></script><script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script></body>
 </html>

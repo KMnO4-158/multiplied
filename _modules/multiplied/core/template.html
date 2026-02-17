@@ -139,10 +139,22 @@
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.build_csa">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">build_csa</span><span class="p">(</span><span class="n">char</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">source_slice</span><span class="p">:</span> <span class="n">mp</span><span class="o">.</span><span class="n">Slice</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">mp</span><span class="o">.</span><span class="n">Slice</span><span class="p">,</span> <span class="n">mp</span><span class="o">.</span><span class="n">Slice</span><span class="p">]:</span> <span class="c1"># Carry Save Adder -&gt; (template, result)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Create CSA template slice with zero initialised slice and chosen char.</span>
-<span class="sd">    Returns template &quot;slices&quot; for a csa reduction and the resulting slice.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create CSA template slice with source slice and chosen char.</span>
 
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    char : str</span>
+<span class="sd">        Character to use for the CSA template.</span>
+<span class="sd">    source_slice : Slice</span>
+<span class="sd">        Source slice object to use for the CSA template.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple[Slice, Slice]</span>
+<span class="sd">        Template &quot;slices&quot; marked for a csa reduction and the resulting slice.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; [slice-] || [csa---] || [result]</span>
 <span class="sd">    &gt;&gt;&gt; ____0000 || ____AaAa || __AaAaAa</span>
 <span class="sd">    &gt;&gt;&gt; ___0000_ || ___aAaA_ || __aAaA__</span>
@@ -180,10 +192,22 @@
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.build_adder">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">build_adder</span><span class="p">(</span><span class="n">char</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">source_slice</span><span class="p">:</span> <span class="n">mp</span><span class="o">.</span><span class="n">Slice</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">mp</span><span class="o">.</span><span class="n">Slice</span><span class="p">,</span> <span class="n">mp</span><span class="o">.</span><span class="n">Slice</span><span class="p">]:</span> <span class="c1"># Carry Save Adder -&gt; (template, result)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Create Adder template slice with zero initialised slice and chosen char.</span>
-<span class="sd">    Returns template &quot;slices&quot; for addition and the resulting slice.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create Adder template slice with zero initialised slice and chosen char.</span>
 
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    char : str</span>
+<span class="sd">        The character to use for the template.</span>
+<span class="sd">    source_slice : Slice</span>
+<span class="sd">        The source slice to use for the template.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple[Slice, Slice]</span>
+<span class="sd">        The template &quot;slices&quot; for addition and the resulting slice.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; [slice-] || [adder-] || [result]</span>
 <span class="sd">    &gt;&gt;&gt; ___0000_ || ___aAaA_ || _aAaAaA_</span>
 <span class="sd">    &gt;&gt;&gt; __0000__ || __AaAa__ || ________</span>
@@ -226,10 +250,23 @@
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.build_noop">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">build_noop</span><span class="p">(</span><span class="n">char</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">source_slice</span><span class="p">:</span> <span class="n">mp</span><span class="o">.</span><span class="n">Slice</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">mp</span><span class="o">.</span><span class="n">Slice</span><span class="p">,</span> <span class="n">mp</span><span class="o">.</span><span class="n">Slice</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Create a No-op template slice with zero initialised slice and chosen char.</span>
-<span class="sd">    Returns template &quot;slices&quot; and resulting slice. Target row unaffected</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a No-op template slice with zero initialised slice and chosen char.</span>
 
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    char : str</span>
+<span class="sd">        Character to use for the No-op template.</span>
+<span class="sd">    source_slice : Slice</span>
+<span class="sd">        Source slice to use for the No-op template.</span>
+
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple[Slice, Slice]</span>
+<span class="sd">        Template &quot;slices&quot; and resulting slice. Target row unaffected</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; [slice-] || [noop--] || [result]</span>
 <span class="sd">    &gt;&gt;&gt; ___0000_ || ___aAaA_ || ___aAaA_</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -252,10 +289,27 @@
 <div class="viewcode-block" id="build_empty_slice">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.build_empty_slice">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">build_empty_slice</span><span class="p">(</span><span class="n">source_slice</span><span class="p">:</span> <span class="n">mp</span><span class="o">.</span><span class="n">Slice</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">mp</span><span class="o">.</span><span class="n">Slice</span><span class="p">,</span> <span class="n">mp</span><span class="o">.</span><span class="n">Slice</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Create an empty template slice. Returns template &quot;slices&quot; and resulting slice.</span>
-<span class="sd">    Variable length determined by source slice.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create an empty template slice. Returns template &quot;slices&quot; and resulting slice.</span>
+<span class="sd">    Variable length, determined by source slice.</span>
 
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    source_slice : Slice</span>
+<span class="sd">        Source slice to use for the empty template.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple[Slice, Slice]</span>
+<span class="sd">        Tuple of template slices and resulting slice.</span>
+
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Used for building Templates with large runs of underscore characters.</span>
+<span class="sd">    Underscores are used to represent empty spaces in the template.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; [slice-] || [empty-] || [result]</span>
 <span class="sd">    &gt;&gt;&gt; ???????? || ________ || ________</span>
 <span class="sd">    &gt;&gt;&gt; ???????? || ________ || ________</span>
@@ -276,8 +330,20 @@
 <div class="viewcode-block" id="Pattern">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.Pattern">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Pattern</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Simplified representation of a Template.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Simplified representation of a Template.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pattern : list[str]</span>
+<span class="sd">        Pattern to use for the template.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pattern : list[str]</span>
+<span class="sd">        Pattern to use for the template.</span>
+<span class="sd">    bits : int</span>
+<span class="sd">        Number of bits in the pattern.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
         <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="n">ischar</span><span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">pattern</span><span class="p">)):</span>
@@ -288,8 +354,12 @@
 <div class="viewcode-block" id="Pattern.get_runs">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.Pattern.get_runs">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_runs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns list of tuples of length, position, and run of a given char in pattern</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns list of tuples of length, position, and run of a given char in pattern</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; Pattern([&quot;A&quot;, &quot;A&quot;, &quot;A&quot;, &quot;B&quot;, &quot;B&quot;, &quot;B&quot;, &quot;B&quot;, &quot;C&quot;, &quot;C&quot;, &quot;C&quot;, &quot;C&quot;, &quot;C&quot;]).get_runs()</span>
+<span class="sd">        [(3, 0, 3), (4, 3, 4), (5, 7, 5)]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">metadata</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span>
@@ -349,9 +419,18 @@
 <div class="viewcode-block" id="Template">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.Template">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Template</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A structure representing collections of arithmetic units using characters.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A structure representing collections of arithmetic units using characters.</span>
 <span class="sd">    Generated using a partial product matrix and a Pattern or custom template</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    source : Pattern | list[list[str]]</span>
+<span class="sd">        The source of the template.</span>
+<span class="sd">    result : list[Any], optional</span>
+<span class="sd">        The result of the template, by default []</span>
+<span class="sd">    matrix : Any, optional</span>
+<span class="sd">        The matrix of the template, by default None</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># ! THIS is where checksums need to be implemented ! #</span>
@@ -425,10 +504,27 @@
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.Template.build_from_pattern">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">build_from_pattern</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">:</span> <span class="n">Pattern</span><span class="p">,</span> <span class="n">matrix</span><span class="p">:</span> <span class="n">mp</span><span class="o">.</span><span class="n">Matrix</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Build a simple template and it&#39;s result for a given bitwidth based</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build a simple template and it&#39;s result for a given bitwidth based</span>
 <span class="sd">        on matrix. Defaults to empty matrix if matrix=None.</span>
 
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        pattern : Pattern</span>
+<span class="sd">            The pattern to build the template from.</span>
+<span class="sd">        matrix : mp.Matrix</span>
+<span class="sd">            The matrix to build the template from.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the pattern is not a valid Pattern object.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; [matrix] || [pattern] || [templ.] [result]</span>
 <span class="sd">        &gt;&gt;&gt; ____0000 || [  &#39;a&#39;,   || ____AaAa __aAaAaA</span>
 <span class="sd">        &gt;&gt;&gt; ___0000_ ||    &#39;a&#39;,   || ___AaAa_ ________</span>
@@ -492,15 +588,7 @@
 <div class="viewcode-block" id="Template.find_bounding_box">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.Template.find_bounding_box">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">find_bounding_box</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns dictionary of arithmetic unit and coordinates for their boundaries.</span>
-
-<span class="sd">        Note: key=&#39;_&#39; represents bounds for empty character slots</span>
-
-<span class="sd">        Parameters:</span>
-<span class="sd">        - matrix: nested list of m-bits, defined as 2d array of 2m * m</span>
-<span class="sd">        - transit: Function to return bool for a given boundary transition</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns dictionary of arithmetic unit and coordinates for their boundaries.&quot;&quot;&quot;</span>
 
         <span class="n">matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">template</span>
         <span class="n">rows</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bits</span>
@@ -553,9 +641,7 @@
 <div class="viewcode-block" id="Template.collect_template_units">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.Template.collect_template_units">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">collect_template_units</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">],</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span><span class="nb">int</span><span class="p">]]]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return dict of isolated arithmetic units and their bounding box.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return dict of isolated arithmetic units and their bounding box.&quot;&quot;&quot;</span>
 
         <span class="kn">from</span><span class="w"> </span><span class="nn">.utils.char</span><span class="w"> </span><span class="kn">import</span> <span class="n">chartff</span>
         <span class="n">bounds</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_bounding_box</span><span class="p">()</span>
@@ -639,13 +725,24 @@
 
 
 
-
+<span class="c1"># TODO: add examples</span>
 <div class="viewcode-block" id="resolve_pattern">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.resolve_pattern">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">resolve_pattern</span><span class="p">(</span><span class="n">matrix</span><span class="p">:</span> <span class="n">mp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Pattern</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    For a given matrix, progressively allocate CSAs then adders to pattern</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;For a given matrix, progressively allocate CSAs then adders to pattern</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    matrix : mp.Matrix</span>
+<span class="sd">        The matrix to resolve the pattern for.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Pattern</span>
+<span class="sd">        The resolved pattern.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="kn">from</span><span class="w"> </span><span class="nn">multiplied.core.utils.char</span><span class="w"> </span><span class="kn">import</span> <span class="n">chargen</span>
     <span class="n">char</span>  <span class="o">=</span> <span class="n">chargen</span><span class="p">()</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">empty_rows</span> <span class="o">:=</span> <span class="n">mp</span><span class="o">.</span><span class="n">empty_rows</span><span class="p">(</span><span class="n">matrix</span><span class="p">))</span> <span class="o">==</span> <span class="n">matrix</span><span class="o">.</span><span class="n">bits</span><span class="p">:</span>
@@ -674,9 +771,7 @@
 <div class="viewcode-block" id="build_noop_template">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.build_noop_template">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">build_noop_template</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">:</span> <span class="n">Pattern</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">dadda</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Create template for zeroed matrix using pattern</span>
-<span class="sd">    &quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create template for zeroed matrix using pattern&quot;&quot;&quot;</span></div>
 
 
 
@@ -762,5 +857,5 @@
   <label class="bz-overlay bz-overlay-primary" for="bz-sidebar-primary"></label>
   <label class="bz-overlay bz-overlay-secondary" for="bz-sidebar-secondary"></label>
   <input type="checkbox" name="bz-sidebar-primary" id="bz-sidebar-primary" aria-label="Toggle section navigation">
-  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../../../_static/documentation_options.js?v=1c28bd9a"></script><script src="../../../_static/doctools.js?v=fd6eb6e6"></script><script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script></body>
+  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../../../_static/documentation_options.js?v=fe7df9b0"></script><script src="../../../_static/doctools.js?v=fd6eb6e6"></script><script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script></body>
 </html>
