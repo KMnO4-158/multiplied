@@ -44,7 +44,7 @@ before tackling:
 
 ## Extend Built-in Algorithm Support
 
-Supported algoithms:
+Supported algorithms:
 
 - [x] [Wallace Tree](https://en.wikipedia.org/wiki/Wallace_tree)
 - [x] [Dadda multiplier](https://en.wikipedia.org/wiki/Dadda_multiplier)
