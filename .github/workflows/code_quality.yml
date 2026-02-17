@@ -7,6 +7,10 @@ on:
   push:
     branches: [master]
   workflow_call:
+    outputs:
+      critical_path_passed:
+        description: "Whether tests: type_consistency, tests and build passed"
+        value: ${{ jobs.critical_path_status.outputs.passed }}
 
 jobs:
   lock_file:
@@ -50,3 +54,12 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
       - run: uv build
+
+  # This job tracks the critical path status
+  critical_path_status:
+    runs-on: ubuntu-latest
+    needs: [type_consistency, tests, build]
+    outputs:
+      passed: ${{ job.status == 'success' }}
+    steps:
+      - run: echo "Critical path type_consistency, tests and build completed successfully"
