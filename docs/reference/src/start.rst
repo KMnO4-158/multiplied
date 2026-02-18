@@ -1,9 +1,12 @@
 .. _started:
 
-===========
-Get Started
-===========
+===============
+Getting Started
+===============
 
+
+Installation
+------------
 
 .. code:: sh
 
@@ -12,3 +15,13 @@ Get Started
 .. code:: python
 
     import multiplied as mp
+
+Tutorials
+---------
+
+(buttons)
+Multiplied quickstart guide
+User guide
+
+Pandas Documentation
+Matplotlib Documentation
