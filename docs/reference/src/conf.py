@@ -41,6 +41,8 @@ extensions = [
     "sphinx.ext.autosummary",
     "sphinx.ext.extlinks",
     "sphinx.ext.napoleon",
+    "sphinx.ext.design",
+    "jupyter_sphinx",
     "myst_parser",
 ]
 
