@@ -135,6 +135,7 @@ def test_err_duplicate_units() -> None:
     except SyntaxError:
         pass
 
+    # fmt: off
     template = mp.Template([
         ["_", "_", "_", "_", "_", "_", "_", "_", "A", "a", "A", "a", "A", "a", "A", "a"],
         ["_", "_", "_", "_", "_", "_", "_", "a", "A", "a", "A", "a", "A", "a", "A", "_"],
@@ -155,7 +156,7 @@ def test_err_duplicate_units() -> None:
             ["C", "c", "C", "c", "C", "c", "C", "c", "C", "c", "_", "_", "_", "_", "_", "_"],
             ["_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_"]
         ])
-
+    # fmt: on
     print(template)
     # bounds   = mp.find_bounding_box(template)
     isolated_units = template.collect_template_units()

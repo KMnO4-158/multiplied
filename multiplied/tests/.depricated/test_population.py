@@ -8,6 +8,7 @@ import multiplied as mp
 def test_pop_empty_matrix():
     matrix = mp.Matrix(8)
     assert matrix == matrix
+    # fmt: off
     assert matrix.matrix == [
         ["_", "_", "_", "_", "_", "_", "_", "_", "0", "0", "0", "0", "0", "0", "0", "0"],
         ["_", "_", "_", "_", "_", "_", "_", "0", "0", "0", "0", "0", "0", "0", "0", "_"],
@@ -18,6 +19,7 @@ def test_pop_empty_matrix():
         ["_", "_", "0", "0", "0", "0", "0", "0", "0", "0", "_", "_", "_", "_", "_", "_"],
         ["_", "0", "0", "0", "0", "0", "0", "0", "0", "_", "_", "_", "_", "_", "_", "_"]
     ]
+    # fmt: on
 
 
 def test_pop_build_matrix():
