@@ -4,6 +4,57 @@
 Changelog
 =========
 
+v0.7
+=====
+
+`v0.7.1 <https://github.com/EphraimCompEng/multiplied/releases/tag/v0.7.1>`_
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Updates:
+
+    - Setup "ACT" For Local Github Actions Testing (`5fa50b0`_)
+    - Run Tests Before Merge / Publish (`bb9a7cf`_)
+    - Update Docstrings to Numpy Style (`84c113d`_)
+    - Adopt PyTest (`3e02e1f`_)
+    - Add .md Sphinx Support (`5f5916d`_)
+
+Looking forward:
+
+    [ Main Focus ]
+
+    - Expand Analysis
+    - Documentation:
+
+      - User Guide
+      - Improve Get Started Page
+
+    [ Ongoing ]
+
+    - Refactor tests
+    - Map Object Coordinate Refactor
+    - Data Structure Optimisation
+    - 16-bit Algorithm Support
+
+See full changelog `here <https://github.com/EphraimCompEng/multiplied/pull/104>`_
+
+.. _5fa50b0:
+    https://github.com/EphraimCompEng/multiplied/commit/5fa50b0eebb9b0aeef20611905786e4a901c70d0
+
+.. _bb9a7cf:
+    https://github.com/EphraimCompEng/multiplied/commit/bb9a7cf7a47eaf4b73827e9515ee2e6364ab5acd
+
+.. _84c113d:
+    https://github.com/EphraimCompEng/multiplied/commit/84c113dfd2a473ca0f8ad84e0e429fee2c2016be
+
+.. _3e02e1f:
+    https://github.com/EphraimCompEng/multiplied/commit/3e02e1f9b33ad1ca50e86c25cd6d7d0aa0d9c71d
+
+.. _5f5916d:
+    https://github.com/EphraimCompEng/multiplied/commit/5f5916d75f05abfa942938fdc8c2add4f55b7e5b
+
+
+
+
 
 v0.6
 =====
@@ -17,7 +68,7 @@ Bug Fixes:
     - Refactored / Harmonised Dataframe, Parquet Access (`ffc8963`_)
     - Dark plot background inconsistencies (`d95bbda`_)
 
-See full changelog `here <https://github.com/EphraimCompEng/multiplied/commits/v0.6.2>`_.
+See full changelog `here <https://github.com/EphraimCompEng/multiplied/pull/96>`_.
 
 .. _09d2544:
     https://github.com/EphraimCompEng/multiplied/commit/09d254432cf6cd3ace877c493676986d5308b28b
@@ -55,7 +106,7 @@ Looking forward:
     - Data Structure Optimisation
     - 16-bit Algorithm Support
 
-See full changelog `here <https://github.com/EphraimCompEng/multiplied/commits/v0.6.0>`_.
+See full changelog `here <https://github.com/EphraimCompEng/multiplied/pull/91>`_.
 
 .. _f7a9a62:
     https://github.com/EphraimCompEng/multiplied/commit/f7a9a629815d0a668461bb514a566bbb191c097f
@@ -107,7 +158,7 @@ Looking forward:
     - 16-bit Algorithm Support
 
 
-See full changelog `here <https://github.com/EphraimCompEng/multiplied/commits/v0.5.0>`_.
+See full changelog `here <https://github.com/EphraimCompEng/multiplied/pull/69>`_.
 
 .. _19953dd:
     https://github.com/EphraimCompEng/multiplied/pull/69/commits/19953dd1b88f85e44110b273012cfb5f4778ccbc
