@@ -1,12 +1,15 @@
-#!bin/python3
-
-
-# -- core -----------------------------------------------------------
-
 ##########################################################
 # explicit order: map -> matrix -> template -> algorithm #
 ##########################################################
 
+
+
+# -- version -----------------------------------------------------------
+
+__version_info__ = (0, 7, 1)
+__version__ = "0.7.1"
+
+# -- core -----------------------------------------------------------
 
 from .core.map import (
     Map,
@@ -107,26 +110,6 @@ from .analysis.heatmap import (
 
 # -- External -------------------------------------------------------
 
-
-# -- Tests ----------------------------------------------------------
-
-# from .tests.test_population import (
-#     test_pop_empty_matrix,
-#     test_pop_build_matrix,
-#     test_pop_algorithm,
-# )
-
-# from .tests.test_templates import (
-#    test_temp_build_csa4,
-#    test_temp_build_csa8,
-#    test_temp_build_adder4,
-#    test_temp_build_adder8,
-# )
-
-# from .tests.test_to_json import (
-#     test_to_json4,
-#     test_to_json8,
-# )
 
 
 # -- __all__ --------------------------------------------------------
