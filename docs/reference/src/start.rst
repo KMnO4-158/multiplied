@@ -8,13 +8,34 @@ Getting Started
 Installation
 ------------
 
-.. code:: sh
+.. tab-set::
 
-    pip install multiplied
+    .. tab-item:: pip
+
+        .. code:: sh
+
+            pip install multiplied
+
+    .. tab-item:: uv
+
+        .. code:: sh
+
+            uv add multiplied
+
+    .. tab-item:: source
+
+        .. code:: sh
+
+            pip install multiplied@git+https://github.com/EphraimCompEng/multiplied.git
+
+Verify
+------
 
 .. code:: python
 
     import multiplied as mp
+    print(mp.__version__)
+
 
 Tutorials
 ---------
