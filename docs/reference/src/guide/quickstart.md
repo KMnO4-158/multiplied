@@ -4,7 +4,7 @@ kernelspec:
   name: python3
 ---
 
-# Quickstart
+# **Quickstart**
 
 Multiplied is a library for exploring and quickly defining [combinational](https://en.wikipedia.org/wiki/Combinational_logic)
 multiplication algorithms. The library also bundles built-in tools to analyse and
@@ -14,7 +14,7 @@ This guide will quickly walk through each area of Multiplied, without delving to
 deeply into the details.
 
 
-## Algorithms
+## **Algorithms**
 
 A given combinational multiplier is defined by a sequence of "stages" which continuously
 reduce an initial set of [partial products](https://en.wikipedia.org/wiki/Binary_multiplier#Binary_long_multiplication)
@@ -56,6 +56,7 @@ pseudo [Matrix](guide/structures.html#Matrix), and a [Map](guide/structures.html
 - Positive values shift bits up
 - negative values shift bits down
 
+## Execution
 
 The algorithm can now execute using input operands to verify it works:
 
@@ -77,7 +78,9 @@ stage being reduced by [Adders](https://en.wikipedia.org/wiki/Adder_(electronics
 ("units" which cover 2 rows) and [Carry Save Adders](https://en.wikipedia.org/wiki/Carry-save_adder)
 ("units" which cover 3 rows).
 
-With the algorithm verified, a truth table can be generated:
+## **Generating Data**
+
+Now a truth table can be generated and stored to a Pandas [DataFrame](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame):
 
 ```{code-cell}
 import pandas as pd
@@ -89,33 +92,83 @@ scope = mp.truth_scope(domain_, range_)  # generator clamps range to domain
 # scope yields input tuples (a, b) to generate a Pandas DataFrame
 df = mp.truth_dataframe(scope, alg)
 
-# trim final columns containing formatted outputs for better viewing
-df.iloc[:, :-4]
 ```
 
-The truth table can be defined by three regions:
+## **DataFrame Layout**
 
-**Operands**:
+Multiplied makes use of Pandas DataFrames to store generated truth tables.
+A generated truth table  can be defined by three regions:
 
-a, b and output
+### Operands
 
-**Partial Products**: s{x}_p{y}_b{z}
+These columns hold the input and output operands for a given  
 
-- s{x} - Stage x
-- p{y} - Partial product y
-- b{z} - Bit z
+```{code-cell} ipython3
+:tags: [remove-input]
 
-**Formatted Output**:
+cols = df.columns[:3]          
+print(df[cols].tail())
+
+```
+
+### **Formatted Output**
 
 Stores outputs produced by a given execution of the algorithm as seen above
 
+```{code-cell} ipython3
+:tags: [remove-input]
+
+pd.set_option('display.max_columns',None)
+pd.set_option("display.width", 1000)
+cols = df.columns[-3]          
+print(df[cols].to_frame().tail())
+```
+
+
+:::{note}
+test
+:::
+
+
+
+### **Raw Output**
+
+```{code-cell} ipython3
+:tags: [remove-input]
+
+cols = df.columns[35:43]          
+print(df[cols].tail())
+```
+
+#### \[s\]tage
+
+> Number of reductions needed to return a single product
+
+#### \[p\]artial product
+
+> A given row in a partial product matrix
+
+
+#### \[b\]it
+
+> Bit index within a partial product
+
+
+## **Visualisation**
 
 Finally, the generated data is ready to be visualised. Let's keep it simple and
 generate a 2D heatmap:
 
-<!--```{code-cell}
+```{code-cell}
 
-mp.df_global_heatmap()
+mp.df_global_heatmap("example.png", "Fancy Title", df)
 
+```
 
-```-->
+And a 3D heatmap, isolating each stage of the algorithm:
+
+```{code-cell}
+
+mp.df_global_3d_heatmap("example3d.png", "Fancy Title", df)
+
+```

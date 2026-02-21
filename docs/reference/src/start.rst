@@ -40,25 +40,26 @@ Verify
 Tutorials
 ---------
 
-`Quickstart Guide`_ - Multiplied in x lines
+.. grid:: 2
+    :gutter: 4
 
-`User Guide`_ - Covers all aspects of Multiplied
+    .. grid-item-card:: Multiplied Quickstart
+        :link: guide/quickstart.html
 
-`Pandas API`_ - Used to store and analyze data
-
-`Matplotlib API`_ - Used to visualise data
-
-
+        A brief introduction to Multiplied.
 
 
-.. _Quickstart Guide:
-    guide/quickstart.html
+    .. grid-item-card:: Multiplied User Guide
+        :link: guide.html
 
-.. _User Guide:
-    guide.html
+        A collection of tutorials covering all aspects of Multiplied.
 
-.. _Pandas API:
-    https://pandas.pydata.org/docs/
+.. card:: Pandas API
+    :link: https://pandas.pydata.org/docs/
 
-.. _Matplotlib API:
-    https://matplotlib.org/stable/index.html
+    A Python library for data manipulation and analysis.
+
+.. card:: Matplotlib API
+    :link: https://matplotlib.org/stable/index.html
+
+    A Python library for creating static, animated, and interactive visualizations in Python.

@@ -51,13 +51,24 @@ templates_path = ["_templates"]
 source_suffix = [".rst", ".md"]
 
 
+
+myst_enable_extensions = [
+    # "amsmath",
+    "colon_fence",
+    # "deflist",
+    # "dollarmath",
+    # "html_image",
+]
+
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = "breeze"
 html_title = "multiplied"
 html_static_path = ["_static"]
-html_css_files = ["custom.css"]
+html_css_files = [
+    "custom.css",
+]
 html_context = {"github_user": "EphraimCompEng", "github_repo": "multiplied"}
 
 # -- Exposing variables to .rst files ----------------------------------------
