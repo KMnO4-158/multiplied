@@ -57,9 +57,9 @@ def truth_scope(
 
     x = min_in
     while x <= max_in:
-        lower_bound = min_out // x if min_out // x > min_in else min_in
-        upper_bound = max_out // x if max_out // x < max_in else max_in
-        for y in range(lower_bound, upper_bound):
+        lower_bound = min_out // x if min_out // x >= min_in else min_in
+        upper_bound = max_out // x if max_out // x <= max_in else max_in
+        for y in range(lower_bound, upper_bound + 1):
             if min_out <= (k := x * y) <= max_out:
                 yield (x, y)
             if max_out < k:
@@ -150,7 +150,7 @@ def _dataframe_entry_worker(a: int, b: int, alg: Algorithm) -> dict:
     for stage, matrix in alg.exec(a=a, b=b).items():
         for r, row in enumerate(matrix):
             for b, bit in enumerate(row[::-1]):
-                entry[f"stage_{stage}_ppm_{r}_b_{b}"] = 0 if bit in ["_", "0"] else 1
+                entry[f"s{stage}_p{r}_b{b}"] = 0 if bit in ["_", "0"] else 1
     return entry
 
 
@@ -205,7 +205,7 @@ def truth_dataframe(scope: Generator[tuple[int, int]], alg: Algorithm) -> pd.Dat
     for i in range(len(alg) + 1):
         for j in range(alg.bits):
             for k in range((alg.bits << 1) - 1, -1, -1):
-                col[n] = f"stage_{i}_ppm_{j}_b_{k}"
+                col[n] = f"s{i}_p{j}_b{k}"
                 n += 1
         ppm_s_col[i] = f"ppm_s_{i}"
 
