@@ -10,7 +10,7 @@ close to impossible after 8-bits.
 ## Algorithms
 
 The first "stage" of s combinational multiplier creates all possible partial products.
-These producs are then reduced across multiple stages using a range of methods.
+These products are then reduced across multiple stages using a range of methods.
 Eventually all products are reduced to one output.
 
 A [Wallace tree](https://en.wikipedia.org/wiki/Wallace_tree) is one of many

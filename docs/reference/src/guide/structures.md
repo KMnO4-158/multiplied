@@ -189,3 +189,33 @@ final output:
     how to "map" these outputs.
 
     Underscores represent no operations or noops.
+
+### Saturation
+
+Using the 11 * 12 example above, if the output was saturated to 4-bits, the result
+would be 15 since the maximum value is 0b1111 -> 15.
+Typically, saturation restricts the output bit width to the input bit width:
+x-bits --> 2x-bits -(clamp)-> x-bits. Multiplications which produce an [overflow](https://en.wikipedia.org/wiki/Integer_overflow)
+trigger a signal to flood the output bits to 1, resulting in the maximum value of
+the bit width.
+
+As demonstrated in the example above:
+
+```text
+11 * 12 -> 0b1011 * 0b1100 -> 0b10000100 -[Clamp=4b]-> 0b1111
+
+    Cout|1011
+   -----+-----   
+   [____|0000] 0
+   [___0|000_] 0
+   [__10|11__] 1
+   [_101|1___] 1
+   -----+-----
+IF !0 ->|1111  -> 15
+
+```
+
+Most of the complex templates will be directed to find optimisation strategies to
+make te most of saturation. Many overflow edge cases can be found very early in
+the reduction process, take the AND matrix stage, while some are harder to isolate
+and arise deeper in the combinational logic.
