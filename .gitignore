@@ -9,3 +9,4 @@
 *.py[ocd]
 dist/
 build/
+jupyter_execute/
