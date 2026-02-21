@@ -3,9 +3,12 @@
 
 name: "Python Code Quality"
 
+
 on:
-  push:
-    branches: [master]
+  pull_request:
+    branches:
+      - master
+    types: [opened, edited, synchronize]
 
 jobs:
   lock_file:
