@@ -55,7 +55,7 @@ Tutorials
     guide/quickstart.html
 
 .. _User Guide:
-    guide/overview.html
+    guide.html
 
 .. _Pandas API:
     https://pandas.pydata.org/docs/
