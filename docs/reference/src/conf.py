@@ -43,8 +43,7 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx_copybutton",
     "sphinx_design",
-    "jupyter_sphinx",
-    "myst_parser",
+    "myst_nb",
 ]
 
 exclude_patterns = ["multiplied.tests.rst"]
@@ -56,8 +55,9 @@ source_suffix = [".rst", ".md"]
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = "breeze"
-html_static_path = ["_static"]
 html_title = "multiplied"
+html_static_path = ["_static"]
+html_css_files = ['custom.css']
 html_context = {"github_user": "EphraimCompEng", "github_repo": "multiplied"}
 
 # -- Exposing variables to .rst files ----------------------------------------
