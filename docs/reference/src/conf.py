@@ -57,7 +57,7 @@ source_suffix = [".rst", ".md"]
 html_theme = "breeze"
 html_title = "multiplied"
 html_static_path = ["_static"]
-html_css_files = ['custom.css']
+html_css_files = ["custom.css"]
 html_context = {"github_user": "EphraimCompEng", "github_repo": "multiplied"}
 
 # -- Exposing variables to .rst files ----------------------------------------

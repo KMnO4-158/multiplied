@@ -32,7 +32,7 @@ Then automatically generate a basic algorithm.
 
 ```{code-cell}
 
-alg.auto_resolve_stage(recursive=True) # recursive=True -- default
+alg.auto_resolve_stage(recursive=True)  # recursive=True -- default
 print(alg)
 ```
 
@@ -69,7 +69,7 @@ for m in output.values():
 
 # convert result to decimal
 print(int("".join(alg.matrix.matrix[0]), 2))
-print(a*b)
+print(a * b)
 ```
 
 Stage 0 represents the initial starting partial product matrix with each following
@@ -82,9 +82,9 @@ With the algorithm verified, a truth table can be generated:
 ```{code-cell}
 import pandas as pd
 
-domain_ = (1, 15) # range of possible operand values for a and b
-range_ = (1, 255) # range of possible output values
-scope = mp.truth_scope(domain_, range_) # generator clamps range to domain
+domain_ = (1, 15)  # range of possible operand values for a and b
+range_ = (1, 255)  # range of possible output values
+scope = mp.truth_scope(domain_, range_)  # generator clamps range to domain
 
 # scope yields input tuples (a, b) to generate a Pandas DataFrame
 df = mp.truth_dataframe(scope, alg)
