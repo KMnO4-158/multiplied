@@ -10,8 +10,9 @@
 
 ## Analysis
 
-- [ ] Find analytical tools outside of heatmaps
+- [x] Find analytical tools outside of heatmaps -- traces/oscilloscope
 - [ ] Basic analysis/visualisation of regions (bounding box)
+- [ ] Implement bit traces/oscilloscope analysis
 - [x] Apply analytical functions to all stages
 - [x] Apply analytical functions to each stage
 - [x] Heatmaps? plots? Advanced visualisation
@@ -20,10 +21,10 @@
 
 - [x] Sphinx implementation
 - [x] Setup sphinx -> web based API reference
-- [ ] Setup Github Wiki? For theory / internal systems
+- [ ] ~~Setup Github Wiki? For theory / internal systems~~
 - [x] Improve API ref site with nicer HTML/CSS
 - [x] Add markdown(.md) Functionality to API ref
-- [ ] Complete user guide
+- [x] Complete user guide
 - [ ] Complete advanced guide
 - [ ] Provide academic sources for algorithm docs
 
