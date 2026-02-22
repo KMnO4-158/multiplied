@@ -37,6 +37,7 @@ from .core.template import (
 
 from .core.algorithm import (
     Algorithm,
+    hoist,
     collect_arithmetic_units,
 )
 
@@ -123,6 +124,7 @@ __all__ = [
     "empty_rows",
     "empty_matrix",
     "matrix_merge",
+    "hoist",
     "collect_arithmetic_units",
     "build_dadda_map",
     "empty_map",
