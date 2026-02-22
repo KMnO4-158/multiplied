@@ -335,7 +335,6 @@ class Algorithm:
         # -- map ----------------------------------------------------
 
         self.matrix.apply_map(self.algorithm[self.state]["map"])
-        self.state += 1
 
         return None
 
@@ -383,9 +382,12 @@ class Algorithm:
 
     def step(self) -> mp.Matrix:
         """Execute the next stage of the algorithm and update internal matrix"""
+        if self.state == len(self.algorithm):
+            print("Algorithm completed")
+            return self.matrix
         if self.saturation:
             self.__clamp_bitwidth()
-            self.__reduce()
+        self.__reduce()
         self.state += 1
 
         # getattr for matrix, template and map to peek algorithm
@@ -419,6 +421,7 @@ class Algorithm:
         self.state = 0
         for n in range(len(self.algorithm)):
             self.__reduce()
+            self.state += 1
             if self.saturation and self.__clamp_bitwidth():
                 for i in range(n, len(self.algorithm)):
                     truth[i + 1] = deepcopy(self.matrix)
