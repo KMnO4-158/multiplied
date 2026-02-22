@@ -13,8 +13,7 @@ visualise algorithms through [Pandas](https://pandas.pydata.org/) and [Matplotli
 This guide will quickly walk through each area of Multiplied, without delving too
 deeply into the details.
 
-
-## **Algorithms**
+## Basic Algorithm Generation
 
 A given combinational multiplier is defined by a sequence of "stages" which continuously
 reduce an initial set of [partial products](https://en.wikipedia.org/wiki/Binary_multiplier#Binary_long_multiplication)
@@ -22,7 +21,7 @@ into a single output product.
 
 First import the module and define the bitwidth of the algorithm:
 
-```{code-cell}
+```{code-cell} ipython3
 import multiplied as mp
 
 alg = mp.Algorithm(4)
@@ -30,7 +29,7 @@ alg = mp.Algorithm(4)
 
 Then automatically generate a basic algorithm.
 
-```{code-cell}
+```{code-cell} ipython3
 
 alg.auto_resolve_stage(recursive=True)  # recursive=True -- default
 print(alg)
@@ -58,9 +57,10 @@ pseudo [Matrix](guide/structures.html#Matrix), and a [Map](guide/structures.html
 
 ## Execution
 
+
 The algorithm can now execute using input operands to verify it works:
 
-```{code-cell}
+```{code-cell} ipython3
 a = 15
 b = 13
 output = alg.exec(a, b)
@@ -78,11 +78,12 @@ stage being reduced by [Adders](https://en.wikipedia.org/wiki/Adder_(electronics
 ("units" which cover 2 rows) and [Carry Save Adders](https://en.wikipedia.org/wiki/Carry-save_adder)
 ("units" which cover 3 rows).
 
-## **Generating Data**
+## Generating Data
+
 
 Now a truth table can be generated and stored to a Pandas [DataFrame](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame):
 
-```{code-cell}
+```{code-cell} ipython3
 import pandas as pd
 
 domain_ = (1, 15)  # range of possible operand values for a and b
@@ -94,12 +95,14 @@ df = mp.truth_dataframe(scope, alg)
 
 ```
 
-## **DataFrame Layout**
+
+## DataFrame Layout
+
 
 Multiplied makes use of Pandas DataFrames to store generated truth tables.
-A generated truth table  can be defined by three regions:
+A generated truth table  can be defined by **three** regions:
 
-### Operands
+### **Operands**
 
 These columns hold the input and output operands for a given  
 
@@ -118,15 +121,16 @@ Stores outputs produced by a given execution of the algorithm as seen above
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-pd.set_option('display.max_columns',None)
+pd.set_option("display.max_columns",None)
 pd.set_option("display.width", 1000)
-cols = df.columns[-3]          
-print(df[cols].to_frame().tail())
+cols = df.columns[-4:]          
+print(df[cols].tail())
 ```
 
 
 :::{note}
-test
+Multiplied provides basic tools to handle extraction of data. Check out Pandas documentation
+for additional functionality.
 :::
 
 
@@ -136,30 +140,42 @@ test
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-cols = df.columns[35:43]          
+pd.set_option("display.width", 330)
+cols = df.columns[3:-4]          
 print(df[cols].tail())
 ```
 
-#### \[s\]tage
+#### **\[s\]tage**
 
-> Number of reductions needed to return a single product
+> Index ranging from 0 to the number of reductions needed to return a single product
 
-#### \[p\]artial product
+#### **\[p\]artial product**
 
 > A given row in a partial product matrix
 
 
-#### \[b\]it
+#### **\[b\]it**
 
 > Bit index within a partial product
 
+:::{note}
+Here's the column index and dtypes for a generated truth table:
+:::
 
-## **Visualisation**
+```{code-cell} ipython3
+:tags: [remove-input]
+
+pd.set_option("display.width", 60)
+print(df.columns, "\n")
+print(df.dtypes)
+```
+
+## Visualisation
 
 Finally, the generated data is ready to be visualised. Let's keep it simple and
 generate a 2D heatmap:
 
-```{code-cell}
+```{code-cell} ipython3
 
 mp.df_global_heatmap("example.png", "Fancy Title", df)
 
@@ -167,7 +183,7 @@ mp.df_global_heatmap("example.png", "Fancy Title", df)
 
 And a 3D heatmap, isolating each stage of the algorithm:
 
-```{code-cell}
+```{code-cell} ipython3
 
 mp.df_global_3d_heatmap("example3d.png", "Fancy Title", df)
 
