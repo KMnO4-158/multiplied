@@ -1,63 +1,227 @@
+---
+file_format: mystnb
+kernelspec:
+  name: python3
+---
+
 # Data Structures
 
+Each structure within Multiplied aims to provide fine grain control of the algorithm's
+design. From automatic generation, to controlling how bits move between stages and
+the ability to chose where arithmetic units are placed.
+
+This page will cover the major data structures in Multiplied. For a brief introduction
+to Multiplied check out the [quickstart guide](../quickstart.md).
 
 ## Matrix
 
-First, import multiplied and decide on a bitwidth for our algorithm, to keep it simple let's pick 4-bits:
-
-.. code-block:: python
-
-    import multiplied as mp
-    matrix = mp.Matrix(4) # 4-bit logical AND matrix
+Combinational multiplication generates [partial products](https://en.wikipedia.org/wiki/Binary_multiplier#Binary_long_multiplication)
+which are reduced to a single product. The ``Matrix`` object contains the partial
+product matrix(PPM) while also tracking which bits are important via it's formatting
+style.
 
 
-Here's what it looks like:
+let's create 4-bit Matrix Object:
 
-.. code-block:: python
+```{code-cell} ipython3
+import multiplied as mp
+matrix = mp.Matrix(4) # 4-bit logical AND matrix
+```
 
-    print(matrix)
+And here's what it looks like:
 
-
-.. code-block:: python
-
-    ____0000
-    ___0000_
-    __0000__
-    _0000___
-
+```{code-cell} ipython3
+print(matrix)
+```
 
 
-The ``matrix`` is a "structure" used to generate the logical AND matrix, aka partial
-products, for a given set of inputs. It also tells the algorithm *where* each partial
-product is located.
+```{note}
+The width of the matrix is 2x the operand bit width. This is because
+the maximum output of a product of two x-bit numbers results in a 2x-bit value.
 
-.. note::
-    To populate an AND matrix without an Algorithm object use:
+15 * 15 = 225 -> 0b1111 * 0b1111 = 0b11100001
+```
 
-    .. code-block:: python
-
-        matrix = mp.build_matrix(operand_a=0, operand_b=0, bits=4)
-
+The ``Matrix`` structure gives Multiplied objects fine grain access to
+bits and partial products while keeping data human readable.
 
 
+### Wallace Tree
+
+instead of generating a zeroed matrix, we can generate a matrix with a two
+operands:
 
 
-Next, create an algorithm object.
+```{code-cell} ipython3
+matrix = mp.Matrix(4, a=15, b=3)
+print(matrix)
+```
 
-.. code-block:: python
-
-    first_alg = mp.Algorithm(matrix)
+By default the matrix generates a [Wallace tree](https://en.wikipedia.org/wiki/Wallace_tree#Detailed_explanation).
 
 
-The Algorithm object will hold the templates that define a given algorithm. It also holds an internal state to track which template it should use next.
+### Dadda Tree
+
+
+With an extra step it can be adjusted to resemble the start of a [Dadda tree](https://en.wikipedia.org/wiki/Dadda_multiplier#Algorithm_example).
+
+```{code-cell} ipython3
+matrix = mp.Matrix(4, a=15, b=3)
+
+# maps bits to the top of the matrix
+_ = mp.hoist(matrix)  # discard returned map
+print(matrix)
+```
+
+````{important}
+A method of generating a Dadda tree Matrix object is planned:
+```{code}
+matrix = mp.Matrix(4, a=15, b=3, dadda=True)
+```
+````
 
 
 ## Template
 
+Templates defines the types of [arithmetic units](https://en.wikipedia.org/wiki/Arithmetic_logic_unit)
+used and where they are placed within each algorithm stage.
+
+The goal of a template is to "reduce" the number of partial products.
+
+Multiplied allows two overarching methods to create templates:
+
+### Pattern Based Templates
+
+Patterns are arrays which define an arithmetic unit to be places across entire
+rows of the Matrix:
+
+```{code-cell} ipython3
+# template based on two arithmetic units 
+pattern = mp.Pattern(["a", "a", "a", "b", "b", "c", "c", "d"]) 
+template = mp.Template(pattern)
+
+print(pattern)
+print(template)
+```
+
+### Arithmetic Units
+
+As shown above each group or "run" of characters represents a single arithmetic
+unit, each of which falls into **three** categories:
+
+#### CSAs
+
+
+Units spanning three rows define a [CSA](https://en.wikipedia.org/wiki/Carry-save_adder)
+Each taking in 3 inputs  and returning a sum and a carry.
+
+
+```{code} text
+[ Template     ]  [ Pattern ]  [ Result       ]
+________aAaAaAaA       a       ______aAaAaAaAaA
+_______AaAaAaAa_       a       ______AaAaAaAa__
+______aAaAaAaA__       a       ________________
+```
+
+```{note}
+The utility of a CSA is the size and speed of it's circuit. Instead of wasting space
+using large full adders, many smaller CSAs will produce the same reduction, faster.
+```
+
+
+#### Adders
+
+Units spanning two rows define an [adder](https://en.wikipedia.org/wiki/Adder_(electronics)),
+each taking in two values and returning the combined sum.
+
+```{code} text
+[ Template     ]  [ Pattern ] [ Result       ]
+_____BbBbBbBb___       b      ___bbBbBbBbBb___
+____bBbBbBbB____       b      ________________
+```
+
+```{code} text
+___CcCcCcCc_____       c      _ccCcCcCcCc_____
+__cCcCcCcC______       c      ________________
+```
+
+
+
+#### NOOPs
+
+Units spanning a single row are considered as NOOP or no operation.
+
+```{code} text
+[ Template     ]  [ Pattern ]  [ Result       ]
+_dDdDdDdD_______       d       _dDdDdDdD_______
+```
+
+```{note}
+Decoders are also planned, potentially reducing inputs by more than 1.
+
+By encoding specialised operations based on bit position, count, unary count,
+etc. a decoder can also offer unique operations.
+```
+
+### Complex Templates
+
+Pattern based templates can be used as a starting point for more complex templates:
+
+```{code-cell} ipython3
+
+raw_template = template.template
+raw_result = template.result
+
+for t in raw_template:
+    print(t)
+
+print("----")
+
+for r in raw_result:
+    print(r)
+```
+
+Using the print out to build a new template and result:
+
+```{code-cell} ipython3
+complex_template = [
+    ["_", "_", "_", "_", "_", "_", "_", "_", "a", "A", "a", "A", "a", "x", "x", "x"],
+    ["_", "_", "_", "_", "_", "_", "_", "A", "a", "A", "a", "A", "a", "y", "y", "_"],
+    ["_", "_", "_", "_", "_", "_", "a", "A", "a", "A", "a", "A", "a", "z", "_", "_"],
+    ["_", "_", "_", "_", "_", "B", "b", "B", "b", "B", "b", "B", "b", "_", "_", "_"],
+    ["_", "_", "_", "_", "b", "B", "b", "B", "b", "B", "b", "B", "_", "_", "_", "_"],
+    ["_", "_", "_", "C", "c", "C", "c", "C", "c", "C", "c", "_", "_", "_", "_", "_"],
+    ["_", "_", "c", "C", "c", "C", "c", "C", "c", "C", "_", "_", "_", "_", "_", "_"],
+    ["_", "d", "D", "d", "D", "d", "D", "d", "D", "_", "_", "_", "_", "_", "_", "_"],
+]
+complex_result = [
+    ["_", "_", "_", "_", "_", "_", "a", "A", "a", "A", "a", "A", "a", "x", "x", "x"],
+    ["_", "_", "_", "_", "_", "_", "A", "a", "A", "a", "A", "a", "_", "y", "y", "_"],
+    ["_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "z", "_", "_"],
+    ["_", "_", "_", "b", "b", "B", "b", "B", "b", "B", "b", "B", "b", "_", "_", "_"],
+    ["_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_"],
+    ["_", "c", "c", "C", "c", "C", "c", "C", "c", "C", "c", "_", "_", "_", "_", "_"],
+    ["_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_"],
+    ["_", "d", "D", "d", "D", "d", "D", "d", "D", "_", "_", "_", "_", "_", "_", "_"],
+]
+
+
+new_template = mp.Template(complex_template, result=complex_result)
+print(new_template)
+
+```
+
+```{warning}
+Currently a resultant template must be supplied when creating a template without
+using a pattern. 
+
+Auto-resolution of resultant templates is planned.
+```
+
 
 ## Map
 
-Each step of an algorithm needs a pattern or a template, but it also needs to regoup
+Each step of an algorithm needs a pattern or a template, but it also needs to regroup
 their partial products before using the next template. This is where maps come in.
 
 First, note that bits can only move vertically as moving horizontally changes it's
@@ -65,20 +229,23 @@ value. Therefore, each map value is a signed hexadecimal number.
 
 For simple maps, the map value represents an entire row rather than a specific bit.
 
-.. code:: text
+```{code} text
 
-    # Maps for each stage of first_alg
+# Maps for each stage of first_alg
 
-    1st:    2nd:    3rd:
+1st:    2nd:    3rd:
 
-    00      00      00
-    00      00      00
-    00      FF      00
-    FF      00      00
+00      00      00
+00      00      00
+00      FF      00
+FF      00      00
+```
 
-.. note::
 
-    Outputs of each units are packed to the top of their initial row.
+```{note}
+
+  Outputs of each units are packed to the top of their initial row.
+```
 
 Here's the breakdown of this example:
 
@@ -96,112 +263,110 @@ This means as long as outputs are mapped correctly to inputs, the placements of
 arithmetic units can be anywhere. The final output (x from the pattern example)
 can be anywhere within the matrix.
 
-.. note::
+````{note}
+In other words, these are also valid algorithms:
 
-    In other words, these are also valid algorithms:
+```{code} text
 
-    .. code:: text
+# [ Key ]
+# char | r :: arithmetic unit | result
 
-        # [ Key ]
-        # char | r :: arithmetic unit | result
+# Another valid algorithm               # Another
 
-        # Another valid algorithm               # Another
+1st:    2nd:    3rd:    output:         1st:    2nd:    3rd:    output:
 
-        1st:    2nd:    3rd:    output:         1st:    2nd:    3rd:    output:
+a r                                     a r     c r
+a r     c r                             a r     c r     d r     x
+a       c r     d r                     a       c       d
+b r     c       d       x               b r
 
-        a r                                     a r     c r
-        a r     c r                             a r     c r     d r     x
-        a       c r     d r                     a       c       d
-        b r     c       d       x               b r
-
-        # maps                                  # maps
+# maps                                  # maps
 
 
-        01      00      00                      00      01      00
-        01      01      00                      00      01      00
-        00      01      01                      00      00      00
-        00      00      00                      FF      00      00
-
+01      00      00                      00      01      00
+01      01      00                      00      01      00
+00      01      01                      00      00      00
+00      00      00                      FF      00      00
+```
+````
 
 ## Algorithm
 
-### Reduce
+The Algorithm object bundle templates and maps to define a multiplication algorithm.
+A given stage contains:
 
-Now let's make some templates. This involves figuring out where you want to place:
+```{code} python
+"template" : mp.Template  # source and resultant templates
+"pseudo"   : mp.Matrix  # resultant matrix after reduction + map 
+"map"      : mp.Map  # modifies bit positions
+```
 
-- Carry Save Adders -- CSA (Half Adders, HA, are automatically placed when using
-simple templates) [3 to 2]
+This guide will use pattern based templates to demonstrate the structure of an Algorithm,
+for a more comprehensive overview check out the [complex algorithm guide](/guide/complex.md).
 
-- Adders -- [2 to 1]
+### Population
 
-and in the future:
 
-- Greedy Adders -- Adder which makes use of carry in (cin) [2 to 1]
+completely automatic generation...
 
-Collectively these are arithmetic units. All of which reduce a set of partial products
-by 1, each with their characteristics in latency, complexity and size. None of this
-applies to multiplied.
+```{code-cell} ipython3
+auto_alg = mp.Algorithm(4)
+auto_alg.auto_resolve_stage(recursive=True)
+print(auto_alg)
+```
 
-.. note::
-    Decoders are an exception and can potentially reduce a set of partial products
-    by more than 1.
+push templates or patterns one at a time...
 
-    - Decoders -- [n to n-k]
+```{code-cell} ipython
+alg = mp.Algorithm(4)
+alg.push(mp.Pattern(["a", "a", "b", "b"]))
+print(alg)
+```
 
-    They encode specialised operations based on bit position, count, unary count,
-    etc. Decoders are in the `roadmap <roadmap>`_.
+Automatically generate the rest...
 
-To inform the algorithm on how a given template reduces groups of partial products,
-an array of characters, or pattern is used:
+```{code-cell} ipython
+alg.auto_resolve_stage(recursive=True)
+print(alg)
+```
 
-.. code-block:: python
+### Execution
 
-    pattern = [
-        a,      # +-
-        a,      # | run of 3 == CSA [3 to 2]
-        a,      # +-
-        b,      # +- run of 1 == None -- no reduction needed
-    ]
 
-.. note::
+execute new operands ...
 
-    CSAs work on 3 bits at a time, and returns a 2-bit sum of raised bits.
-    Adders work on 2 words at a time, each word being x-bits, and returns a single
-    word. Bit pairs which sum to 0b10 are carried through the calculation.
+```{code-cell} ipython3
+a = 15
+b = 15
+output = alg.exec(a, b)
 
-For this 4-bit algorithm it will take 3 rounds, minimum, of reduction to reach out
-final output:
+for m in output.values():
+    print(m)
 
-.. code-block:: text
+# convert result to decimal
+print(int("".join(alg.matrix.matrix[0]), 2))
+print(a * b)
+```
 
-    # Patterns for each stage of first_alg
+Manually provide starting matrix and step through algorithm...
 
-    1st:    2nd:    3rd:    output:
-
-    a       c       e       x
-    a       c       e
-    a       d       _
-    b       _       _
-
-.. note::
-
-    Each arithmetic unit will output to the top of its "run". The next section covers
-    how to "map" these outputs.
-
-    Underscores represent no operations or noops.
+```{code-cell} ipython
+starting_ppm = mp.Matrix(4, a=5, b=9)
+alg.reset(starting_ppm)
+print(alg.matrix)  # initial state
+print(alg.step())
+print(alg.step())
+```
 
 ### Saturation
 
-Using the 11 * 12 example above, if the output was saturated to 4-bits, the result
-would be 15 since the maximum value is 0b1111 -> 15.
-Typically, saturation restricts the output bit width to the input bit width:
-x-bits --> 2x-bits -(clamp)-> x-bits. Multiplications which produce an [overflow](https://en.wikipedia.org/wiki/Integer_overflow)
-trigger a signal to flood the output bits to 1, resulting in the maximum value of
-the bit width.
+Some workloads require operations clamped to the source bit width such as
+[digital signal processing](https://en.wikipedia.org/wiki/Digital_signal_processing)(DSP)
+and working with [RGB](https://en.wikipedia.org/wiki/RGB_color_model) pixel values.
+This clamping is called [saturation](https://en.wikipedia.org/wiki/Saturation_arithmetic).
 
-As demonstrated in the example above:
 
-```text
+```{code} text
 11 * 12 -> 0b1011 * 0b1100 -> 0b10000100 -[Clamp=4b]-> 0b1111
 
     Cout|1011
@@ -212,10 +377,13 @@ As demonstrated in the example above:
    [_101|1___] 1
    -----+-----
 IF !0 ->|1111  -> 15
-
 ```
 
-Most of the complex templates will be directed to find optimisation strategies to
-make te most of saturation. Many overflow edge cases can be found very early in
-the reduction process, take the AND matrix stage, while some are harder to isolate
-and arise deeper in the combinational logic.
+```{code-cell} ipython3
+alg.reset
+alg.saturation = True
+
+
+for m in alg.exec(11, 12).values():
+    print(m)
+```
