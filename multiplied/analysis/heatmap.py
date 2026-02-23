@@ -45,13 +45,15 @@ def df_global_heatmap(path: str, title: str, df: pd.DataFrame, *, dark=False) ->
             raise IndexError("Unsupported DataFrame")
         b_index += 1
 
-    col = list(df.columns)[b_index : s_index + 1] if s_index != -1 else list(df.columns)[b_index:]
+    col = (
+        list(df.columns)[b_index : s_index + 1]
+        if s_index != -1
+        else list(df.columns)[b_index:]
+    )
     df_ = df[col].sum(axis=0)
-
 
     df_ = pd.DataFrame([df_.values], columns=col)
     pd.set_option("display.max_rows", None)
-
 
     result_bits = int(str(copy(df_.columns[0])).split("_")[-1][1:]) + 1
     total_stages = int(str(copy(df_.columns[-1])).split("_")[1][1:]) + 1
@@ -150,7 +152,11 @@ def df_global_3d_heatmap(
             raise IndexError("Unsupported DataFrame")
         b_index += 1
 
-    col = list(df.columns)[b_index : s_index + 1] if s_index != -1 else list(df.columns)[b_index:]
+    col = (
+        list(df.columns)[b_index : s_index + 1]
+        if s_index != -1
+        else list(df.columns)[b_index:]
+    )
     df_ = df[col].sum(axis=0)
 
     df_ = pd.DataFrame([df_.values], columns=col)
