@@ -7,6 +7,46 @@ Changelog
 v0.7
 =====
 
+`v0.7.2 <https://github.com/EphraimCompEng/multiplied/releases/tag/v0.7.2>`_
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Added:
+
+    - hoist() for Dadda tree mapping (`7a775b4`_)
+
+Documentation:
+
+    - Get Started Page complete (`e5e7527`_)
+    - User guide landing page + data structure guide (`3888354`_)
+
+Bug Fixes:
+
+    - Harmonised dataframe column index scheme (`9a9ac50`_)
+    - Inconsistent state updates (`46f885b`_)
+
+
+.. _7a775b4:
+    https://github.com/EphraimCompEng/multiplied/commit/7a775b4
+
+.. _e5e7527:
+    https://github.com/EphraimCompEng/multiplied/commit/e5e7527
+
+.. _3888354:
+    https://github.com/EphraimCompEng/multiplied/commit/3888354
+
+.. _9a9ac50:
+    https://github.com/EphraimCompEng/multiplied/commit/9a9ac50
+
+.. _46f885b:
+    https://github.com/EphraimCompEng/multiplied/commit/46f885b
+
+
+
+
+
+
+See full changelog `here <https://github.com/EphraimCompEng/multiplied/pull/105>`_
+
 `v0.7.1 <https://github.com/EphraimCompEng/multiplied/releases/tag/v0.7.1>`_
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
