@@ -49,13 +49,10 @@ exclude_patterns = ["multiplied.tests.rst"]
 templates_path = ["_templates"]
 source_suffix = [".rst", ".md"]
 
+html_theme_options = {}
 
 myst_enable_extensions = [
-    # "amsmath",
     "colon_fence",
-    # "deflist",
-    # "dollarmath",
-    # "html_image",
 ]
 
 # -- Options for HTML output -------------------------------------------------
@@ -68,6 +65,8 @@ html_css_files = [
     "custom.css",
 ]
 html_context = {"github_user": "EphraimCompEng", "github_repo": "multiplied"}
+html_copy_source = False
+
 
 # -- Exposing variables to .rst files ----------------------------------------
 # https://stackoverflow.com/a/69211912 , https://stackoverflow.com/q/34006784
