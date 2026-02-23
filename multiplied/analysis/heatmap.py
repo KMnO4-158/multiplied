@@ -101,7 +101,6 @@ def df_global_heatmap(path: str, title: str, df: pd.DataFrame, *, dark=False) ->
 
     fig.tight_layout()
     plt.colorbar(im, shrink=0.7)
-    # plt.show()
     plt.savefig(path)
 
     return None
