@@ -9,7 +9,6 @@ from pathlib import Path
 
 sys.path.insert(0, os.path.abspath(os.path.join("..", "..", "..")))
 print(sys.path)
-import multiplied as mp
 
 
 # -- pyproject.toml metadata ----------------------------------------

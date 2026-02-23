@@ -2,9 +2,7 @@
 # Built-in Complex Truth Table Search #
 #######################################
 
-import multiplied as mp
 import pandas as pd
-import pyarrow as pa
 
 
 def df_early_bitwidth_cout(df: pd.DataFrame) -> pd.DataFrame:

@@ -1,4 +1,3 @@
-import pytest
 from multiplied.core.algorithm import Algorithm
 
 

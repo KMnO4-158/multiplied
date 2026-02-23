@@ -1,5 +1,4 @@
 from collections.abc import Generator
-import pyarrow as pa
 import pandas as pd
 
 

@@ -1,7 +1,5 @@
 from pathlib import Path
 import multiplied as mp
-import pandas as pd
-import pyarrow as pa
 
 
 def test_pq_extract_bits() -> None: ...

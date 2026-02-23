@@ -1,9 +1,7 @@
 from copy import copy
 import pandas as pd
-import pyarrow as pa
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib as mpl
 
 
 def df_global_heatmap(path: str, title: str, df: pd.DataFrame, *, dark=False) -> None:

@@ -2,7 +2,6 @@ from functools import cache
 from pathlib import Path
 import multiplied as mp
 import pandas as pd
-import pyarrow as pa
 
 
 def gen_resources(bits: int, *, a=0, b=0) -> tuple[mp.Matrix, mp.Pattern, mp.Algorithm]:

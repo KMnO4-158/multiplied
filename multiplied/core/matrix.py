@@ -2,7 +2,6 @@
 # Classes to Represent And Manage Nested Lists #
 ################################################
 
-from copy import deepcopy
 import multiplied as mp
 from typing import Any, Iterator
 
