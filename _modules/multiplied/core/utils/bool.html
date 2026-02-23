@@ -9,12 +9,15 @@
       ? (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
       : m;
   })();
-  </script><link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=8e8a900e" /><link rel="stylesheet" type="text/css" href="../../../../_static/styles/breeze.css?v=b3a7ba9a" /><script defer="defer" src="../../../../_static/scripts/breeze.js?v=af6c55ec"></script></head>
+  </script><link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=8e8a900e" /><link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" /><link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" /><link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" /><link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=5037cee9" /><link rel="stylesheet" type="text/css" href="../../../../_static/styles/breeze.css?v=227fd4f7" /><script defer="defer" src="../../../../_static/scripts/breeze.js?v=dac9f8c6"></script></head>
 <body>
   
   
   <div class="bz-skip-to-content"><a href="#bz-main-content">Skip to main content</a></div><header class="bz-header-main">
-  <div class="bz-header-start"><a class="bz-header-brand" href="../../../../index.html"><span>multiplied</span>
+  <div class="bz-header-start"><a class="bz-header-brand" href="../../../../index.html">
+  
+  
+  <span>multiplied</span>
 </a>
   </div>
   <div class="bz-header-end"><div id="docsearch" class="bz-search-button">
@@ -67,7 +70,7 @@
       d="M3.75 6.75h16.5M3.75 12H12m-8.25 5.25h12.5"
     />
   </svg>
-</label><ul><li class="toctree-l1"><a class="reference internal" href="../../../../intro.html">Introduction</a></li><li class="toctree-l1"><a class="reference internal" href="../../../../start.html">Get Started</a></li><li class="toctree-l1"><a class="reference internal" href="../../../../guide.html">User Guide</a></li><li class="toctree-l1"><a class="reference internal" href="../../../../changelog.html">Changelog</a></li><li class="toctree-l1"><a class="reference internal" href="../../../../reference.html">API Reference</a></li><li class="toctree-l1"><a class="reference internal" href="../../../../contact.html">Contact</a></li></ul><div class="bz-dropdown">
+</label><ul><li class="toctree-l1"><a class="reference internal" href="../../../../intro.html">Introduction</a></li><li class="toctree-l1"><a class="reference internal" href="../../../../start.html">Getting Started</a></li><li class="toctree-l1"><a class="reference internal" href="../../../../guide.html">User Guide</a></li><li class="toctree-l1"><a class="reference internal" href="../../../../changelog.html">Changelog</a></li><li class="toctree-l1"><a class="reference internal" href="../../../../reference.html">API Reference</a></li><li class="toctree-l1"><a class="reference internal" href="../../../../contact.html">Contact</a></li></ul><div class="bz-dropdown">
     <button aria-haspopup="true" aria-expanded="false">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
         <g
@@ -122,8 +125,7 @@
       d="M3.75 6.75H20.25 M11.25 12H20.25 M7.75 17.25H20.25"
     />
   </svg>
-</label></header><article class="bz-article-main" role="main">
-  <h1>Source code for multiplied.core.utils.bool</h1><div class="highlight"><pre>
+</label></header><article class="bz-article-main" role="main"><h1>Source code for multiplied.core.utils.bool</h1><div class="highlight"><pre>
 <span></span><span class="c1">#################################</span>
 <span class="c1"># Commonly Reused Sanity Checks #</span>
 <span class="c1">#################################</span>
@@ -140,9 +142,8 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Raise ValueError if bitwidth is supported by Multiplied&quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bits</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">bits</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">SUPPORTED_BITWIDTHS</span><span class="p">:</span>
-       <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Unsupported bitwidth </span><span class="si">{</span><span class="n">bits</span><span class="si">}</span><span class="s2">. Expected </span><span class="si">{</span><span class="n">SUPPORTED_BITWIDTHS</span><span class="si">}</span><span class="s2">&quot;</span>
-       <span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported bitwidth </span><span class="si">{</span><span class="n">bits</span><span class="si">}</span><span class="s2">. Expected </span><span class="si">{</span><span class="n">SUPPORTED_BITWIDTHS</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
 
 
 <div class="viewcode-block" id="isint">
@@ -178,6 +179,7 @@
     <span class="k">return</span> <span class="kc">False</span></div>
 
 
+
 <div class="viewcode-block" id="ischar">
 <a class="viewcode-back" href="../../../../api/multiplied.core.utils.html#multiplied.ischar">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">ischar</span><span class="p">(</span><span class="n">ch</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -187,6 +189,7 @@
         <span class="k">return</span> <span class="kc">True</span>
     <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">False</span></div>
+
 
 
 <div class="viewcode-block" id="isalpha">
@@ -274,5 +277,5 @@
   <label class="bz-overlay bz-overlay-primary" for="bz-sidebar-primary"></label>
   <label class="bz-overlay bz-overlay-secondary" for="bz-sidebar-secondary"></label>
   <input type="checkbox" name="bz-sidebar-primary" id="bz-sidebar-primary" aria-label="Toggle section navigation">
-  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../../../../_static/documentation_options.js?v=fe7df9b0"></script><script src="../../../../_static/doctools.js?v=fd6eb6e6"></script><script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script></body>
+  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../../../../_static/documentation_options.js?v=6dfdf7c3"></script><script src="../../../../_static/doctools.js?v=fd6eb6e6"></script><script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script><script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script><script src="../../../../_static/copybutton.js?v=f281be69"></script><script src="../../../../_static/design-tabs.js?v=f930bc37"></script></body>
 </html>

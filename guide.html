@@ -6,14 +6,14 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="guide.html" />
 <meta property="og:site_name" content="multiplied" />
-<meta property="og:description" content="(soon™ incomplete guide below) multiplied Overview, Algorithms- Saturation., Templates- Simple Templates – Patterns., Complex Templates, Analysis- Further Reading.. Multiplied focuses on combinatio..." />
+<meta property="og:description" content="(soon™ incomplete guide) Multiplied focuses on combinational multiplication, fine-grained control over algorithms, and the choice of making algorithms entirely by hand or using build-in building bl..." />
 <meta property="og:image:width" content="1146" />
 <meta property="og:image:height" content="600" />
-<meta property="og:image" content="_images/social_previews/summary_guide_8e277b83.png" />
-<meta property="og:image:alt" content="(soon™ incomplete guide below) multiplied Overview, Algorithms- Saturation., Templates- Simple Templates – Patterns., Complex Templates, Analysis- Further Reading.. Multiplied focuses on combinatio..." />
-<meta name="description" content="(soon™ incomplete guide below) multiplied Overview, Algorithms- Saturation., Templates- Simple Templates – Patterns., Complex Templates, Analysis- Further Reading.. Multiplied focuses on combinatio..." />
+<meta property="og:image" content="_images/social_previews/summary_guide_b6c3bd28.png" />
+<meta property="og:image:alt" content="(soon™ incomplete guide) Multiplied focuses on combinational multiplication, fine-grained control over algorithms, and the choice of making algorithms entirely by hand or using build-in building bl..." />
+<meta name="description" content="(soon™ incomplete guide) Multiplied focuses on combinational multiplication, fine-grained control over algorithms, and the choice of making algorithms entirely by hand or using build-in building bl..." />
 <meta name="twitter:card" content="summary_large_image" />
-<title>User Guide - multiplied</title><link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="multiplied Overview" href="guide/overview.html"><link rel="prev" title="Get Started" href="start.html"><script data-cfasync="false">(function(){
+<title>User Guide - multiplied</title><link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Quickstart" href="guide/quickstart.html"><link rel="prev" title="Getting Started" href="start.html"><script data-cfasync="false">(function(){
     const m = localStorage.getItem("breeze-mode") || "auto";
     const d = document.documentElement.dataset;
     d.mode = m;
@@ -21,12 +21,15 @@
       ? (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
       : m;
   })();
-  </script><link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8e8a900e" /><link rel="stylesheet" type="text/css" href="_static/styles/breeze.css?v=b3a7ba9a" /><script defer="defer" src="_static/scripts/breeze.js?v=af6c55ec"></script></head>
+  </script><link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8e8a900e" /><link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" /><link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" /><link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" /><link rel="stylesheet" type="text/css" href="_static/custom.css?v=5037cee9" /><link rel="stylesheet" type="text/css" href="_static/styles/breeze.css?v=227fd4f7" /><script defer="defer" src="_static/scripts/breeze.js?v=dac9f8c6"></script></head>
 <body>
   
   
   <div class="bz-skip-to-content"><a href="#bz-main-content">Skip to main content</a></div><header class="bz-header-main">
-  <div class="bz-header-start"><a class="bz-header-brand" href="index.html"><span>multiplied</span>
+  <div class="bz-header-start"><a class="bz-header-brand" href="index.html">
+  
+  
+  <span>multiplied</span>
 </a>
   </div>
   <div class="bz-header-end"><div id="docsearch" class="bz-search-button">
@@ -79,7 +82,7 @@
       d="M3.75 6.75h16.5M3.75 12H12m-8.25 5.25h12.5"
     />
   </svg>
-</label><ul><li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li><li class="toctree-l1"><a class="reference internal" href="start.html">Get Started</a></li><li class="toctree-l1 current"><a class="current reference internal" href="#">User Guide</a></li><li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li><li class="toctree-l1"><a class="reference internal" href="reference.html">API Reference</a></li><li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li></ul><div class="bz-dropdown">
+</label><ul><li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li><li class="toctree-l1"><a class="reference internal" href="start.html">Getting Started</a></li><li class="toctree-l1 current"><a class="current reference internal" href="#">User Guide</a></li><li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li><li class="toctree-l1"><a class="reference internal" href="reference.html">API Reference</a></li><li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li></ul><div class="bz-dropdown">
     <button aria-haspopup="true" aria-expanded="false">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
         <g
@@ -102,11 +105,12 @@
   
   
     <nav class="bz-sidebar-nav" aria-label="Section Navigation"><ul>
-<li class="toctree-l1"><a class="reference internal" href="guide/overview.html">multiplied Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="guide/overview.html#algorithms">Algorithms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="guide/overview.html#templates">Templates</a></li>
-<li class="toctree-l1"><a class="reference internal" href="guide/overview.html#complex-templates">Complex Templates</a></li>
-<li class="toctree-l1"><a class="reference internal" href="guide/overview.html#analysis">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guide/quickstart.html"><strong>Quickstart</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="guide/structures.html">Data Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guide/complex.html">Complex Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guide/truthtable.html">Truth Tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guide/analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guide/visualisation.html">Visualisation</a></li>
 </ul>
 </nav>
   
@@ -145,28 +149,34 @@
       d="M3.75 6.75H20.25 M11.25 12H20.25 M7.75 17.25H20.25"
     />
   </svg>
-</label></header><article class="bz-article-main" role="main">
-  <section id="user-guide">
+</label></header><article class="bz-article-main" role="main"><div class="bz-page-actions" role="group" aria-label="Page actions">
+  <button data-copy-source="_sources/guide.rst.txt">
+    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor"><path d="M7.024 3.75c0-.966.784-1.75 1.75-1.75H20.25c.966 0 1.75.784 1.75 1.75v11.498a1.75 1.75 0 0 1-1.75 1.75H8.774a1.75 1.75 0 0 1-1.75-1.75Zm1.75-.25a.25.25 0 0 0-.25.25v11.498c0 .139.112.25.25.25H20.25a.25.25 0 0 0 .25-.25V3.75a.25.25 0 0 0-.25-.25Z"></path><path d="M1.995 10.749a1.75 1.75 0 0 1 1.75-1.751H5.25a.75.75 0 1 1 0 1.5H3.745a.25.25 0 0 0-.25.25L3.5 20.25c0 .138.111.25.25.25h9.5a.25.25 0 0 0 .25-.25v-1.51a.75.75 0 1 1 1.5 0v1.51A1.75 1.75 0 0 1 13.25 22h-9.5A1.75 1.75 0 0 1 2 20.25l-.005-9.501Z"></path></svg>
+    <span>Copy page</span>
+  </button>
+  <div class="bz-dropdown">
+    <button
+      aria-label="More actions"
+      aria-haspopup="true"
+      aria-expanded="false"
+    ></button>
+    <ul role="menu" aria-hidden="true">
+      <li>
+        <a href="#" role="menuitem" data-copy-source="_sources/guide.rst.txt">
+          <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor"><path d="M7.024 3.75c0-.966.784-1.75 1.75-1.75H20.25c.966 0 1.75.784 1.75 1.75v11.498a1.75 1.75 0 0 1-1.75 1.75H8.774a1.75 1.75 0 0 1-1.75-1.75Zm1.75-.25a.25.25 0 0 0-.25.25v11.498c0 .139.112.25.25.25H20.25a.25.25 0 0 0 .25-.25V3.75a.25.25 0 0 0-.25-.25Z"></path><path d="M1.995 10.749a1.75 1.75 0 0 1 1.75-1.751H5.25a.75.75 0 1 1 0 1.5H3.745a.25.25 0 0 0-.25.25L3.5 20.25c0 .138.111.25.25.25h9.5a.25.25 0 0 0 .25-.25v-1.51a.75.75 0 1 1 1.5 0v1.51A1.75 1.75 0 0 1 13.25 22h-9.5A1.75 1.75 0 0 1 2 20.25l-.005-9.501Z"></path></svg>
+          <span>Copy page</span>
+        </a>
+      </li>
+      <li>
+        <a href="_sources/guide.rst.txt" role="menuitem" class="bz-page-actions-external" target="_blank" rel="noopener">
+          <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3a2 2 0 0 1 2-2h9.982a2 2 0 0 1 1.414.586l4.018 4.018A2 2 0 0 1 21 7.018V21a2 2 0 0 1-2 2H4.75a.75.75 0 0 1 0-1.5H19a.5.5 0 0 0 .5-.5V8.5h-4a2 2 0 0 1-2-2v-4H5a.5.5 0 0 0-.5.5v6.25a.75.75 0 0 1-1.5 0Zm12-.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 0-.146-.336l-4.018-4.018A.5.5 0 0 0 15 2.5Z"></path><path d="M4.53 12.24a.75.75 0 0 1-.039 1.06l-2.639 2.45 2.64 2.45a.75.75 0 1 1-1.022 1.1l-3.23-3a.75.75 0 0 1 0-1.1l3.23-3a.75.75 0 0 1 1.06.04Zm3.979 1.06a.75.75 0 1 1 1.02-1.1l3.231 3a.75.75 0 0 1 0 1.1l-3.23 3a.75.75 0 1 1-1.021-1.1l2.639-2.45-2.64-2.45Z"></path></svg>
+          <span>View source</span>
+        </a>
+      </li></ul>
+  </div>
+</div><section id="user-guide">
 <span id="guide"></span><h1>User Guide<a class="headerlink" href="#user-guide" title="Link to this heading">#</a></h1>
-<p>(soon<span class="bz-emoji">™</span> incomplete guide below)</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="guide/overview.html">multiplied Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="guide/overview.html#algorithms">Algorithms</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="guide/overview.html#saturation">Saturation</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="guide/overview.html#templates">Templates</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="guide/overview.html#simple-templates-patterns">Simple Templates – Patterns</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="guide/overview.html#complex-templates">Complex Templates</a></li>
-<li class="toctree-l1"><a class="reference internal" href="guide/overview.html#analysis">Analysis</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="guide/overview.html#further-reading">Further Reading</a></li>
-</ul>
-</li>
-</ul>
-</div>
+<p>(soon<span class="bz-emoji">™</span> incomplete guide)</p>
 <p>Multiplied focuses on combinational multiplication, fine-grained control over algorithms, and the choice of making algorithms entirely by hand or using build-in building blocks.</p>
 <p>Recommended resources before starting:</p>
 <table class="hlist"><tr><td><ul class="simple">
@@ -176,171 +186,70 @@
 <li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Wallace_tree">Wallace Tree</a></p></li>
 </ul>
 </td><td><ul class="simple">
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Dadda_multiplier">Dadda Tree</a></p></li>
+</ul>
+</td><td><ul class="simple">
 <li><p><a class="reference external" href="https://youtu.be/4FwESTOVT-o/">Teman, A. Fast Multipliers</a></p></li>
 </ul>
 </td></tr></table>
-<section id="setup">
-<span id="id1"></span><h2>Setup<a class="headerlink" href="#setup" title="Link to this heading">#</a></h2>
-<p>First, import multiplied and decide on a bitwidth for our algorithm, to keep it simple let’s pick 4-bits:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">multiplied</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mp</span>
-<span class="n">matrix</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="c1"># 4-bit logical AND matrix</span>
-</pre></div>
-</div>
-<p>Here’s what it looks like:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">____0000</span>
-<span class="n">___0000_</span>
-<span class="n">__0000__</span>
-<span class="n">_0000___</span>
-</pre></div>
-</div>
-<p>The <code class="docutils literal notranslate"><span class="pre">matrix</span></code> is a “structure” used to generate the logical AND matrix, aka partial products, for a given set of inputs. It also tells the algorithm <em>where</em> each partial product is located.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>To populate an AND matrix without an Algorithm object use:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">matrix</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">build_matrix</span><span class="p">(</span><span class="n">operand_a</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">operand_b</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">bits</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<p>Next, create an algorithm object.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">first_alg</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Algorithm</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>The Algorithm object will hold the templates that define a given algorithm. It also holds an internal state to track which template it should use next.</p>
-</section>
-<section id="reduce">
-<span id="id2"></span><h2>Reduce<a class="headerlink" href="#reduce" title="Link to this heading">#</a></h2>
-<p>Now let’s make some templates. This involves figuring out where you want to place:</p>
-<ul class="simple">
-<li><p>Carry Save Adders – CSA (Half Adders, HA, are automtically placed when using simple templates) [3 to 2]</p></li>
-<li><p>Adders – [2 to 1]</p></li>
+<h2 class="rubric">Guides</h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="guide/quickstart.html"><strong>Quickstart</strong></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guide/quickstart.html#basic-algorithm-generation">Basic Algorithm Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/quickstart.html#execution">Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/quickstart.html#generating-data">Generating Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/quickstart.html#dataframe-layout">DataFrame Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/quickstart.html#visualisation">Visualisation</a></li>
 </ul>
-<p>and in the future:</p>
-<ul class="simple">
-<li><p>Greedy Adders – Adder which makes use of carry in (cin) [2 to 1]</p></li>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="guide/structures.html">Data Structures</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guide/structures.html#matrix">Matrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/structures.html#template">Template</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/structures.html#map">Map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/structures.html#algorithm">Algorithm</a></li>
 </ul>
-<p>Collectively these are arithmetic units. All of which reduce a set of partial products by 1, each with their characteristics in latency, complexity and size. None of this applies to multiplied.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Decoders are an exception and can potentially reduce a set of partial products by more than 1.</p>
-<ul class="simple">
-<li><p>Decoders – [n to n-k]</p></li>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="guide/complex.html">Complex Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guide/complex.html#custom-templates">Custom Templates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/complex.html#custom-maps">Custom Maps</a></li>
 </ul>
-<p>They encode specialised operations based on bit position, count, unary count, etc. Decoders are in the <a class="reference external" href="roadmap">roadmap</a>.</p>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="guide/truthtable.html">Truth Tables</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guide/truthtable.html#generation">Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/truthtable.html#exporting">Exporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/truthtable.html#importing">Importing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="guide/analysis.html">Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guide/analysis.html#data-format">Data Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/analysis.html#built-in-tools">Built-in Tools</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="guide/visualisation.html">Visualisation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guide/visualisation.html#preparing-data">Preparing Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/visualisation.html#analysis-tools">Analysis Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/visualisation.html#plotting">Plotting</a></li>
+</ul>
+</li>
+</ul>
 </div>
-<p>To inform the algorithm on how a given template reduces groups of partial products, an array of characters, or pattern is used:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pattern</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="n">a</span><span class="p">,</span>      <span class="c1"># +-</span>
-    <span class="n">a</span><span class="p">,</span>      <span class="c1"># | run of 3 == CSA [3 to 2]</span>
-    <span class="n">a</span><span class="p">,</span>      <span class="c1"># +-</span>
-    <span class="n">b</span><span class="p">,</span>      <span class="c1"># +- run of 1 == None -- no reduction needed</span>
-<span class="p">]</span>
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>CSAs work on 3 bits at a time, and returns a 2-bit sum of raised bits.
-Adders work on 2 words at a time, each word being x-bits, and returns a single word. Bit pairs which sum to 0b10 are carried through the calculation.</p>
-</div>
-<p>For this 4-bit algorithm it will take 3 rounds, minimum, of reduction to reach out final output:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span># Patterns for each stage of first_alg
-
-1st:    2nd:    3rd:    output:
-
-a       c       e       x
-a       c       e
-a       d       _
-b       _       _
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Each arithmetic unit will output to the top of its “run”. The next section covers how to “map” these outputs.</p>
-<p>Underscores represent no operations or noops.</p>
-</div>
-</section>
-<section id="map">
-<span id="id3"></span><h2>Map<a class="headerlink" href="#map" title="Link to this heading">#</a></h2>
-<p>Each step of an algorithm needs a pattern or a template, but it also needs to regoup their partial products before using the next template. This is where maps come in.</p>
-<p>First, note that bits can only move vertically as moving horizontally changes it’s value. Therefore, each map value is a signed hexadecimal number.
-For simple maps, the map value represents an entire row rather than a specific bit.</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span># Maps for each stage of first_alg
-
-1st:    2nd:    3rd:
-
-00      00      00
-00      00      00
-00      FF      00
-FF      00      00
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Outputs of each units are packed to the top of their initial row.</p>
-</div>
-<p>Here’s the breakdown of this example:</p>
-<p>1st stage - Move first 2 rows of result down by 1 [-1 = FF = down * 1]</p>
-<p>2nd stage - Move middle 2 rows of result down by 1 [-1 = FF = down * 1]</p>
-<p>3rd stage - No moves required</p>
-<p>Algorithms use a template to produce a result, which is then “mapped” to the next template. Each Adder/CSA/etc. needs to know where it should output in relation to the next template.
-This means as long as outputs are mapped correctly to inputs, the placements of arithmetic units can be anywhere. The final output (x from the pattern example) can be anywhere within the matrix.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>In other words, these are also valid algorithms:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span># [ Key ]
-# char | r :: arithmetic unit | result
-
-# Another valid algorithm               # Another
-
-1st:    2nd:    3rd:    output:         1st:    2nd:    3rd:    output:
-
-a r                                     a r     c r
-a r     c r                             a r     c r     d r     x
-a       c r     d r                     a       c       d
-b r     c       d       x               b r
-
-# maps                                  # maps
-
-
-01      00      00                      00      01      00
-01      01      00                      00      01      00
-00      01      01                      00      00      00
-00      00      00                      FF      00      00
-</pre></div>
-</div>
-</div>
-</section>
-<section id="define-algorithm">
-<span id="id4"></span><h2>Define Algorithm<a class="headerlink" href="#define-algorithm" title="Link to this heading">#</a></h2>
-</section>
-<section id="use-algorithm">
-<span id="id5"></span><h2>Use Algorithm<a class="headerlink" href="#use-algorithm" title="Link to this heading">#</a></h2>
-</section>
 </section>
 
 </article><footer class="bz-article-footer">
   
   
     <nav class="bz-related-pages" aria-label="Related pages navigation"><a class="bz-related-pages-previous" href="start.html" rel="prev">
-    <span>Previous</span><span class="bz-related-pages-title">Get Started</span></a><a class="bz-related-pages-next" href="guide/overview.html" rel="next">
+    <span>Previous</span><span class="bz-related-pages-title">Getting Started</span></a><a class="bz-related-pages-next" href="guide/quickstart.html" rel="next">
     <span>Next</span>
-    <span class="bz-related-pages-title">multiplied Overview</span>
+    <span class="bz-related-pages-title"><strong>Quickstart</strong></span>
   </a></nav>
   
 
 </footer><aside class="bz-sidebar-secondary" data-drawer="bz-sidebar-secondary">
   
   
-    <nav class="bz-sidebar-toc" aria-label="Table of contents">
-  <p>On this page</p><ul>
-<li><a class="reference internal" href="#setup">Setup</a></li>
-<li><a class="reference internal" href="#reduce">Reduce</a></li>
-<li><a class="reference internal" href="#map">Map</a></li>
-<li><a class="reference internal" href="#define-algorithm">Define Algorithm</a></li>
-<li><a class="reference internal" href="#use-algorithm">Use Algorithm</a></li>
-</ul></nav>
+    
   
     
   
@@ -380,7 +289,7 @@ b r     c       d       x               b r
 
   
     <div class="bz-edit-this-page">
-  <a href="https://github.com/EphraimCompEng/multiplied/edit/main/guide.rst">
+  <a href="https://github.com/EphraimCompEng/multiplied/edit/main/guide.rst" rel="edit">
     Edit this page
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8.22 2.97a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l2.97-2.97H3.75a.75.75 0 0 1 0-1.5h7.44L8.22 4.03a.75.75 0 0 1 0-1.06Z"></path></svg>
   </a>
@@ -409,5 +318,5 @@ b r     c       d       x               b r
   <label class="bz-overlay bz-overlay-primary" for="bz-sidebar-primary"></label>
   <label class="bz-overlay bz-overlay-secondary" for="bz-sidebar-secondary"></label>
   <input type="checkbox" name="bz-sidebar-primary" id="bz-sidebar-primary" aria-label="Toggle section navigation">
-  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="_static/documentation_options.js?v=fe7df9b0"></script><script src="_static/doctools.js?v=fd6eb6e6"></script><script src="_static/sphinx_highlight.js?v=6ffebe34"></script></body>
+  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="_static/documentation_options.js?v=6dfdf7c3"></script><script src="_static/doctools.js?v=fd6eb6e6"></script><script src="_static/sphinx_highlight.js?v=6ffebe34"></script><script src="_static/clipboard.min.js?v=a7894cd8"></script><script src="_static/copybutton.js?v=f281be69"></script><script src="_static/design-tabs.js?v=f930bc37"></script></body>
 </html>

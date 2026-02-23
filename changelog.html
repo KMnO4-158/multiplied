@@ -6,14 +6,14 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="changelog.html" />
 <meta property="og:site_name" content="multiplied" />
-<meta property="og:description" content="v0.6: v0.6.2: Bug Fixes: Moved pyproject.toml metadata extraction into conf.py ( 09d2544), Refactored / Harmonised Dataframe, Parquet Access ( ffc8963), Dark plot background inconsistencies ( d95bb..." />
+<meta property="og:description" content="v0.7: v0.7.2: Added: hoist() for Dadda tree mapping ( 7a775b4). Documentation: Get Started Page complete ( e5e7527), User guide landing page + data structure guide ( 3888354). Bug Fixes: Harmonised..." />
 <meta property="og:image:width" content="1146" />
 <meta property="og:image:height" content="600" />
-<meta property="og:image" content="_images/social_previews/summary_changelog_78894009.png" />
-<meta property="og:image:alt" content="v0.6: v0.6.2: Bug Fixes: Moved pyproject.toml metadata extraction into conf.py ( 09d2544), Refactored / Harmonised Dataframe, Parquet Access ( ffc8963), Dark plot background inconsistencies ( d95bb..." />
-<meta name="description" content="v0.6: v0.6.2: Bug Fixes: Moved pyproject.toml metadata extraction into conf.py ( 09d2544), Refactored / Harmonised Dataframe, Parquet Access ( ffc8963), Dark plot background inconsistencies ( d95bb..." />
+<meta property="og:image" content="_images/social_previews/summary_changelog_6d2e7452.png" />
+<meta property="og:image:alt" content="v0.7: v0.7.2: Added: hoist() for Dadda tree mapping ( 7a775b4). Documentation: Get Started Page complete ( e5e7527), User guide landing page + data structure guide ( 3888354). Bug Fixes: Harmonised..." />
+<meta name="description" content="v0.7: v0.7.2: Added: hoist() for Dadda tree mapping ( 7a775b4). Documentation: Get Started Page complete ( e5e7527), User guide landing page + data structure guide ( 3888354). Bug Fixes: Harmonised..." />
 <meta name="twitter:card" content="summary_large_image" />
-<title>Changelog - multiplied</title><link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="API Reference" href="reference.html"><link rel="prev" title="multiplied Overview" href="guide/overview.html"><script data-cfasync="false">(function(){
+<title>Changelog - multiplied</title><link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="API Reference" href="reference.html"><link rel="prev" title="Visualisation" href="guide/visualisation.html"><script data-cfasync="false">(function(){
     const m = localStorage.getItem("breeze-mode") || "auto";
     const d = document.documentElement.dataset;
     d.mode = m;
@@ -21,12 +21,15 @@
       ? (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
       : m;
   })();
-  </script><link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8e8a900e" /><link rel="stylesheet" type="text/css" href="_static/styles/breeze.css?v=b3a7ba9a" /><script defer="defer" src="_static/scripts/breeze.js?v=af6c55ec"></script></head>
+  </script><link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8e8a900e" /><link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" /><link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" /><link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" /><link rel="stylesheet" type="text/css" href="_static/custom.css?v=5037cee9" /><link rel="stylesheet" type="text/css" href="_static/styles/breeze.css?v=227fd4f7" /><script defer="defer" src="_static/scripts/breeze.js?v=dac9f8c6"></script></head>
 <body>
   
   
   <div class="bz-skip-to-content"><a href="#bz-main-content">Skip to main content</a></div><header class="bz-header-main">
-  <div class="bz-header-start"><a class="bz-header-brand" href="index.html"><span>multiplied</span>
+  <div class="bz-header-start"><a class="bz-header-brand" href="index.html">
+  
+  
+  <span>multiplied</span>
 </a>
   </div>
   <div class="bz-header-end"><div id="docsearch" class="bz-search-button">
@@ -79,7 +82,7 @@
       d="M3.75 6.75h16.5M3.75 12H12m-8.25 5.25h12.5"
     />
   </svg>
-</label><ul><li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li><li class="toctree-l1"><a class="reference internal" href="start.html">Get Started</a></li><li class="toctree-l1"><a class="reference internal" href="guide.html">User Guide</a></li><li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a></li><li class="toctree-l1"><a class="reference internal" href="reference.html">API Reference</a></li><li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li></ul><div class="bz-dropdown">
+</label><ul><li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li><li class="toctree-l1"><a class="reference internal" href="start.html">Getting Started</a></li><li class="toctree-l1"><a class="reference internal" href="guide.html">User Guide</a></li><li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a></li><li class="toctree-l1"><a class="reference internal" href="reference.html">API Reference</a></li><li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li></ul><div class="bz-dropdown">
     <button aria-haspopup="true" aria-expanded="false">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
         <g
@@ -132,13 +135,98 @@
       d="M3.75 6.75H20.25 M11.25 12H20.25 M7.75 17.25H20.25"
     />
   </svg>
-</label></header><article class="bz-article-main" role="main">
-  <section id="changelog">
+</label></header><article class="bz-article-main" role="main"><div class="bz-page-actions" role="group" aria-label="Page actions">
+  <button data-copy-source="_sources/changelog.rst.txt">
+    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor"><path d="M7.024 3.75c0-.966.784-1.75 1.75-1.75H20.25c.966 0 1.75.784 1.75 1.75v11.498a1.75 1.75 0 0 1-1.75 1.75H8.774a1.75 1.75 0 0 1-1.75-1.75Zm1.75-.25a.25.25 0 0 0-.25.25v11.498c0 .139.112.25.25.25H20.25a.25.25 0 0 0 .25-.25V3.75a.25.25 0 0 0-.25-.25Z"></path><path d="M1.995 10.749a1.75 1.75 0 0 1 1.75-1.751H5.25a.75.75 0 1 1 0 1.5H3.745a.25.25 0 0 0-.25.25L3.5 20.25c0 .138.111.25.25.25h9.5a.25.25 0 0 0 .25-.25v-1.51a.75.75 0 1 1 1.5 0v1.51A1.75 1.75 0 0 1 13.25 22h-9.5A1.75 1.75 0 0 1 2 20.25l-.005-9.501Z"></path></svg>
+    <span>Copy page</span>
+  </button>
+  <div class="bz-dropdown">
+    <button
+      aria-label="More actions"
+      aria-haspopup="true"
+      aria-expanded="false"
+    ></button>
+    <ul role="menu" aria-hidden="true">
+      <li>
+        <a href="#" role="menuitem" data-copy-source="_sources/changelog.rst.txt">
+          <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor"><path d="M7.024 3.75c0-.966.784-1.75 1.75-1.75H20.25c.966 0 1.75.784 1.75 1.75v11.498a1.75 1.75 0 0 1-1.75 1.75H8.774a1.75 1.75 0 0 1-1.75-1.75Zm1.75-.25a.25.25 0 0 0-.25.25v11.498c0 .139.112.25.25.25H20.25a.25.25 0 0 0 .25-.25V3.75a.25.25 0 0 0-.25-.25Z"></path><path d="M1.995 10.749a1.75 1.75 0 0 1 1.75-1.751H5.25a.75.75 0 1 1 0 1.5H3.745a.25.25 0 0 0-.25.25L3.5 20.25c0 .138.111.25.25.25h9.5a.25.25 0 0 0 .25-.25v-1.51a.75.75 0 1 1 1.5 0v1.51A1.75 1.75 0 0 1 13.25 22h-9.5A1.75 1.75 0 0 1 2 20.25l-.005-9.501Z"></path></svg>
+          <span>Copy page</span>
+        </a>
+      </li>
+      <li>
+        <a href="_sources/changelog.rst.txt" role="menuitem" class="bz-page-actions-external" target="_blank" rel="noopener">
+          <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3a2 2 0 0 1 2-2h9.982a2 2 0 0 1 1.414.586l4.018 4.018A2 2 0 0 1 21 7.018V21a2 2 0 0 1-2 2H4.75a.75.75 0 0 1 0-1.5H19a.5.5 0 0 0 .5-.5V8.5h-4a2 2 0 0 1-2-2v-4H5a.5.5 0 0 0-.5.5v6.25a.75.75 0 0 1-1.5 0Zm12-.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 0-.146-.336l-4.018-4.018A.5.5 0 0 0 15 2.5Z"></path><path d="M4.53 12.24a.75.75 0 0 1-.039 1.06l-2.639 2.45 2.64 2.45a.75.75 0 1 1-1.022 1.1l-3.23-3a.75.75 0 0 1 0-1.1l3.23-3a.75.75 0 0 1 1.06.04Zm3.979 1.06a.75.75 0 1 1 1.02-1.1l3.231 3a.75.75 0 0 1 0 1.1l-3.23 3a.75.75 0 1 1-1.021-1.1l2.639-2.45-2.64-2.45Z"></path></svg>
+          <span>View source</span>
+        </a>
+      </li></ul>
+  </div>
+</div><section id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Link to this heading">#</a></h1>
+<section id="v0-7">
+<h2>v0.7<a class="headerlink" href="#v0-7" title="Link to this heading">#</a></h2>
+<section id="id1">
+<h3><a class="reference external" href="https://github.com/EphraimCompEng/multiplied/releases/tag/v0.7.2">v0.7.2</a><a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<p>Added:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>hoist() for Dadda tree mapping (<a class="reference external" href="https://github.com/EphraimCompEng/multiplied/commit/7a775b4">7a775b4</a>)</p></li>
+</ul>
+</div></blockquote>
+<p>Documentation:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Get Started Page complete (<a class="reference external" href="https://github.com/EphraimCompEng/multiplied/commit/e5e7527">e5e7527</a>)</p></li>
+<li><p>User guide landing page + data structure guide (<a class="reference external" href="https://github.com/EphraimCompEng/multiplied/commit/3888354">3888354</a>)</p></li>
+</ul>
+</div></blockquote>
+<p>Bug Fixes:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Harmonised dataframe column index scheme (<a class="reference external" href="https://github.com/EphraimCompEng/multiplied/commit/9a9ac50">9a9ac50</a>)</p></li>
+<li><p>Inconsistent state updates (<a class="reference external" href="https://github.com/EphraimCompEng/multiplied/commit/46f885b">46f885b</a>)</p></li>
+</ul>
+</div></blockquote>
+<p>See full changelog <a class="reference external" href="https://github.com/EphraimCompEng/multiplied/pull/105">here</a></p>
+</section>
+<section id="id3">
+<h3><a class="reference external" href="https://github.com/EphraimCompEng/multiplied/releases/tag/v0.7.1">v0.7.1</a><a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p>Updates:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Setup “ACT” For Local Github Actions Testing (<a class="reference external" href="https://github.com/EphraimCompEng/multiplied/commit/5fa50b0eebb9b0aeef20611905786e4a901c70d0">5fa50b0</a>)</p></li>
+<li><p>Run Tests Before Merge / Publish (<a class="reference external" href="https://github.com/EphraimCompEng/multiplied/commit/bb9a7cf7a47eaf4b73827e9515ee2e6364ab5acd">bb9a7cf</a>)</p></li>
+<li><p>Update Docstrings to Numpy Style (<a class="reference external" href="https://github.com/EphraimCompEng/multiplied/commit/84c113dfd2a473ca0f8ad84e0e429fee2c2016be">84c113d</a>)</p></li>
+<li><p>Adopt PyTest (<a class="reference external" href="https://github.com/EphraimCompEng/multiplied/commit/3e02e1f9b33ad1ca50e86c25cd6d7d0aa0d9c71d">3e02e1f</a>)</p></li>
+<li><p>Add .md Sphinx Support (<a class="reference external" href="https://github.com/EphraimCompEng/multiplied/commit/5f5916d75f05abfa942938fdc8c2add4f55b7e5b">5f5916d</a>)</p></li>
+</ul>
+</div></blockquote>
+<p>Looking forward:</p>
+<blockquote>
+<div><p>[ Main Focus ]</p>
+<ul class="simple">
+<li><p>Expand Analysis</p></li>
+<li><p>Documentation:</p>
+<ul>
+<li><p>User Guide</p></li>
+<li><p>Improve Get Started Page</p></li>
+</ul>
+</li>
+</ul>
+<p>[ Ongoing ]</p>
+<ul class="simple">
+<li><p>Refactor tests</p></li>
+<li><p>Map Object Coordinate Refactor</p></li>
+<li><p>Data Structure Optimisation</p></li>
+<li><p>16-bit Algorithm Support</p></li>
+</ul>
+</div></blockquote>
+<p>See full changelog <a class="reference external" href="https://github.com/EphraimCompEng/multiplied/pull/104">here</a></p>
+</section>
+</section>
 <section id="v0-6">
 <h2>v0.6<a class="headerlink" href="#v0-6" title="Link to this heading">#</a></h2>
-<section id="id1">
-<h3><a class="reference external" href="https://github.com/EphraimCompEng/multiplied/releases/tag/v0.6.2">v0.6.2</a><a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<section id="id5">
+<h3><a class="reference external" href="https://github.com/EphraimCompEng/multiplied/releases/tag/v0.6.2">v0.6.2</a><a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
 <p>Bug Fixes:</p>
 <blockquote>
 <div><ul class="simple">
@@ -147,10 +235,10 @@
 <li><p>Dark plot background inconsistencies (<a class="reference external" href="https://github.com/EphraimCompEng/multiplied/commit/d95bbda239ef04ee959091dd7fe0339777ab003d">d95bbda</a>)</p></li>
 </ul>
 </div></blockquote>
-<p>See full changelog <a class="reference external" href="https://github.com/EphraimCompEng/multiplied/commits/v0.6.2">here</a>.</p>
+<p>See full changelog <a class="reference external" href="https://github.com/EphraimCompEng/multiplied/pull/96">here</a>.</p>
 </section>
-<section id="id2">
-<h3><a class="reference external" href="https://github.com/EphraimCompEng/multiplied/releases/tag/v0.6.0">v0.6.0</a><a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<section id="id7">
+<h3><a class="reference external" href="https://github.com/EphraimCompEng/multiplied/releases/tag/v0.6.0">v0.6.0</a><a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
 <p>Updates:</p>
 <blockquote>
 <div><ul class="simple">
@@ -177,13 +265,13 @@
 <li><p>16-bit Algorithm Support</p></li>
 </ul>
 </div></blockquote>
-<p>See full changelog <a class="reference external" href="https://github.com/EphraimCompEng/multiplied/commits/v0.6.0">here</a>.</p>
+<p>See full changelog <a class="reference external" href="https://github.com/EphraimCompEng/multiplied/pull/91">here</a>.</p>
 </section>
 </section>
 <section id="v0-5">
 <h2>v0.5<a class="headerlink" href="#v0-5" title="Link to this heading">#</a></h2>
-<section id="id4">
-<h3><a class="reference external" href="https://github.com/EphraimCompEng/multiplied/releases/tag/v0.5.0">v0.5.0</a><a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<section id="id9">
+<h3><a class="reference external" href="https://github.com/EphraimCompEng/multiplied/releases/tag/v0.5.0">v0.5.0</a><a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
 <p>Updates:</p>
 <blockquote>
 <div><ul class="simple">
@@ -212,13 +300,13 @@
 <li><p>16-bit Algorithm Support</p></li>
 </ul>
 </div></blockquote>
-<p>See full changelog <a class="reference external" href="https://github.com/EphraimCompEng/multiplied/commits/v0.5.0">here</a>.</p>
+<p>See full changelog <a class="reference external" href="https://github.com/EphraimCompEng/multiplied/pull/69">here</a>.</p>
 </section>
 </section>
 <section id="v0-4">
 <h2>v0.4<a class="headerlink" href="#v0-4" title="Link to this heading">#</a></h2>
-<section id="id6">
-<h3><a class="reference external" href="https://github.com/EphraimCompEng/multiplied/releases/tag/v0.4.0">v0.4.0</a><a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<section id="id11">
+<h3><a class="reference external" href="https://github.com/EphraimCompEng/multiplied/releases/tag/v0.4.0">v0.4.0</a><a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
 <p>Updates:</p>
 <blockquote>
 <div><ul class="simple">
@@ -249,8 +337,8 @@
 </section>
 <section id="v0-3">
 <h2>v0.3<a class="headerlink" href="#v0-3" title="Link to this heading">#</a></h2>
-<section id="id8">
-<h3><a class="reference external" href="https://github.com/EphraimCompEng/multiplied/releases/tag/v0.3.3">v0.3.3</a><a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<section id="id13">
+<h3><a class="reference external" href="https://github.com/EphraimCompEng/multiplied/releases/tag/v0.3.3">v0.3.3</a><a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
 <p>Updates:</p>
 <blockquote>
 <div><ul class="simple">
@@ -281,8 +369,8 @@
 </div></blockquote>
 <p>See full changelog <a class="reference external" href="https://github.com/EphraimCompEng/multiplied/commits/v0.3.3">here</a>.</p>
 </section>
-<section id="id10">
-<h3><a class="reference external" href="https://github.com/EphraimCompEng/multiplied/releases/tag/v0.3.0">v0.3.0</a><a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<section id="id15">
+<h3><a class="reference external" href="https://github.com/EphraimCompEng/multiplied/releases/tag/v0.3.0">v0.3.0</a><a class="headerlink" href="#id15" title="Link to this heading">#</a></h3>
 <p>Updates:</p>
 <blockquote>
 <div><ul class="simple">
@@ -315,8 +403,8 @@
 </section>
 <section id="v0-2">
 <h2>v0.2<a class="headerlink" href="#v0-2" title="Link to this heading">#</a></h2>
-<section id="id13">
-<h3><a class="reference external" href="https://github.com/EphraimCompEng/multiplied/releases/tag/v0.2.0">v0.2.0</a><a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
+<section id="id18">
+<h3><a class="reference external" href="https://github.com/EphraimCompEng/multiplied/releases/tag/v0.2.0">v0.2.0</a><a class="headerlink" href="#id18" title="Link to this heading">#</a></h3>
 <p>Updates:</p>
 <blockquote>
 <div><ul class="simple">
@@ -345,8 +433,8 @@
 </section>
 <section id="v0-1">
 <h2>v0.1<a class="headerlink" href="#v0-1" title="Link to this heading">#</a></h2>
-<section id="id14">
-<h3><a class="reference external" href="https://github.com/EphraimCompEng/multiplied/releases/tag/v0.1.1">v0.1.1</a><a class="headerlink" href="#id14" title="Link to this heading">#</a></h3>
+<section id="id19">
+<h3><a class="reference external" href="https://github.com/EphraimCompEng/multiplied/releases/tag/v0.1.1">v0.1.1</a><a class="headerlink" href="#id19" title="Link to this heading">#</a></h3>
 <p>This patch is focused on documentation and testing the api reference site locally</p>
 <p>Updates:</p>
 <blockquote>
@@ -359,8 +447,8 @@
 </ul>
 </div></blockquote>
 </section>
-<section id="id15">
-<h3><a class="reference external" href="https://github.com/EphraimCompEng/multiplied/releases/tag/v0.1.0">v0.1.0</a><a class="headerlink" href="#id15" title="Link to this heading">#</a></h3>
+<section id="id20">
+<h3><a class="reference external" href="https://github.com/EphraimCompEng/multiplied/releases/tag/v0.1.0">v0.1.0</a><a class="headerlink" href="#id20" title="Link to this heading">#</a></h3>
 <p>This release is a complete refactor of the original script, widening it’s scope and turning it into a library.</p>
 <p>Added:</p>
 <blockquote>
@@ -384,8 +472,8 @@
 </article><footer class="bz-article-footer">
   
   
-    <nav class="bz-related-pages" aria-label="Related pages navigation"><a class="bz-related-pages-previous" href="guide/overview.html" rel="prev">
-    <span>Previous</span><span class="bz-related-pages-title">multiplied Overview</span></a><a class="bz-related-pages-next" href="reference.html" rel="next">
+    <nav class="bz-related-pages" aria-label="Related pages navigation"><a class="bz-related-pages-previous" href="guide/visualisation.html" rel="prev">
+    <span>Previous</span><span class="bz-related-pages-title">Visualisation</span></a><a class="bz-related-pages-next" href="reference.html" rel="next">
     <span>Next</span>
     <span class="bz-related-pages-title">API Reference</span>
   </a></nav>
@@ -396,31 +484,36 @@
   
     <nav class="bz-sidebar-toc" aria-label="Table of contents">
   <p>On this page</p><ul>
+<li><a class="reference internal" href="#v0-7">v0​.7</a><ul>
+<li><a class="reference internal" href="#id1">v0​.7​.2</a></li>
+<li><a class="reference internal" href="#id3">v0​.7​.1</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#v0-6">v0​.6</a><ul>
-<li><a class="reference internal" href="#id1">v0​.6​.2</a></li>
-<li><a class="reference internal" href="#id2">v0​.6​.0</a></li>
+<li><a class="reference internal" href="#id5">v0​.6​.2</a></li>
+<li><a class="reference internal" href="#id7">v0​.6​.0</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v0-5">v0​.5</a><ul>
-<li><a class="reference internal" href="#id4">v0​.5​.0</a></li>
+<li><a class="reference internal" href="#id9">v0​.5​.0</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v0-4">v0​.4</a><ul>
-<li><a class="reference internal" href="#id6">v0​.4​.0</a></li>
+<li><a class="reference internal" href="#id11">v0​.4​.0</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v0-3">v0​.3</a><ul>
-<li><a class="reference internal" href="#id8">v0​.3​.3</a></li>
-<li><a class="reference internal" href="#id10">v0​.3​.0</a></li>
+<li><a class="reference internal" href="#id13">v0​.3​.3</a></li>
+<li><a class="reference internal" href="#id15">v0​.3​.0</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v0-2">v0​.2</a><ul>
-<li><a class="reference internal" href="#id13">v0​.2​.0</a></li>
+<li><a class="reference internal" href="#id18">v0​.2​.0</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v0-1">v0​.1</a><ul>
-<li><a class="reference internal" href="#id14">v0​.1​.1</a></li>
-<li><a class="reference internal" href="#id15">v0​.1​.0</a></li>
+<li><a class="reference internal" href="#id19">v0​.1​.1</a></li>
+<li><a class="reference internal" href="#id20">v0​.1​.0</a></li>
 </ul>
 </li>
 </ul></nav>
@@ -463,7 +556,7 @@
 
   
     <div class="bz-edit-this-page">
-  <a href="https://github.com/EphraimCompEng/multiplied/edit/main/changelog.rst">
+  <a href="https://github.com/EphraimCompEng/multiplied/edit/main/changelog.rst" rel="edit">
     Edit this page
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8.22 2.97a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l2.97-2.97H3.75a.75.75 0 0 1 0-1.5h7.44L8.22 4.03a.75.75 0 0 1 0-1.06Z"></path></svg>
   </a>
@@ -492,5 +585,5 @@
   <label class="bz-overlay bz-overlay-primary" for="bz-sidebar-primary"></label>
   <label class="bz-overlay bz-overlay-secondary" for="bz-sidebar-secondary"></label>
   <input type="checkbox" name="bz-sidebar-primary" id="bz-sidebar-primary" aria-label="Toggle section navigation">
-  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="_static/documentation_options.js?v=fe7df9b0"></script><script src="_static/doctools.js?v=fd6eb6e6"></script><script src="_static/sphinx_highlight.js?v=6ffebe34"></script></body>
+  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="_static/documentation_options.js?v=6dfdf7c3"></script><script src="_static/doctools.js?v=fd6eb6e6"></script><script src="_static/sphinx_highlight.js?v=6ffebe34"></script><script src="_static/clipboard.min.js?v=a7894cd8"></script><script src="_static/copybutton.js?v=f281be69"></script><script src="_static/design-tabs.js?v=f930bc37"></script></body>
 </html>

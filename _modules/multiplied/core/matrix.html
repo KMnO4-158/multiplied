@@ -9,12 +9,15 @@
       ? (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
       : m;
   })();
-  </script><link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8e8a900e" /><link rel="stylesheet" type="text/css" href="../../../_static/styles/breeze.css?v=b3a7ba9a" /><script defer="defer" src="../../../_static/scripts/breeze.js?v=af6c55ec"></script></head>
+  </script><link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8e8a900e" /><link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" /><link rel="stylesheet" type="text/css" href="../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" /><link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" /><link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=5037cee9" /><link rel="stylesheet" type="text/css" href="../../../_static/styles/breeze.css?v=227fd4f7" /><script defer="defer" src="../../../_static/scripts/breeze.js?v=dac9f8c6"></script></head>
 <body>
   
   
   <div class="bz-skip-to-content"><a href="#bz-main-content">Skip to main content</a></div><header class="bz-header-main">
-  <div class="bz-header-start"><a class="bz-header-brand" href="../../../index.html"><span>multiplied</span>
+  <div class="bz-header-start"><a class="bz-header-brand" href="../../../index.html">
+  
+  
+  <span>multiplied</span>
 </a>
   </div>
   <div class="bz-header-end"><div id="docsearch" class="bz-search-button">
@@ -67,7 +70,7 @@
       d="M3.75 6.75h16.5M3.75 12H12m-8.25 5.25h12.5"
     />
   </svg>
-</label><ul><li class="toctree-l1"><a class="reference internal" href="../../../intro.html">Introduction</a></li><li class="toctree-l1"><a class="reference internal" href="../../../start.html">Get Started</a></li><li class="toctree-l1"><a class="reference internal" href="../../../guide.html">User Guide</a></li><li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li><li class="toctree-l1"><a class="reference internal" href="../../../reference.html">API Reference</a></li><li class="toctree-l1"><a class="reference internal" href="../../../contact.html">Contact</a></li></ul><div class="bz-dropdown">
+</label><ul><li class="toctree-l1"><a class="reference internal" href="../../../intro.html">Introduction</a></li><li class="toctree-l1"><a class="reference internal" href="../../../start.html">Getting Started</a></li><li class="toctree-l1"><a class="reference internal" href="../../../guide.html">User Guide</a></li><li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li><li class="toctree-l1"><a class="reference internal" href="../../../reference.html">API Reference</a></li><li class="toctree-l1"><a class="reference internal" href="../../../contact.html">Contact</a></li></ul><div class="bz-dropdown">
     <button aria-haspopup="true" aria-expanded="false">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
         <g
@@ -122,16 +125,13 @@
       d="M3.75 6.75H20.25 M11.25 12H20.25 M7.75 17.25H20.25"
     />
   </svg>
-</label></header><article class="bz-article-main" role="main">
-  <h1>Source code for multiplied.core.matrix</h1><div class="highlight"><pre>
+</label></header><article class="bz-article-main" role="main"><h1>Source code for multiplied.core.matrix</h1><div class="highlight"><pre>
 <span></span><span class="c1">################################################</span>
 <span class="c1"># Classes to Represent And Manage Nested Lists #</span>
 <span class="c1">################################################</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">multiplied</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mp</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterator</span>
-
 
 
 <span class="c1"># ! Review slices and their integration to the wider library</span>
@@ -150,6 +150,7 @@
 <span class="sd">    matrix : list[Any]</span>
 <span class="sd">        A slice from any Multiplied object.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="c1"># TODO</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    &gt;&gt;&gt; Matrix[start:end]</span>
@@ -207,6 +208,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">slice</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span></div>
 
 
+
 <span class="c1"># ! Matrix.x_checksum is only useful in the context of Algorithm.__reduce()</span>
 <span class="c1"># - Maybe use bounds to create x_checksum within __reduce()&#39;s unit collection</span>
 <span class="c1"># - OR within, the same scope, use bounds to execute a given arithmetic unit</span>
@@ -224,9 +226,13 @@
 <span class="sd">    b : int=0, optional</span>
 <span class="sd">        Second operand used in PPM</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="nb">int</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
-        <span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-        <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">source</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">a</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">b</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="c1"># x_checksum=[], # Add handling if supplied</span>
         <span class="c1"># y_checksum=[], # Add handling if supplied</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -266,25 +272,24 @@
         <span class="c1">#         else:</span>
         <span class="c1">#             ch += 1</span>
 
-            <span class="c1"># self.x_checksum = x_checksum</span>
-            <span class="c1"># self.y_checksum = y_checksum</span>
+        <span class="c1"># self.x_checksum = x_checksum</span>
+        <span class="c1"># self.y_checksum = y_checksum</span>
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__zero_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bits</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Build a wallace tree for a bitwidth of self.bits&quot;&quot;&quot;</span>
-        <span class="n">row</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;0&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">bits</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;0&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">bits</span>
         <span class="n">matrix</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bits</span><span class="p">):</span>
-            <span class="n">matrix</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s2">&quot;_&quot;</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">bits</span><span class="o">-</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="n">row</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;_&quot;</span><span class="p">]</span><span class="o">*</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">matrix</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s2">&quot;_&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">bits</span> <span class="o">-</span> <span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="n">row</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;_&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">i</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">matrix</span>
         <span class="k">return</span> <span class="kc">None</span>
-
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__build_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operand_a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">operand_b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Build Logical AND matrix using source operands and it&#39;s checksum.&quot;&quot;&quot;</span>
 
         <span class="n">mp</span><span class="o">.</span><span class="n">validate_bitwidth</span><span class="p">((</span><span class="n">bits</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bits</span><span class="p">))</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">operand_a</span> <span class="o">&gt;</span> <span class="p">((</span><span class="mi">2</span><span class="o">**</span><span class="n">bits</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="n">operand_b</span> <span class="o">&gt;</span> <span class="p">((</span><span class="mi">2</span><span class="o">**</span><span class="n">bits</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">operand_a</span> <span class="o">&gt;</span> <span class="p">((</span><span class="mi">2</span><span class="o">**</span><span class="n">bits</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="n">operand_b</span> <span class="o">&gt;</span> <span class="p">((</span><span class="mi">2</span><span class="o">**</span><span class="n">bits</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Operand bit width exceeds matrix bit width&quot;</span><span class="p">)</span>
 
         <span class="c1"># -- catch multiply by zero ---------------------------------</span>
@@ -294,24 +299,23 @@
             <span class="c1"># self.x_checksum = [0]*(bits*2)</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-
         <span class="c1"># -- generate -----------------------------------------------</span>
         <span class="c1"># convert to binary, removing &#39;0b&#39; and padding with zeros</span>
         <span class="n">a</span> <span class="o">=</span> <span class="nb">bin</span><span class="p">(</span><span class="n">operand_a</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="n">bits</span><span class="p">)</span>
         <span class="n">b</span> <span class="o">=</span> <span class="nb">bin</span><span class="p">(</span><span class="n">operand_b</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="n">bits</span><span class="p">)</span>
         <span class="c1"># y_checksum = [0]*bits</span>
         <span class="c1"># x_checksum = [0]*(bits*2)</span>
-        <span class="n">matrix</span>   <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bits</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;0&#39;</span><span class="p">:</span>
-                <span class="n">matrix</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s2">&quot;_&quot;</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;0&#39;</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">bits</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;_&quot;</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">bits</span><span class="o">-</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
-            <span class="k">elif</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;1&#39;</span><span class="p">:</span>
-                <span class="n">matrix</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s2">&quot;_&quot;</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;_&quot;</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">bits</span><span class="o">-</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">matrix</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bits</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;0&quot;</span><span class="p">:</span>
+                <span class="n">matrix</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s2">&quot;_&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;0&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">bits</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;_&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">bits</span> <span class="o">-</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span>
+                <span class="n">matrix</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s2">&quot;_&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;_&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">bits</span> <span class="o">-</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
                 <span class="c1"># y_checksum[i] = 1</span>
                 <span class="c1"># for j, bit in enumerate(list(a)):</span>
-                    <span class="c1"># x_checksum[i+j] = 1</span>
+                <span class="c1"># x_checksum[i+j] = 1</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span>     <span class="o">=</span> <span class="n">matrix</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">matrix</span>
         <span class="c1"># self.y_checksum = y_checksum</span>
         <span class="c1"># self.x_checksum = x_checksum</span>
         <span class="k">return</span> <span class="kc">None</span>
@@ -319,7 +323,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">__checksum</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate checksums for rows and columns of the matrix&quot;&quot;&quot;</span>
 
-        <span class="n">row_len</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bits</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span>
+        <span class="n">row_len</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bits</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span>
         <span class="n">y_checksum</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">bits</span>
         <span class="n">x_checksum</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">row_len</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">):</span>
@@ -328,10 +332,10 @@
 
             <span class="n">ch</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">while</span> <span class="n">ch</span> <span class="o">&lt;</span> <span class="n">row_len</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;0&#39;</span> <span class="ow">or</span> <span class="n">row</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;1&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;0&quot;</span> <span class="ow">or</span> <span class="n">row</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span>
                     <span class="n">y_checksum</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
                     <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ch</span><span class="p">,</span> <span class="n">row_len</span><span class="p">):</span>
-                        <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;_&#39;</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;_&quot;</span><span class="p">:</span>
                             <span class="k">break</span>
                         <span class="n">x_checksum</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
                     <span class="k">break</span>
@@ -342,11 +346,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">y_checksum</span> <span class="o">=</span> <span class="n">y_checksum</span>
         <span class="k">return</span> <span class="kc">None</span>
 
-
 <div class="viewcode-block" id="Matrix.resolve_rmap">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.Matrix.resolve_rmap">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">resolve_rmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">ignore_zeros</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">mp</span><span class="o">.</span><span class="n">Map</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">resolve_rmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">ignore_zeros</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">mp</span><span class="o">.</span><span class="n">Map</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Find empty rows, create simple map to efficiently pack rows</span>
 
 <span class="sd">        Parameters</span>
@@ -361,15 +363,15 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">option</span> <span class="o">=</span> <span class="s1">&#39;0&#39;</span> <span class="k">if</span> <span class="n">ignore_zeros</span> <span class="k">else</span> <span class="s1">&#39;_&#39;</span>
+        <span class="n">option</span> <span class="o">=</span> <span class="s2">&quot;0&quot;</span> <span class="k">if</span> <span class="n">ignore_zeros</span> <span class="k">else</span> <span class="s2">&quot;_&quot;</span>
         <span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">rmap</span>   <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">rmap</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bits</span><span class="p">):</span>
-            <span class="k">if</span> <span class="nb">all</span><span class="p">([</span><span class="n">bit</span> <span class="o">==</span> <span class="s1">&#39;_&#39;</span> <span class="ow">and</span> <span class="n">bit</span> <span class="o">!=</span> <span class="n">option</span> <span class="k">for</span> <span class="n">bit</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">i</span><span class="p">]]):</span>
+            <span class="k">if</span> <span class="nb">all</span><span class="p">([</span><span class="n">bit</span> <span class="o">==</span> <span class="s2">&quot;_&quot;</span> <span class="ow">and</span> <span class="n">bit</span> <span class="o">!=</span> <span class="n">option</span> <span class="k">for</span> <span class="n">bit</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">i</span><span class="p">]]):</span>
                 <span class="n">offset</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="n">val</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">val</span> <span class="o">=</span> <span class="p">((</span><span class="n">offset</span> <span class="o">^</span> <span class="mi">255</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="c1"># 2s complement</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="p">(</span><span class="n">offset</span> <span class="o">^</span> <span class="mi">255</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c1"># 2s complement</span>
             <span class="n">rmap</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">val</span><span class="si">:</span><span class="s2">02X</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:])</span>
         <span class="k">return</span> <span class="n">mp</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">rmap</span><span class="p">)</span></div>
 
@@ -403,10 +405,13 @@
             <span class="c1"># matrix = deepcopy(self.matrix) # TODO make this modify in-place</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bits</span><span class="p">):</span>
                 <span class="c1"># convert signed hex to 2s complement if -ve</span>
-                <span class="k">if</span> <span class="p">((</span><span class="n">val</span> <span class="o">:=</span> <span class="nb">int</span><span class="p">(</span><span class="n">rmap</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="mi">16</span><span class="p">))</span> <span class="o">&amp;</span> <span class="mi">128</span><span class="p">):</span>
-                    <span class="n">val</span> <span class="o">=</span> <span class="p">(</span><span class="o">~</span><span class="n">val</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">255</span> <span class="c1"># 2s complement</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">val</span> <span class="o">:=</span> <span class="nb">int</span><span class="p">(</span><span class="n">rmap</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="mi">16</span><span class="p">))</span> <span class="o">&amp;</span> <span class="mi">128</span><span class="p">:</span>
+                    <span class="n">val</span> <span class="o">=</span> <span class="p">(</span><span class="o">~</span><span class="n">val</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">255</span>  <span class="c1"># 2s complement</span>
                 <span class="c1"># matrix[i]     = [&quot;_&quot;] * (self.bits*2)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="n">val</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="n">val</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="n">val</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="n">val</span><span class="p">],</span>
+                <span class="p">)</span>
 
                 <span class="c1"># deprecate checksum in favor of coordinates</span>
                 <span class="c1"># self.y_checksum[i]     = 0</span>
@@ -420,15 +425,14 @@
         <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bits</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bits</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">):</span>
                 <span class="c1"># convert signed hex to 2s complement if -ve</span>
-                <span class="k">if</span> <span class="p">((</span><span class="n">val</span> <span class="o">:=</span> <span class="nb">int</span><span class="p">(</span><span class="n">map_</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">],</span> <span class="mi">16</span><span class="p">))</span> <span class="o">&amp;</span> <span class="mi">128</span><span class="p">):</span>
-                    <span class="n">val</span> <span class="o">=</span> <span class="p">(</span><span class="o">~</span><span class="n">val</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">255</span> <span class="c1"># 2s complement</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">val</span> <span class="o">:=</span> <span class="nb">int</span><span class="p">(</span><span class="n">map_</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">],</span> <span class="mi">16</span><span class="p">))</span> <span class="o">&amp;</span> <span class="mi">128</span><span class="p">:</span>
+                    <span class="n">val</span> <span class="o">=</span> <span class="p">(</span><span class="o">~</span><span class="n">val</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">255</span>  <span class="c1"># 2s complement</span>
                 <span class="k">if</span> <span class="n">val</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">y</span><span class="o">-</span><span class="n">val</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">y</span> <span class="o">-</span> <span class="n">val</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">checksum</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">bits</span>
         <span class="k">return</span> <span class="kc">None</span></div>
-
 
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -467,6 +471,7 @@
 
 <span class="c1"># -- helper functions -----------------------------------------------</span>
 
+
 <div class="viewcode-block" id="empty_rows">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.empty_rows">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">empty_rows</span><span class="p">(</span><span class="n">matrix</span><span class="p">:</span> <span class="n">Matrix</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
@@ -474,8 +479,9 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">Matrix</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected Matrix, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-    <span class="n">empty_row</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_&#39;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">matrix</span><span class="o">.</span><span class="n">bits</span><span class="o">*</span><span class="mi">2</span><span class="p">)]</span>
+    <span class="n">empty_row</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;_&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">matrix</span><span class="o">.</span><span class="n">bits</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)]</span>
     <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="n">matrix</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">empty_row</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">matrix</span><span class="o">.</span><span class="n">bits</span><span class="p">)])</span></div>
+
 
 
 <div class="viewcode-block" id="empty_matrix">
@@ -501,17 +507,19 @@
     <span class="n">mp</span><span class="o">.</span><span class="n">validate_bitwidth</span><span class="p">(</span><span class="n">bits</span><span class="p">)</span>
     <span class="n">matrix</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bits</span><span class="p">):</span>
-        <span class="n">matrix</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s2">&quot;_&quot;</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">bits</span><span class="o">*</span><span class="mi">2</span><span class="p">))</span>
+        <span class="n">matrix</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s2">&quot;_&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">bits</span> <span class="o">*</span> <span class="mi">2</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">matrix</span></div>
+
 
 
 <span class="c1"># TODO: update example</span>
 <div class="viewcode-block" id="matrix_merge">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.matrix_merge">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">matrix_merge</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Matrix</span><span class="p">],</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">matrix_merge</span><span class="p">(</span>
+    <span class="n">source</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Matrix</span><span class="p">],</span>
     <span class="n">bounds</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]],</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">carry</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">carry</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Matrix</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Merge multiple matrices into a single matrix using pre calculated bounds</span>
 
@@ -543,32 +551,30 @@
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;All values of source must be of type Matrix&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">source</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Source must contain at least two matrices&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bounds</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bounds</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
         <span class="c1"># new error message needed</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Source must contain the same number of matrices as bounds&quot;</span><span class="p">)</span>
-
 
     <span class="n">bits</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">bits</span>
     <span class="n">output</span> <span class="o">=</span> <span class="n">empty_matrix</span><span class="p">(</span><span class="n">bits</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">unit</span><span class="p">,</span> <span class="n">matrix</span> <span class="ow">in</span> <span class="n">source</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">bounds</span><span class="p">[</span><span class="n">unit</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;_&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">bounds</span><span class="p">[</span><span class="n">unit</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;_&quot;</span><span class="p">:</span>
             <span class="k">continue</span>
 
         <span class="c1"># new bounding box covering whole result</span>
         <span class="n">box_left</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">bounds</span><span class="p">[</span><span class="n">unit</span><span class="p">])</span>
         <span class="n">box_right</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">bounds</span><span class="p">[</span><span class="n">unit</span><span class="p">])</span>
         <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="n">unit</span><span class="p">])</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-
+        <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="n">unit</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
             <span class="c1"># ..., left coord : right coord, ...</span>
-            <span class="n">left</span><span class="p">,</span> <span class="n">right</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="n">unit</span><span class="p">][</span><span class="n">i</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="n">unit</span><span class="p">][</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">left</span><span class="p">,</span> <span class="n">right</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="n">unit</span><span class="p">][</span><span class="n">i</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="n">unit</span><span class="p">][</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">y</span> <span class="o">:=</span> <span class="n">left</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">!=</span> <span class="n">right</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Missing bound pair for row </span><span class="si">{</span><span class="n">y</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">box_left</span><span class="p">,</span> <span class="n">box_right</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">box_left</span><span class="p">,</span> <span class="n">box_right</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
                 <span class="n">output</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">bounds</span><span class="p">[</span><span class="n">unit</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">bounds</span><span class="p">[</span><span class="n">unit</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">y</span> <span class="o">==</span>  <span class="n">bounds</span><span class="p">[</span><span class="n">unit</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;=</span><span class="n">box_left</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-                    <span class="n">cout</span> <span class="o">=</span> <span class="n">box_left</span><span class="o">-</span><span class="mi">1</span>
+                <span class="k">if</span> <span class="n">y</span> <span class="o">==</span> <span class="n">bounds</span><span class="p">[</span><span class="n">unit</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">box_left</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">cout</span> <span class="o">=</span> <span class="n">box_left</span> <span class="o">-</span> <span class="mi">1</span>
                     <span class="n">output</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">cout</span><span class="p">]</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">cout</span><span class="p">]</span>
 
             <span class="n">i</span> <span class="o">+=</span> <span class="mi">2</span>
@@ -648,5 +654,5 @@
   <label class="bz-overlay bz-overlay-primary" for="bz-sidebar-primary"></label>
   <label class="bz-overlay bz-overlay-secondary" for="bz-sidebar-secondary"></label>
   <input type="checkbox" name="bz-sidebar-primary" id="bz-sidebar-primary" aria-label="Toggle section navigation">
-  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../../../_static/documentation_options.js?v=fe7df9b0"></script><script src="../../../_static/doctools.js?v=fd6eb6e6"></script><script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script></body>
+  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../../../_static/documentation_options.js?v=6dfdf7c3"></script><script src="../../../_static/doctools.js?v=fd6eb6e6"></script><script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script><script src="../../../_static/clipboard.min.js?v=a7894cd8"></script><script src="../../../_static/copybutton.js?v=f281be69"></script><script src="../../../_static/design-tabs.js?v=f930bc37"></script></body>
 </html>

@@ -1,0 +1,20 @@
+/* no bullets and no default padding on the top-level toctree list */
+.toctree-wrapper > ul {
+  list-style: none;
+  margin: 0;
+  padding-left: 0; /* keep top-level items flush */
+}
+
+/* indent only nested lists (children of list items) */
+.toctree-wrapper li > ul {
+  padding-left: 40px; /* or use 2rem, adjust to taste */
+}
+
+/* spacing between items */
+.toctree-wrapper li {
+  margin: 0 0 0.5rem 0;
+}
+
+.toctree-wrapper a {
+  text-decoration: none;
+}

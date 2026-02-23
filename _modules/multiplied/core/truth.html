@@ -9,12 +9,15 @@
       ? (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
       : m;
   })();
-  </script><link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8e8a900e" /><link rel="stylesheet" type="text/css" href="../../../_static/styles/breeze.css?v=b3a7ba9a" /><script defer="defer" src="../../../_static/scripts/breeze.js?v=af6c55ec"></script></head>
+  </script><link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8e8a900e" /><link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" /><link rel="stylesheet" type="text/css" href="../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" /><link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" /><link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=5037cee9" /><link rel="stylesheet" type="text/css" href="../../../_static/styles/breeze.css?v=227fd4f7" /><script defer="defer" src="../../../_static/scripts/breeze.js?v=dac9f8c6"></script></head>
 <body>
   
   
   <div class="bz-skip-to-content"><a href="#bz-main-content">Skip to main content</a></div><header class="bz-header-main">
-  <div class="bz-header-start"><a class="bz-header-brand" href="../../../index.html"><span>multiplied</span>
+  <div class="bz-header-start"><a class="bz-header-brand" href="../../../index.html">
+  
+  
+  <span>multiplied</span>
 </a>
   </div>
   <div class="bz-header-end"><div id="docsearch" class="bz-search-button">
@@ -67,7 +70,7 @@
       d="M3.75 6.75h16.5M3.75 12H12m-8.25 5.25h12.5"
     />
   </svg>
-</label><ul><li class="toctree-l1"><a class="reference internal" href="../../../intro.html">Introduction</a></li><li class="toctree-l1"><a class="reference internal" href="../../../start.html">Get Started</a></li><li class="toctree-l1"><a class="reference internal" href="../../../guide.html">User Guide</a></li><li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li><li class="toctree-l1"><a class="reference internal" href="../../../reference.html">API Reference</a></li><li class="toctree-l1"><a class="reference internal" href="../../../contact.html">Contact</a></li></ul><div class="bz-dropdown">
+</label><ul><li class="toctree-l1"><a class="reference internal" href="../../../intro.html">Introduction</a></li><li class="toctree-l1"><a class="reference internal" href="../../../start.html">Getting Started</a></li><li class="toctree-l1"><a class="reference internal" href="../../../guide.html">User Guide</a></li><li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li><li class="toctree-l1"><a class="reference internal" href="../../../reference.html">API Reference</a></li><li class="toctree-l1"><a class="reference internal" href="../../../contact.html">Contact</a></li></ul><div class="bz-dropdown">
     <button aria-haspopup="true" aria-expanded="false">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
         <g
@@ -122,8 +125,7 @@
       d="M3.75 6.75H20.25 M11.25 12H20.25 M7.75 17.25H20.25"
     />
   </svg>
-</label></header><article class="bz-article-main" role="main">
-  <h1>Source code for multiplied.core.truth</h1><div class="highlight"><pre>
+</label></header><article class="bz-article-main" role="main"><h1>Source code for multiplied.core.truth</h1><div class="highlight"><pre>
 <span></span><span class="c1">###################################</span>
 <span class="c1"># Generate Multiplier Truth Table #</span>
 <span class="c1">###################################</span>
@@ -133,7 +135,6 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">multiprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pool</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Generator</span>
-
 
 
 <span class="sd">&quot;&quot;&quot;</span>
@@ -146,8 +147,9 @@
 
 <div class="viewcode-block" id="truth_scope">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.truth_scope">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">truth_scope</span><span class="p">(</span><span class="n">domain_</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span><span class="nb">int</span><span class="p">],</span> <span class="n">range_</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span><span class="nb">int</span><span class="p">]</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span><span class="nb">int</span><span class="p">]]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">truth_scope</span><span class="p">(</span>
+    <span class="n">domain_</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">range_</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Yields (a, b) from domain such that it&#39;s product (ab) lies within range</span>
 
 <span class="sd">    Parameters</span>
@@ -185,10 +187,10 @@
 
     <span class="n">x</span> <span class="o">=</span> <span class="n">min_in</span>
     <span class="k">while</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">max_in</span><span class="p">:</span>
-        <span class="n">lower_bound</span> <span class="o">=</span> <span class="n">min_out</span><span class="o">//</span><span class="n">x</span> <span class="k">if</span> <span class="n">min_out</span><span class="o">//</span><span class="n">x</span> <span class="o">&gt;</span> <span class="n">min_in</span> <span class="k">else</span> <span class="n">min_in</span>
-        <span class="n">upper_bound</span> <span class="o">=</span> <span class="n">max_out</span><span class="o">//</span><span class="n">x</span> <span class="k">if</span> <span class="n">max_out</span><span class="o">//</span><span class="n">x</span> <span class="o">&lt;</span> <span class="n">max_in</span> <span class="k">else</span> <span class="n">max_in</span>
-        <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">lower_bound</span><span class="p">,</span> <span class="n">upper_bound</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">min_out</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">k</span> <span class="o">:=</span> <span class="n">x</span><span class="o">*</span><span class="n">y</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">max_out</span><span class="p">:</span>
+        <span class="n">lower_bound</span> <span class="o">=</span> <span class="n">min_out</span> <span class="o">//</span> <span class="n">x</span> <span class="k">if</span> <span class="n">min_out</span> <span class="o">//</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="n">min_in</span> <span class="k">else</span> <span class="n">min_in</span>
+        <span class="n">upper_bound</span> <span class="o">=</span> <span class="n">max_out</span> <span class="o">//</span> <span class="n">x</span> <span class="k">if</span> <span class="n">max_out</span> <span class="o">//</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">max_in</span> <span class="k">else</span> <span class="n">max_in</span>
+        <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">lower_bound</span><span class="p">,</span> <span class="n">upper_bound</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">min_out</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">k</span> <span class="o">:=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">max_out</span><span class="p">:</span>
                 <span class="k">yield</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">max_out</span> <span class="o">&lt;</span> <span class="n">k</span><span class="p">:</span>
                 <span class="k">break</span>
@@ -230,17 +232,16 @@
 
 <div class="viewcode-block" id="shallow_truth_table">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.shallow_truth_table">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">shallow_truth_table</span><span class="p">(</span><span class="n">scope</span><span class="p">:</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">],</span> <span class="n">alg</span><span class="p">:</span> <span class="n">Algorithm</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Matrix</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">shallow_truth_table</span><span class="p">(</span><span class="n">scope</span><span class="p">:</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">],</span> <span class="n">alg</span><span class="p">:</span> <span class="n">Algorithm</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Matrix</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return Generator of partial product matrices for all operand tuples&quot;&quot;&quot;</span>
 
     <span class="k">return</span> <span class="p">(</span><span class="n">Matrix</span><span class="p">(</span><span class="n">alg</span><span class="o">.</span><span class="n">bits</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">scope</span><span class="p">)</span></div>
 
 
+
 <div class="viewcode-block" id="truth_table">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.truth_table">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">truth_table</span><span class="p">(</span><span class="n">scope</span><span class="p">:</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">alg</span><span class="p">:</span> <span class="n">Algorithm</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">truth_table</span><span class="p">(</span><span class="n">scope</span><span class="p">:</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">alg</span><span class="p">:</span> <span class="n">Algorithm</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A generator which yields all stages of an algorithm for a given</span>
 <span class="sd">    set of operands a, b.</span>
 
@@ -270,30 +271,29 @@
 
 
 
-
 <span class="k">def</span><span class="w"> </span><span class="nf">_dataframe_operand_worker</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="o">*</span><span class="n">b</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span><span class="p">)</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_dataframe_pretty_worker</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span> <span class="p">,</span> <span class="n">alg</span><span class="p">:</span> <span class="n">Algorithm</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_dataframe_pretty_worker</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">alg</span><span class="p">:</span> <span class="n">Algorithm</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
     <span class="n">pretty</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">matrix</span> <span class="ow">in</span> <span class="n">alg</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-        <span class="n">pretty</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">pretty</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">pretty</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_dataframe_entry_worker</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span> <span class="p">,</span> <span class="n">alg</span><span class="p">:</span> <span class="n">Algorithm</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_dataframe_entry_worker</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">alg</span><span class="p">:</span> <span class="n">Algorithm</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
     <span class="n">entry</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">stage</span><span class="p">,</span> <span class="n">matrix</span> <span class="ow">in</span> <span class="n">alg</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">for</span> <span class="n">r</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">b</span><span class="p">,</span> <span class="n">bit</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">row</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
-                <span class="n">entry</span><span class="p">[</span>
-                    <span class="sa">f</span><span class="s2">&quot;stage_</span><span class="si">{</span><span class="n">stage</span><span class="si">}</span><span class="s2">_ppm_</span><span class="si">{</span><span class="n">r</span><span class="si">}</span><span class="s2">_b_</span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="p">]</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">bit</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="mi">1</span>
+                <span class="n">entry</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;s</span><span class="si">{</span><span class="n">stage</span><span class="si">}</span><span class="s2">_p</span><span class="si">{</span><span class="n">r</span><span class="si">}</span><span class="s2">_b</span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">bit</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="mi">1</span>
     <span class="k">return</span> <span class="n">entry</span>
+
 
 <div class="viewcode-block" id="truth_dataframe">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.truth_dataframe">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">truth_dataframe</span><span class="p">(</span><span class="n">scope</span><span class="p">:</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">alg</span><span class="p">:</span> <span class="n">Algorithm</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">truth_dataframe</span><span class="p">(</span><span class="n">scope</span><span class="p">:</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">alg</span><span class="p">:</span> <span class="n">Algorithm</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Execute algorithm using each pair of operands from the scope.</span>
 
 <span class="sd">    Parameters</span>
@@ -323,33 +323,36 @@
     <span class="c1"># index | a | b | b0 | b1 | ... | bn | b0 | b1 | ... | bn | ... | ppm_s0 | ppm_s1 | ...</span>
     <span class="c1"># 0     | 0 | 5 | 0  | 0  | ... | 0  | 0  | 0  | ... | 0  | ... |&#39;000...&#39;|&#39;000...&#39;| ...</span>
 
-
     <span class="c1"># -- duplicate generators for each pool -------------------------</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">tee</span>
+
     <span class="n">scope1</span><span class="p">,</span> <span class="n">scope2</span><span class="p">,</span> <span class="n">scope3</span> <span class="o">=</span> <span class="n">tee</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
     <span class="c1"># Uses every available core</span>
     <span class="k">with</span> <span class="n">Pool</span><span class="p">()</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
         <span class="n">operands</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">starmap</span><span class="p">(</span><span class="n">_dataframe_operand_worker</span><span class="p">,</span> <span class="n">scope1</span><span class="p">)</span>
-        <span class="n">pretty</span>   <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">starmap</span><span class="p">(</span><span class="n">_dataframe_pretty_worker</span><span class="p">,</span> <span class="p">((</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">alg</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">scope2</span><span class="p">))</span>
-        <span class="n">data</span>     <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">starmap</span><span class="p">(</span><span class="n">_dataframe_entry_worker</span><span class="p">,</span> <span class="p">((</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">alg</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">scope3</span><span class="p">))</span>
+        <span class="n">pretty</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">starmap</span><span class="p">(</span>
+            <span class="n">_dataframe_pretty_worker</span><span class="p">,</span> <span class="p">((</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">alg</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">scope2</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">starmap</span><span class="p">(</span><span class="n">_dataframe_entry_worker</span><span class="p">,</span> <span class="p">((</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">alg</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">scope3</span><span class="p">))</span>
         <span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="n">pool</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
-    <span class="n">col</span>       <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">alg</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">alg</span><span class="o">.</span><span class="n">bits</span> <span class="o">*</span> <span class="p">(</span><span class="n">alg</span><span class="o">.</span><span class="n">bits</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">))</span>
-    <span class="n">ppm_s_col</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">alg</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">col</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">alg</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">alg</span><span class="o">.</span><span class="n">bits</span> <span class="o">*</span> <span class="p">(</span><span class="n">alg</span><span class="o">.</span><span class="n">bits</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">ppm_s_col</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">alg</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">alg</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">alg</span><span class="o">.</span><span class="n">bits</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">((</span><span class="n">alg</span><span class="o">.</span><span class="n">bits</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-                <span class="n">col</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;stage_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">_ppm_</span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s2">_b_</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">((</span><span class="n">alg</span><span class="o">.</span><span class="n">bits</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                <span class="n">col</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;s</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">_p</span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s2">_b</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">ppm_s_col</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;ppm_s_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span>
 
-
-    <span class="n">operand_columns</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">operands</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;output&#39;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int32&#39;</span><span class="p">)</span>
-    <span class="n">pretty_columns</span>  <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">pretty</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">ppm_s_col</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;str&#39;</span><span class="p">)</span>
-    <span class="n">table</span>           <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">col</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int8&#39;</span><span class="p">)</span>
+    <span class="n">operand_columns</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="n">operands</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;output&quot;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int32&quot;</span>
+    <span class="p">)</span>
+    <span class="n">pretty_columns</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">pretty</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">ppm_s_col</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;str&quot;</span><span class="p">)</span>
+    <span class="n">table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">col</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;int8&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">operand_columns</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">pretty_columns</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
 
@@ -427,5 +430,5 @@
   <label class="bz-overlay bz-overlay-primary" for="bz-sidebar-primary"></label>
   <label class="bz-overlay bz-overlay-secondary" for="bz-sidebar-secondary"></label>
   <input type="checkbox" name="bz-sidebar-primary" id="bz-sidebar-primary" aria-label="Toggle section navigation">
-  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../../../_static/documentation_options.js?v=fe7df9b0"></script><script src="../../../_static/doctools.js?v=fd6eb6e6"></script><script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script></body>
+  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../../../_static/documentation_options.js?v=6dfdf7c3"></script><script src="../../../_static/doctools.js?v=fd6eb6e6"></script><script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script><script src="../../../_static/clipboard.min.js?v=a7894cd8"></script><script src="../../../_static/copybutton.js?v=f281be69"></script><script src="../../../_static/design-tabs.js?v=f930bc37"></script></body>
 </html>
