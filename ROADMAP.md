@@ -10,8 +10,9 @@
 
 ## Analysis
 
-- [ ] Find analytical tools outside of heatmaps
+- [x] Find analytical tools outside of heatmaps -- traces/oscilloscope
 - [ ] Basic analysis/visualisation of regions (bounding box)
+- [ ] Implement bit traces/oscilloscope analysis
 - [x] Apply analytical functions to all stages
 - [x] Apply analytical functions to each stage
 - [x] Heatmaps? plots? Advanced visualisation
@@ -20,10 +21,10 @@
 
 - [x] Sphinx implementation
 - [x] Setup sphinx -> web based API reference
-- [ ] Setup Github Wiki? For theory / internal systems
+- [ ] ~~Setup Github Wiki? For theory / internal systems~~
 - [x] Improve API ref site with nicer HTML/CSS
-- [ ] Add markdown(.md) Functionality to API ref
-- [ ] Complete user guide
+- [x] Add markdown(.md) Functionality to API ref
+- [x] Complete user guide
 - [ ] Complete advanced guide
 - [ ] Provide academic sources for algorithm docs
 
@@ -33,7 +34,7 @@ The sheer amount of data produced for 16-bit+ multiplier truth tables becomes
 astronomical. The program must be robust enough to deal with this efficiently
 before tackling:
 
-- [ ] Testing suite - Pytest
+- [x] Testing suite - Pytest
 - [x] Multiprocessing support to handle higher bit-widths
 - [ ] 16-bit unsaturated multiplier
 - [ ] 16-bit saturated multiplier
@@ -44,7 +45,7 @@ before tackling:
 
 ## Extend Built-in Algorithm Support
 
-Supported algoithms:
+Supported algorithms:
 
 - [x] [Wallace Tree](https://en.wikipedia.org/wiki/Wallace_tree)
 - [x] [Dadda multiplier](https://en.wikipedia.org/wiki/Dadda_multiplier)

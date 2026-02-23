@@ -5,7 +5,6 @@
 from collections.abc import Generator
 
 
-
 def chargen() -> Generator[str]:
     """Return Generator  characters from A to Z.
 
@@ -30,6 +29,7 @@ def chargen() -> Generator[str]:
     while True:
         yield chr((i % 26) + 65)
         i += 1
+
 
 def chartff(ch: str) -> Generator[str]:
     """Generator to flip flop between upper and lowercase characters.
@@ -66,10 +66,11 @@ def chartff(ch: str) -> Generator[str]:
 
     i = True if ord(ch) < 97 else False
     while True:
-        if i := not(i): # toggle flip flop
+        if i := not (i):  # toggle flip flop
             yield ch.lower()
         else:
             yield ch.upper()
+
 
 def allchars(matrix: list[list[str]], *, hash: list[int | bool] = []) -> set[str]:
     """Returns set of unique characters from a nested list.
@@ -100,7 +101,9 @@ def allchars(matrix: list[list[str]], *, hash: list[int | bool] = []) -> set[str
     {'A', 'B', 'C', 'D'}
     """
 
-    if not isinstance(matrix, list) or not all([isinstance(row, list) for row in matrix]):
+    if not isinstance(matrix, list) or not all(
+        [isinstance(row, list) for row in matrix]
+    ):
         raise TypeError("Input must be type list[list[char]]")
 
     if not hash:
@@ -108,7 +111,7 @@ def allchars(matrix: list[list[str]], *, hash: list[int | bool] = []) -> set[str
         # Maybe integrated into __reduce()?
 
         chars = set(ch for row in matrix for ch in row)
-        chars.remove('_')
+        chars.remove("_")
         return set(ch.upper() for ch in chars)
 
     else:
@@ -119,8 +122,9 @@ def allchars(matrix: list[list[str]], *, hash: list[int | bool] = []) -> set[str
             if j:
                 subset.append(matrix[i])
         chars = set(ch for row in subset for ch in row)
-        chars.remove('_')
+        chars.remove("_")
         return set(ch.upper() for ch in chars)
+
 
 def to_int_matrix(matrix: list[list[str]]) -> list[int]:
     """Converts a matrix of characters to a matrix of integers
@@ -142,16 +146,18 @@ def to_int_matrix(matrix: list[list[str]]) -> list[int]:
 
     """
 
-    if not isinstance(matrix, list) or not all([isinstance(row, list) for row in matrix]):
+    if not isinstance(matrix, list) or not all(
+        [isinstance(row, list) for row in matrix]
+    ):
         raise TypeError("Input must be type list[list[char]]")
 
-    output = [0]*len(matrix)
-    valid_chars = {'0', '_', '1'}
+    output = [0] * len(matrix)
+    valid_chars = {"0", "_", "1"}
     for i, row in enumerate(matrix):
-        tmp_row = ['']*len(matrix[0])
+        tmp_row = [""] * len(matrix[0])
         for j, ch in enumerate(row):
             if ch not in valid_chars:
                 raise ValueError(f"Expected {valid_chars}, got '{ch}' in row {i}")
-            tmp_row[j] = '0' if ch in ['_', '0'] else '1'
-        output[i] = int(''.join(tmp_row), 2)
+            tmp_row[j] = "0" if ch in ["_", "0"] else "1"
+        output[i] = int("".join(tmp_row), 2)
     return output

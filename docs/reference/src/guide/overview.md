@@ -1,4 +1,4 @@
-# multiplied Overview
+# Overview
 
 This project was initially focused on how [saturation](https://en.wikipedia.org/wiki/Saturation_arithmetic)
 allows for the optimisation of a combinational [multiplier](https://en.wikipedia.org/wiki/Binary_multiplier).
@@ -7,10 +7,10 @@ Generating and analysing designs by hand is labour intensive even for small data
 For entire [truth tables](https://en.wikipedia.org/wiki/Truth_table), this becomes
 close to impossible after 8-bits.
 
-# Algorithms
+## Algorithms
 
 The first "stage" of s combinational multiplier creates all possible partial products.
-These producs are then reduced across multiple stages using a range of methods.
+These products are then reduced across multiple stages using a range of methods.
 Eventually all products are reduced to one output.
 
 A [Wallace tree](https://en.wikipedia.org/wiki/Wallace_tree) is one of many
@@ -39,7 +39,7 @@ then reduced in subsequent layers.
 Note that for any multiplication the output can be up to **2x** the input width.
 
 
-## Saturation
+### Saturation
 
 Using the 11 * 12 example above, if the output was saturated to 4-bits, the result
 would be 15 since the maximum value is 0b1111 -> 15.
@@ -69,11 +69,11 @@ make te most of saturation. Many overflow edge cases can be found very early in
 the reduction process, take the AND matrix stage, while some are harder to isolate
 and arise deeper in the combinational logic.
 
-# Templates
+## Templates
 
 Describing how each stages reduces partial products.
 
-## Simple Templates -- Patterns
+### Simple Templates -- Patterns
 
 Patterns should be represented as a list with each element on
 a new line, this makes it clear how each layer is reduced:
@@ -104,7 +104,7 @@ Complex templates require a more rigorous approach.
 
 
 
-# Complex Templates
+## Complex Templates
 
 
 Simple templates used a vector, internally these are translated to a hard coded
@@ -117,7 +117,7 @@ such as user defined positions for CSAs, Adders, Decoders and Bit-Mapping.
 
 
 
-# Analysis
+## Analysis
 
 Json is availiable for small truthtables and quickly visualising designs
 Parquet is recommended for large truth tables and intensive analysis

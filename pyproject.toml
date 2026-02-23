@@ -1,6 +1,6 @@
 [project]
 name = "multiplied"
-version = "0.7.0"
+version = "0.7.2"
 description = "A powerful tool to build, test, and analyse multiplier designs."
 readme = "README.md"
 license = "AGPL-3.0-or-later"
@@ -34,4 +34,7 @@ dev = [
     "myst-parser>=5.0.0",
     "pyright>=1.1.408",
     "pytest-cov>=7.0.0",
+    "sphinx-design>=0.7.0",
+    "sphinx-copybutton>=0.5.2",
+    "myst-nb>=1.3.0",
 ]

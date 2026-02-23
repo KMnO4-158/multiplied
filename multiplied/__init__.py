@@ -1,12 +1,14 @@
-#!bin/python3
-
-
-# -- core -----------------------------------------------------------
-
 ##########################################################
 # explicit order: map -> matrix -> template -> algorithm #
 ##########################################################
 
+
+# -- version -----------------------------------------------------------
+
+__version_info__ = (0, 7, 2)
+__version__ = "0.7.2"
+
+# -- core -----------------------------------------------------------
 
 from .core.map import (
     Map,
@@ -34,6 +36,7 @@ from .core.template import (
 
 from .core.algorithm import (
     Algorithm,
+    hoist,
     collect_arithmetic_units,
 )
 
@@ -70,7 +73,6 @@ from .core.utils.bool import (
 # -- datasets -------------------------------------------------------
 
 
-
 # -- io -------------------------------------------------------------
 
 from .io.lazy_json import (
@@ -79,7 +81,7 @@ from .io.lazy_json import (
     json_pretty_store,
 )
 
-from .io.parquet import(
+from .io.parquet import (
     export_parquet,
     import_parquet,
 )
@@ -109,72 +111,52 @@ from .analysis.heatmap import (
 # -- External -------------------------------------------------------
 
 
-# -- Tests ----------------------------------------------------------
-
-# from .tests.test_population import (
-#     test_pop_empty_matrix,
-#     test_pop_build_matrix,
-#     test_pop_algorithm,
-# )
-
-# from .tests.test_templates import (
-#    test_temp_build_csa4,
-#    test_temp_build_csa8,
-#    test_temp_build_adder4,
-#    test_temp_build_adder8,
-# )
-
-# from .tests.test_to_json import (
-#     test_to_json4,
-#     test_to_json8,
-# )
-
-
 # -- __all__ --------------------------------------------------------
 
 __all__ = [
-    'Matrix',
-    'Slice',
-    'Pattern',
-    'Template',
-    'Algorithm',
-    'empty_rows',
-    'empty_matrix',
-    'matrix_merge',
-    'collect_arithmetic_units',
-    'build_dadda_map',
-    'empty_map',
-    'build_csa',
-    'build_adder',
-    'build_empty_slice',
-    'resolve_pattern',
-    'truth_scope',
-    'shallow_truth_table',
-    'truth_table',
-    'truth_dataframe',
-    'Map',
-    'ischar',
-    'isalpha',
-    'ishex2',
-    'isint',
-    'chargen',
-    'chartff',
-    'allchars',
-    'to_int_matrix',
-    'pretty',
-    'mprint',
-    'validate_bitwidth',
-    'export_algorithm',
-    'import_algorithm',
-    'json_pretty_store',
-    'export_parquet',
-    'import_parquet',
-    'pq_extract_bits',
-    'pq_extract_stages',
-    'pq_extract_formatted_all',
-    'pq_extract_formatted_stages',
-    'df_global_heatmap',
-    'df_global_3d_heatmap',
-    'df_stage_heatmap',
-    'df_stage_bound_heatmap',
+    "Matrix",
+    "Slice",
+    "Pattern",
+    "Template",
+    "Algorithm",
+    "empty_rows",
+    "empty_matrix",
+    "matrix_merge",
+    "hoist",
+    "collect_arithmetic_units",
+    "build_dadda_map",
+    "empty_map",
+    "build_csa",
+    "build_adder",
+    "build_empty_slice",
+    "resolve_pattern",
+    "truth_scope",
+    "shallow_truth_table",
+    "truth_table",
+    "truth_dataframe",
+    "Map",
+    "ischar",
+    "isalpha",
+    "ishex2",
+    "isint",
+    "chargen",
+    "chartff",
+    "allchars",
+    "to_int_matrix",
+    "pretty",
+    "mprint",
+    "validate_bitwidth",
+    "export_algorithm",
+    "import_algorithm",
+    "json_pretty_store",
+    "export_parquet",
+    "import_parquet",
+    "pq_extract_bits",
+    "pq_extract_stages",
+    "pq_extract_formatted_all",
+    "pq_extract_formatted_stages",
+    "df_global_heatmap",
+    "df_global_3d_heatmap",
+    "df_stage_heatmap",
+    "df_stage_bound_heatmap",
 ]

@@ -6,8 +6,9 @@ import json
 def validate_path(path: str) -> None:
     if not isinstance(path, str):
         raise TypeError("path must be a string")
-    if not path.endswith('.json'):
+    if not path.endswith(".json"):
         raise ValueError("path must end with .json")
+
 
 # ! Need revisiting once loading and storing to .parquet established
 def json_pretty_store(scope: Generator, alg: Algorithm, path: str) -> None:
@@ -16,7 +17,7 @@ def json_pretty_store(scope: Generator, alg: Algorithm, path: str) -> None:
     validate_path(path)
     if not isinstance(scope, Generator):
         raise TypeError("gen must be a generator")
-    with open(path, 'w') as f:
+    with open(path, "w") as f:
         for a, b in scope:
             matrix = Matrix(alg.bits, a=a, b=b)
             pretty = []
@@ -27,11 +28,12 @@ def json_pretty_store(scope: Generator, alg: Algorithm, path: str) -> None:
                 "A": a,
                 "B": b,
                 "Product": a * b,
-                'Stage_0': {
-                    'Matrix': pretty,
-                    },
+                "Stage_0": {
+                    "Matrix": pretty,
+                },
             }
             json.dump(payload, f, indent=4)
+
 
 def export_algorithm(source: Algorithm, path: str) -> None:
     """
@@ -44,22 +46,23 @@ def export_algorithm(source: Algorithm, path: str) -> None:
     print(source.__dict__)
     # -- convert multiplied objects to built-in ---------------------
     payload = {
-        'bits': source.bits,
-        'state': source.state,
-        'matrix': [str(source.matrix)[:-1].split('\n')],
+        "bits": source.bits,
+        "state": source.state,
+        "matrix": [str(source.matrix)[:-1].split("\n")],
     }
 
     alg = {}
     for i, stage in source.algorithm.items():
         alg[i] = {}
         for k, step in stage.items():
-            alg[i][k] = [str(step)[:-1].split('\n')]
-    payload['algorithm'] = alg
+            alg[i][k] = [str(step)[:-1].split("\n")]
+    payload["algorithm"] = alg
 
-    with open(path, 'w') as f:
+    with open(path, "w") as f:
         json.dump(payload, f, indent=4)
 
     return None
+
 
 def import_algorithm(path: str) -> Algorithm:
     """
@@ -85,9 +88,8 @@ def import_algorithm(path: str) -> Algorithm:
     #     true_alg[i] = {}
     #     for k, step in stage.items():
     #         if step == 'Template':
-                # test if result included
+    # test if result included
 
-            # alg[i][k] = [[str(step)[:-1].split('')] for ]
-
+    # alg[i][k] = [[str(step)[:-1].split('')] for ]
 
     # return alg
