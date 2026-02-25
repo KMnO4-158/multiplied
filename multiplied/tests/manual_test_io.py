@@ -107,7 +107,7 @@ def main() -> None:
     # import cProfile
     # import pstats
     test_export_parquet_4()
-    # test_export_parquet_8()
+    test_export_parquet_8()
     # test = cProfile.Profile()
     # test.enable()
     # test_export_parquet_8()
