@@ -180,6 +180,6 @@ mp.df_global_heatmap("example.svg", "Fancy Title", df, dark=True)
 mp.df_global_3d_heatmap("example3d.svg", "Fancy Title", df, dark=True)
 ```
 
-[Example 8-bit Wallace Tree Heatmap](examples/outputs/example_dark_8b_wallace_heatmap.svg)
+![Example 8-bit Wallace Tree Heatmap](examples/outputs/example_dark_8b_wallace_heatmap.png)
 
-[Example 8-bit Wallace Tree 3D Heatmap](examples/outputs/example_dark_8b_wallace_3d_heatmap.svg)
+![Example 8-bit Wallace Tree 3D Heatmap](examples/outputs/example_dark_8b_wallace_3d_heatmap.png)
