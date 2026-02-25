@@ -26,7 +26,7 @@ MP_VERSION = MP_TOML["project"]["version"]
 project = "multiplied"
 copyright = "2025, Ephraim M."
 author = "Ephraim M."
-github = "https://github.com/EphraimCompEng/multiplied"
+github = "https://github.com/KMnO4-158/multiplied"
 release = MP_VERSION
 stable = "v" + ".".join(release.split(".")[:2])
 
@@ -63,8 +63,9 @@ html_title = "multiplied"
 html_static_path = ["_static"]
 html_css_files = [
     "custom.css",
+    "light-dark.css",
 ]
-html_context = {"github_user": "EphraimCompEng", "github_repo": "multiplied"}
+html_context = {"github_user": "KMnO4-158", "github_repo": "multiplied"}
 html_copy_source = False
 
 
