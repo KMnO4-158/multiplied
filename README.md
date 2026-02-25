@@ -1,122 +1,43 @@
-# multiplied
+# Introduction
 
-A powerful tool to build, test, and analyse multiplier designs.
+Multiplied is a library for exploring and quickly defining [combinational](https://en.wikipedia.org/wiki/Combinational_logic)
+multiplication algorithms. The library also bundles built-in tools to analyse and
+visualise algorithms through [Pandas](https://pandas.pydata.org/) and [Matplotlib](https://matplotlib.org/).
 
-## Why?
+## The Problem
 
-Generating and analysing multiplier designs by hand is labour intensive, even
-for small datasets, for entire [truth tables](https://en.wikipedia.org/wiki/Truth_table)
-, this is close to impossible.
+Generating and analysing multiplier designs by hand is labour intensive, even for
+small datasets, for entire [truth tables](https://en.wikipedia.org/wiki/Truth_table),
+this is close to impossible.
 
-multiplied is built to streamline:
+Multiplied is built to streamline this process:
 
-- Custom partial product reduction via [templates](https://github.com/EphraimCompEng/multiplied/blob/master/docs/structures/templates.md)
+- Custom partial product reduction via [templates](https://kmno4-158.github.io/multiplied/guide/structures.html#template)
 - Generating complete truth tables
 - Analysis, plotting, and managing datasets
 - Fine-grain access to bits, words or stages
 
-## Setup
 
-```sh
-pip install multiplied
-```
 
-```Python
-import multiplied as mp
-```
-
-## Algorithm Execution
-
-A quick demo of a simple 8-bit multiplier executing 42*255:
-
-```python
-m = mp.Matrix(8) 
-p = mp.Pattern(['a','a','b','b','c','c','d','d'])
-alg = mp.Algorithm(m)
-alg.push(p)
-alg.auto_resolve_stage() 
-a=42
-b=255
-for m in alg.exec(a=a, b=b).values():
-    print(m)
-
-# convert result to decimal
-print(int("".join(alg.matrix.matrix[0]), 2))
-print(a*b)
-```
-
-```text
-________00101010
-_______00101010_
-______00101010__
-_____00101010___
-____00101010____
-___00101010_____
-__00101010______
-_00101010_______
-
-______0001111110
-____0001111110__
-__0001111110____
-0001111110______
-________________
-________________
-________________
-________________
-
-__00011001100110
-___0001111110___
-0001111110______
-________________
-________________
-________________
-________________
-________________
-
-0001101000010110
-_00011111100____
-________________
-________________
-________________
-________________
-________________
-________________
-
-0010100111010110
-________________
-________________
-________________
-________________
-________________
-________________
-________________
-
-10710
-10710
-```
 
 ## Pattern Based Algorithm
 
-Multiplied assists in template generation to create reusable algorithm objects:
+Multiplied uses ``Algorithm`` objects to group stages, each containing a
+``Template``, ``Matrix``, and a ``Map``.
 
-- Patterns are used to build simple templates
-- Pseudo outputs help visualise where bits from a given arithmetic unit will land
-- Automatic grouping/mapping based on empty rows or dadda style mappings
-- Nonessential bits are hidden with underscores for visual clarity
-
-Here's the algorithm from the previous example:
+- Patterns represent simple templates
+- Automatic mapping based on empty rows
+- "Pseudo" matrix to visualise possible bit positions for arithmetic outputs.
 
 ```python
-# stage : {
-#     "template" : mp.Template, -> template, result
-#     "pseudo"   : mp.Matrix,
-#     "map"      : mp.Map
-# }
+m = mp.Matrix(8)
+p = mp.Pattern(['a','a','b','b','c','c','d','d'])
+alg = mp.Algorithm(m)
+alg.push(p)
 print(alg)
 ```
 
 ```text
-
 0:{
 
 template:{
@@ -163,161 +84,106 @@ FE FE FE FE FE FE FE FE FE FE FE FE FE FE FE FE
 FD FD FD FD FD FD FD FD FD FD FD FD FD FD FD FD
 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 }
-
-1:{
-
-template:{
-
-______AaAaAaAaAa
-____AaAaAaAaAa__
-__AaAaAaAaAa____
-BbBbBbBbBb______
-________________
-________________
-________________
-________________
-
-__AaAaAaAaAaAaAa
-___AaAaAaAaAa___
-________________
-BbBbBbBbBb______
-________________
-________________
-________________
-________________
-}
-
-pseudo:{
-
-__AaAaAaAaAaAaAa
-___AaAaAaAaAa___
-BbBbBbBbBb______
-________________
-________________
-________________
-________________
-________________
-}
-
-map:{
-
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-}
-
-2:{
-
-template:{
-
-__AaAaAaAaAaAaAa
-___aAaAaAaAaA___
-AaAaAaAaAa______
-________________
-________________
-________________
-________________
-________________
-
-AaAaAaAaAaAaAaAa
-_AaAaAaAaAaA____
-________________
-________________
-________________
-________________
-________________
-________________
-}
-
-pseudo:{
-
-AaAaAaAaAaAaAaAa
-_AaAaAaAaAaA____
-________________
-________________
-________________
-________________
-________________
-________________
-}
-
-map:{
-
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-}
-
-3:{
-
-template:{
-
-AaAaAaAaAaAaAaAa
-_aAaAaAaAaAa____
-________________
-________________
-________________
-________________
-________________
-________________
-
-AaAaAaAaAaAaAaAa
-________________
-________________
-________________
-________________
-________________
-________________
-________________
-}
-
-pseudo:{
-
-AaAaAaAaAaAaAaAa
-________________
-________________
-________________
-________________
-________________
-________________
-________________
-}
-
-map:{
-
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-}
 ```
 
-## Documentation
+## Automatic Template Generation
 
-Resources for usage, general theory and implementations can be found in [/docs/](https://github.com/EphraimCompEng/multiplier-lab/tree/master/docs).
-For the API Reference head to Multiplied documentation [site](https://ephraimcompeng.github.io/multiplied/)
+Extend the previous single stage, pattern based algorithm using auto resolution:
 
-## Dependencies
+```python
+alg.auto_resolve_stage(recursive=True)
+```
 
-Planned or currently in use.
 
-| database                                           | visualization                        |
-|:---------------------------------------------------|:-------------------------------------|
-| [Parquet](https://github.com/apache/parquet-format)|[Matplotlib](https://matplotlib.org/ )|
-| [Pandas](https://pandas.pydata.org/)               |                                      |
 
-Full list TBD.
+## Algorithm Execution
+
+With the algorithm object complete, you can execute it with the following code:
+
+```python
+result = alg.exec(42, 255)
+
+for m in result.values():
+    print(m)
+
+# convert result to decimal
+print(int("".join(alg.matrix.matrix[0]), 2))
+print(a*b)
+```
+
+```text
+________00101010
+_______00101010_
+______00101010__
+_____00101010___
+____00101010____
+___00101010_____
+__00101010______
+_00101010_______
+
+______0011010110
+______00010100__
+___0011010110___
+___00010100_____
+0001111110______
+________________
+________________
+________________
+
+___0011000110110
+_____00110100___
+00100010000_____
+________________
+________________
+________________
+________________
+________________
+
+0010010110010110
+__0001000100____
+________________
+________________
+________________
+________________
+________________
+________________
+
+0010100111010110
+________________
+________________
+________________
+________________
+________________
+________________
+________________
+
+10710
+10710
+```
+
+
+## Analysis
+
+Generated data returns as a Pandas ``DataFrame`` ready for manipulation and visualisation:
+
+
+```python
+import pandas as pd
+
+domain_ = (1, 255)  # range of possible operand values for a and b
+range_ = (1, 65535)  # range of possible output values
+scope = mp.truth_scope(domain_, range_)  # generator clamps range to domain
+
+# scope yields input tuples (a, b) to generate a Pandas DataFrame
+df = mp.truth_dataframe(scope, alg)
+
+# Generate cumulative heatmap of all stages
+mp.df_global_heatmap("example.svg", "Fancy Title", df, dark=True)
+
+# Generate and stack 2d heatmaps of each stage
+mp.df_global_3d_heatmap("example3d.svg", "Fancy Title", df, dark=True)
+```
+
+[Example 8-bit Wallace Tree Heatmap](examples/outputs/example_dark_8b_wallace_heatmap.svg)
+
+[Example 8-bit Wallace Tree 3D Heatmap](examples/outputs/example_dark_8b_wallace_3d_heatmap.svg)

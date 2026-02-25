@@ -23,7 +23,7 @@ Multiplied is built to streamline this process:
 Pattern Based Algorithm
 -----------------------
 
-Multiplied uses an ``Algorithm`` object to group stages, each made up of a ``Template``, ``Map`` and a partial product ``Matrix``.
+Multiplied uses an ``Algorithm`` object to group stages, each made up of a ``Template``, ``Matrix``, and a ``Map``.
 
 - Patterns represent simple templates
 - Automatic mapping based on empty rows
@@ -166,8 +166,7 @@ With the algorithm object complete, you can execute it with the following code:
 Analysis
 --------
 
-Use the algorithm with a
-
+Generated data returns as a Pandas ``DataFrame`` ready for manipulation and vidualisation:
 
 
 .. container:: code-variant-light

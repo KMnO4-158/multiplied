@@ -25,7 +25,7 @@ let's create 4-bit Matrix Object:
 
 ```{code-cell} ipython3
 import multiplied as mp
-matrix = mp.Matrix(4) # 4-bit logical AND matrix
+matrix = mp.Matrix(4) # 4-bit partial product matrix
 ```
 
 And here's what it looks like:
