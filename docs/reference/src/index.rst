@@ -17,7 +17,7 @@ Multiplied Documentation
     contact
 
 
-- Source: `Github <https://github.com/EphraimCompEng/multiplied>`_ | `PyPi <https://test.pypi.org/manage/project/multiplied/releases/>`_
+- Source: `Github <https://github.com/KMnO4-158/multiplied>`_ | `PyPi <https://pypi.org/project/multiplied/>`_
 - Use Multiplied: :ref:`started` | :ref:`guide`
 - Further Reading: `Overview <https://github.com/EphraimCompEng/multiplied/tree/master/docs>`_ | `Teman, A. Fast Multipliers <https://youtu.be/4FwESTOVT-o/>`_
 

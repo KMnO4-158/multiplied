@@ -864,7 +864,7 @@ wheels = [
 
 [[package]]
 name = "multiplied"
-version = "0.7.2"
+version = "0.7.3"
 source = { editable = "." }
 dependencies = [
     { name = "matplotlib" },

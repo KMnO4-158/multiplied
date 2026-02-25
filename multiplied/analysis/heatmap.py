@@ -54,7 +54,7 @@ def df_global_heatmap(path: str, title: str, df: pd.DataFrame, *, dark=False) ->
     pd.set_option("display.max_rows", None)
 
     result_bits = int(str(copy(df_.columns[0])).split("_")[-1][1:]) + 1
-    total_stages = int(str(copy(df_.columns[-1])).split("_")[1][1:]) + 1
+    total_stages = int(str(copy(df_.columns[-1])).split("_")[0][1:]) + 1
     print(f"2D\nOutput: {result_bits}-bit, Stages: {total_stages}")
 
     arr = None
@@ -74,6 +74,8 @@ def df_global_heatmap(path: str, title: str, df: pd.DataFrame, *, dark=False) ->
     if arr is None:
         raise ValueError("No data found")
 
+    plt.rcdefaults()  # force consistency
+
     cmap = "magma_r"
     if dark:
         plt.style.use("dark_background")
@@ -91,7 +93,7 @@ def df_global_heatmap(path: str, title: str, df: pd.DataFrame, *, dark=False) ->
 
     for i in range(result_bits >> 1):
         for j in range((result_bits) - 1, -1, -1):
-            text = ax.text(j, i, arr[i, j], ha="center", va="center", color="w")
+            ax.text(j, i, arr[i, j], ha="center", va="center", color="w")
 
     ax.set_title(title, pad=50)
 
@@ -101,7 +103,6 @@ def df_global_heatmap(path: str, title: str, df: pd.DataFrame, *, dark=False) ->
 
     fig.tight_layout()
     plt.colorbar(im, shrink=0.7)
-    # plt.show()
     plt.savefig(path)
 
     return None
@@ -162,7 +163,7 @@ def df_global_3d_heatmap(
     pd.set_option("display.max_rows", None)
 
     result_bits = int(str(copy(df_.columns[0])).split("_")[-1][1:]) + 1
-    total_stages = int(str(copy(df_.columns[-1])).split("_")[1][1:]) + 1
+    total_stages = int(str(copy(df_.columns[-1])).split("_")[0][1:]) + 1
     print(f"3D\nOutput: {result_bits}-bit, Stages: {total_stages}")
 
     # -- build stage heatmaps ---------------------------------------
@@ -185,6 +186,8 @@ def df_global_3d_heatmap(
     # -- plot setup -------------------------------------------------
     x_spacing = 2.0
     alpha = 0.7
+
+    plt.rcdefaults()  # force consistency
     if dark:
         plt.style.use("dark_background")
         cmap = plt.get_cmap("magma")

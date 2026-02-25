@@ -79,7 +79,7 @@ def pq_extract_stages(path: str, *, stages: list[int] = []) -> pd.DataFrame:
     # TODO: manage metadata for .parquet <> DataFrame
     # trim and extract integer
     total_stages = int(copy(row.columns[-1]).split("_")[-1]) + 1
-    bits = (int(str(copy(row.columns[3])).split("_")[-1]) + 1) >> 1
+    bits = (int(str(copy(row.columns[3])).split("_")[-1][1:]) + 1) >> 1
 
     # print(total_stages,  bits)
     # --------------------------------------------------------------- #
@@ -95,7 +95,7 @@ def pq_extract_stages(path: str, *, stages: list[int] = []) -> pd.DataFrame:
             for b in range((bits << 1) - 1, -1, -1):
                 # TODO: flatten columns to strings since they're converted anyway
                 # e.g: 'stage_0_ppm_4_b_3'
-                columns.append(str((f"stage_{s}_ppm_{p}_b_{b}")))
+                columns.append(str((f"s{s}_p{p}_b{b}")))
 
     # Initialize DataFrame with stages as columns
     df = pd.read_parquet(path, columns=columns)

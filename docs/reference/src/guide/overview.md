@@ -38,7 +38,6 @@ then reduced in subsequent layers.
 
 Note that for any multiplication the output can be up to **2x** the input width.
 
-
 ### Saturation
 
 Using the 11 * 12 example above, if the output was saturated to 4-bits, the result
@@ -102,20 +101,12 @@ my_pattern's first run is equal to 2, it's second is 3.
 
 Complex templates require a more rigorous approach.
 
-
-
 ## Complex Templates
-
 
 Simple templates used a vector, internally these are translated to a hard coded
 complex template. Complex templates are matrices outlining what operations occur
 and where they occur. They also have a range of tools inaccessible to simple templates,
 such as user defined positions for CSAs, Adders, Decoders and Bit-Mapping.
-
-
-
-
-
 
 ## Analysis
 

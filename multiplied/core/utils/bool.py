@@ -8,10 +8,14 @@ from typing import Any
 SUPPORTED_BITWIDTHS = {4, 8}
 
 
-def validate_bitwidth(bits: int) -> None | ValueError:
+def validate_bitwidth(bits: int) -> None:
     """Raise ValueError if bitwidth is supported by Multiplied"""
 
-    if not isinstance(bits, int) or bits not in SUPPORTED_BITWIDTHS:
+    if not isinstance(bits, int):
+        raise TypeError(
+            f"Unsupported type {type(bits)}. Expected {SUPPORTED_BITWIDTHS}"
+        )
+    if bits not in SUPPORTED_BITWIDTHS:
         raise ValueError(f"Unsupported bitwidth {bits}. Expected {SUPPORTED_BITWIDTHS}")
 
 

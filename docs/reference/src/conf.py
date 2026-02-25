@@ -26,7 +26,7 @@ MP_VERSION = MP_TOML["project"]["version"]
 project = "multiplied"
 copyright = "2025, Ephraim M."
 author = "Ephraim M."
-github = "https://github.com/EphraimCompEng/multiplied"
+github = "https://github.com/KMnO4-158/multiplied"
 release = MP_VERSION
 stable = "v" + ".".join(release.split(".")[:2])
 
@@ -49,13 +49,10 @@ exclude_patterns = ["multiplied.tests.rst"]
 templates_path = ["_templates"]
 source_suffix = [".rst", ".md"]
 
+html_theme_options = {}
 
 myst_enable_extensions = [
-    # "amsmath",
     "colon_fence",
-    # "deflist",
-    # "dollarmath",
-    # "html_image",
 ]
 
 # -- Options for HTML output -------------------------------------------------
@@ -66,8 +63,11 @@ html_title = "multiplied"
 html_static_path = ["_static"]
 html_css_files = [
     "custom.css",
+    "light-dark.css",
 ]
-html_context = {"github_user": "EphraimCompEng", "github_repo": "multiplied"}
+html_context = {"github_user": "KMnO4-158", "github_repo": "multiplied"}
+html_copy_source = False
+
 
 # -- Exposing variables to .rst files ----------------------------------------
 # https://stackoverflow.com/a/69211912 , https://stackoverflow.com/q/34006784
@@ -81,6 +81,6 @@ variables_to_export = [
 frozen_locals = dict(locals())
 
 rst_epilog = "\n".join(
-    map(lambda x: f".. |{x}| replace:: {frozen_locals[x]}", variables_to_export)
+    map(lambda x: f".. |{x}| replace:: {frozen_locals[x]}", variables_to_export)  # noqa
 )
 del frozen_locals
