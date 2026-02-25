@@ -6,36 +6,19 @@ kernelspec:
 
 # **Quickstart**
 
-Multiplied is a library for exploring and quickly defining [combinational](https://en.wikipedia.org/wiki/Combinational_logic)
-multiplication algorithms. The library also bundles built-in tools to analyse and
-visualise algorithms through [Pandas](https://pandas.pydata.org/) and [Matplotlib](https://matplotlib.org/).
+
 
 This guide will quickly walk through each area of Multiplied, without delving too
 deeply into the details.
 
-## Basic Algorithm Generation
+## Algorithm Structure
 
-A given combinational multiplier is defined by a sequence of "stages" which continuously
+A given algorithm is defined by a sequence of "stages" which continuously
 reduce an initial set of [partial products](https://en.wikipedia.org/wiki/Binary_multiplier#Binary_long_multiplication)
 into a single output product.
 
-First import the module and define the bitwidth of the algorithm:
-
-```{code-cell} ipython3
-import multiplied as mp
-
-alg = mp.Algorithm(4)
-```
-
-Then automatically generate a basic algorithm.
-
-```{code-cell} ipython3
-
-alg.auto_resolve_stage(recursive=True)  # recursive=True -- default
-print(alg)
-```
-
-As the output shows, each stage is made up of a [Template](guide/structures.html#Template),
+Multiplied uses ``Algorithm`` objects to store each stage of reduction. Each of
+which is made up of a [Template](guide/structures.html#Template),
 pseudo [Matrix](guide/structures.html#Matrix), and a [Map](guide/structures.html#Map).
 
 **Templates**:
@@ -54,6 +37,43 @@ pseudo [Matrix](guide/structures.html#Matrix), and a [Map](guide/structures.html
 - 2-bit hexadecimal values define how far each bit is vertically shifted after reduction
 - Positive values shift bits up
 - negative values shift bits down
+
+**Templates**
+
+- Represent arithmetic units via characters
+- Resultant templates show where bits will be placed after a given stage
+
+**Pseudo Matrix**
+
+A ``Matrix`` object representing partial products
+- Shows the partial product matrix after reduction and maps have been applied
+- Each matrix has a width two times it's height:
+  - two values of x-bits can multiply to produce a 2x-bit value
+
+**Maps**
+
+- 2-bit hexadecimal values define how far each bit is vertically shifted after reduction
+- Positive values shift bits up
+- negative values shift bits down
+
+
+First import the module and define the bitwidth of the algorithm:
+
+```{code-cell} ipython3
+import multiplied as mp
+
+alg = mp.Algorithm(4)
+```
+
+Then automatically generate a basic algorithm.
+
+```{code-cell} ipython3
+
+alg.auto_resolve_stage(recursive=True)  # recursive=True -- default
+print(alg)
+```
+
+
 
 ## Execution
 

@@ -80,6 +80,7 @@ matrix = mp.Matrix(4, a=15, b=3, dadda=True)
 ```
 ````
 
+(struct-template)=
 
 ## Template
 
@@ -315,7 +316,7 @@ auto_alg.auto_resolve_stage(recursive=True)
 print(auto_alg)
 ```
 
-push templates or patterns one at a time...
+Push templates or patterns one at a time:
 
 ```{code-cell} ipython
 alg = mp.Algorithm(4)
@@ -323,7 +324,11 @@ alg.push(mp.Pattern(["a", "a", "b", "b"]))
 print(alg)
 ```
 
-Automatically generate the rest...
+```{note}
+Pushing a pattern will automatically generate a new stage based on the prior stage.
+```
+
+Automatically generate the rest:
 
 ```{code-cell} ipython
 alg.auto_resolve_stage(recursive=True)
@@ -333,7 +338,7 @@ print(alg)
 ### Execution
 
 
-execute new operands ...
+Use ``exec()`` to run the algorithm using two operands:
 
 ```{code-cell} ipython3
 a = 15
@@ -348,7 +353,7 @@ print(int("".join(alg.matrix.matrix[0]), 2))
 print(a * b)
 ```
 
-Manually provide starting matrix and step through algorithm...
+Manually provide starting matrix and step through an algorithm:
 
 ```{code-cell} ipython
 starting_ppm = mp.Matrix(4, a=5, b=9)
@@ -380,7 +385,6 @@ IF !0 ->|1111  -> 15
 ```
 
 ```{code-cell} ipython3
-alg.reset
 alg.saturation = True
 
 
