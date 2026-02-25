@@ -61,10 +61,13 @@ def chartff(ch: str) -> Generator[str]:
     """
     from .bool import ischar
 
-    if not ischar(ch):
-        raise ValueError("Input must be a single alphabetic character")
 
+    if not ischar(ch):
+        raise TypeError("Input must be a single alphabetic character")
+
+    # match first case with input case
     i = True if ord(ch) < 97 else False
+
     while True:
         if i := not (i):  # toggle flip flop
             yield ch.lower()
