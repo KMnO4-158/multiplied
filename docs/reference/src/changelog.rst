@@ -7,8 +7,28 @@ Changelog
 v0.7
 =====
 
-`v0.7.2 <https://github.com/EphraimCompEng/multiplied/releases/tag/v0.7.2>`_
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+`v0.7.3 <https://github.com/KMnO4-158/multiplied/releases/tag/v0.7.3>`_
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Documentation:
+
+    - Improve quickstart and structure pages (`f96d975`_)
+    - Updated and added theme specific elements to intro page (`bafc7ff`_)
+    - Update README project to mirror intro page (`8eff9d1`_)
+
+Updates:
+
+    - Expand core.utils unit tests (`0a4e9ea`_)
+
+See full changelog `here <https://github.com/KMnO4-158/multiplied/pull/111>`_
+
+.. _f96d975: https://github.com/KMnO4-158/multiplied/commit/f96d975
+.. _bafc7ff: https://github.com/KMnO4-158/multiplied/commit/bafc7ff
+.. _8eff9d1: https://github.com/KMnO4-158/multiplied/commit/8eff9d1
+.. _0a4e9ea: https://github.com/KMnO4-158/multiplied/commit/0a4e9ea
+
+`v0.7.2 <https://github.com/KMnO4-158/multiplied/releases/tag/v0.7.2>`_
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Added:
 
@@ -24,31 +44,18 @@ Bug Fixes:
     - Harmonised dataframe column index scheme (`9a9ac50`_)
     - Inconsistent state updates (`46f885b`_)
 
+See full changelog `here <https://github.com/KMnO4-158/multiplied/pull/105>`_
 
-.. _7a775b4:
-    https://github.com/EphraimCompEng/multiplied/commit/7a775b4
-
-.. _e5e7527:
-    https://github.com/EphraimCompEng/multiplied/commit/e5e7527
-
-.. _3888354:
-    https://github.com/EphraimCompEng/multiplied/commit/3888354
-
-.. _9a9ac50:
-    https://github.com/EphraimCompEng/multiplied/commit/9a9ac50
-
-.. _46f885b:
-    https://github.com/EphraimCompEng/multiplied/commit/46f885b
+.. _7a775b4: https://github.com/KMnO4-158/multiplied/commit/7a775b4
+.. _e5e7527: https://github.com/KMnO4-158/multiplied/commit/e5e7527
+.. _3888354: https://github.com/KMnO4-158/multiplied/commit/3888354
+.. _9a9ac50: https://github.com/KMnO4-158/multiplied/commit/9a9ac50
+.. _46f885b: https://github.com/KMnO4-158/multiplied/commit/46f885b
 
 
 
-
-
-
-See full changelog `here <https://github.com/EphraimCompEng/multiplied/pull/105>`_
-
-`v0.7.1 <https://github.com/EphraimCompEng/multiplied/releases/tag/v0.7.1>`_
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+`v0.7.1 <https://github.com/KMnO4-158/multiplied/releases/tag/v0.7.1>`_
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Updates:
 
@@ -75,32 +82,21 @@ Looking forward:
     - Data Structure Optimisation
     - 16-bit Algorithm Support
 
-See full changelog `here <https://github.com/EphraimCompEng/multiplied/pull/104>`_
+See full changelog `here <https://github.com/KMnO4-158/multiplied/pull/104>`_
 
-.. _5fa50b0:
-    https://github.com/EphraimCompEng/multiplied/commit/5fa50b0eebb9b0aeef20611905786e4a901c70d0
-
-.. _bb9a7cf:
-    https://github.com/EphraimCompEng/multiplied/commit/bb9a7cf7a47eaf4b73827e9515ee2e6364ab5acd
-
-.. _84c113d:
-    https://github.com/EphraimCompEng/multiplied/commit/84c113dfd2a473ca0f8ad84e0e429fee2c2016be
-
-.. _3e02e1f:
-    https://github.com/EphraimCompEng/multiplied/commit/3e02e1f9b33ad1ca50e86c25cd6d7d0aa0d9c71d
-
-.. _5f5916d:
-    https://github.com/EphraimCompEng/multiplied/commit/5f5916d75f05abfa942938fdc8c2add4f55b7e5b
-
-
+.. _5fa50b0: https://github.com/KMnO4-158/multiplied/commit/5fa50b0eebb9b0aeef20611905786e4a901c70d0
+.. _bb9a7cf: https://github.com/KMnO4-158/multiplied/commit/bb9a7cf7a47eaf4b73827e9515ee2e6364ab5acd
+.. _84c113d: https://github.com/KMnO4-158/multiplied/commit/84c113dfd2a473ca0f8ad84e0e429fee2c2016be
+.. _3e02e1f: https://github.com/KMnO4-158/multiplied/commit/3e02e1f9b33ad1ca50e86c25cd6d7d0aa0d9c71d
+.. _5f5916d: https://github.com/KMnO4-158/multiplied/commit/5f5916d75f05abfa942938fdc8c2add4f55b7e5b
 
 
 
 v0.6
 =====
 
-`v0.6.2 <https://github.com/EphraimCompEng/multiplied/releases/tag/v0.6.2>`_
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+`v0.6.2 <https://github.com/KMnO4-158/multiplied/releases/tag/v0.6.2>`_
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Bug Fixes:
 
@@ -108,19 +104,14 @@ Bug Fixes:
     - Refactored / Harmonised Dataframe, Parquet Access (`ffc8963`_)
     - Dark plot background inconsistencies (`d95bbda`_)
 
-See full changelog `here <https://github.com/EphraimCompEng/multiplied/pull/96>`_.
+See full changelog `here <https://github.com/KMnO4-158/multiplied/pull/96>`_.
 
-.. _09d2544:
-    https://github.com/EphraimCompEng/multiplied/commit/09d254432cf6cd3ace877c493676986d5308b28b
+.. _09d2544: https://github.com/KMnO4-158/multiplied/commit/09d254432cf6cd3ace877c493676986d5308b28b
+.. _ffc8963: https://github.com/KMnO4-158/multiplied/commit/ffc8963919f54d1934031b0b64354a9838dfd707
+.. _d95bbda: https://github.com/KMnO4-158/multiplied/commit/d95bbda239ef04ee959091dd7fe0339777ab003d
 
-.. _ffc8963:
-    https://github.com/EphraimCompEng/multiplied/commit/ffc8963919f54d1934031b0b64354a9838dfd707
-
-.. _d95bbda:
-    https://github.com/EphraimCompEng/multiplied/commit/d95bbda239ef04ee959091dd7fe0339777ab003d
-
-`v0.6.0 <https://github.com/EphraimCompEng/multiplied/releases/tag/v0.6.0>`_
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+`v0.6.0 <https://github.com/KMnO4-158/multiplied/releases/tag/v0.6.0>`_
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Updates:
 
@@ -146,29 +137,18 @@ Looking forward:
     - Data Structure Optimisation
     - 16-bit Algorithm Support
 
-See full changelog `here <https://github.com/EphraimCompEng/multiplied/pull/91>`_.
+See full changelog `here <https://github.com/KMnO4-158/multiplied/pull/91>`_.
 
-.. _f7a9a62:
-    https://github.com/EphraimCompEng/multiplied/commit/f7a9a629815d0a668461bb514a566bbb191c097f
-
-.. _6e2b8c8:
-    https://github.com/EphraimCompEng/multiplied/commit/6e2b8c85edc5605550b53aa5c39609d31401e736
-
-.. _00242fb:
-    https://github.com/EphraimCompEng/multiplied/commit/00242fb7ba9a7c7d12f8d9631620580026851491
-
-.. _c420f07:
-    https://github.com/EphraimCompEng/multiplied/commit/c420f07f6a1f3b022ee527fe470f6c2c1007548a
-
-
-
-
+.. _f7a9a62: https://github.com/KMnO4-158/multiplied/commit/f7a9a629815d0a668461bb514a566bbb191c097f
+.. _6e2b8c8: https://github.com/KMnO4-158/multiplied/commit/6e2b8c85edc5605550b53aa5c39609d31401e736
+.. _00242fb: https://github.com/KMnO4-158/multiplied/commit/00242fb7ba9a7c7d12f8d9631620580026851491
+.. _c420f07: https://github.com/KMnO4-158/multiplied/commit/c420f07f6a1f3b022ee527fe470f6c2c1007548a
 
 v0.5
 =====
 
-`v0.5.0 <https://github.com/EphraimCompEng/multiplied/releases/tag/v0.5.0>`_
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+`v0.5.0 <https://github.com/KMnO4-158/multiplied/releases/tag/v0.5.0>`_
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Updates:
 
@@ -198,27 +178,18 @@ Looking forward:
     - 16-bit Algorithm Support
 
 
-See full changelog `here <https://github.com/EphraimCompEng/multiplied/pull/69>`_.
+See full changelog `here <https://github.com/KMnO4-158/multiplied/pull/69>`_.
 
-.. _19953dd:
-    https://github.com/EphraimCompEng/multiplied/pull/69/commits/19953dd1b88f85e44110b273012cfb5f4778ccbc
-
-.. _32d2e90:
-    https://github.com/EphraimCompEng/multiplied/pull/69/commits/32d2e90b16500cc2fcecdd5eb47cabb070fa80db
-
-.. _b449ab3:
-    https://github.com/EphraimCompEng/multiplied/commit/b449ab35b2720d14e39fc1b9402cd6d3028abee6
-
-.. _28b088d:
-    https://github.com/EphraimCompEng/multiplied/pull/69/commits/28b088d891647bb9dedd52d38cbdb9dd4b49ed75
-
-
+.. _19953dd: https://github.com/KMnO4-158/multiplied/pull/69/commits/19953dd1b88f85e44110b273012cfb5f4778ccbc
+.. _32d2e90: https://github.com/KMnO4-158/multiplied/pull/69/commits/32d2e90b16500cc2fcecdd5eb47cabb070fa80db
+.. _b449ab3: https://github.com/KMnO4-158/multiplied/commit/b449ab35b2720d14e39fc1b9402cd6d3028abee6
+.. _28b088d: https://github.com/KMnO4-158/multiplied/pull/69/commits/28b088d891647bb9dedd52d38cbdb9dd4b49ed75
 
 v0.4
 =====
 
-`v0.4.0 <https://github.com/EphraimCompEng/multiplied/releases/tag/v0.4.0>`_
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+`v0.4.0 <https://github.com/KMnO4-158/multiplied/releases/tag/v0.4.0>`_
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Updates:
 
@@ -243,30 +214,19 @@ Looking forward:
     - Simple User Guide
     - Adopt Pytest
 
-See full changelog `here <https://github.com/EphraimCompEng/multiplied/commits/v0.4.0>`_.
+See full changelog `here <https://github.com/KMnO4-158/multiplied/commits/v0.4.0>`_.
 
-.. _f728829:
-    https://github.com/EphraimCompEng/multiplied/commit/f728829ecdbab0a96fdd6e191595bdfd8f521e98
-
-.. _77b2b7e:
-    https://github.com/EphraimCompEng/multiplied/commit/77b2b7e564c1791559dc605b9b02d2a58263dec0
-
-.. _923e85d:
-    https://github.com/EphraimCompEng/multiplied/commit/923e85d90c3fff55ac168dc6f95d813cd656c2ce
-
-.. _3a0a0f6:
-    https://github.com/EphraimCompEng/multiplied/commit/3a0a0f62d0e70a18d1694f7ae9f6c99923603a58
-
-.. _d0ea73e:
-    https://github.com/EphraimCompEng/multiplied/commit/d0ea73e11a55db8308dbe594ef0b067390d8c3ae
-
-
+.. _f728829: https://github.com/KMnO4-158/multiplied/commit/f728829ecdbab0a96fdd6e191595bdfd8f521e98
+.. _77b2b7e: https://github.com/KMnO4-158/multiplied/commit/77b2b7e564c1791559dc605b9b02d2a58263dec0
+.. _923e85d: https://github.com/KMnO4-158/multiplied/commit/923e85d90c3fff55ac168dc6f95d813cd656c2ce
+.. _3a0a0f6: https://github.com/KMnO4-158/multiplied/commit/3a0a0f62d0e70a18d1694f7ae9f6c99923603a58
+.. _d0ea73e: https://github.com/KMnO4-158/multiplied/commit/d0ea73e11a55db8308dbe594ef0b067390d8c3ae
 
 v0.3
 =====
 
-`v0.3.3 <https://github.com/EphraimCompEng/multiplied/releases/tag/v0.3.3>`_
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+`v0.3.3 <https://github.com/KMnO4-158/multiplied/releases/tag/v0.3.3>`_
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Updates:
 
@@ -293,16 +253,16 @@ Looking forward:
     - Continued development of the API reference site
     - Adopt Pytest
 
-See full changelog `here <https://github.com/EphraimCompEng/multiplied/commits/v0.3.3>`_.
+See full changelog `here <https://github.com/KMnO4-158/multiplied/commits/v0.3.3>`_.
 
-`v0.3.0 <https://github.com/EphraimCompEng/multiplied/releases/tag/v0.3.0>`_
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+`v0.3.0 <https://github.com/KMnO4-158/multiplied/releases/tag/v0.3.0>`_
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Updates:
 
     - Secured multiplied on PyPi, test.PyPi and github
     - Assisted algorithm generation via patterns (not true automation)
-    - Finalised structure and populated an Algorithm stage `#18 <https://github.com/EphraimCompEng/multiplied/issues/18>`_
+    - Finalised structure and populated an Algorithm stage `#18 <https://github.com/KMnO4-158/multiplied/issues/18>`_
     - Expanded mp.pretty formatting to all Multiplied types
     - Added to utils.char.py to clean up template generation
     - Generate templates from patterns using existing matrix
@@ -323,14 +283,14 @@ Looking forward:
     - Export to .parquet files
     - Continued development of the API reference site
 
-See full changelog `here <https://github.com/EphraimCompEng/multiplied/commits/v0.3.0>`_.
+See full changelog `here <https://github.com/KMnO4-158/multiplied/commits/v0.3.0>`_.
 
 v0.2
 ====
 
 
-`v0.2.0 <https://github.com/EphraimCompEng/multiplied/releases/tag/v0.2.0>`_
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+`v0.2.0 <https://github.com/KMnO4-158/multiplied/releases/tag/v0.2.0>`_
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Updates:
 
@@ -357,10 +317,8 @@ Looking forward:
 v0.1
 ====
 
-
-
-`v0.1.1 <https://github.com/EphraimCompEng/multiplied/releases/tag/v0.1.1>`_
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+`v0.1.1 <https://github.com/KMnO4-158/multiplied/releases/tag/v0.1.1>`_
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This patch is focused on documentation and testing the api reference site locally
 
@@ -374,8 +332,8 @@ Updates:
 
 
 
-`v0.1.0 <https://github.com/EphraimCompEng/multiplied/releases/tag/v0.1.0>`_
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+`v0.1.0 <https://github.com/KMnO4-158/multiplied/releases/tag/v0.1.0>`_
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This release is a complete refactor of the original script, widening it's scope and turning it into a library.
 
@@ -389,4 +347,4 @@ TODO:
 
     - Documentation and template implementation
 
-For more info on future goals, check out the `roadmap <https://github.com/EphraimCompEng/multiplied/blob/master/ROADMAP.md>`_.
+For more info on future goals, check out the `roadmap <https://github.com/KMnO4-158/multiplied/blob/master/ROADMAP.md>`_.
