@@ -68,11 +68,6 @@ html_css_files = [
 html_context = {"github_user": "KMnO4-158", "github_repo": "multiplied"}
 html_copy_source = False
 
-"example_8b_wallace_heatmap.svg"
-"example_8b_wallace_3d_heatmap.svg"
-"example_dark_8b_wallace_heatmap.svg"
-"example_dark_8b_wallace_3d_heatmap.svg"
-
 # -- Exposing variables to .rst files ----------------------------------------
 # https://stackoverflow.com/a/69211912 , https://stackoverflow.com/q/34006784
 variables_to_export = [
