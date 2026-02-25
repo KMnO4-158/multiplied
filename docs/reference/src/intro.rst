@@ -10,7 +10,7 @@ visualise algorithms through `Pandas <https://pandas.pydata.org/>`_ and `Matplot
 
 The Problem
 -----------
-Generating and analysing multiplier designs by hand is labour intensive, even for small datasets, for entire `truth tables <https://en.wikipedia.org/wiki/Truth_table>`__, this is close to impossible.
+Generating and analysing multiplier designs by hand is labour intensive, even for small datasets, for entire `truth tables <https://en.wikipedia.org/wiki/Truth_table>`__ it's close to impossible.
 
 Multiplied is built to streamline this process:
 
