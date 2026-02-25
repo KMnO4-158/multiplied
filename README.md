@@ -17,13 +17,12 @@ Multiplied is built to streamline this process:
 - Analysis, plotting, and managing datasets
 - Fine-grain access to bits, words or stages
 
-
-
-
 ## Pattern Based Algorithm
 
-Multiplied uses ``Algorithm`` objects to group stages, each containing a
-``Template``, ``Matrix``, and a ``Map``.
+Multiplied uses [`Algorithm`](https://kmno4-158.github.io/multiplied/guide/structures.html#algorithm)
+objects to store each stage of reduction. Each of which is made up of a [`Template`](https://kmno4-158.github.io/multiplied/guide/structures.html#template),
+pseudo [`Matrix`](https://kmno4-158.github.io/multiplied/guide/structures.html#matrix),
+and a [`Map`](https://kmno4-158.github.io/multiplied/guide/structures.html#map).
 
 - Patterns represent simple templates
 - Automatic mapping based on empty rows
@@ -94,8 +93,6 @@ Extend the previous single stage, pattern based algorithm using auto resolution:
 alg.auto_resolve_stage(recursive=True)
 ```
 
-
-
 ## Algorithm Execution
 
 With the algorithm object complete, you can execute it with the following code:
@@ -161,11 +158,10 @@ ________________
 10710
 ```
 
-
 ## Analysis
 
-Generated data returns as a Pandas ``DataFrame`` ready for manipulation and visualisation:
-
+Generated data returns as a Pandas [`DataFrame`](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)
+ready for manipulation and visualisation:
 
 ```python
 import pandas as pd
