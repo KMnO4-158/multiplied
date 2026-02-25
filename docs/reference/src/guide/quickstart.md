@@ -6,8 +6,6 @@ kernelspec:
 
 # **Quickstart**
 
-
-
 This guide will quickly walk through each area of Multiplied, without delving too
 deeply into the details.
 
@@ -17,45 +15,45 @@ A given algorithm is defined by a sequence of "stages" which continuously
 reduce an initial set of [partial products](https://en.wikipedia.org/wiki/Binary_multiplier#Binary_long_multiplication)
 into a single output product.
 
-Multiplied uses ``Algorithm`` objects to store each stage of reduction. Each of
-which is made up of a [Template](guide/structures.html#Template),
-pseudo [Matrix](guide/structures.html#Matrix), and a [Map](guide/structures.html#Map).
+Multiplied uses [`Algorithm`](guide/structures.html#Algorithm) objects to store
+each stage of reduction. Each of which is made up of a [`Template`](guide/structures.html#Template),
+pseudo [`Matrix`](guide/structures.html#Matrix), and a [`Map`](guide/structures.html#Map).
 
-**Templates**:
+Templates Objects:
 
 - Represent arithmetic units via characters
 - Resultant templates show where bits will be placed after a given stage
 
-**Pseudo Matrix**:
+Pseudo Matrix Objects:
 
 - Shows the partial product matrix after reduction and maps have been applied
 - Each matrix has a width two times it's height:
   - two values of x-bits can multiply to produce a 2x-bit value
 
-**Maps**:
+Maps Objects:
 
 - 2-bit hexadecimal values define how far each bit is vertically shifted after reduction
 - Positive values shift bits up
 - negative values shift bits down
 
-**Templates**
+## Templates
 
 - Represent arithmetic units via characters
 - Resultant templates show where bits will be placed after a given stage
 
-**Pseudo Matrix**
+## Pseudo Matrix
 
-A ``Matrix`` object representing partial products
+A [`Matrix`](guide/structures.html#Matrix) object representing partial products
+
 - Shows the partial product matrix after reduction and maps have been applied
 - Each matrix has a width two times it's height:
   - two values of x-bits can multiply to produce a 2x-bit value
 
-**Maps**
+## Maps
 
 - 2-bit hexadecimal values define how far each bit is vertically shifted after reduction
 - Positive values shift bits up
 - negative values shift bits down
-
 
 First import the module and define the bitwidth of the algorithm:
 
@@ -68,15 +66,11 @@ alg = mp.Algorithm(4)
 Then automatically generate a basic algorithm.
 
 ```{code-cell} ipython3
-
 alg.auto_resolve_stage(recursive=True)  # recursive=True -- default
 print(alg)
 ```
 
-
-
 ## Execution
-
 
 The algorithm can now execute using input operands to verify it works:
 
@@ -100,8 +94,7 @@ stage being reduced by [Adders](https://en.wikipedia.org/wiki/Adder_(electronics
 
 ## Generating Data
 
-
-Now a truth table can be generated and stored to a Pandas [DataFrame](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame):
+Now a truth table can be generated and stored to a Pandas [`DataFrame`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame):
 
 ```{code-cell} ipython3
 import pandas as pd
@@ -112,17 +105,15 @@ scope = mp.truth_scope(domain_, range_)  # generator clamps range to domain
 
 # scope yields input tuples (a, b) to generate a Pandas DataFrame
 df = mp.truth_dataframe(scope, alg)
-
 ```
-
 
 ## DataFrame Layout
 
+Multiplied makes use of Pandas [`DataFrames`](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)
+to store generated truth tables. A generated truth table  can be defined by **three**
+regions:
 
-Multiplied makes use of Pandas DataFrames to store generated truth tables.
-A generated truth table  can be defined by **three** regions:
-
-### **Operands**
+### Operands
 
 These columns hold the input and output operands for a given  
 
@@ -131,10 +122,9 @@ These columns hold the input and output operands for a given
 
 cols = df.columns[:3]          
 print(df[cols].tail())
-
 ```
 
-### **Formatted Output**
+### Formatted Output
 
 Stores outputs produced by a given execution of the algorithm as seen above
 
@@ -147,15 +137,12 @@ cols = df.columns[-4:]
 print(df[cols].tail())
 ```
 
-
 :::{note}
 Multiplied provides basic tools to handle extraction of data. Check out Pandas documentation
 for additional functionality.
 :::
 
-
-
-### **Raw Output**
+### Raw Output
 
 ```{code-cell} ipython3
 :tags: [remove-input]
@@ -165,16 +152,15 @@ cols = df.columns[3:-4]
 print(df[cols].tail())
 ```
 
-#### **\[s\]tage**
+\[s\]tage
 
 > Index ranging from 0 to the number of reductions needed to return a single product
 
-#### **\[p\]artial product**
+\[p\]artial product
 
 > A given row in a partial product matrix
 
-
-#### **\[b\]it**
+\[b\]it
 
 > Bit index within a partial product
 

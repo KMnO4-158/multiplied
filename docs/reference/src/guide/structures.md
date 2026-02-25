@@ -20,7 +20,6 @@ which are reduced to a single product. The ``Matrix`` object contains the partia
 product matrix(PPM) while also tracking which bits are important via it's formatting
 style.
 
-
 let's create 4-bit Matrix Object:
 
 ```{code-cell} ipython3
@@ -34,7 +33,6 @@ And here's what it looks like:
 print(matrix)
 ```
 
-
 ```{note}
 The width of the matrix is 2x the operand bit width. This is because
 the maximum output of a product of two x-bit numbers results in a 2x-bit value.
@@ -45,12 +43,10 @@ the maximum output of a product of two x-bit numbers results in a 2x-bit value.
 The ``Matrix`` structure gives Multiplied objects fine grain access to
 bits and partial products while keeping data human readable.
 
-
 ### Wallace Tree
 
 instead of generating a zeroed matrix, we can generate a matrix with a two
 operands:
-
 
 ```{code-cell} ipython3
 matrix = mp.Matrix(4, a=15, b=3)
@@ -59,9 +55,7 @@ print(matrix)
 
 By default the matrix generates a [Wallace tree](https://en.wikipedia.org/wiki/Wallace_tree#Detailed_explanation).
 
-
 ### Dadda Tree
-
 
 With an extra step it can be adjusted to resemble the start of a [Dadda tree](https://en.wikipedia.org/wiki/Dadda_multiplier#Algorithm_example).
 
@@ -112,10 +106,8 @@ unit, each of which falls into **three** categories:
 
 #### CSAs
 
-
 Units spanning three rows define a [CSA](https://en.wikipedia.org/wiki/Carry-save_adder)
 Each taking in 3 inputs  and returning a sum and a carry.
-
 
 ```{code} text
 [ Template     ]  [ Pattern ]  [ Result       ]
@@ -128,7 +120,6 @@ ______aAaAaAaA__       a       ________________
 The utility of a CSA is the size and speed of it's circuit. Instead of wasting space
 using large full adders, many smaller CSAs will produce the same reduction, faster.
 ```
-
 
 #### Adders
 
@@ -145,8 +136,6 @@ ____bBbBbBbB____       b      ________________
 ___CcCcCcCc_____       c      _ccCcCcCcCc_____
 __cCcCcCcC______       c      ________________
 ```
-
-
 
 #### NOOPs
 
@@ -219,7 +208,6 @@ using a pattern.
 Auto-resolution of resultant templates is planned.
 ```
 
-
 ## Map
 
 Each step of an algorithm needs a pattern or a template, but it also needs to regroup
@@ -242,7 +230,6 @@ For simple maps, the map value represents an entire row rather than a specific b
 FF      00      00
 ```
 
-
 ```{note}
 
   Outputs of each units are packed to the top of their initial row.
@@ -255,7 +242,6 @@ Here's the breakdown of this example:
 2nd stage - Move middle 2 rows of result down by 1 [-1 = FF = down * 1]
 
 3rd stage - No moves required
-
 
 Algorithms use a template to produce a result, which is then "mapped" to the next
 template. Each Adder/CSA/etc. needs to know where it should output in relation to
@@ -307,7 +293,6 @@ for a more comprehensive overview check out the [complex algorithm guide](/guide
 
 ### Population
 
-
 completely automatic generation...
 
 ```{code-cell} ipython3
@@ -336,7 +321,6 @@ print(alg)
 ```
 
 ### Execution
-
 
 Use ``exec()`` to run the algorithm using two operands:
 
@@ -369,7 +353,6 @@ Some workloads require operations clamped to the source bit width such as
 [digital signal processing](https://en.wikipedia.org/wiki/Digital_signal_processing)(DSP)
 and working with [RGB](https://en.wikipedia.org/wiki/RGB_color_model) pixel values.
 This clamping is called [saturation](https://en.wikipedia.org/wiki/Saturation_arithmetic).
-
 
 ```{code} text
 11 * 12 -> 0b1011 * 0b1100 -> 0b10000100 -[Clamp=4b]-> 0b1111
