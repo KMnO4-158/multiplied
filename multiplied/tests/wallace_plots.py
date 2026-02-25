@@ -1,13 +1,10 @@
 from pathlib import Path
-from multiplied import (
-    df_global_heatmap,
-    df_global_3d_heatmap,
-    pq_extract_stages
-)
+from multiplied import df_global_heatmap, df_global_3d_heatmap, pq_extract_stages
 
 THEMES = ["", "_dark"]
 FILE_TYPES = ["png", "svg"]
 SUPPORTED_BITS = [4, 8]
+
 
 def gen_pq_global_heatmap(dark=False) -> None:
 
@@ -60,9 +57,11 @@ def gen_pq_global_3d_heatmap() -> None:
                     df_global_3d_heatmap(str(path2), title, df, dark=True)
     return None
 
+
 def main():
     gen_pq_global_heatmap()
     gen_pq_global_3d_heatmap()
+
 
 if __name__ == "__main__":
     main()

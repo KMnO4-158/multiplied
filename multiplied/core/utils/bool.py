@@ -12,7 +12,9 @@ def validate_bitwidth(bits: int) -> None:
     """Raise ValueError if bitwidth is supported by Multiplied"""
 
     if not isinstance(bits, int):
-        raise TypeError(f"Unsupported type {type(bits)}. Expected {SUPPORTED_BITWIDTHS}")
+        raise TypeError(
+            f"Unsupported type {type(bits)}. Expected {SUPPORTED_BITWIDTHS}"
+        )
     if bits not in SUPPORTED_BITWIDTHS:
         raise ValueError(f"Unsupported bitwidth {bits}. Expected {SUPPORTED_BITWIDTHS}")
 

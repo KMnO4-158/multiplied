@@ -1,14 +1,12 @@
 import pytest
-from multiplied.core.utils.bool import ischar
 from multiplied.core.utils.char import (
     chargen,
     chartff,
     allchars,
 )
 
-TYPE_ERROR_RAISERS = [
-    None, "", "string", [1, 2, 3], {"key": "value"}
-]
+TYPE_ERROR_RAISERS = [None, "", "string", [1, 2, 3], {"key": "value"}]
+
 
 def test_chargen():
     target = [chr(i) for i in range(65, 65 + 26)]
@@ -17,7 +15,6 @@ def test_chargen():
         assert next(chars) == ch
     for ch in target:
         assert next(chars) == ch
-
 
 
 def test_chartff():
@@ -45,6 +42,5 @@ def test_allchars():
 
     with pytest.raises(ValueError):
         allchars(arr_2d, hash=[1])
-
 
     assert allchars(arr_2d) == {"A", "B"}

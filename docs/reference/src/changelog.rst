@@ -10,15 +10,18 @@ v0.7
 `v0.7.3 <https://github.com/KMnO4-158/multiplied/releases/tag/v0.7.3>`_
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Updates:
+
+    - Expand core.utils unit tests (`0a4e9ea`_)
+
 Documentation:
 
     - Improve quickstart and structure pages (`f96d975`_)
     - Updated and added theme specific elements to intro page (`bafc7ff`_)
     - Update README project to mirror intro page (`8eff9d1`_)
 
-Updates:
+Bug Fix
 
-    - Expand core.utils unit tests (`0a4e9ea`_)
 
 See full changelog `here <https://github.com/KMnO4-158/multiplied/pull/111>`_
 

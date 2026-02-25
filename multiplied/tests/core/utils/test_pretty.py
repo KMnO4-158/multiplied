@@ -15,22 +15,27 @@ ARR_2D = [
 ]
 
 
-
-@pytest.mark.parametrize("arr, expected", [
-    (ARR_2D, "____aAaA\n___AaAa_\n__aAaA__\n_bBbB___\n"),
-])
+@pytest.mark.parametrize(
+    "arr, expected",
+    [
+        (ARR_2D, "____aAaA\n___AaAa_\n__aAaA__\n_bBbB___\n"),
+    ],
+)
 def test_pretty(arr, expected):
     assert pretty(arr) == expected
 
-def test_pretty_dict():
-    ...
 
-@pytest.mark.parametrize("arr, expected", [
-    (ARR_2D, "____aAaA\n___AaAa_\n__aAaA__\n_bBbB___\n"),
-])
+def test_pretty_dict(): ...
+
+
+@pytest.mark.parametrize(
+    "arr, expected",
+    [
+        (ARR_2D, "____aAaA\n___AaAa_\n__aAaA__\n_bBbB___\n"),
+    ],
+)
 def test_pretty_nested_list(arr, expected):
     assert pretty(arr) == expected
 
 
-def test_mprint():
-    ...
+def test_mprint(): ...

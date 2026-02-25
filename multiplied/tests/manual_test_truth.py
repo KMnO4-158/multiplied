@@ -45,7 +45,6 @@ def test_truth_dataframe() -> None:
     scope = mp.truth_scope((1, 15), (1, 225))
     alg = mp.Algorithm(4)
     alg.auto_resolve_stage()
-    t = mp.truth_table(scope, alg)
     df = mp.truth_dataframe(scope, alg)
     print(df)
 

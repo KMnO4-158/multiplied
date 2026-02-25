@@ -160,12 +160,7 @@ def test_pq_extract_formatted_all() -> None: ...
 def test_pq_extract_formatted_stages() -> None: ...
 
 
-def main() -> None:
-    path = (
-        Path(__file__).parent.parent.parent
-        / "examples/datasets/example_8b_mult_truthtable.parquet"
-    )
-    ...
+def main() -> None: ...
 
 
 if __name__ == "__main__":

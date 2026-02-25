@@ -61,7 +61,6 @@ def chartff(ch: str) -> Generator[str]:
     """
     from .bool import ischar
 
-
     if not ischar(ch):
         raise TypeError("Input must be a single alphabetic character")
 

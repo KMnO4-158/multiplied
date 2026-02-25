@@ -8,16 +8,15 @@ from multiplied.core.utils.bool import (
 )
 
 
-TYPE_ERROR_RAISERS = [
-    None, "", "string", [1, 2, 3], {"key": "value"}
-]
+TYPE_ERROR_RAISERS = [None, "", "string", [1, 2, 3], {"key": "value"}]
 SUPPORTED_BITWIDTHS = [4, 8]
+
 
 def test_validate_bitwidth():
     for x in SUPPORTED_BITWIDTHS:
         assert validate_bitwidth(x) is None
     with pytest.raises(ValueError):
-        for x in [0, 16, 32, None ,""]:
+        for x in [0, 16, 32, None, ""]:
             validate_bitwidth(x)
     with pytest.raises(TypeError):
         for x in TYPE_ERROR_RAISERS:
@@ -63,13 +62,7 @@ def test_ishex2(val, expected):
 
 @pytest.mark.parametrize(
     "val, expected",
-    [
-        ("0", True),
-        (1, False),
-        ("_", True),
-        ("a1", False),
-        (" ", True)
-    ],
+    [("0", True), (1, False), ("_", True), ("a1", False), (" ", True)],
 )
 def test_ischar(val, expected):
     assert ischar(val) == expected

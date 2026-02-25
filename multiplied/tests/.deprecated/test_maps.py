@@ -60,11 +60,7 @@ def test_apply_rmap() -> None:
     mp.mprint(m)
 
 
-def main():
-    test_dadda_map(8)
-    test_resolve_simple_map()
-    test_empty_map(4)
-    test_apply_rmap()
+def main(): ...
 
 
 if __name__ == "__main__":
