@@ -1,0 +1,45 @@
+/* -- theme based image blo -- */
+
+/* default: show light image, hide dark */
+img.dark { display: none; }
+img.light { display: inline-block; }
+
+/* when page has a dark-mode class */
+html.dark img.dark,
+body.dark img.dark {
+  display: inline-block;
+}
+html.dark img.light,
+body.dark img.light {
+  display: none;
+}
+
+/* fallback: prefers-color-scheme for browsers without theme class */
+@media (prefers-color-scheme: dark) {
+  img.dark { display: inline-block; }
+  img.light { display: none; }
+}
+
+
+/* -- theme based code container -- */
+
+/* hide both by default to avoid flicker */
+.code-variant-light, .code-variant-dark { display: none !important; }
+
+/* when theme reports light */
+html[data-theme="light"], html[data-mode="light"] {
+  .code-variant-light { display: block !important; }
+  .code-variant-dark  { display: none  !important; }
+}
+
+/* when theme reports dark */
+html[data-theme="dark"], html[data-mode="dark"] {
+  .code-variant-light { display: none  !important; }
+  .code-variant-dark  { display: block !important; }
+}
+
+/* fallback: prefers-color-scheme */
+@media (prefers-color-scheme: dark) {
+  .code-variant-dark { display: block !important; }
+  .code-variant-light { display: none !important; }
+}
