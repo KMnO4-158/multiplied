@@ -20,7 +20,9 @@ Documentation:
     - Updated and added theme specific elements to intro page (`bafc7ff`_)
     - Update README project to mirror intro page (`8eff9d1`_)
 
-Bug Fix
+Bug Fixes:
+
+    - fixed inconsistent `DataFrame` column index usage (`ab53fb4`_)
 
 
 See full changelog `here <https://github.com/KMnO4-158/multiplied/pull/111>`_
@@ -29,6 +31,7 @@ See full changelog `here <https://github.com/KMnO4-158/multiplied/pull/111>`_
 .. _bafc7ff: https://github.com/KMnO4-158/multiplied/commit/bafc7ff
 .. _8eff9d1: https://github.com/KMnO4-158/multiplied/commit/8eff9d1
 .. _0a4e9ea: https://github.com/KMnO4-158/multiplied/commit/0a4e9ea
+.. _ab53fb4: https://github.com/KMnO4-158/multiplied/commit/ab53fb4
 
 `v0.7.2 <https://github.com/KMnO4-158/multiplied/releases/tag/v0.7.2>`_
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
