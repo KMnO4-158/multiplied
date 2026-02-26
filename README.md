@@ -174,12 +174,12 @@ scope = mp.truth_scope(domain_, range_)  # generator clamps range to domain
 df = mp.truth_dataframe(scope, alg)
 
 # Generate cumulative heatmap of all stages
-mp.df_global_heatmap("example.svg", "Fancy Title", df, dark=True)
+mp.df_global_heatmap("example.svg", "Title", df, dark=True)
 
 # Generate and stack 2d heatmaps of each stage
-mp.df_global_3d_heatmap("example3d.svg", "Fancy Title", df, dark=True)
+mp.df_global_3d_heatmap("example3d.svg", "Title", df, dark=True)
 ```
 
-![Example 8-bit Wallace Tree Heatmap](examples/outputs/example_dark_8b_wallace_heatmap.png)
+![Example 8-bit Wallace Tree Heatmap](docs/reference/src/_static/images/example_dark_8b_wallace_heatmap.png)
 
-![Example 8-bit Wallace Tree 3D Heatmap](examples/outputs/example_dark_8b_wallace_3d_heatmap.png)
+![Example 8-bit Wallace Tree 3D Heatmap](docs/reference/src/_static/images/example_dark_8b_wallace_3d_heatmap.png)
