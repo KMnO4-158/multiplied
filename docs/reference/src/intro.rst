@@ -183,10 +183,10 @@ Generated data returns as a Pandas ``DataFrame`` ready for manipulation and vidu
         df = mp.truth_dataframe(scope, alg)
 
         # Generate cumulative heatmap of all stages
-        mp.df_global_heatmap("example.svg", "Fancy Title", df)
+        mp.df_global_heatmap("example.svg", "Title", df)
 
         # Generate and stack 2d heatmaps of each stage
-        mp.df_global_3d_heatmap("example3d.svg", "Fancy Title", df)
+        mp.df_global_3d_heatmap("example3d.svg", "Title", df)
 
 .. container:: code-variant-dark
 
@@ -202,10 +202,10 @@ Generated data returns as a Pandas ``DataFrame`` ready for manipulation and vidu
         df = mp.truth_dataframe(scope, alg)
 
         # Generate cumulative heatmap of all stages
-        mp.df_global_heatmap("example.svg", "Fancy Title", df, dark=True)
+        mp.df_global_heatmap("example.svg", "Title", df, dark=True)
 
         # Generate and stack 2d heatmaps of each stage
-        mp.df_global_3d_heatmap("example3d.svg", "Fancy Title", df, dark=True)
+        mp.df_global_3d_heatmap("example3d.svg", "Title", df, dark=True)
 
 
 .. image:: _static/images/example_8b_wallace_heatmap.svg
