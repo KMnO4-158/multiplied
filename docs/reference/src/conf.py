@@ -68,7 +68,6 @@ html_css_files = [
 html_context = {"github_user": "KMnO4-158", "github_repo": "multiplied"}
 html_copy_source = False
 
-
 # -- Exposing variables to .rst files ----------------------------------------
 # https://stackoverflow.com/a/69211912 , https://stackoverflow.com/q/34006784
 variables_to_export = [

@@ -207,29 +207,19 @@ Generated data returns as a Pandas ``DataFrame`` ready for manipulation and vidu
         # Generate and stack 2d heatmaps of each stage
         mp.df_global_3d_heatmap("example3d.svg", "Fancy Title", df, dark=True)
 
-.. raw:: html
 
-    <img
-        src="../../../examples/outputs/example_8b_wallace_heatmap.svg"
-        alt="Example 8-bit Wallace Tree Heatmap"
-        class="only-light"
-    >
+.. image:: _static/images/example_8b_wallace_heatmap.svg
+    :alt: Example 8-bit Wallace Tree Heatmap
+    :class: only-light
 
-    <img
-        src="../../../examples/outputs/example_8b_wallace_3d_heatmap.svg"
-        alt="Example 3D 8-bit Wallace Tree Heatmap"
-        class="only-light"
-    >
+.. image:: _static/images/example_8b_wallace_3d_heatmap.svg
+    :alt: Example 3D 8-bit Wallace Tree Heatmap
+    :class: only-light
 
+.. image:: _static/images/example_dark_8b_wallace_heatmap.svg
+    :alt: Example 8-bit Wallace Tree Heatmap
+    :class: only-dark
 
-    <img
-        src="../../../examples/outputs/example_dark_8b_wallace_heatmap.svg"
-        alt="Example 8-bit Wallace Tree Heatmap"
-        class="only-dark"
-    >
-
-    <img
-        src="../../../examples/outputs/example_dark_8b_wallace_3d_heatmap.svg"
-        alt="Example 3D 8-bit Wallace Tree Heatmap"
-        class="only-dark"
-    >
+.. image:: _static/images/example_dark_8b_wallace_3d_heatmap.svg
+    :alt: Example 3D 8-bit Wallace Tree Heatmap
+    :class: only-dark
