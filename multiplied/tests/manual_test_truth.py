@@ -48,9 +48,18 @@ def test_truth_dataframe() -> None:
     df = mp.truth_dataframe(scope, alg)
     print(df)
 
+def raw_zero_matrix(bits):
+    matrix = []
+    zero = ["0"] * bits
+    for i in range(bits):
+        row = (["_"] * ((bits << 1) - bits - i)) + zero + (["_"] * i)
+        matrix.append(row)
+    return matrix
 
 def main() -> None:
-    test_scope()
+    mp.mprint(raw_zero_matrix(4))
+    mp.mprint(raw_zero_matrix(8))
+    # test_scope()
     # test_shallow_generator4()
     # test_shallow_generator8()
     # test_truth_table()
