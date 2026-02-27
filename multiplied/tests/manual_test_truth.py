@@ -56,9 +56,27 @@ def raw_zero_matrix(bits):
         matrix.append(row)
     return matrix
 
+def raw_dadda_map(bits):
+    matrix = []
+    for i in range(bits):
+        # generate 2-bit hex values which result in "V" shape partial product tree
+        dadda = [f"{(255-j):02X}"[-2:] for j in range(i-1, -1, -1)]
+        row = (["00"] * (bits - i)) + dadda + (["00"] * bits)
+        matrix.append(row)
+    return matrix
+
+
 def main() -> None:
     mp.mprint(raw_zero_matrix(4))
     mp.mprint(raw_zero_matrix(8))
+    mp.mprint(raw_dadda_map(4))
+    mp.mprint(raw_dadda_map(8))
+    print(hasattr(mp.Algorithm(4), "exec"))
+    print(mp.Algorithm(4).__dict__)
+    print(dir(mp.Algorithm(4)))
+    print(mp.Algorithm(4).__doc__)
+    print(mp.Algorithm(4).__str__)
+
     # test_scope()
     # test_shallow_generator4()
     # test_shallow_generator8()

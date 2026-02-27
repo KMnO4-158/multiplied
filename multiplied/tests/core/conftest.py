@@ -3,7 +3,7 @@ import multiplied as mp
 
 # -- algorithm ------------------------------------------------------
 
-@pytest.fixture(params=[4, 8])
+@pytest.fixture(params=mp.SUPPORTED_BITWIDTHS)
 def supported_algorithms(request):
     bit_width = request.param
 
@@ -28,44 +28,46 @@ def algorithm_8_bit():
     return alg
 
 # -- map ------------------------------------------------------------
-def raw_zero_map(bits):
-    matrix = []
-    for i in range(bits):
-        row = ["00"] * (bits << 1)
-        matrix.append(row)
-    return matrix
 
-@pytest.fixture(params=[4, 8])
+
+@pytest.fixture(params=mp.SUPPORTED_BITWIDTHS)
+def reference_dadda_map(request):
+    dadda_map = {
+        4: [
+            ["00", "00", "00", "00"] + ["00"] * 4,
+            ["00", "00", "00", "FF"] + ["00"] * 4,
+            ["00", "00", "FE", "FF"] + ["00"] * 4,
+            ["00", "FD", "FE", "FF"] + ["00"] * 4,
+        ],
+        8: [
+            ["00", "00", "00", "00", "00", "00", "00", "00"] + ["00"] * 8,
+            ["00", "00", "00", "00", "00", "00", "00", "FF"] + ["00"] * 8,
+            ["00", "00", "00", "00", "00", "00", "FE", "FF"] + ["00"] * 8,
+            ["00", "00", "00", "00", "00", "FD", "FE", "FF"] + ["00"] * 8,
+            ["00", "00", "00", "00", "FC", "FD", "FE", "FF"] + ["00"] * 8,
+            ["00", "00", "00", "FB", "FC", "FD", "FE", "FF"] + ["00"] * 8,
+            ["00", "00", "FA", "FB", "FC", "FD", "FE", "FF"] + ["00"] * 8,
+            ["00", "F9", "FA", "FB", "FC", "FD", "FE", "FF"] + ["00"] * 8,
+        ],
+    }
+    return mp.Map(dadda_map[request.param])
+
+
+@pytest.fixture(params=mp.SUPPORTED_BITWIDTHS)
 def supported_maps(request):
-    bits = request.param
-    return mp.Map(raw_zero_map(bits))
+    return mp.Map(mp.raw_zero_map(request.param))
 
 @pytest.fixture()
 def raw_map_4_bit():
-    matrix = raw_zero_map(4)
+    matrix = mp.raw_zero_map(4)
     return matrix
 
 @pytest.fixture()
 def raw_map_8_bit():
-    matrix = raw_zero_map(8)
+    matrix = mp.raw_zero_map(8)
     return matrix
 
 # -- matrix ---------------------------------------------------------
-
-def raw_empty_matrix(bits):
-    matrix = []
-    for i in range(bits):
-        row = ["_" for _ in range(bits << 1)]
-        matrix.append(row)
-    return matrix
-
-def raw_zero_matrix(bits):
-    matrix = []
-    zero = ["0"] * bits
-    for i in range(bits):
-        row = (["_"] * ((bits << 1) - bits - i)) + zero + (["_"] * i)
-        matrix.append(row)
-    return matrix
 
 @pytest.fixture(params=[])
 def supported_matrices():
@@ -73,7 +75,7 @@ def supported_matrices():
 
 @pytest.fixture()
 def raw_zero_matrix_8_bit():
-    matrix = raw_zero_matrix(8)
+    matrix = mp.raw_zero_matrix(8)
     return matrix
 
 @pytest.fixture(params=[raw_zero_matrix_8_bit, 8])
@@ -82,12 +84,7 @@ def zero_matrix_8_bit(request):
 
 @pytest.fixture()
 def raw_zero_matrix_4_bit():
-    matrix = [
-        ["_", "_", "_", "_", "0", "0", "0", "0"],
-        ["_", "_", "_", "0", "0", "0", "0", "_"],
-        ["_", "_", "0", "0", "0", "0", "_", "_"],
-        ["_", "0", "0", "0", "0", "_", "_", "_"]
-    ]
+    matrix = mp.raw_zero_matrix(4)
     return matrix
 
 @pytest.fixture(params=[raw_zero_matrix_4_bit, 4])
