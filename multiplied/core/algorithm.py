@@ -141,7 +141,7 @@ class Algorithm:
         if any(test):
             # flood bits within boundary
             saturated_value = [["0"] * self.bits + ["1"] * self.bits]
-            self.matrix = mp.Matrix(saturated_value + mp.empty_matrix(self.bits)[1:])
+            self.matrix = mp.Matrix(saturated_value + mp.raw_empty_matrix(self.bits)[1:])
             return True
         else:
             return False
@@ -515,7 +515,7 @@ def collect_template_units(
 
     units = {}
     for ch in allchars:
-        matrix = mp.empty_matrix(source.bits)
+        matrix = mp.raw_empty_matrix(source.bits)
         tff = chartff(ch)  # toggle flip flop
         next(tff)  # sync to template case sensitivity
         i = 0  # coordinate index
@@ -614,7 +614,7 @@ def hoist(
     y_start = 0  #
     y_end = bits  #
     # --------------------------------------------------------------- #
-    map_ = mp.empty_matrix(bits)
+    map_ = mp.raw_empty_matrix(bits)
 
     for y in range(y_start, y_end):
         map_[y] = ["00"] * (bits << 1)

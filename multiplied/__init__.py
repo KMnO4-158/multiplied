@@ -22,7 +22,8 @@ from .core.matrix import (
     Matrix,
     Slice,
     empty_rows,
-    empty_matrix,
+    raw_empty_matrix,
+    raw_zero_matrix,
     matrix_merge,
 )
 
@@ -129,7 +130,8 @@ __all__ = [
     "Template",
     "Algorithm",
     "empty_rows",
-    "empty_matrix",
+    "raw_empty_matrix",
+    "raw_zero_matrix",
     "matrix_merge",
     "hoist",
     "collect_arithmetic_units",

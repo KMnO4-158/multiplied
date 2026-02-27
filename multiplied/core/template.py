@@ -500,7 +500,7 @@ class Template:
 
         units = {}
         for ch in allchars:
-            matrix = mp.empty_matrix(self.bits)
+            matrix = mp.raw_empty_matrix(self.bits)
             tff = chartff(ch)  # toggle flip flop
             next(tff)  # sync to template case sensitivity
             i = 0  # coordinate index
