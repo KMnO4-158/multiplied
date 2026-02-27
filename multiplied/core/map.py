@@ -28,20 +28,30 @@ class Map:
 
     """
 
-    def __init__(self, map: list[Any]) -> None:
-        if not (isinstance(map, list)):
-            raise ValueError("Map must be type list")
-        mp.validate_bitwidth(bits := len(map))
-        self.bits = bits
-
-        # -- handle standard maps -----------------------------------
-        if isinstance(map[0], list):
+    def __init__(self, map: list[Any] | int) -> None:
+        if isinstance(map, int):
+            self.bits = map
+            mp.validate_bitwidth(self.bits)
+        elif isinstance(map, list):
+            self.bits = len(map)
+            mp.validate_bitwidth(self.bits)
             self.map = map
-            self.rmap = []
+            # -- handle standard maps -------------------------------
+            if isinstance(self.map[0], list):
+                self.rmap = []
+                return None
+        else:
+            raise ValueError(f"Map must be type list got {map}")
+
+        # -- handle bit defined maps --------------------------------
+
+        if isinstance(map, int):
+            self.map = self.build_zero_map(self.bits)
+            self.rmap = ["00"] * self.bits
             return None
 
-        # -- handle row maps ---------------------------------------
-        checksum = [0] * bits
+        # -- handle row maps ----------------------------------------
+        checksum = [0] * self.bits
         for i, x in enumerate(map):
             if 2 < len(x) or not (0 <= int(x, 16) <= 255):
                 raise ValueError(
@@ -76,6 +86,10 @@ class Map:
                 raise ValueError(f"Invalid row map element {rmap[i]}")
             map.append([rmap[i] for _ in range(n * 2)])
         return map
+
+    def build_zero_map(self, bits: int) -> list[list[str]]:
+        """Build a zero map of the specified size."""
+        return [["00"] * (self.bits << 1) for _ in range(self.bits)]
 
     def __repr__(self) -> str:
         return f"<multiplied.{self.__class__.__name__} object at {hex(id(self))}>"
@@ -126,3 +140,24 @@ def build_dadda_map(bits: int) -> Map:
     # -------------------------------------------------------------------------- #
 
     return Map(dadda_map[bits])
+
+
+def raw_zero_map(bits: int) -> list[list[str]]:
+    """Returns a zero-filled map of size `bits`."""
+    matrix = []
+    for i in range(bits):
+        row = ["00"] * (bits << 1)
+        matrix.append(row)
+    return matrix
+
+def raw_dadda_map(bits: int) -> list[list[str]]:
+    """Returns a Dadda map of size `bits`."""
+    matrix = []
+    k = 0
+    for i in range(bits):
+        shift = (k ^ 255) + 1
+        val = f"{shift:02X}"[-2:]
+        row = (["00"] * (bits - i)) + ([val] * i) + (["00"] * bits)
+        matrix.append(row)
+        k -= 1
+    return matrix
