@@ -28,33 +28,33 @@ class Map:
 
     """
 
-    def __init__(self, map: list[Any] | int) -> None:
-        if isinstance(map, int):
-            self.bits = map
-            mp.validate_bitwidth(self.bits)
-        elif isinstance(map, list):
-            self.bits = len(map)
-            mp.validate_bitwidth(self.bits)
-            self.map = map
-            # -- handle standard maps -------------------------------
-            if isinstance(self.map[0], list):
-                self.rmap = []
-                return None
-        else:
-            raise ValueError(f"Map must be type list got {map}")
+    def __init__(self, map: list[Any] | int, *, dadda: bool = False) -> None:
+        if not isinstance(map, (list, int)):
+            raise TypeError(f"Map must be type list or int got {type(map)}")
+        self.bits = map if isinstance(map, int) else len(map)
+        mp.validate_bitwidth(self.bits)
 
         # -- handle bit defined maps --------------------------------
-
         if isinstance(map, int):
             self.map = self.build_zero_map(self.bits)
             self.rmap = ["00"] * self.bits
             return None
 
+
+        # -- handle standard maps -------------------------------
+        self.map = map
+        if isinstance(self.map[0], list):
+            self.rmap = []
+            return None
+
+
         # -- handle row maps ----------------------------------------
+        # TODO: refactor -> coordinate based mapping
+        # TODO: calculate when map results in out-of-bound mapping(s)
         checksum = [0] * self.bits
         for i, x in enumerate(map):
-            if 2 < len(x) or not (0 <= int(x, 16) <= 255):
-                raise ValueError(
+            if 2 != len(x) or not (0 <= int(x, 16) <= 255):
+                raise TypeError(
                     f"Expected hex value in range '00' to 'FF', got mapping {x}"
                 )
             checksum[i] = 1 if x != "00" else 0
@@ -116,30 +116,7 @@ def empty_map(bits: int) -> Map:
 def build_dadda_map(bits: int) -> Map:
     """Return map representing the starting point of Dadda tree algorithm."""
     mp.validate_bitwidth(bits)
-
-    # TODO: Use hoist() to generate dadda maps
-    # -- Repulsive - Design algorithm for 16-bit+ ------------------------------ #
-    dadda_map = {  #
-        4: [  #
-            ["00", "00", "00", "00"] + ["00"] * 4,  #
-            ["00", "00", "00", "FF"] + ["00"] * 4,  #
-            ["00", "00", "FE", "FF"] + ["00"] * 4,  #
-            ["00", "FD", "FE", "FF"] + ["00"] * 4,  #
-        ],  #
-        8: [  #
-            ["00", "00", "00", "00", "00", "00", "00", "00"] + ["00"] * 8,  #
-            ["00", "00", "00", "00", "00", "00", "00", "FF"] + ["00"] * 8,  #
-            ["00", "00", "00", "00", "00", "00", "FE", "FF"] + ["00"] * 8,  #
-            ["00", "00", "00", "00", "00", "FD", "FE", "FF"] + ["00"] * 8,  #
-            ["00", "00", "00", "00", "FC", "FD", "FE", "FF"] + ["00"] * 8,  #
-            ["00", "00", "00", "FB", "FC", "FD", "FE", "FF"] + ["00"] * 8,  #
-            ["00", "00", "FA", "FB", "FC", "FD", "FE", "FF"] + ["00"] * 8,  #
-            ["00", "F9", "FA", "FB", "FC", "FD", "FE", "FF"] + ["00"] * 8,  #
-        ],  #
-    }  #
-    # -------------------------------------------------------------------------- #
-
-    return Map(dadda_map[bits])
+    return Map(raw_dadda_map(bits))
 
 
 def raw_zero_map(bits: int) -> list[list[str]]:
@@ -153,11 +130,9 @@ def raw_zero_map(bits: int) -> list[list[str]]:
 def raw_dadda_map(bits: int) -> list[list[str]]:
     """Returns a Dadda map of size `bits`."""
     matrix = []
-    k = 0
     for i in range(bits):
-        shift = (k ^ 255) + 1
-        val = f"{shift:02X}"[-2:]
-        row = (["00"] * (bits - i)) + ([val] * i) + (["00"] * bits)
+        # generate 2-bit hex values which result in "V" shape partial product tree
+        dadda = [f"{(255-j):02X}"[-2:] for j in range(i-1, -1, -1)]
+        row = (["00"] * (bits - i)) + dadda + (["00"] * bits)
         matrix.append(row)
-        k -= 1
     return matrix
