@@ -485,17 +485,15 @@ def algorithm_of_varying_widths(request):
 
     PYTEST BEHAVIOR:
         If a test uses this fixture, pytest will:
-        1. Create 2-bit algorithm, run test
-        2. Create 4-bit algorithm, run test
-        3. Create 8-bit algorithm, run test
+        1. Create 4-bit algorithm, run test
+        2. Create 8-bit algorithm, run test
 
-        Test output will show: test_name[2], test_name[4], test_name[8]
+        Test output will show: test_name[4], test_name[8]
 
     AI CONFIDENCE: ~90%
         Parametrization is standard pytest. Works reliably.
 
     EXAMPLE TEST OUTPUT:
-        test_heatmap_all_widths[2] PASSED
         test_heatmap_all_widths[4] PASSED
         test_heatmap_all_widths[8] PASSED
     """
