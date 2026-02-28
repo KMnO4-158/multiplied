@@ -33,6 +33,7 @@ from .core.template import (
     Template,
     build_csa,
     build_adder,
+    build_noop,
     resolve_pattern,
     build_empty_slice,
 )
@@ -137,6 +138,7 @@ __all__ = [
     "collect_arithmetic_units",
     "build_csa",
     "build_adder",
+    "build_noop",
     "build_empty_slice",
     "resolve_pattern",
     "truth_scope",
