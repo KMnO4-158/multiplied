@@ -9,7 +9,6 @@ def supported_algorithms(request):
 
     alg = mp.Algorithm(bit_width)
     alg.auto_resolve_stage(recursive=True)
-
     return alg
 
 @pytest.fixture()
@@ -23,6 +22,7 @@ def algorithm_4_bit():
 @pytest.fixture()
 def algorithm_8_bit():
     alg = mp.Algorithm(8)
+    alg.push
     alg.auto_resolve_stage(recursive=True)
 
     return alg
