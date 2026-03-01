@@ -8,6 +8,7 @@ import multiplied as mp
 # fmt: off
 
 # -- test instance --------------------------------------------------
+# ! make bit widths programmatic
 """
 metadata:
     raw:
@@ -77,7 +78,7 @@ def matrix_cases_8(request):
     return request.param
 
 
-def test_4_bit_scenarios(matrix_cases_4):
+def test_4_bit_instance(matrix_cases_4):
     """Generic test for all 4-bit scenarios"""
     result = process_value(matrix_cases_4.input_value, matrix_cases_4.metadata)
     if matrix_cases_4.metadata.get("ne", False):
@@ -86,7 +87,7 @@ def test_4_bit_scenarios(matrix_cases_4):
         assert result == matrix_cases_4.expected_output
 
 
-def test_8_bit_scenarios(matrix_cases_8):
+def test_8_bit_instance(matrix_cases_8):
     """Generic test for all 8-bit scenarios"""
     result = process_value(matrix_cases_8.input_value, matrix_cases_8.metadata)
     if matrix_cases_8.metadata.get("ne", False):
