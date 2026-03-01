@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from typing import Any
 from multiplied.tests import REFERENCE, TestCase
 import pytest
@@ -40,6 +39,10 @@ TEST_ITER = [
 ]
 
 TEST_MATRIX_MERGE = [
+
+]
+
+TEST_ERROR = [
 
 ]
 # fmt: on
