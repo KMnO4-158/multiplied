@@ -4,11 +4,26 @@ import pytest
 import warnings
 import multiplied as mp
 
-
 # block ruff format:
 # fmt: off
+
+# -- test instance --------------------------------------------------
+"""
+metadata:
+    raw:
+        convert input to list[list[str]]
+    empty:
+        convert input to 'empty' matrix filled with underscores ['_']
+    dadda:
+        map input to dadda shape
+    bits:
+        input.bits
+    len:
+        input.__len__()
+
+"""
 TEST_4_BIT_INSTANCE = [
-    # TestCase("", mp.Matrix(4), REFERENCE[""], {}),  # template
+    # TC(name, input, expected_output, metadata)
     TestCase("4_bit_matrix",4, REFERENCE["dummy_matrix"][4], {"raw": True, "ne": True}),
     TestCase("4_bit_zero_matrix",4, REFERENCE["zero_matrix"][4], {"raw": True}),
     TestCase("4_bit_empty_matrix",4, REFERENCE["empty_matrix"][4], {"empty": True}),
@@ -19,7 +34,7 @@ TEST_4_BIT_INSTANCE = [
 ]
 
 TEST_8_BIT_INSTANCE = [
-    # TestCase("", mp.Matrix(8), REFERENCE[""], {}),  # template
+    # TC(name, input, expected_output, metadata)
     TestCase("8_bit_matrix", 8, REFERENCE["dummy_matrix"][8], {"raw": True, "ne": True}),
     TestCase("8_bit_zero_matrix", 8, REFERENCE["zero_matrix"][8], {"raw": True}),
     TestCase("8_bit_empty_matrix", 8, REFERENCE["empty_matrix"][8], {"empty": True}),
@@ -29,21 +44,23 @@ TEST_8_BIT_INSTANCE = [
 ]
 
 
+# -------------------------------------------------------------------
+""""""
 TEST_BOOLEAN = [
-
+    # TC(name, input, expected_output, metadata)
 ]
 
 
 TEST_ITER = [
-
+    # TC(name, input, expected_output, metadata)
 ]
 
 TEST_MATRIX_MERGE = [
-
+    # TC(name, input, expected_output, metadata)
 ]
 
 TEST_ERROR = [
-
+    # TC(name, input, expected_output, metadata)
 ]
 # fmt: on
 

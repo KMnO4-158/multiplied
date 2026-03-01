@@ -155,67 +155,67 @@ def temp_output_dir(tmp_path):
 # Use these to create sample test data with various structures
 # ============================================================================
 
-@pytest.fixture
-def sample_heatmap_dataframe():
-    """
-    FIXTURE: Minimal valid heatmap DataFrame
+# @pytest.fixture
+# def sample_heatmap_dataframe():
+#     """
+#     FIXTURE: Minimal valid heatmap DataFrame
 
-    SCOPE: function
+#     SCOPE: function
 
-    PURPOSE:
-        Creates a small DataFrame with proper column format for heatmap testing.
-        This is the most basic fixture - use when you just need some valid data.
+#     PURPOSE:
+#         Creates a small DataFrame with proper column format for heatmap testing.
+#         This is the most basic fixture - use when you just need some valid data.
 
-    STRUCTURE:
-        - 2 stages (s0, s1)
-        - 2 partial product matrices per stage (p0, p1)
-        - 8 bits per matrix (b0-b7)
-        - 5 rows of data
-        - Columns named: s{stage}_p{ppm}_b{bit}
+#     STRUCTURE:
+#         - 2 stages (s0, s1)
+#         - 2 partial product matrices per stage (p0, p1)
+#         - 8 bits per matrix (b0-b7)
+#         - 5 rows of data
+#         - Columns named: s{stage}_p{ppm}_b{bit}
 
-    EXAMPLE OUTPUT:
-        Index  s0_p0_b0  s0_p0_b1  s0_p1_b0  ... s1_p1_b7
-        0           0         1         0   ...        1
-        1           1         0         1   ...        0
-        2           0         1         0   ...        1
-        3           1         0         1   ...        0
-        4           1         1         0   ...        1
+#     EXAMPLE OUTPUT:
+#         Index  s0_p0_b0  s0_p0_b1  s0_p1_b0  ... s1_p1_b7
+#         0           0         1         0   ...        1
+#         1           1         0         1   ...        0
+#         2           0         1         0   ...        1
+#         3           1         0         1   ...        0
+#         4           1         1         0   ...        1
 
-    USAGE:
-        def test_heatmap(sample_heatmap_dataframe):
-            assert len(sample_heatmap_dataframe) == 5
-            mp.df_global_heatmap("test.svg", "Title", sample_heatmap_dataframe)
+#     USAGE:
+#         def test_heatmap(sample_heatmap_dataframe):
+#             assert len(sample_heatmap_dataframe) == 5
+#             mp.df_global_heatmap("test.svg", "Title", sample_heatmap_dataframe)
 
-    RETURNS:
-        pd.DataFrame with proper column structure
+#     RETURNS:
+#         pd.DataFrame with proper column structure
 
-    AI CONFIDENCE: ~95%
-        Column structure matches function's parsing logic.
-        However, verify this matches YOUR actual DataFrame format.
+#     AI CONFIDENCE: ~95%
+#         Column structure matches function's parsing logic.
+#         However, verify this matches YOUR actual DataFrame format.
 
-    WHAT TO VERIFY:
-        ⚠️  CRITICAL: Check if your actual data uses this naming convention
-        - Does your data have 2 stages? (adjust num_stages if not)
-        - Does your data have 2 PPMs per stage? (adjust num_ppms if not)
-        - Are bits 8-bit wide? (adjust num_bits if not)
-    """
-    column_data = {}
+#     WHAT TO VERIFY:
+#         ⚠️  CRITICAL: Check if your actual data uses this naming convention
+#         - Does your data have 2 stages? (adjust num_stages if not)
+#         - Does your data have 2 PPMs per stage? (adjust num_ppms if not)
+#         - Are bits 8-bit wide? (adjust num_bits if not)
+#     """
+#     column_data = {}
 
-    # Configuration - ADJUST THESE if your data is different
-    num_stages = 2     # Number of stages in algorithm
-    num_ppms = 4       # PPMs per stage
-    num_bits = 8      # Bit width
-    num_rows = 5       # Number of test data rows
+#     # Configuration - ADJUST THESE if your data is different
+#     num_stages = 2     # Number of stages in algorithm
+#     num_ppms = 4       # PPMs per stage
+#     num_bits = 8      # Bit width
+#     num_rows = 5       # Number of test data rows
 
-    # Create columns in format: s{stage}_p{ppm}_b{bit}
-    for stage in range(num_stages):
-        for ppm in range(num_ppms):
-            for bit in range(num_bits):
-                col_name = f"s{stage}_p{ppm}_b{bit}"
-                # Fill with alternating 0/1 values
-                column_data[col_name] = [i % 2 for i in range(num_rows)]
+#     # Create columns in format: s{stage}_p{ppm}_b{bit}
+#     for stage in range(num_stages):
+#         for ppm in range(num_ppms):
+#             for bit in range(num_bits):
+#                 col_name = f"s{stage}_p{ppm}_b{bit}"
+#                 # Fill with alternating 0/1 values
+#                 column_data[col_name] = [i % 2 for i in range(num_rows)]
 
-    return pd.DataFrame(column_data)
+#     return pd.DataFrame(column_data)
 
 
 @pytest.fixture

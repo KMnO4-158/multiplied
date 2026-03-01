@@ -6,7 +6,7 @@ import pytest
 import multiplied as mp
 
 TEST_4_BIT_SCENARIOS = [
-
+    # TC(name, [domain, range], error, metadata)
 ]
 
 TEST_8_BIT_SCENARIOS = [
