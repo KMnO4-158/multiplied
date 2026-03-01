@@ -1,10 +1,25 @@
-"""Reference objects for testing
 
-This collection is not exhaustive.
-"""
+from dataclasses import dataclass
+from typing import Any
+
+
+@dataclass
+class TestCase:
+    """Describes a single test scenario
+
+    assert metadata(input_value) -> expected_output
+    """
+    name: str
+    input_value: Any
+    expected_output: Any
+    metadata: dict
+    __test__ = False
+
 
 # block ruff format:
 # fmt: off
+
+# Reference objects for testing. This collection is not exhaustive.
 REFERENCE = {
     "zero_map": {
         4: [

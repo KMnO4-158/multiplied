@@ -1,21 +1,9 @@
 from dataclasses import dataclass
 from typing import Any
-from multiplied.tests import REFERENCE
+from multiplied.tests import REFERENCE, TestCase
 import pytest
 import warnings
 import multiplied as mp
-
-@dataclass
-class TestCase:
-    """Describes a single test scenario
-
-    assert metadata(input_value) -> expected_output
-    """
-    name: str
-    input_value: Any
-    expected_output: Any
-    metadata: dict
-    __test__ = False
 
 
 # block ruff format:
@@ -70,7 +58,6 @@ def matrix_cases_8(request):
 
 def test_4_bit_scenarios(matrix_cases_4):
     """Generic test for all 4-bit scenarios"""
-    print(matrix_cases_4.input_value)
     result = process_value(matrix_cases_4.input_value, matrix_cases_4.metadata)
     if matrix_cases_4.metadata.get("ne", False):
         assert result != matrix_cases_4.expected_output
@@ -80,8 +67,6 @@ def test_4_bit_scenarios(matrix_cases_4):
 
 def test_8_bit_scenarios(matrix_cases_8):
     """Generic test for all 8-bit scenarios"""
-    print(matrix_cases_8.input_value)
-
     result = process_value(matrix_cases_8.input_value, matrix_cases_8.metadata)
     if matrix_cases_8.metadata.get("ne", False):
         assert result != matrix_cases_8.expected_output
