@@ -1,18 +1,34 @@
-from multiplied.tests import TestCase
+from multiplied.tests import REFERENCE, TestCase
 import pytest
 import multiplied as mp
+# block ruff format:
+# fmt: off
 
-TEST_4_BIT_SCENARIOS = [
-    # truth table / truth dataframe
+
+# -- test data generation -------------------------------------------
+"""
+metadata:
+    type:
+        sha: shallow truth table
+    all:
+        test all supported bits
+
+"""
+TEST_TRUTH_TABLES = [
+    # TC(name, input, expected_output, metadata)
+    TestCase("shallow_small_scope", REFERENCE["small_scope"], None, {"type": "sha", "all": True}),
+    TestCase("shallow_medium_scope", REFERENCE["medium_scope"], None, {"type": "sha", "all": True}),
+    TestCase("table_small_scope", REFERENCE["small_scope"], None, {"all": True}),
+    TestCase("table_medium_scope", REFERENCE["medium_scope"], None, {"all": True}),
 ]
 
-TEST_8_BIT_SCENARIOS = [
-
-    # truth table / truth dataframe
-]
-
-# TC(name, [domain, range], error, metadata)
+# -- test scope generation ------------------------------------------
+"""
+metadata:
+    None
+"""
 TEST_SCOPE = [
+    # TC(name, input, expected_output, metadata)
     TestCase("4_bit_truth_scope", [(1, 15), (1, 255)], None, {}),
     TestCase("8_bit_truth_scope", [(1, 255), (1, 65535)], None, {}),
     TestCase("tr_scope_all_one", [(1, 1), (1, 1)], None, {}),
@@ -26,19 +42,13 @@ TEST_SCOPE = [
     TestCase("tr_scope_tup_str_int", [("f", 15), ("ff", 255)], TypeError, {}),
     TestCase("tr_scope_zero", [(0, 255), (150, 255)], ValueError, {}),
     TestCase("tr_scope_zero", [(0, 255), (150, 255)], ValueError, {}),
-
 ]
 
+# -- parameterise ---------------------------------------------------
 
-@pytest.fixture(params=TEST_4_BIT_SCENARIOS, ids=lambda tc: tc.name)
-def truth_cases_4(request):
-    """Parameterized fixture for 4-bit truth table scenarios"""
-    return request.param
-
-
-@pytest.fixture(params=TEST_8_BIT_SCENARIOS, ids=lambda tc: tc.name)
-def truth_cases_8(request):
-    """Parameterized fixture for 8-bit truth table scenarios"""
+@pytest.fixture(params=TEST_TRUTH_TABLES, ids=lambda tc: tc.name)
+def truth_table_cases(request):
+    """Parameterized fixture truth table scenarios"""
     return request.param
 
 @pytest.fixture(params=TEST_SCOPE, ids=lambda tc: tc.name)
@@ -46,24 +56,56 @@ def truth_scope_cases(request):
     """Parameterized fixture for truth scopes"""
     return request.param
 
-def test_4_bit_scenarios(truth_cases_4):
+# -- truth table tests ----------------------------------------------
+@pytest.mark.parametrize("bits", mp.SUPPORTED_BITWIDTHS)
+def test_truth_table_scenarios(truth_table_cases, bits):
     """Generic test for all 4-bit scenarios"""
-    result = process_value(truth_cases_4.input_value, truth_cases_4.metadata)
-    if truth_cases_4.metadata.get("ne", False):
-        assert result != truth_cases_4.expected_output
+    result = process_table(truth_table_cases.input_value, truth_table_cases.metadata, bits)
+    if truth_table_cases.metadata.get("ne", False):
+        assert result != truth_table_cases.expected_output
     else:
-        assert result == truth_cases_4.expected_output
+        assert result == truth_table_cases.expected_output
 
-def test_8_bit_scenarios(truth_cases_8):
-    """Generic test for all 8-bit scenarios"""
-    result = process_value(truth_cases_8.input_value, truth_cases_8.metadata)
-    if truth_cases_8.metadata.get("ne", False):
-        assert result != truth_cases_8.expected_output
+
+def process_table(value, metadata, bits):
+    if metadata.get("shallow", False):
+        return validate_shallow_table(value, bits)
     else:
-        assert result == truth_cases_8.expected_output
+        return validate_table(value, bits)
 
-def process_value(value, metadata):
-    ...
+
+def validate_shallow_table(scope, bits):
+    alg = mp.Algorithm(bits)
+    alg.auto_resolve_stage()
+    table = mp.shallow_truth_table(scope, mp.Algorithm(bits))
+    try:
+        if all([isinstance(t, mp.Matrix) for t in table]):
+            return None
+        else:
+            return TypeError
+    except TypeError:
+        return TypeError
+    except ValueError:
+        return ValueError
+    except Exception:
+        return Exception
+
+def validate_table(scope, bits):
+    alg = mp.Algorithm(bits)
+    alg.auto_resolve_stage()
+    table = mp.truth_table(scope, alg)
+    try:
+        for d in table:
+            for k, v in d.items():
+                if not isinstance(v, mp.Matrix):
+                    return TypeError
+    except TypeError:
+        return TypeError
+    except ValueError:
+        return ValueError
+    except Exception:
+        return Exception
+
 
 # -- truth scope tests ----------------------------------------------
 
