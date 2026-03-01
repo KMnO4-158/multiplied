@@ -1,3 +1,4 @@
+from pprint import pprint
 import multiplied as mp
 
 
@@ -67,15 +68,6 @@ def raw_dadda_map(bits):
 
 
 def main() -> None:
-    mp.mprint(raw_zero_matrix(4))
-    mp.mprint(raw_zero_matrix(8))
-    mp.mprint(raw_dadda_map(4))
-    mp.mprint(raw_dadda_map(8))
-    print(hasattr(mp.Algorithm(4), "exec"))
-    print(mp.Algorithm(4).__dict__)
-    print(dir(mp.Algorithm(4)))
-    print(mp.Algorithm(4).__doc__)
-    print(mp.Algorithm(4).__str__)
 
     # test_scope()
     # test_shallow_generator4()
