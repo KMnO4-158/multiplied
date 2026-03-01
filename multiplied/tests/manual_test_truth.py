@@ -68,12 +68,7 @@ def raw_dadda_map(bits):
 
 
 def main() -> None:
-
-    # test_scope()
-    # test_shallow_generator4()
-    # test_shallow_generator8()
-    # test_truth_table()
-    # test_truth_dataframe()
+    print()
 
 
 if __name__ == "__main__":
