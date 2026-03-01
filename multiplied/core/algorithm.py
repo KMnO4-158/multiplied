@@ -141,7 +141,9 @@ class Algorithm:
         if any(test):
             # flood bits within boundary
             saturated_value = [["0"] * self.bits + ["1"] * self.bits]
-            self.matrix = mp.Matrix(saturated_value + mp.raw_empty_matrix(self.bits)[1:])
+            self.matrix = mp.Matrix(
+                saturated_value + mp.raw_empty_matrix(self.bits)[1:]
+            )
             return True
         else:
             return False

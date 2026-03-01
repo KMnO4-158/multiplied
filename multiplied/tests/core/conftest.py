@@ -3,6 +3,7 @@ import multiplied as mp
 
 # -- algorithm ------------------------------------------------------
 
+
 @pytest.fixture(params=mp.SUPPORTED_BITWIDTHS)
 def supported_algorithms(request):
     bit_width = request.param
@@ -10,6 +11,7 @@ def supported_algorithms(request):
     alg = mp.Algorithm(bit_width)
     alg.auto_resolve_stage(recursive=True)
     return alg
+
 
 @pytest.fixture()
 def algorithm_4_bit():
@@ -26,6 +28,7 @@ def algorithm_8_bit():
     alg.auto_resolve_stage(recursive=True)
 
     return alg
+
 
 # -- map ------------------------------------------------------------
 
@@ -57,40 +60,46 @@ def reference_dadda_map(request):
 def supported_maps(request):
     return mp.Map(mp.raw_zero_map(request.param))
 
+
 @pytest.fixture()
 def raw_map_4_bit():
     matrix = mp.raw_zero_map(4)
     return matrix
+
 
 @pytest.fixture()
 def raw_map_8_bit():
     matrix = mp.raw_zero_map(8)
     return matrix
 
+
 # -- matrix ---------------------------------------------------------
 
+
 @pytest.fixture(params=[])
-def supported_matrices():
-    ...
+def supported_matrices(): ...
+
 
 @pytest.fixture()
 def raw_zero_matrix_8_bit():
     matrix = mp.raw_zero_matrix(8)
     return matrix
 
+
 @pytest.fixture(params=[raw_zero_matrix_8_bit, 8])
 def zero_matrix_8_bit(request):
     return mp.Matrix(request.param)
+
 
 @pytest.fixture()
 def raw_zero_matrix_4_bit():
     matrix = mp.raw_zero_matrix(4)
     return matrix
 
+
 @pytest.fixture(params=[raw_zero_matrix_4_bit, 4])
 def zero_matrix_4_bit(request):
     return mp.Matrix(request.param)
-
 
 
 # -- template -------------------------------------------------------

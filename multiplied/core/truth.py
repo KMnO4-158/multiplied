@@ -37,8 +37,10 @@ def truth_scope(
 
     if min_in <= 0 or min_out <= 0:
         raise ValueError("Minimum input and output values must be greater than zero.")
-    if (min_in > max_in) or (min_out > max_out) :
-        raise ValueError("Domain: (a, b) and range: (c, d) must satisfy a <= b and c <= d.")
+    if (min_in > max_in) or (min_out > max_out):
+        raise ValueError(
+            "Domain: (a, b) and range: (c, d) must satisfy a <= b and c <= d."
+        )
 
     if max_in**2 < min_out:
         raise ValueError(f"Range unreachable for the input domain {domain_}")

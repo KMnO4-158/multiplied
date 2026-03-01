@@ -44,7 +44,7 @@ TEST_SCOPE = [
     TestCase("tr_scope_zero", [(0, 255), (150, 255)], ValueError, {}),
 ]
 
-# -- parameterise ---------------------------------------------------
+# -- params ---------------------------------------------------------
 
 @pytest.fixture(params=TEST_TRUTH_TABLES, ids=lambda tc: tc.name)
 def truth_table_cases(request):

@@ -73,7 +73,7 @@ from .core.utils.bool import (
     ischar,
     isalpha,
     validate_bitwidth,
-    SUPPORTED_BITWIDTHS
+    SUPPORTED_BITWIDTHS,
 )
 # -- datasets -------------------------------------------------------
 

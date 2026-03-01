@@ -365,6 +365,7 @@ def raw_empty_matrix(bits: int) -> list[list[str]]:
         matrix.append(["_"] * (bits * 2))
     return matrix
 
+
 def raw_zero_matrix(bits: int) -> list[list[str]]:
     """Build a zero-filled 2d array for a given bitwidth
 

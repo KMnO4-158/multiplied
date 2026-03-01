@@ -35,12 +35,8 @@
 """
 
 import pytest
-import os
-import tempfile
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
-from pathlib import Path
 
 # Import Multiplied library
 import multiplied as mp
@@ -50,6 +46,7 @@ import multiplied as mp
 # SECTION 1: TEMPORARY FILE/DIRECTORY FIXTURES
 # Use these when tests need to write output files
 # ============================================================================
+
 
 @pytest.fixture
 def temp_svg_output(tmp_path):
@@ -303,7 +300,7 @@ def minimal_heatmap_dataframe():
     for stage in range(num_stages):
         for ppm in range(num_ppms):
             for bit in range(num_bits):
-                col_name = f's{stage}_p{ppm}_b{bit}'
+                col_name = f"s{stage}_p{ppm}_b{bit}"
                 column_data[col_name] = [1]
 
     return pd.DataFrame(column_data)
@@ -313,6 +310,7 @@ def minimal_heatmap_dataframe():
 # SECTION 3: REAL DATA FIXTURES
 # These generate actual algorithm data using Multiplied's core functions
 # ============================================================================
+
 
 @pytest.fixture
 def basic_algorithm():
@@ -396,8 +394,8 @@ def real_truth_dataframe_small(basic_algorithm):
         - No NaN or null values
     """
     # Generate truth scope (domain and range)
-    domain = (1, 15)     # Input values
-    range_ = (1, 255)    # Output values
+    domain = (1, 15)  # Input values
+    range_ = (1, 255)  # Output values
     scope = mp.truth_scope(domain, range_)
 
     # Generate truth dataframe
@@ -443,7 +441,7 @@ def real_truth_dataframe_medium():
     alg.auto_resolve_stage(recursive=True)
 
     # Generate smaller scope to keep runtime reasonable
-    domain = (1, 31)     # Smaller range for 8-bit
+    domain = (1, 31)  # Smaller range for 8-bit
     range_ = (1, 65535)
     scope = mp.truth_scope(domain, range_)
 
@@ -456,6 +454,7 @@ def real_truth_dataframe_medium():
 # SECTION 4: PARAMETRIZED FIXTURES
 # Create multiple data variants automatically
 # ============================================================================
+
 
 @pytest.fixture(params=[4, 8])
 def algorithm_of_varying_widths(request):
@@ -550,6 +549,7 @@ def heatmap_theme_variants(request):
 # Setup/teardown and utility functions
 # ============================================================================
 
+
 @pytest.fixture(autouse=True)
 def cleanup_matplotlib():
     """
@@ -593,10 +593,9 @@ def cleanup_matplotlib():
         - Clears figure cache
     """
     # SETUP: Run before test
-    import matplotlib.pyplot as plt
 
     # Close any existing figures
-    plt.close('all')
+    plt.close("all")
 
     # Reset to default style
     plt.rcdefaults()
@@ -606,7 +605,7 @@ def cleanup_matplotlib():
 
     # CLEANUP: Run after test
     # Close any figures test created
-    plt.close('all')
+    plt.close("all")
 
     # Reset style again
     plt.rcdefaults()
@@ -616,6 +615,7 @@ def cleanup_matplotlib():
 # SECTION 6: PYTEST HOOKS
 # Configure pytest behavior globally
 # ============================================================================
+
 
 def pytest_configure(config):
     """
@@ -634,19 +634,12 @@ def pytest_configure(config):
     """
     # Register custom markers (optional, but useful)
     config.addinivalue_line(
-        "markers",
-        "slow: marks tests as slow (deselect with '-m \"not slow\"')"
+        "markers", "slow: marks tests as slow (deselect with '-m \"not slow\"')"
     )
 
-    config.addinivalue_line(
-        "markers",
-        "integration: marks tests as integration tests"
-    )
+    config.addinivalue_line("markers", "integration: marks tests as integration tests")
 
-    config.addinivalue_line(
-        "markers",
-        "visual: marks tests that verify visual output"
-    )
+    config.addinivalue_line("markers", "visual: marks tests that verify visual output")
 
 
 # ============================================================================

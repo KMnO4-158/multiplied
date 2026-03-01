@@ -2,9 +2,11 @@ import pytest
 import multiplied as mp
 import pandas as pd
 
+
 @pytest.fixture(params=mp.SUPPORTED_BITWIDTHS)
 def supported_bitwidths(request):
     return request.param
+
 
 @pytest.fixture(params=mp.SUPPORTED_BITWIDTHS)
 def dadda_map(request, ids=lambda tc: f"{tc}-bit"):
@@ -29,11 +31,10 @@ def sample_dataframe(request, ids=lambda tc: f"{tc}-bit"):
     """
     column_data = {}
     bits = request.params
-    stages = bits >> 1    # Number of stages in algorithm
-    num_rows = 5          # Number of test data rows
+    stages = bits >> 1  # Number of stages in algorithm
+    num_rows = 5  # Number of test data rows
     ppm_bits = bits << 1  # Bit width
-    ppms = bits           # PPMs per stage
-
+    ppms = bits  # PPMs per stage
 
     # Create columns in format: s{stage}_p{ppm}_b{bit}
     for stage in range(stages):
@@ -46,13 +47,12 @@ def sample_dataframe(request, ids=lambda tc: f"{tc}-bit"):
     return pd.DataFrame(column_data)
 
 
-
-
 @pytest.fixture()
 def algorithm_4_bit():
     alg = mp.Algorithm(4)
     alg.auto_resolve_stage(recursive=True)
     return alg
+
 
 @pytest.fixture()
 def algorithm_8_bit():

@@ -3,7 +3,7 @@ import multiplied as mp
 
 
 @pytest.mark.parametrize("size", mp.SUPPORTED_BITWIDTHS)
-class TestMapInstance():
+class TestMapInstance:
     def test_map_instance(self, size):
         assert mp.Map(size) is not None
 
@@ -16,7 +16,7 @@ class TestMapInstance():
         assert isinstance(zero_row_map, mp.Map)
 
     def test_row_map(self, size):
-        row_map = mp.Map([f"{(255-j):02X}"[-2:] for j in range(size-1, -1, -1)])
+        row_map = mp.Map([f"{(255 - j):02X}"[-2:] for j in range(size - 1, -1, -1)])
         assert isinstance(row_map, mp.Map)
 
     # ! NOT IMPLEMENTED
@@ -41,6 +41,7 @@ def test_dadda_map_instance(dadda_map):
     assert len(dadda_map.map) == dadda_map.bits
     if dadda_map.rmap != []:
         assert len(dadda_map.rmap) == (dadda_map.bits)
+
 
 def test_dadda_map_mapping(dadda_map, reference_dadda_map):
     # -- validate dadda mapping -------------------------------------

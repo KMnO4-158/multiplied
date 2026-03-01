@@ -40,13 +40,11 @@ class Map:
             self.rmap = ["00"] * self.bits
             return None
 
-
         # -- handle standard maps -------------------------------
         self.map = map
         if isinstance(self.map[0], list):
             self.rmap = []
             return None
-
 
         # -- handle row maps ----------------------------------------
         # TODO: refactor -> coordinate based mapping
@@ -127,12 +125,13 @@ def raw_zero_map(bits: int) -> list[list[str]]:
         matrix.append(row)
     return matrix
 
+
 def raw_dadda_map(bits: int) -> list[list[str]]:
     """Returns a Dadda map of size `bits`."""
     matrix = []
     for i in range(bits):
         # generate 2-bit hex values which result in "V" shape partial product tree
-        dadda = [f"{(255-j):02X}"[-2:] for j in range(i-1, -1, -1)]
+        dadda = [f"{(255 - j):02X}"[-2:] for j in range(i - 1, -1, -1)]
         row = (["00"] * (bits - i)) + dadda + (["00"] * bits)
         matrix.append(row)
     return matrix

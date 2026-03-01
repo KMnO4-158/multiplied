@@ -8,6 +8,7 @@ class TestCase:
 
     assert metadata(input_value) -> expected_output
     """
+
     name: str
     input_value: Any
     expected_output: Any

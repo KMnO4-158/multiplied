@@ -21,12 +21,6 @@
 """
 
 import pytest
-import os
-import tempfile
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-from pathlib import Path
 
 # Import the function we're testing
 import multiplied as mp
@@ -47,6 +41,7 @@ import multiplied as mp
 # TIER 1: FILE OUTPUT TESTS
 # Tests that files are created with basic validity
 # ============================================================================
+
 
 class TestTier1_FileOutputBasics:
     """
@@ -90,16 +85,16 @@ class TestTier1_FileOutputBasics:
         # Call the heatmap function
         # Parameters: path, title, dataframe, dark (keyword-only)
         mp.df_global_heatmap(
-            str(temp_output_path),           # Where to save the file
-            "Test Heatmap Title",             # Title for the plot
-            sample_heatmap_dataframe          # Data to plot
+            str(temp_output_path),  # Where to save the file
+            "Test Heatmap Title",  # Title for the plot
+            sample_heatmap_dataframe,  # Data to plot
         )
 
         # ASSERTION: Check that file exists
         # Path.exists() returns True if file is on disk, False otherwise
-        assert temp_output_path.exists(), \
+        assert temp_output_path.exists(), (
             f"Expected SVG file to be created at {temp_output_path}, but it doesn't exist"
-
+        )
 
     def test_heatmap_file_has_content(self, sample_heatmap_dataframe, temp_output_path):
         """
@@ -126,29 +121,30 @@ class TestTier1_FileOutputBasics:
         """
         # Create the heatmap
         mp.df_global_heatmap(
-            str(temp_output_path),
-            "Test Heatmap Title",
-            sample_heatmap_dataframe
+            str(temp_output_path), "Test Heatmap Title", sample_heatmap_dataframe
         )
 
         # Get file size in bytes
         file_size = temp_output_path.stat().st_size
 
         # ASSERTION: File should have reasonable size
-        assert file_size > 1000, \
-            f"SVG file size is {file_size} bytes. Expected > 1000. " \
+        assert file_size > 1000, (
+            f"SVG file size is {file_size} bytes. Expected > 1000. "
             f"File may be corrupted or empty."
+        )
 
         # ASSERTION: File shouldn't be suspiciously huge
-        assert file_size < 10_000_000, \
-            f"SVG file size is {file_size} bytes. Expected < 10MB. " \
+        assert file_size < 10_000_000, (
+            f"SVG file size is {file_size} bytes. Expected < 10MB. "
             f"File may contain uncompressed data or be corrupted."
+        )
 
 
 # ============================================================================
 # TIER 2: BASIC ERROR HANDLING
 # Tests that function rejects invalid inputs with appropriate errors
 # ============================================================================
+
 
 class TestTier2_InputValidation:
     """
@@ -207,9 +203,8 @@ class TestTier2_InputValidation:
             mp.df_global_heatmap(
                 str(temp_output_path),
                 "Test Title",
-                bad_data  # ⚠️ WRONG: Should be DataFrame
+                bad_data,  # ⚠️ WRONG: Should be DataFrame
             )
-
 
     def test_rejects_non_string_title(self, sample_heatmap_dataframe, temp_output_path):
         """
@@ -232,9 +227,8 @@ class TestTier2_InputValidation:
             mp.df_global_heatmap(
                 str(temp_output_path),
                 123,  # ⚠️ WRONG: Should be string
-                sample_heatmap_dataframe
+                sample_heatmap_dataframe,
             )
-
 
     def test_rejects_non_string_path(self, sample_heatmap_dataframe):
         """
@@ -257,7 +251,7 @@ class TestTier2_InputValidation:
             mp.df_global_heatmap(
                 12345,  # ⚠️ WRONG: Should be string
                 "Test Title",
-                sample_heatmap_dataframe
+                sample_heatmap_dataframe,
             )
 
 
@@ -265,6 +259,7 @@ class TestTier2_InputValidation:
 # TIER 3: DATA INTEGRITY
 # Tests that function doesn't mutate input data
 # ============================================================================
+
 
 class TestTier3_DataIntegrity:
     """
@@ -311,32 +306,35 @@ class TestTier3_DataIntegrity:
 
         # Call the function
         mp.df_global_heatmap(
-            str(temp_output_path),
-            "Test Title",
-            sample_heatmap_dataframe
+            str(temp_output_path), "Test Title", sample_heatmap_dataframe
         )
 
         # ASSERTION: Shape should be unchanged
-        assert sample_heatmap_dataframe.shape == original_shape, \
+        assert sample_heatmap_dataframe.shape == original_shape, (
             f"DataFrame shape changed: {original_shape} → {sample_heatmap_dataframe.shape}"
+        )
 
         # ASSERTION: Columns should be unchanged
-        assert list(sample_heatmap_dataframe.columns) == original_columns, \
-            f"DataFrame columns changed"
+        assert list(sample_heatmap_dataframe.columns) == original_columns, (
+            "DataFrame columns changed"
+        )
 
         # ASSERTION: Values should be unchanged
-        assert (sample_heatmap_dataframe.values == original_values).all(), \
-            f"DataFrame values were modified"
+        assert (sample_heatmap_dataframe.values == original_values).all(), (
+            "DataFrame values were modified"
+        )
 
         # ASSERTION: Index should be unchanged
-        assert sample_heatmap_dataframe.index.tolist() == original_index, \
-            f"DataFrame index changed"
+        assert sample_heatmap_dataframe.index.tolist() == original_index, (
+            "DataFrame index changed"
+        )
 
 
 # ============================================================================
 # TIER 4: FUNCTION BEHAVIOR WITH DIFFERENT PARAMETERS
 # Tests that function works with various valid inputs
 # ============================================================================
+
 
 class TestTier4_ParameterVariations:
     """
@@ -382,11 +380,11 @@ class TestTier4_ParameterVariations:
             edge cases with special characters or very long strings.
         """
         test_titles = [
-            "Simple",                    # Short title
+            "Simple",  # Short title
             "Wallace Tree 8-bit Heatmap",  # Typical title
-            "Title with numbers 12345",   # Numbers included
+            "Title with numbers 12345",  # Numbers included
             "Title-with_Special.Chars!",  # Special characters
-            "",                           # Empty title
+            "",  # Empty title
         ]
 
         for i, title in enumerate(test_titles):
@@ -394,21 +392,17 @@ class TestTier4_ParameterVariations:
 
             # Should not raise any exception
             try:
-                mp.df_global_heatmap(
-                    str(output_path),
-                    title,
-                    sample_heatmap_dataframe
-                )
+                mp.df_global_heatmap(str(output_path), title, sample_heatmap_dataframe)
 
                 # ASSERTION: File should be created
-                assert output_path.exists(), \
+                assert output_path.exists(), (
                     f"Failed to create file with title: '{title}'"
+                )
 
             except Exception as e:
                 pytest.fail(
                     f"Function raised {type(e).__name__} with title '{title}': {e}"
                 )
-
 
     def test_heatmap_dark_theme_parameter(self, sample_heatmap_dataframe, tmp_path):
         """
@@ -434,18 +428,12 @@ class TestTier4_ParameterVariations:
 
         # Create with light theme (default)
         mp.df_global_heatmap(
-            str(light_path),
-            "Test Title",
-            sample_heatmap_dataframe,
-            dark=False
+            str(light_path), "Test Title", sample_heatmap_dataframe, dark=False
         )
 
         # Create with dark theme
         mp.df_global_heatmap(
-            str(dark_path),
-            "Test Title",
-            sample_heatmap_dataframe,
-            dark=True
+            str(dark_path), "Test Title", sample_heatmap_dataframe, dark=True
         )
 
         # ASSERTION: Both files should exist

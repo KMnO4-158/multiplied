@@ -76,6 +76,7 @@ def matrix_cases_8(request):
     """Parameterized fixture for 8-bit test matrix instances"""
     return request.param
 
+
 def test_4_bit_scenarios(matrix_cases_4):
     """Generic test for all 4-bit scenarios"""
     result = process_value(matrix_cases_4.input_value, matrix_cases_4.metadata)
@@ -92,6 +93,7 @@ def test_8_bit_scenarios(matrix_cases_8):
         assert result != matrix_cases_8.expected_output
     else:
         assert result == matrix_cases_8.expected_output
+
 
 def process_value(value, metadata):
 

@@ -28,11 +28,7 @@
 """
 
 import pytest
-import os
 import xml.etree.ElementTree as ET
-from pathlib import Path
-import pandas as pd
-import numpy as np
 import multiplied as mp
 
 
@@ -48,6 +44,7 @@ import multiplied as mp
 # ============================================================================
 # DEBUGGING UTILITY: Print DataFrame structure
 # ============================================================================
+
 
 def inspect_dataframe(df, name="DataFrame"):
     """
@@ -68,21 +65,22 @@ def inspect_dataframe(df, name="DataFrame"):
             inspect_dataframe(sample_heatmap_dataframe, "Test Data")
             # Will print detailed info
     """
-    print(f"\n{'='*70}")
+    print(f"\n{'=' * 70}")
     print(f"{name} INSPECTION")
-    print(f"{'='*70}")
+    print(f"{'=' * 70}")
     print(f"Shape: {df.shape}")
     print(f"Columns: {list(df.columns)}")
     print(f"Column count: {len(df.columns)}")
-    print(f"\nFirst row:")
+    print("\nFirst row:")
     print(df.iloc[0] if len(df) > 0 else "No data")
     print(f"\nData types:\n{df.dtypes}")
-    print(f"{'='*70}\n")
+    print(f"{'=' * 70}\n")
 
 
 # ============================================================================
 # VISUAL TEST 1: CODE GENERATES CORRECT STRUCTURE
 # ============================================================================
+
 
 class TestVisual1_CorrectStructure:
     """
@@ -140,11 +138,7 @@ class TestVisual1_CorrectStructure:
 
         # Create the heatmap
         # ⚠️ IMPORTANT: Using real data, not synthetic
-        mp.df_global_heatmap(
-            str(temp_svg_output),
-            "Test Heatmap",
-            df
-        )
+        mp.df_global_heatmap(str(temp_svg_output), "Test Heatmap", df)
 
         # Try to parse as XML
         # If this succeeds, XML is valid
@@ -162,7 +156,6 @@ class TestVisual1_CorrectStructure:
                 f"File may be corrupted or not actually SVG format.\n"
                 f"Check that DataFrame structure is correct."
             )
-
 
     def test_svg_has_root_element(self, real_truth_dataframe_small, temp_svg_output):
         """
@@ -185,11 +178,7 @@ class TestVisual1_CorrectStructure:
         """
         df = real_truth_dataframe_small
 
-        mp.df_global_heatmap(
-            str(temp_svg_output),
-            "Test Heatmap",
-            df
-        )
+        mp.df_global_heatmap(str(temp_svg_output), "Test Heatmap", df)
 
         # Parse the file
         tree = ET.parse(temp_svg_output)
@@ -197,11 +186,13 @@ class TestVisual1_CorrectStructure:
 
         # ASSERTION: Root tag should be 'svg'
         # (May have namespace, so check if 'svg' is in the tag)
-        assert 'svg' in root.tag.lower(), \
+        assert "svg" in root.tag.lower(), (
             f"Root element is '{root.tag}', expected 'svg' or namespaced svg"
+        )
 
-
-    def test_svg_contains_image_element(self, real_truth_dataframe_small, temp_svg_output):
+    def test_svg_contains_image_element(
+        self, real_truth_dataframe_small, temp_svg_output
+    ):
         """
         TEST: SVG contains <image> element for heatmap
 
@@ -226,34 +217,32 @@ class TestVisual1_CorrectStructure:
         """
         df = real_truth_dataframe_small
 
-        mp.df_global_heatmap(
-            str(temp_svg_output),
-            "Test Heatmap",
-            df
-        )
+        mp.df_global_heatmap(str(temp_svg_output), "Test Heatmap", df)
 
         tree = ET.parse(temp_svg_output)
         root = tree.getroot()
 
         # Define SVG namespace (some SVG files use it, some don't)
         namespaces = {
-            'svg': 'http://www.w3.org/2000/svg',
+            "svg": "http://www.w3.org/2000/svg",
         }
 
         # Search for <image> elements with namespace
-        images = root.findall('.//{http://www.w3.org/2000/svg}image')
+        images = root.findall(".//{http://www.w3.org/2000/svg}image")
 
         # If namespace didn't work, try without
         if len(images) == 0:
-            images = root.findall('.//image')
+            images = root.findall(".//image")
 
         # ASSERTION: At least one image element should exist
-        assert len(images) > 0, \
-            f"SVG should contain at least 1 <image> element for the heatmap. " \
+        assert len(images) > 0, (
+            f"SVG should contain at least 1 <image> element for the heatmap. "
             f"Found {len(images)}. Check DataFrame structure is being parsed correctly."
+        )
 
-
-    def test_svg_contains_group_elements(self, real_truth_dataframe_small, temp_svg_output):
+    def test_svg_contains_group_elements(
+        self, real_truth_dataframe_small, temp_svg_output
+    ):
         """
         TEST: SVG contains group (<g>) elements
 
@@ -276,29 +265,27 @@ class TestVisual1_CorrectStructure:
         """
         df = real_truth_dataframe_small
 
-        mp.df_global_heatmap(
-            str(temp_svg_output),
-            "Test Heatmap",
-            df
-        )
+        mp.df_global_heatmap(str(temp_svg_output), "Test Heatmap", df)
 
         tree = ET.parse(temp_svg_output)
         root = tree.getroot()
 
         # Find all group elements
-        groups = root.findall('.//{http://www.w3.org/2000/svg}g')
+        groups = root.findall(".//{http://www.w3.org/2000/svg}g")
         if len(groups) == 0:
-            groups = root.findall('.//g')
+            groups = root.findall(".//g")
 
         # ASSERTION: Should have multiple groups
-        assert len(groups) >= 2, \
-            f"SVG should contain multiple <g> elements for structure. " \
+        assert len(groups) >= 2, (
+            f"SVG should contain multiple <g> elements for structure. "
             f"Found only {len(groups)}. SVG structure may be incomplete."
+        )
 
 
 # ============================================================================
 # VISUAL TEST 2: SVG STRUCTURE IS VALID
 # ============================================================================
+
 
 class TestVisual2_SVGStructureValidity:
     """
@@ -327,7 +314,9 @@ class TestVisual2_SVGStructureValidity:
         - Removed synthetic data that was causing empty array errors
     """
 
-    def test_svg_contains_text_elements(self, real_truth_dataframe_small, temp_svg_output):
+    def test_svg_contains_text_elements(
+        self, real_truth_dataframe_small, temp_svg_output
+    ):
         """
         TEST: SVG contains text elements (labels, title, etc.)
 
@@ -350,25 +339,21 @@ class TestVisual2_SVGStructureValidity:
         """
         df = real_truth_dataframe_small
 
-        mp.df_global_heatmap(
-            str(temp_svg_output),
-            "Test Heatmap",
-            df
-        )
+        mp.df_global_heatmap(str(temp_svg_output), "Test Heatmap", df)
 
         tree = ET.parse(temp_svg_output)
         root = tree.getroot()
 
         # Find text elements
-        text_elements = root.findall('.//{http://www.w3.org/2000/svg}text')
+        text_elements = root.findall(".//{http://www.w3.org/2000/svg}text")
         if len(text_elements) == 0:
-            text_elements = root.findall('.//text')
+            text_elements = root.findall(".//text")
 
         # ASSERTION: Should have text elements
-        assert len(text_elements) > 0, \
-            f"SVG should contain <text> elements for labels/axes. " \
+        assert len(text_elements) > 0, (
+            f"SVG should contain <text> elements for labels/axes. "
             f"Found {len(text_elements)}. Plot may be missing labels."
-
+        )
 
     def test_svg_has_dimensions(self, real_truth_dataframe_small, temp_svg_output):
         """
@@ -393,18 +378,14 @@ class TestVisual2_SVGStructureValidity:
         """
         df = real_truth_dataframe_small
 
-        mp.df_global_heatmap(
-            str(temp_svg_output),
-            "Test Heatmap",
-            df
-        )
+        mp.df_global_heatmap(str(temp_svg_output), "Test Heatmap", df)
 
         tree = ET.parse(temp_svg_output)
         root = tree.getroot()
 
         # Get width and height attributes
-        width = root.get('width')
-        height = root.get('height')
+        width = root.get("width")
+        height = root.get("height")
 
         # ASSERTION: Both should exist
         assert width is not None, "SVG missing 'width' attribute"
@@ -415,8 +396,9 @@ class TestVisual2_SVGStructureValidity:
         assert len(width) > 0, "SVG width attribute is empty"
         assert len(height) > 0, "SVG height attribute is empty"
 
-
-    def test_svg_dimensions_are_reasonable(self, real_truth_dataframe_small, temp_svg_output):
+    def test_svg_dimensions_are_reasonable(
+        self, real_truth_dataframe_small, temp_svg_output
+    ):
         """
         TEST: SVG dimensions are in reasonable range
 
@@ -441,40 +423,39 @@ class TestVisual2_SVGStructureValidity:
         """
         df = real_truth_dataframe_small
 
-        mp.df_global_heatmap(
-            str(temp_svg_output),
-            "Test Heatmap",
-            df
-        )
+        mp.df_global_heatmap(str(temp_svg_output), "Test Heatmap", df)
 
         tree = ET.parse(temp_svg_output)
         root = tree.getroot()
 
-        width_str = root.get('width')
-        height_str = root.get('height')
+        width_str = root.get("width")
+        height_str = root.get("height")
 
         # Extract numeric part (remove 'pt', 'px', etc.)
         try:
-            width = float(''.join(c for c in width_str if c.isdigit() or c == '.'))
-            height = float(''.join(c for c in height_str if c.isdigit() or c == '.'))
+            width = float("".join(c for c in width_str if c.isdigit() or c == "."))
+            height = float("".join(c for c in height_str if c.isdigit() or c == "."))
         except (ValueError, AttributeError) as e:
             pytest.fail(f"Couldn't parse dimensions: {e}")
 
         # ASSERTION: Dimensions should be reasonable
         # figsize=(16, 9) at 200dpi = ~3200x1800
         # With tolerance for matplotlib versions
-        assert 500 < width < 10000, \
-            f"Width {width}pt seems unreasonable. " \
+        assert 500 < width < 10000, (
+            f"Width {width}pt seems unreasonable. "
             f"Expected ~3200 for figsize=(16,9), dpi=200."
+        )
 
-        assert 300 < height < 10000, \
-            f"Height {height}pt seems unreasonable. " \
+        assert 300 < height < 10000, (
+            f"Height {height}pt seems unreasonable. "
             f"Expected ~1800 for figsize=(16,9), dpi=200."
+        )
 
 
 # ============================================================================
 # VISUAL TEST 3: DARK THEME APPLIES CORRECTLY
 # ============================================================================
+
 
 class TestVisual3_DarkThemeApplication:
     """
@@ -502,7 +483,9 @@ class TestVisual3_DarkThemeApplication:
         - More robust comparisons
     """
 
-    def test_dark_theme_creates_different_svg(self, real_truth_dataframe_small, tmp_path):
+    def test_dark_theme_creates_different_svg(
+        self, real_truth_dataframe_small, tmp_path
+    ):
         """
         TEST: Dark theme produces visually different SVG
 
@@ -530,46 +513,36 @@ class TestVisual3_DarkThemeApplication:
         dark_path = tmp_path / "dark.svg"
 
         # Generate light theme
-        mp.df_global_heatmap(
-            str(light_path),
-            "Test",
-            df,
-            dark=False
-        )
+        mp.df_global_heatmap(str(light_path), "Test", df, dark=False)
 
         # Generate dark theme
-        mp.df_global_heatmap(
-            str(dark_path),
-            "Test",
-            df,
-            dark=True
-        )
+        mp.df_global_heatmap(str(dark_path), "Test", df, dark=True)
 
         # Read both files
-        with open(light_path, 'r') as f:
+        with open(light_path, "r") as f:
             light_content = f.read()
 
-        with open(dark_path, 'r') as f:
+        with open(dark_path, "r") as f:
             dark_content = f.read()
 
         # ASSERTION: Content should be different
-        assert light_content != dark_content, \
-            "Dark and light theme SVGs are identical. " \
-            "Theme setting may not be applied."
+        assert light_content != dark_content, (
+            "Dark and light theme SVGs are identical. Theme setting may not be applied."
+        )
 
         # ASSERTION: Difference should be significant (not just whitespace)
         # Calculate similarity: count matching characters
-        matching_chars = sum(
-            1 for a, b in zip(light_content, dark_content) if a == b
-        )
+        matching_chars = sum(1 for a, b in zip(light_content, dark_content) if a == b)
         similarity = matching_chars / max(len(light_content), len(dark_content))
 
-        assert similarity < 0.95, \
-            f"SVGs are {similarity*100:.1f}% similar. " \
+        assert similarity < 0.95, (
+            f"SVGs are {similarity * 100:.1f}% similar. "
             f"Expected more significant differences between light/dark themes."
+        )
 
-
-    def test_dark_theme_svg_contains_style_info(self, real_truth_dataframe_small, temp_svg_output):
+    def test_dark_theme_svg_contains_style_info(
+        self, real_truth_dataframe_small, temp_svg_output
+    ):
         """
         TEST: Dark theme SVG contains style information
 
@@ -592,28 +565,25 @@ class TestVisual3_DarkThemeApplication:
         """
         df = real_truth_dataframe_small
 
-        mp.df_global_heatmap(
-            str(temp_svg_output),
-            "Test",
-            df,
-            dark=True
-        )
+        mp.df_global_heatmap(str(temp_svg_output), "Test", df, dark=True)
 
         # Read as text
-        with open(temp_svg_output, 'r') as f:
+        with open(temp_svg_output, "r") as f:
             content = f.read()
 
         # Check for style-related content
-        has_style_tag = '<style' in content
-        has_style_attr = 'style=' in content
+        has_style_tag = "<style" in content
+        has_style_attr = "style=" in content
 
         # ASSERTION: Should have some styling
-        assert has_style_tag or has_style_attr, \
-            "Dark theme SVG doesn't contain style information. " \
+        assert has_style_tag or has_style_attr, (
+            "Dark theme SVG doesn't contain style information. "
             "Theming may not be applied."
+        )
 
-
-    def test_dark_theme_affects_colors(self, real_truth_dataframe_small, temp_svg_output):
+    def test_dark_theme_affects_colors(
+        self, real_truth_dataframe_small, temp_svg_output
+    ):
         """
         TEST: Dark theme uses different color scheme
 
@@ -635,36 +605,35 @@ class TestVisual3_DarkThemeApplication:
         """
         df = real_truth_dataframe_small
 
-        mp.df_global_heatmap(
-            str(temp_svg_output),
-            "Test",
-            df,
-            dark=True
-        )
+        mp.df_global_heatmap(str(temp_svg_output), "Test", df, dark=True)
 
-        with open(temp_svg_output, 'r') as f:
+        with open(temp_svg_output, "r") as f:
             content = f.read()
 
         # Look for hex color codes (#RRGGBB or #RGB)
         import re
-        color_pattern = r'#[0-9a-fA-F]{3,6}'
+
+        color_pattern = r"#[0-9a-fA-F]{3,6}"
         colors_found = re.findall(color_pattern, content)
 
         # ASSERTION: Should have color specifications
-        assert len(colors_found) > 0, \
-            "Dark theme SVG doesn't contain color specifications. " \
+        assert len(colors_found) > 0, (
+            "Dark theme SVG doesn't contain color specifications. "
             "Colors should be in #RRGGBB format."
+        )
 
         # ASSERTION: Should have variety of colors (not just one)
         unique_colors = set(colors_found)
-        assert len(unique_colors) > 2, \
-            f"Dark theme has only {len(unique_colors)} unique colors. " \
+        assert len(unique_colors) > 2, (
+            f"Dark theme has only {len(unique_colors)} unique colors. "
             f"Expected more variety for proper styling."
+        )
 
 
 # ============================================================================
 # INTEGRATION TEST: All Three Scenarios Together
 # ============================================================================
+
 
 class TestVisual_Integration:
     """
@@ -685,7 +654,9 @@ class TestVisual_Integration:
         - Integration tests are now reliable
     """
 
-    def test_complete_heatmap_generation_light_theme(self, real_truth_dataframe_small, temp_svg_output):
+    def test_complete_heatmap_generation_light_theme(
+        self, real_truth_dataframe_small, temp_svg_output
+    ):
         """
         TEST: Complete light theme heatmap - integration
 
@@ -710,41 +681,35 @@ class TestVisual_Integration:
 
         # Generate heatmap
         mp.df_global_heatmap(
-            str(temp_svg_output),
-            "Complete Test Heatmap",
-            df,
-            dark=False
+            str(temp_svg_output), "Complete Test Heatmap", df, dark=False
         )
 
         # Verify: File exists
-        assert temp_svg_output.exists(), \
-            "Output file was not created"
+        assert temp_svg_output.exists(), "Output file was not created"
 
         # Verify: Valid XML
         try:
             tree = ET.parse(temp_svg_output)
             root = tree.getroot()
-            assert 'svg' in root.tag.lower(), \
-                f"Root element is not SVG: {root.tag}"
+            assert "svg" in root.tag.lower(), f"Root element is not SVG: {root.tag}"
         except ET.ParseError as e:
             pytest.fail(f"SVG is not valid XML: {e}")
 
         # Verify: Has expected elements
-        images = root.findall('.//{http://www.w3.org/2000/svg}image')
+        images = root.findall(".//{http://www.w3.org/2000/svg}image")
         if not images:
-            images = root.findall('.//image')
-        assert len(images) > 0, \
-            "No image elements found in SVG"
+            images = root.findall(".//image")
+        assert len(images) > 0, "No image elements found in SVG"
 
         # Verify: Has text labels
-        text = root.findall('.//{http://www.w3.org/2000/svg}text')
+        text = root.findall(".//{http://www.w3.org/2000/svg}text")
         if not text:
-            text = root.findall('.//text')
-        assert len(text) > 0, \
-            "No text elements found in SVG"
+            text = root.findall(".//text")
+        assert len(text) > 0, "No text elements found in SVG"
 
-
-    def test_complete_heatmap_generation_dark_theme(self, real_truth_dataframe_small, temp_svg_output):
+    def test_complete_heatmap_generation_dark_theme(
+        self, real_truth_dataframe_small, temp_svg_output
+    ):
         """
         TEST: Complete dark theme heatmap - integration
 
@@ -764,41 +729,38 @@ class TestVisual_Integration:
 
         # Generate heatmap
         mp.df_global_heatmap(
-            str(temp_svg_output),
-            "Complete Test Heatmap",
-            df,
-            dark=True
+            str(temp_svg_output), "Complete Test Heatmap", df, dark=True
         )
 
         # Verify: File exists
-        assert temp_svg_output.exists(), \
-            "Output file was not created"
+        assert temp_svg_output.exists(), "Output file was not created"
 
         # Verify: Valid XML
         try:
             tree = ET.parse(temp_svg_output)
             root = tree.getroot()
-            assert 'svg' in root.tag.lower()
+            assert "svg" in root.tag.lower()
         except ET.ParseError as e:
             pytest.fail(f"SVG is not valid XML: {e}")
 
         # Verify: Has expected elements
-        images = root.findall('.//{http://www.w3.org/2000/svg}image')
+        images = root.findall(".//{http://www.w3.org/2000/svg}image")
         if not images:
-            images = root.findall('.//image')
+            images = root.findall(".//image")
         assert len(images) > 0
 
         # Verify: Has text labels
-        text = root.findall('.//{http://www.w3.org/2000/svg}text')
+        text = root.findall(".//{http://www.w3.org/2000/svg}text")
         if not text:
-            text = root.findall('.//text')
+            text = root.findall(".//text")
         assert len(text) > 0
 
         # Verify: Has styling (dark theme specific)
-        with open(temp_svg_output, 'r') as f:
+        with open(temp_svg_output, "r") as f:
             content = f.read()
-        assert '<style' in content or 'style=' in content, \
+        assert "<style" in content or "style=" in content, (
             "Dark theme styling not found in SVG"
+        )
 
 
 """
