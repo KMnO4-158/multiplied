@@ -4,6 +4,55 @@
 Changelog
 =========
 
+
+
+
+v0.8
+=====
+
+`v0.8.0 <https://github.com/KMnO4-158/multiplied/releases/tag/v0.8.0>`_
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Updates
+
+    - Added raw_zero_map, raw_dadda_map (`c28e2ef`_)
+    - Added raw_zero_matrix(), renamed empty_matrix() to raw_empty_matrix() (`c7f6d80`_)
+
+
+Tests:
+
+    Initial implementation of Core tests via Pytest:
+
+    - Algorithm (`60c57a7`_)
+    - Template and Pattern (`6e74340`_)
+    - Truth (`5cea472`_)
+    - Matrix (`ba35cee`_)
+    - Map (`bcc9c89`_)
+
+Looking forward:
+
+    [Main Focus]
+
+    - Complete Remaining User Guides
+    - Bit Tracking / Waveform Analysis
+
+    [ Ongoing ]
+
+    - Map Object Coordinate Refactor
+    - Data Structure Optimisation
+    - DataFrame Generation Optimisation
+    - 16-bit Algorithm Support
+
+See full changelog `here <https://github.com/KMnO4-158/multiplied/pull/120>`_
+
+.. _c28e2ef: https://github.com/KMnO4-158/multiplied/commit/c28e2ef
+.. _c7f6d80: https://github.com/KMnO4-158/multiplied/commit/c7f6d80
+.. _60c57a7: https://github.com/KMnO4-158/multiplied/commit/60c57a7
+.. _6e74340: https://github.com/KMnO4-158/multiplied/commit/6e74340
+.. _5cea472: https://github.com/KMnO4-158/multiplied/commit/5cea472
+.. _ba35cee: https://github.com/KMnO4-158/multiplied/commit/ba35cee
+.. _bcc9c89: https://github.com/KMnO4-158/multiplied/commit/bcc9c89
+
 v0.7
 =====
 
