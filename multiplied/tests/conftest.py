@@ -5,12 +5,14 @@ import pandas as pd
 
 @pytest.fixture(params=mp.SUPPORTED_BITWIDTHS)
 def supported_bitwidths(request):
-    return request.param
+    bit = request.param
+    return bit
 
 
 @pytest.fixture(params=mp.SUPPORTED_BITWIDTHS)
 def dadda_map(request, ids=lambda tc: f"{tc}-bit"):
-    return mp.build_dadda_map(request.param)
+    map = mp.build_dadda_map(request.param)
+    return map
 
 
 @pytest.fixture(params=mp.SUPPORTED_BITWIDTHS)
