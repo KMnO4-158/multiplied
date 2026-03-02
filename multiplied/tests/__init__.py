@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from typing import Any
-
+import multiplied as mp
 
 @dataclass
 class TestCase:
@@ -14,6 +14,21 @@ class TestCase:
     expected_output: Any
     metadata: dict
     __test__ = False
+
+
+def reference_resolved_pattern():
+    from copy import deepcopy
+    patterns = []
+    for bits in mp.SUPPORTED_BITWIDTHS:
+        raw_matrix = deepcopy(REFERENCE["zero_matrix"][bits])
+        empty_row = ["_"] * (bits << 1)
+        patterns.append(mp.resolve_pattern(mp.Matrix(raw_matrix)))
+        for i in range(bits):
+            raw_matrix[-(1+i)] = empty_row
+            patterns.append(mp.resolve_pattern(mp.Matrix(raw_matrix)))
+    return patterns
+
+
 
 
 # block ruff format:
