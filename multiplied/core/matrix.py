@@ -341,7 +341,7 @@ def empty_rows(matrix: Matrix) -> int:
     return sum([matrix.matrix[i] == empty_row for i in range(matrix.bits)])
 
 
-def empty_matrix(bits: int) -> list[list[str]]:
+def raw_empty_matrix(bits: int) -> list[list[str]]:
     """Build an empty 2d array for a given bitwidth
 
     Parameters
@@ -363,6 +363,33 @@ def empty_matrix(bits: int) -> list[list[str]]:
     matrix = []
     for i in range(bits):
         matrix.append(["_"] * (bits * 2))
+    return matrix
+
+
+def raw_zero_matrix(bits: int) -> list[list[str]]:
+    """Build a zero-filled 2d array for a given bitwidth
+
+    Parameters
+    ----------
+    bits : int
+        The bitwidth of the matrix
+
+    Returns
+    -------
+    list[list[str]]
+        A zero-filled 2d array for the given bitwidth
+
+    Notes
+    -----
+    A zero matrix is filled with zeros on the diagonal and underscores elsewhere,
+    following Multipied's convention
+
+    """
+    matrix = []
+    zero = ["0"] * bits
+    for i in range(bits):
+        row = (["_"] * ((bits << 1) - bits - i)) + zero + (["_"] * i)
+        matrix.append(row)
     return matrix
 
 
@@ -408,7 +435,7 @@ def matrix_merge(
         raise ValueError("Source must contain the same number of matrices as bounds")
 
     bits = list(source.values())[0].bits
-    output = empty_matrix(bits)
+    output = raw_empty_matrix(bits)
     for unit, matrix in source.items():
         if bounds[unit] == "_":
             continue

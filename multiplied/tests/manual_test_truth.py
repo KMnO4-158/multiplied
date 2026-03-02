@@ -49,12 +49,27 @@ def test_truth_dataframe() -> None:
     print(df)
 
 
+def raw_zero_matrix(bits):
+    matrix = []
+    zero = ["0"] * bits
+    for i in range(bits):
+        row = (["_"] * ((bits << 1) - bits - i)) + zero + (["_"] * i)
+        matrix.append(row)
+    return matrix
+
+
+def raw_dadda_map(bits):
+    matrix = []
+    for i in range(bits):
+        # generate 2-bit hex values which result in "V" shape partial product tree
+        dadda = [f"{(255 - j):02X}"[-2:] for j in range(i - 1, -1, -1)]
+        row = (["00"] * (bits - i)) + dadda + (["00"] * bits)
+        matrix.append(row)
+    return matrix
+
+
 def main() -> None:
-    test_scope()
-    # test_shallow_generator4()
-    # test_shallow_generator8()
-    # test_truth_table()
-    # test_truth_dataframe()
+    print()
 
 
 if __name__ == "__main__":

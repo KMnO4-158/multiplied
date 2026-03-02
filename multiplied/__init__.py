@@ -5,22 +5,25 @@
 
 # -- version -----------------------------------------------------------
 
-__version_info__ = (0, 7, 3)
-__version__ = "0.7.3"
+__version_info__ = (0, 8, 0)
+__version__ = "0.8.0"
 
 # -- core -----------------------------------------------------------
 
 from .core.map import (
     Map,
-    build_dadda_map,
     empty_map,
+    build_dadda_map,
+    raw_zero_map,
+    raw_dadda_map,
 )
 
 from .core.matrix import (
     Matrix,
     Slice,
     empty_rows,
-    empty_matrix,
+    raw_empty_matrix,
+    raw_zero_matrix,
     matrix_merge,
 )
 
@@ -30,6 +33,7 @@ from .core.template import (
     Template,
     build_csa,
     build_adder,
+    build_noop,
     resolve_pattern,
     build_empty_slice,
 )
@@ -69,6 +73,7 @@ from .core.utils.bool import (
     ischar,
     isalpha,
     validate_bitwidth,
+    SUPPORTED_BITWIDTHS,
 )
 # -- datasets -------------------------------------------------------
 
@@ -114,27 +119,32 @@ from .analysis.heatmap import (
 # -- __all__ --------------------------------------------------------
 
 __all__ = [
+    "SUPPORTED_BITWIDTHS",
+    "Map",
+    "build_dadda_map",
+    "empty_map",
+    "raw_zero_map",
+    "raw_dadda_map",
     "Matrix",
     "Slice",
     "Pattern",
     "Template",
     "Algorithm",
     "empty_rows",
-    "empty_matrix",
+    "raw_empty_matrix",
+    "raw_zero_matrix",
     "matrix_merge",
     "hoist",
     "collect_arithmetic_units",
-    "build_dadda_map",
-    "empty_map",
     "build_csa",
     "build_adder",
+    "build_noop",
     "build_empty_slice",
     "resolve_pattern",
     "truth_scope",
     "shallow_truth_table",
     "truth_table",
     "truth_dataframe",
-    "Map",
     "ischar",
     "isalpha",
     "ishex2",

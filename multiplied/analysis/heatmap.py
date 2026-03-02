@@ -30,18 +30,19 @@ def df_global_heatmap(path: str, title: str, df: pd.DataFrame, *, dark=False) ->
     if not isinstance(path, str):
         raise TypeError(f"path must be a string got {type(path)}")
 
-    b_index = 0
     s_index = -1
+    if df.columns[s_index][:1] != "s":
+        while df.columns[s_index][:1] != "s":  # find total stages in data
+            if 15 < s_index:
+                raise IndexError("Unsupported DataFrame")
+            s_index -= 1
 
-    while df.columns[s_index][:1] != "s":  # find total stages in data
-        if 15 < s_index:
-            raise IndexError("Unsupported DataFrame")
-        s_index -= 1
-
-    while df.columns[b_index][:1] != "s":  # find bit width of data
-        if 15 < s_index:
-            raise IndexError("Unsupported DataFrame")
-        b_index += 1
+    b_index = 0
+    if df.columns[b_index][:1] != "s":
+        while df.columns[b_index][:1] != "s":  # find bit width of data
+            if 15 < s_index:
+                raise IndexError("Unsupported DataFrame")
+            b_index += 1
 
     col = (
         list(df.columns)[b_index : s_index + 1]
@@ -138,18 +139,19 @@ def df_global_3d_heatmap(
 
     # -- collect data, metadata -------------------------------------
 
-    b_index = 0
     s_index = -1
+    if df.columns[s_index][:1] != "s":
+        while df.columns[s_index][:1] != "s":  # find total stages in data
+            if 15 < s_index:
+                raise IndexError("Unsupported DataFrame")
+            s_index -= 1
 
-    while df.columns[s_index][:1] != "s":  # find total stages in data
-        if 15 < s_index:
-            raise IndexError("Unsupported DataFrame")
-        s_index -= 1
-
-    while df.columns[b_index][:1] != "s":  # find bit width of data
-        if 15 < s_index:
-            raise IndexError("Unsupported DataFrame")
-        b_index += 1
+    b_index = 0
+    if df.columns[b_index][:1] != "s":
+        while df.columns[b_index][:1] != "s":  # find bit width of data
+            if 15 < s_index:
+                raise IndexError("Unsupported DataFrame")
+            b_index += 1
 
     col = (
         list(df.columns)[b_index : s_index + 1]

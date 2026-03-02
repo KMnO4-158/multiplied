@@ -98,7 +98,9 @@ class Algorithm:
 
         # -- [TODO] ------------------------------------------------- #
         if map_ and not map_.rmap:  #
-            raise NotImplementedError("Complex map not implemented")  #
+            raise NotImplementedError(
+                "Complex map not implemented"
+            )  # # pragma: no cover
         # ----------------------------------------------------------- #
 
         if isinstance(source, mp.Pattern):
@@ -112,20 +114,20 @@ class Algorithm:
             raise ValueError("Template result is unset")
 
         result = mp.Matrix(template.result)
+        res_copy = deepcopy(result)
         stage_index = len(self.algorithm)
         if not map_ and result:
             if dadda:
-                res_copy = deepcopy(result)
                 map_ = hoist(res_copy)
             else:
                 map_ = result.resolve_rmap()
-            result.apply_map(map_)
+            res_copy.apply_map(map_)
         else:
-            result.apply_map(map_)
+            res_copy.apply_map(map_)
 
         stage = {
             "template": template,
-            "pseudo": result,
+            "pseudo": res_copy,
             "map": map_,
         }
         self.algorithm[stage_index] = stage
@@ -141,7 +143,9 @@ class Algorithm:
         if any(test):
             # flood bits within boundary
             saturated_value = [["0"] * self.bits + ["1"] * self.bits]
-            self.matrix = mp.Matrix(saturated_value + mp.empty_matrix(self.bits)[1:])
+            self.matrix = mp.Matrix(
+                saturated_value + mp.raw_empty_matrix(self.bits)[1:]
+            )
             return True
         else:
             return False
@@ -515,7 +519,7 @@ def collect_template_units(
 
     units = {}
     for ch in allchars:
-        matrix = mp.empty_matrix(source.bits)
+        matrix = mp.raw_empty_matrix(source.bits)
         tff = chartff(ch)  # toggle flip flop
         next(tff)  # sync to template case sensitivity
         i = 0  # coordinate index
@@ -614,7 +618,7 @@ def hoist(
     y_start = 0  #
     y_end = bits  #
     # --------------------------------------------------------------- #
-    map_ = mp.empty_matrix(bits)
+    map_ = mp.raw_empty_matrix(bits)
 
     for y in range(y_start, y_end):
         map_[y] = ["00"] * (bits << 1)

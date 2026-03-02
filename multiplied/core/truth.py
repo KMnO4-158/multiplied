@@ -2,19 +2,11 @@
 # Generate Multiplier Truth Table #
 ###################################
 
-
+import warnings
 from multiplied import Algorithm, Matrix
 import pandas as pd
 from multiprocessing import Pool
 from collections.abc import Generator
-
-
-"""
-Do not optimise generation until functionality is actually tested for
-edge cases and speed. Then refactor by using appropriate patterns,
-simplification, etc., before applying multiprocessing and beyond.
-
-"""
 
 
 def truth_scope(
@@ -43,17 +35,24 @@ def truth_scope(
     min_in, max_in = domain_
     min_out, max_out = range_
 
-    # improve error messages
     if min_in <= 0 or min_out <= 0:
         raise ValueError("Minimum input and output values must be greater than zero.")
-    if min_in > max_in:
-        raise ValueError("Minimum input value greater than maximum input value.")
-    if min_out > max_out:
-        raise ValueError("Minimum output greater than maximum output value.")
-    if min_in > max_out:
-        raise ValueError("Minimum input value greater than maximum output value.")
-    if min_out > max_in:
-        raise ValueError("Minimum output value greater than maximum input value.")
+    if (min_in > max_in) or (min_out > max_out):
+        raise ValueError(
+            "Domain: (a, b) and range: (c, d) must satisfy a <= b and c <= d."
+        )
+
+    if max_in**2 < min_out:
+        raise ValueError(f"Range unreachable for the input domain {domain_}")
+
+    if min_out < min_in:
+        warnings.warn(
+            f"Loose domain and range alignment: min_out < min_in [{min_out} < {min_in}]"
+        )
+    if max_out < max_in:
+        warnings.warn(
+            f"Loose domain and range alignment: min_out < max_in [{max_out} < {max_in}]"
+        )
 
     x = min_in
     while x <= max_in:

@@ -5,8 +5,14 @@
 # [Redundant]
 *.python-version
 #*.deprecated
+
+
 # [Compiled source]
 *.py[ocd]
 dist/
 build/
 jupyter_execute/
+
+# [Testing]
+.coverage
+htmlcov/

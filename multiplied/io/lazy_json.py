@@ -69,7 +69,9 @@ def import_algorithm(path: str) -> Algorithm:
     Import multiplied algorithm from JSON file
     """
     # Low priority
-    raise NotImplementedError("import_algorithm is not implemented yet")
+    raise NotImplementedError(
+        "import_algorithm is not implemented yet"
+    )  # pragma: no cover
 
     # validate_path(path)
     # from multiplied import Template, Matrix, Map
