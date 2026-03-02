@@ -1,14 +1,13 @@
 from pathlib import Path
-from multiplied import df_global_heatmap, df_global_3d_heatmap, pq_extract_stages
+from multiplied import df_global_heatmap, df_global_3d_heatmap, pq_extract_stages, SUPPORTED_BITWIDTHS
 
-THEMES = ["", "_dark"]
+THEMES = ["", "_dark"] # "" == default. Do not delete.
 FILE_TYPES = ["png", "svg"]
-SUPPORTED_BITS = [4, 8]
 
 
 def gen_pq_global_heatmap(dark=False) -> None:
 
-    for bit in SUPPORTED_BITS:
+    for bit in SUPPORTED_BITWIDTHS:
         for theme in THEMES:
             for file_type in FILE_TYPES:
                 path = (
@@ -34,7 +33,7 @@ def gen_pq_global_heatmap(dark=False) -> None:
 
 def gen_pq_global_3d_heatmap() -> None:
 
-    for bit in SUPPORTED_BITS:
+    for bit in SUPPORTED_BITWIDTHS:
         for theme in THEMES:
             for file_type in FILE_TYPES:
                 path = (
