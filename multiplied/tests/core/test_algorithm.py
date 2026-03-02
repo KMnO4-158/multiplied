@@ -1,8 +1,4 @@
-from multiplied.tests import (
-    TestCase,
-    REFERENCE,
-    reference_resolved_pattern
-)
+from multiplied.tests import TestCase, REFERENCE
 import multiplied as mp
 import pytest
 
@@ -23,13 +19,12 @@ TEST_ALGORITHM_INSTANCE = [
     TestCase("auto_alg", None, mp.Algorithm, {"all": True}),
     TestCase("auto_alg_pattern", REFERENCE["pattern"], mp.Algorithm, {"all": True}),
     TestCase("auto_alg_template", REFERENCE["template"], mp.Algorithm, {"all": True}),
-
 ]
 
 TEST_ALGORITHM_EXECUTION = [
     TestCase("alg_exec", None, mp.Matrix, {"all": True, "exec": True}),
-    TestCase("alg_step_one", 1, mp.Matrix, {"all": True, "step":True}),
-    TestCase("alg_step_all", 0, mp.Matrix, {"all": True, "step":True}),
+    TestCase("alg_step_one", 1, mp.Matrix, {"all": True, "step": True}),
+    TestCase("alg_step_all", 0, mp.Matrix, {"all": True, "step": True}),
 ]
 
 # --
@@ -52,11 +47,14 @@ def algorithm_execution(request):
     return request.param
 
 
-
 def test_algorithm_instance(algorithm_instance, supported_bitwidths):
     """Generic test for all Algorithm instance scenarios"""
     bits = supported_bitwidths
-    result = process_value(algorithm_instance.input_value, algorithm_instance.metadata, supported_bitwidths)
+    result = process_value(
+        algorithm_instance.input_value,
+        algorithm_instance.metadata,
+        supported_bitwidths
+    )
     if algorithm_instance.metadata.get("ne"):
         assert not isinstance(result, algorithm_instance.expected_output)
     elif algorithm_instance.metadata.get("bits"):
@@ -66,15 +64,26 @@ def test_algorithm_instance(algorithm_instance, supported_bitwidths):
     else:
         assert isinstance(result, algorithm_instance.expected_output)
 
+
 def test_algorithm_execution(algorithm_execution, supported_bitwidths):
     """Generic test for all Algorithm execution scenarios"""
-    result = process_value(algorithm_execution.input_value, algorithm_execution.metadata, supported_bitwidths)
-    if not isinstance(result, dict): # pragma: no cover
+    result = process_value(
+        algorithm_execution.input_value,
+        algorithm_execution.metadata,
+        supported_bitwidths,
+    )
+    if not isinstance(result, dict):  # pragma: no cover
         raise TypeError(f"Expected [dict] got {type(result)}")
     if algorithm_execution.metadata.get("ne"):
         assert not isinstance(result, algorithm_execution.expected_output)
     else:
-        assert all([isinstance(r, algorithm_execution.expected_output) for r in result.values()])
+        assert all(
+            [
+                isinstance(r, algorithm_execution.expected_output)
+                for r in result.values()
+            ]
+        )
+
 
 def process_value(value, metadata, supported_bitwidths):
 
@@ -89,14 +98,13 @@ def process_value(value, metadata, supported_bitwidths):
         elif isinstance(value[bits]["T"][0], list):
             template = mp.Template(value[bits]["T"], result=value[bits]["R"])
             alg.push(template)
-        else: # pragma: no cover
+        else:  # pragma: no cover
             raise TypeError(f"Expected raw template or pattern got {value}")
 
         alg.auto_resolve_stage()
     else:
         alg = mp.Algorithm(bits)
         alg.auto_resolve_stage()
-
 
     # -- apply function ---------------------------------------------
 
@@ -107,7 +115,7 @@ def process_value(value, metadata, supported_bitwidths):
         return alg.__len__()
 
     elif metadata.get("step"):
-        matrix = mp.Matrix(bits, a=((2**bits)-1), b=((2**bits)-1))
+        matrix = mp.Matrix(bits, a=((2**bits) - 1), b=((2**bits) - 1))
         alg.reset(matrix)
         if value < 1:
             data = alg.step()
@@ -119,7 +127,7 @@ def process_value(value, metadata, supported_bitwidths):
         return data
 
     elif metadata.get("exec"):
-        data = alg.exec(((2**bits)-1), ((2**bits)-1))
+        data = alg.exec(((2**bits) - 1), ((2**bits) - 1))
         return data
 
     else:

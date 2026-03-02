@@ -126,7 +126,7 @@ def process_value(value, metadata):
             return result
 
     elif isinstance(matrix, list):
-        if metadata.get("bits", False): # pragma: no cover
+        if metadata.get("bits", False):  # pragma: no cover
             raise AttributeError("List object has no attribute 'bits'")
         elif metadata.get("len", False):
             result = matrix.__len__()
