@@ -29,9 +29,8 @@ and a [`Map`](https://kmno4-158.github.io/multiplied/guide/structures.html#map).
 - "Pseudo" matrix to visualise possible bit positions for arithmetic outputs.
 
 ```python
-m = mp.Matrix(8)
 p = mp.Pattern(['a','a','b','b','c','c','d','d'])
-alg = mp.Algorithm(m)
+alg = mp.Algorithm(8)
 alg.push(p)
 print(alg)
 ```
