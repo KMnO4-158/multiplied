@@ -51,9 +51,7 @@ def test_algorithm_instance(algorithm_instance, supported_bitwidths):
     """Generic test for all Algorithm instance scenarios"""
     bits = supported_bitwidths
     result = process_value(
-        algorithm_instance.input_value,
-        algorithm_instance.metadata,
-        supported_bitwidths
+        algorithm_instance.input_value, algorithm_instance.metadata, supported_bitwidths
     )
     if algorithm_instance.metadata.get("ne"):
         assert not isinstance(result, algorithm_instance.expected_output)
