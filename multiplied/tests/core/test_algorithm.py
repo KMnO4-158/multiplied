@@ -69,7 +69,7 @@ def test_algorithm_instance(algorithm_instance, supported_bitwidths):
 def test_algorithm_execution(algorithm_execution, supported_bitwidths):
     """Generic test for all Algorithm execution scenarios"""
     result = process_value(algorithm_execution.input_value, algorithm_execution.metadata, supported_bitwidths)
-    if not isinstance(result, dict):
+    if not isinstance(result, dict): # pragma: no cover
         raise TypeError(f"Expected [dict] got {type(result)}")
     if algorithm_execution.metadata.get("ne"):
         assert not isinstance(result, algorithm_execution.expected_output)
@@ -89,7 +89,7 @@ def process_value(value, metadata, supported_bitwidths):
         elif isinstance(value[bits]["T"][0], list):
             template = mp.Template(value[bits]["T"], result=value[bits]["R"])
             alg.push(template)
-        else:
+        else: # pragma: no cover
             raise TypeError(f"Expected raw template or pattern got {value}")
 
         alg.auto_resolve_stage()

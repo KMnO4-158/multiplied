@@ -93,11 +93,11 @@ def process_value(value, metadata, supported_bitwidths):
         data = mp.Pattern(value[bits])
     elif isinstance(value[bits]["T"][0], list):
         data = mp.Template(value[bits]["T"])
-    else:
+    else: # pragma: no cover
         raise TypeError(f"Expected raw template or pattern got {value}")
 
     # -- apply function ---------------------------------------------
-    if metadata.get("rand"):
+    if metadata.get("rand"): # pragma: no cover
         raise NotImplementedError("Random data not implemented")
     elif metadata.get("bits"):
         return data.bits
