@@ -18,7 +18,7 @@ babel==2.18.0
     # via sphinx
 beautifulsoup4==4.14.3
     # via sphinx-breeze-theme
-certifi==2026.1.4
+certifi==2026.2.25
     # via requests
 cffi==2.0.0 ; implementation_name == 'pypy'
     # via pyzmq
@@ -243,7 +243,7 @@ sphinxcontrib-serializinghtml==2.0.0
     # via sphinx
 sphinxext-opengraph==0.13.0
     # via sphinx-breeze-theme
-sqlalchemy==2.0.46
+sqlalchemy==2.0.48
     # via jupyter-cache
 stack-data==0.6.3
     # via ipython
