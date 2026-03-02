@@ -130,19 +130,11 @@
 <span class="c1"># Generate Multiplier Truth Table #</span>
 <span class="c1">###################################</span>
 
-
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">multiplied</span><span class="w"> </span><span class="kn">import</span> <span class="n">Algorithm</span><span class="p">,</span> <span class="n">Matrix</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">multiprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pool</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Generator</span>
-
-
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Do not optimise generation until functionality is actually tested for</span>
-<span class="sd">edge cases and speed. Then refactor by using appropriate patterns,</span>
-<span class="sd">simplification, etc., before applying multiprocessing and beyond.</span>
-
-<span class="sd">&quot;&quot;&quot;</span>
 
 
 <div class="viewcode-block" id="truth_scope">
@@ -173,17 +165,24 @@
     <span class="n">min_in</span><span class="p">,</span> <span class="n">max_in</span> <span class="o">=</span> <span class="n">domain_</span>
     <span class="n">min_out</span><span class="p">,</span> <span class="n">max_out</span> <span class="o">=</span> <span class="n">range_</span>
 
-    <span class="c1"># improve error messages</span>
     <span class="k">if</span> <span class="n">min_in</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">min_out</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Minimum input and output values must be greater than zero.&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">min_in</span> <span class="o">&gt;</span> <span class="n">max_in</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Minimum input value greater than maximum input value.&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">min_out</span> <span class="o">&gt;</span> <span class="n">max_out</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Minimum output greater than maximum output value.&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">min_in</span> <span class="o">&gt;</span> <span class="n">max_out</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Minimum input value greater than maximum output value.&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">min_out</span> <span class="o">&gt;</span> <span class="n">max_in</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Minimum output value greater than maximum input value.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">min_in</span> <span class="o">&gt;</span> <span class="n">max_in</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">min_out</span> <span class="o">&gt;</span> <span class="n">max_out</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Domain: (a, b) and range: (c, d) must satisfy a &lt;= b and c &lt;= d.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">max_in</span><span class="o">**</span><span class="mi">2</span> <span class="o">&lt;</span> <span class="n">min_out</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Range unreachable for the input domain </span><span class="si">{</span><span class="n">domain_</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">min_out</span> <span class="o">&lt;</span> <span class="n">min_in</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Loose domain and range alignment: min_out &lt; min_in [</span><span class="si">{</span><span class="n">min_out</span><span class="si">}</span><span class="s2"> &lt; </span><span class="si">{</span><span class="n">min_in</span><span class="si">}</span><span class="s2">]&quot;</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">max_out</span> <span class="o">&lt;</span> <span class="n">max_in</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Loose domain and range alignment: min_out &lt; max_in [</span><span class="si">{</span><span class="n">max_out</span><span class="si">}</span><span class="s2"> &lt; </span><span class="si">{</span><span class="n">max_in</span><span class="si">}</span><span class="s2">]&quot;</span>
+        <span class="p">)</span>
 
     <span class="n">x</span> <span class="o">=</span> <span class="n">min_in</span>
     <span class="k">while</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">max_in</span><span class="p">:</span>
@@ -430,5 +429,5 @@
   <label class="bz-overlay bz-overlay-primary" for="bz-sidebar-primary"></label>
   <label class="bz-overlay bz-overlay-secondary" for="bz-sidebar-secondary"></label>
   <input type="checkbox" name="bz-sidebar-primary" id="bz-sidebar-primary" aria-label="Toggle section navigation">
-  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../../../_static/documentation_options.js?v=ef6e6527"></script><script src="../../../_static/doctools.js?v=fd6eb6e6"></script><script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script><script src="../../../_static/clipboard.min.js?v=a7894cd8"></script><script src="../../../_static/copybutton.js?v=f281be69"></script><script src="../../../_static/design-tabs.js?v=f930bc37"></script></body>
+  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../../../_static/documentation_options.js?v=a85d417d"></script><script src="../../../_static/doctools.js?v=fd6eb6e6"></script><script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script><script src="../../../_static/clipboard.min.js?v=a7894cd8"></script><script src="../../../_static/copybutton.js?v=f281be69"></script><script src="../../../_static/design-tabs.js?v=f930bc37"></script></body>
 </html>

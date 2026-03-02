@@ -191,6 +191,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="multiplied.html#multiplied.Map"><code class="docutils literal notranslate"><span class="pre">Map</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="multiplied.html#multiplied.Map.build_map"><code class="docutils literal notranslate"><span class="pre">Map.build_map()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="multiplied.html#multiplied.Map.build_zero_map"><code class="docutils literal notranslate"><span class="pre">Map.build_zero_map()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="multiplied.html#multiplied.Matrix"><code class="docutils literal notranslate"><span class="pre">Matrix</span></code></a><ul>
@@ -217,6 +218,7 @@
 <li class="toctree-l3"><a class="reference internal" href="multiplied.html#multiplied.build_csa"><code class="docutils literal notranslate"><span class="pre">build_csa()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="multiplied.html#multiplied.build_dadda_map"><code class="docutils literal notranslate"><span class="pre">build_dadda_map()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="multiplied.html#multiplied.build_empty_slice"><code class="docutils literal notranslate"><span class="pre">build_empty_slice()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="multiplied.html#multiplied.build_noop"><code class="docutils literal notranslate"><span class="pre">build_noop()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="multiplied.html#multiplied.chargen"><code class="docutils literal notranslate"><span class="pre">chargen()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="multiplied.html#multiplied.chartff"><code class="docutils literal notranslate"><span class="pre">chartff()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="multiplied.html#multiplied.collect_arithmetic_units"><code class="docutils literal notranslate"><span class="pre">collect_arithmetic_units()</span></code></a></li>
@@ -225,7 +227,6 @@
 <li class="toctree-l3"><a class="reference internal" href="multiplied.html#multiplied.df_stage_bound_heatmap"><code class="docutils literal notranslate"><span class="pre">df_stage_bound_heatmap()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="multiplied.html#multiplied.df_stage_heatmap"><code class="docutils literal notranslate"><span class="pre">df_stage_heatmap()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="multiplied.html#multiplied.empty_map"><code class="docutils literal notranslate"><span class="pre">empty_map()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="multiplied.html#multiplied.empty_matrix"><code class="docutils literal notranslate"><span class="pre">empty_matrix()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="multiplied.html#multiplied.empty_rows"><code class="docutils literal notranslate"><span class="pre">empty_rows()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="multiplied.html#multiplied.export_algorithm"><code class="docutils literal notranslate"><span class="pre">export_algorithm()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="multiplied.html#multiplied.export_parquet"><code class="docutils literal notranslate"><span class="pre">export_parquet()</span></code></a></li>
@@ -244,6 +245,10 @@
 <li class="toctree-l3"><a class="reference internal" href="multiplied.html#multiplied.pq_extract_formatted_stages"><code class="docutils literal notranslate"><span class="pre">pq_extract_formatted_stages()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="multiplied.html#multiplied.pq_extract_stages"><code class="docutils literal notranslate"><span class="pre">pq_extract_stages()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="multiplied.html#multiplied.pretty"><code class="docutils literal notranslate"><span class="pre">pretty()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="multiplied.html#multiplied.raw_dadda_map"><code class="docutils literal notranslate"><span class="pre">raw_dadda_map()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="multiplied.html#multiplied.raw_empty_matrix"><code class="docutils literal notranslate"><span class="pre">raw_empty_matrix()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="multiplied.html#multiplied.raw_zero_map"><code class="docutils literal notranslate"><span class="pre">raw_zero_map()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="multiplied.html#multiplied.raw_zero_matrix"><code class="docutils literal notranslate"><span class="pre">raw_zero_matrix()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="multiplied.html#multiplied.resolve_pattern"><code class="docutils literal notranslate"><span class="pre">resolve_pattern()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="multiplied.html#multiplied.shallow_truth_table"><code class="docutils literal notranslate"><span class="pre">shallow_truth_table()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="multiplied.html#multiplied.to_int_matrix"><code class="docutils literal notranslate"><span class="pre">to_int_matrix()</span></code></a></li>
@@ -337,5 +342,5 @@
   <label class="bz-overlay bz-overlay-primary" for="bz-sidebar-primary"></label>
   <label class="bz-overlay bz-overlay-secondary" for="bz-sidebar-secondary"></label>
   <input type="checkbox" name="bz-sidebar-primary" id="bz-sidebar-primary" aria-label="Toggle section navigation">
-  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../_static/documentation_options.js?v=ef6e6527"></script><script src="../_static/doctools.js?v=fd6eb6e6"></script><script src="../_static/sphinx_highlight.js?v=6ffebe34"></script><script src="../_static/clipboard.min.js?v=a7894cd8"></script><script src="../_static/copybutton.js?v=f281be69"></script><script src="../_static/design-tabs.js?v=f930bc37"></script></body>
+  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../_static/documentation_options.js?v=a85d417d"></script><script src="../_static/doctools.js?v=fd6eb6e6"></script><script src="../_static/sphinx_highlight.js?v=6ffebe34"></script><script src="../_static/clipboard.min.js?v=a7894cd8"></script><script src="../_static/copybutton.js?v=f281be69"></script><script src="../_static/design-tabs.js?v=f930bc37"></script></body>
 </html>

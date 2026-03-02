@@ -155,6 +155,48 @@
 <h1>multiplied.tests package<a class="headerlink" href="#multiplied-tests-package" title="Link to this heading">#</a></h1>
 <section id="module-multiplied.tests">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-multiplied.tests" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="multiplied.tests.TestCase">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">multiplied.tests.</span></span><span class="sig-name descname"><span class="pre">TestCase</span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">input_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">expected_output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>,</dd>
+</dl>
+
+<span class="sig-paren">)</span><a class="reference internal" href="../_modules/multiplied/tests.html#TestCase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.tests.TestCase" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Describes a single test scenario</p>
+<p>assert metadata(input_value) -&gt; expected_output</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="multiplied.tests.TestCase.expected_output">
+<span class="sig-name descname"><span class="pre">expected_output</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Any</span></span><a class="headerlink" href="#multiplied.tests.TestCase.expected_output" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="multiplied.tests.TestCase.input_value">
+<span class="sig-name descname"><span class="pre">input_value</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Any</span></span><a class="headerlink" href="#multiplied.tests.TestCase.input_value" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="multiplied.tests.TestCase.metadata">
+<span class="sig-name descname"><span class="pre">metadata</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></span><a class="headerlink" href="#multiplied.tests.TestCase.metadata" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="multiplied.tests.TestCase.name">
+<span class="sig-name descname"><span class="pre">name</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#multiplied.tests.TestCase.name" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="multiplied.tests.reference_resolved_pattern">
+<span class="sig-prename descclassname"><span class="pre">multiplied.tests.</span></span><span class="sig-name descname"><span class="pre">reference_resolved_pattern</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/multiplied/tests.html#reference_resolved_pattern"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.tests.reference_resolved_pattern" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
 </section>
 </section>
 
@@ -169,7 +211,17 @@
   
     <nav class="bz-sidebar-toc" aria-label="Table of contents">
   <p>On this page</p><ul>
-<li><a class="reference internal" href="#module-multiplied.tests">Module contents</a></li>
+<li><a class="reference internal" href="#module-multiplied.tests">Module contents</a><ul>
+<li><a class="reference internal" href="#multiplied.tests.TestCase"><code class="docutils literal notranslate"><span class="pre">TestCase</span></code></a><ul>
+<li><a class="reference internal" href="#multiplied.tests.TestCase.expected_output"><code class="docutils literal notranslate"><span class="pre">TestCase​.expected_​output</span></code></a></li>
+<li><a class="reference internal" href="#multiplied.tests.TestCase.input_value"><code class="docutils literal notranslate"><span class="pre">TestCase​.input_​value</span></code></a></li>
+<li><a class="reference internal" href="#multiplied.tests.TestCase.metadata"><code class="docutils literal notranslate"><span class="pre">TestCase​.metadata</span></code></a></li>
+<li><a class="reference internal" href="#multiplied.tests.TestCase.name"><code class="docutils literal notranslate"><span class="pre">TestCase​.name</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#multiplied.tests.reference_resolved_pattern"><code class="docutils literal notranslate"><span class="pre">reference_​resolved_​pattern()</span></code></a></li>
+</ul>
+</li>
 </ul></nav>
   
     
@@ -239,5 +291,5 @@
   <label class="bz-overlay bz-overlay-primary" for="bz-sidebar-primary"></label>
   <label class="bz-overlay bz-overlay-secondary" for="bz-sidebar-secondary"></label>
   <input type="checkbox" name="bz-sidebar-primary" id="bz-sidebar-primary" aria-label="Toggle section navigation">
-  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../_static/documentation_options.js?v=ef6e6527"></script><script src="../_static/doctools.js?v=fd6eb6e6"></script><script src="../_static/sphinx_highlight.js?v=6ffebe34"></script><script src="../_static/clipboard.min.js?v=a7894cd8"></script><script src="../_static/copybutton.js?v=f281be69"></script><script src="../_static/design-tabs.js?v=f930bc37"></script></body>
+  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../_static/documentation_options.js?v=a85d417d"></script><script src="../_static/doctools.js?v=fd6eb6e6"></script><script src="../_static/sphinx_highlight.js?v=6ffebe34"></script><script src="../_static/clipboard.min.js?v=a7894cd8"></script><script src="../_static/copybutton.js?v=f281be69"></script><script src="../_static/design-tabs.js?v=f930bc37"></script></body>
 </html>
