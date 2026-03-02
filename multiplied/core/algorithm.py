@@ -98,7 +98,7 @@ class Algorithm:
 
         # -- [TODO] ------------------------------------------------- #
         if map_ and not map_.rmap:  #
-            raise NotImplementedError("Complex map not implemented")  #
+            raise NotImplementedError("Complex map not implemented")  # # pragma: no cover
         # ----------------------------------------------------------- #
 
         if isinstance(source, mp.Pattern):

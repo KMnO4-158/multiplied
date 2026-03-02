@@ -35,7 +35,7 @@ def _validate_path(path: str) -> None:
 def pq_extract_bits(path: str, bits: list[int], stages: list[int]) -> pd.DataFrame:
     """Return a DataFrame of specified bits across multiple stages from .parquet"""
     _validate_path(path)
-    raise NotImplementedError
+    raise NotImplementedError # pragma: no cover
 
 
 # -- Sources --
@@ -105,10 +105,10 @@ def pq_extract_stages(path: str, *, stages: list[int] = []) -> pd.DataFrame:
 def pq_extract_formatted_all(path: str) -> pd.DataFrame:
     """Return DataFrame of all formatted strings from .parquet"""
     _validate_path(path)
-    raise NotImplementedError
+    raise NotImplementedError # pragma: no cover
 
 
 def pq_extract_formatted_stages(path: str, stages: list[int]) -> pd.DataFrame:
     """Return DataFrame of formatted strings across multiple stages from .parquet"""
     _validate_path(path)
-    raise NotImplementedError
+    raise NotImplementedError # pragma: no cover

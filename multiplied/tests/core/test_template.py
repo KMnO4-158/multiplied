@@ -98,7 +98,7 @@ def process_value(value, metadata, supported_bitwidths):
 
     # -- apply function ---------------------------------------------
     if metadata.get("rand"): # pragma: no cover
-        raise NotImplementedError("Random data not implemented")
+        raise NotImplementedError("Random data not implemented") # pragma: no cover
     elif metadata.get("bits"):
         return data.bits
     elif metadata.get("len"):
