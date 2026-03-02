@@ -112,20 +112,20 @@ class Algorithm:
             raise ValueError("Template result is unset")
 
         result = mp.Matrix(template.result)
+        res_copy = deepcopy(result)
         stage_index = len(self.algorithm)
         if not map_ and result:
             if dadda:
-                res_copy = deepcopy(result)
                 map_ = hoist(res_copy)
             else:
                 map_ = result.resolve_rmap()
-            result.apply_map(map_)
+            res_copy.apply_map(map_)
         else:
-            result.apply_map(map_)
+            res_copy.apply_map(map_)
 
         stage = {
             "template": template,
-            "pseudo": result,
+            "pseudo": res_copy,
             "map": map_,
         }
         self.algorithm[stage_index] = stage
