@@ -10,13 +10,13 @@ import pytest
 """
 metadata:
     all:
-        whether to test all attributes
+        whether to test all bitwidths
     bits:
         input.bits
     len:
         input.__len__()
     rand:
-        generate patters with random arithmetic unit distribution
+        generate patterns with random arithmetic unit distribution
 """
 TEST_PATTERN_INSTANCE = [
     # TC(name, input, expected_output, metadata)
@@ -46,60 +46,60 @@ TEST_ERROR = []
 
 @pytest.fixture(params=TEST_PATTERN_INSTANCE, ids=lambda tc: tc.name)
 def pattern_instance(request):
-    """Parameterized fixture for 4-bit truth table scenarios"""
+    """Parameterized fixture for Pattern instances"""
     return request.param
 
 
 @pytest.fixture(params=TEST_TEMPLATE_INSTANCE, ids=lambda tc: tc.name)
 def template_instance(request):
-    """Parameterized fixture for 8-bit truth table scenarios"""
+    """Parameterized fixture for Template instances"""
     return request.param
 
 
 
 def test_pattern_instance(pattern_instance, supported_bitwidths):
-    """Generic test for all 4-bit scenarios"""
+    """Generic test for all Pattern instances"""
     bits = supported_bitwidths
     result = process_value(pattern_instance.input_value, pattern_instance.metadata, supported_bitwidths)
-    if pattern_instance.metadata.get("ne", False):
+    if pattern_instance.metadata.get("ne"):
         assert not isinstance(result, pattern_instance.expected_output)
-    elif pattern_instance.metadata.get("bits", False):
+    elif pattern_instance.metadata.get("bits"):
         assert result == bits
-    elif pattern_instance.metadata.get("len", False):
+    elif pattern_instance.metadata.get("len"):
         assert result == bits
     else:
         assert isinstance(result, pattern_instance.expected_output)
 
 
 def test_template_instance(template_instance, supported_bitwidths):
-    """Generic test for all 8-bit scenarios"""
+    """Generic test for all Template instances"""
     bits = supported_bitwidths
     result = process_value(template_instance.input_value, template_instance.metadata, supported_bitwidths)
-    if template_instance.metadata.get("ne", False):
+    if template_instance.metadata.get("ne"):
         assert not isinstance(result, template_instance.expected_output)
-    elif template_instance.metadata.get("bits", False):
+    elif template_instance.metadata.get("bits"):
         assert result == bits
-    elif template_instance.metadata.get("len", False):
+    elif template_instance.metadata.get("len"):
         assert result == bits
     else:
         assert isinstance(result, template_instance.expected_output)
 
 def process_value(value, metadata, supported_bitwidths):
     bits = supported_bitwidths
-    if isinstance(value[bits][0], str):
+    if isinstance(value.get(bits), list):
         print(f"pattern:: bits: {bits}, value: {value[bits]}")
         data = mp.Pattern(value[bits])
-    elif isinstance(value[bits][0], list):
-        print(f"template:: bits: {bits}, value: {value[bits]}")
-        data = mp.Template(value[bits])
+    elif isinstance(value[bits]["T"][0], list):
+        print(f"template:: bits: {bits}, value: {value[bits]["T"]}")
+        data = mp.Template(value[bits]["T"])
     else:
         raise TypeError(f"Expected raw template or pattern got {value}")
 
-    if metadata.get("rand", False):
-        raise NotImplementedError("Random data not implmented")
-    elif metadata.get("bits", False):
+    if metadata.get("rand"):
+        raise NotImplementedError("Random data not implemented")
+    elif metadata.get("bits"):
         return data.bits
-    elif metadata.get("len", False):
+    elif metadata.get("len"):
         return data.__len__()
     else:
         return data
