@@ -9,7 +9,7 @@ import pytest
 
 """
 metadata:
-    all:
+    all: # ignored for now
         whether to test all bitwidths
     bits:
         input.bits
@@ -43,6 +43,7 @@ TEST_ITER = []
 
 TEST_ERROR = []
 
+# == test instance ==================================================
 
 @pytest.fixture(params=TEST_PATTERN_INSTANCE, ids=lambda tc: tc.name)
 def pattern_instance(request):
@@ -58,7 +59,7 @@ def template_instance(request):
 
 
 def test_pattern_instance(pattern_instance, supported_bitwidths):
-    """Generic test for all Pattern instances"""
+    """Generic test for all Pattern instances scenarios"""
     bits = supported_bitwidths
     result = process_value(pattern_instance.input_value, pattern_instance.metadata, supported_bitwidths)
     if pattern_instance.metadata.get("ne"):
@@ -72,7 +73,7 @@ def test_pattern_instance(pattern_instance, supported_bitwidths):
 
 
 def test_template_instance(template_instance, supported_bitwidths):
-    """Generic test for all Template instances"""
+    """Generic test for all Template instances scenarios"""
     bits = supported_bitwidths
     result = process_value(template_instance.input_value, template_instance.metadata, supported_bitwidths)
     if template_instance.metadata.get("ne"):
@@ -85,16 +86,17 @@ def test_template_instance(template_instance, supported_bitwidths):
         assert isinstance(result, template_instance.expected_output)
 
 def process_value(value, metadata, supported_bitwidths):
+
+    # -- instantiate ------------------------------------------------
     bits = supported_bitwidths
-    if isinstance(value.get(bits), list):
-        print(f"pattern:: bits: {bits}, value: {value[bits]}")
+    if isinstance(value.get(bits), list): # REF pattern: list, REF dict:
         data = mp.Pattern(value[bits])
     elif isinstance(value[bits]["T"][0], list):
-        print(f"template:: bits: {bits}, value: {value[bits]["T"]}")
         data = mp.Template(value[bits]["T"])
     else:
         raise TypeError(f"Expected raw template or pattern got {value}")
 
+    # -- apply function ---------------------------------------------
     if metadata.get("rand"):
         raise NotImplementedError("Random data not implemented")
     elif metadata.get("bits"):
@@ -104,7 +106,7 @@ def process_value(value, metadata, supported_bitwidths):
     else:
         return data
 
-# -- pattern resolution tests ---------------------------------------
+# == test pattern resolution ========================================
 
 @pytest.fixture(params=reference_resolved_pattern())
 def resolved_pattern_instance(request):
