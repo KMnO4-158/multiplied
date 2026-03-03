@@ -116,9 +116,9 @@ Parquet is recommended for large truth tables and intensive analysis
 ### Further Reading
 
 multiplied:
-[Structures](https://github.com/EphraimCompEng/multiplied/tree/master/docs/structures)
-[Algorithms](https://github.com/EphraimCompEng/multiplied/tree/master/docs/algorithms)
-[Analysis](https://github.com/EphraimCompEng/multiplied/tree/master/docs/analysis)
+[Structures](https://github.com/KMnO4-158/multiplied/tree/master/docs/structures)
+[Algorithms](https://github.com/KMnO4-158/multiplied/tree/master/docs/algorithms)
+[Analysis](https://github.com/KMnO4-158/multiplied/tree/master/docs/analysis)
 
 Multiplication:
 
