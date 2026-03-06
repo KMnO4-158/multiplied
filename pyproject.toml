@@ -8,6 +8,7 @@ license-files = ["LICENSE"]
 requires-python = ">=3.13"
 dependencies = [
     "matplotlib>=3.10.8",
+    "numba>=0.64.0",
     "pandas>=3.0.0",
     "pyarrow>=23.0.0",
     "toml>=0.10.2",
