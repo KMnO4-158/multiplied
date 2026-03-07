@@ -3,7 +3,7 @@
 ##########################################################
 
 
-# -- version -----------------------------------------------------------
+# -- version --------------------------------------------------------
 
 __version_info__ = (0, 8, 0)
 __version__ = "0.8.0"
@@ -49,6 +49,7 @@ from .core.truth import (
     truth_table,
     truth_dataframe,
     shallow_truth_table,
+    truth_multi_parquet,
 )
 
 
@@ -142,9 +143,10 @@ __all__ = [
     "build_empty_slice",
     "resolve_pattern",
     "truth_scope",
-    "shallow_truth_table",
     "truth_table",
     "truth_dataframe",
+    "shallow_truth_table",
+    "truth_multi_parquet",
     "ischar",
     "isalpha",
     "ishex2",
