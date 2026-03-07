@@ -2,7 +2,7 @@
 # Returns Template Objects Using User Patterns #
 ################################################
 
-from copy import deepcopy
+from copy import copy, deepcopy
 from typing import Any
 from .utils.bool import isalpha, ischar
 import multiplied as mp
@@ -286,7 +286,7 @@ class Template:
     source : Pattern | list[list[str]]
         The source of the template.
     result : list[Any], optional
-        The result of the template, by default []
+        The result of the template, by default [], automatically computed
     matrix : Any, optional
         The matrix of the template, by default None
 
@@ -326,7 +326,10 @@ class Template:
 
         else:
             raise TypeError
+
         self.bounds = self.find_bounding_box()
+        if self.result == []:
+            self.__reduce_template()
         return None
 
     def __checksum(self) -> None:
@@ -349,6 +352,64 @@ class Template:
                 checksum[i] = 1
         self.checksum = checksum
         return None
+
+    def __reduce_template(self) -> None:
+        """"""
+        units, bounds = self.collect_template_units()
+        n = self.bits << 1
+        results = {}
+        chars = list(bounds.keys())
+        chars.remove("_")
+        for ch in chars:
+            base_index = bounds[ch][0][1]
+            match bounds[ch][-1][1] - bounds[ch][0][1] + 1:  # row height
+                case 1:  # NOOP
+                    output = mp.Slice([copy(units[ch][base_index])])
+
+                case 2:  # ADD
+                    unit_slice = mp.Slice(
+                        [
+                            copy(units[ch][base_index]),
+                            copy(units[ch][base_index + 1])
+                        ]
+                    )
+                    output = build_adder(ch, unit_slice)[1]
+                case 3:  # CSA
+                    unit_slice = mp.Slice(
+                        [
+                            copy(units[ch][base_index]),
+                            copy(units[ch][base_index + 1]),
+                            copy(units[ch][base_index + 2])
+                        ]
+                    )
+                    output = build_csa(ch, unit_slice)[1]
+                case _:
+                    raise ValueError(
+                        f"Unsupported unit type, len={bounds[ch][-1][1] - bounds[ch][0][1]}"
+                    )
+
+
+            unit_result = [[]] * self.bits
+            i = 0
+            while i < base_index:
+                unit_result[i] = ["_"] * n
+                i += 1
+            for row in output:
+                unit_result[i] = row
+                i += 1
+            while i < self.bits:
+                unit_result[i] = ["_"] * n
+                i += 1
+            results[ch] = mp.Matrix(unit_result)
+
+        if 1 < len(results):
+            self.result = mp.matrix_merge(results, bounds)
+        else:
+            self.result = list(results.values())[0]
+
+        ...
+        return None
+
 
     # Templates must be built using matrix
     def build_from_pattern(self, pattern: Pattern, matrix: mp.Matrix) -> None:
@@ -506,12 +567,12 @@ class Template:
             i = 0  # coordinate index
             expected_y = None
             while i < len(bounds[ch]) - 1:
-                # -- intra-row boundary -------------------------------------- #
+                # == intra-row boundary test ================================== #
                 # bound[list_of_points][coord_i][y-axis]
                 # "if 2 < points have the same y for a given unit"
                 if 2 < sum([p[1] == bounds[ch][i][1] for p in bounds[ch]]):
                     raise ValueError(f"Multiple arithmetic units found for unit '{ch}'")
-                # ------------------------------------------------------------ #
+                # ============================================================= #
                 start = bounds[ch][i]
                 end = bounds[ch][i + 1]
                 if start[1] != end[1]:
@@ -524,14 +585,14 @@ class Template:
                 for x in range(start[0], end[0] + 1):
                     matrix[start[1]][x] = next(tff)
 
-                # -- inter-row boundary test --------------------------------- #
+                # == inter-row boundary test ================================== #
                 if expected_y is not None and expected_y != start[1]:
                     raise ValueError(
                         f"Arithmetic unit '{ch}' spans multiple rows. "
                         f"Expected row {expected_y}, got row {start[1]}"
                     )
                 expected_y = start[1] + 1
-                # ------------------------------------------------------------ #
+                # ============================================================= #
 
                 i += 2
             units[ch] = matrix

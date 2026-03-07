@@ -6,7 +6,6 @@ from copy import deepcopy
 from typing import Any, Iterable
 import multiplied as mp
 
-
 # -- TODO: sanity checks --------------------------------------------
 #
 # - Use setattr to block changes to self.matrix if state != 0, suggest self.reset().
