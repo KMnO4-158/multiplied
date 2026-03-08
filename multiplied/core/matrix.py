@@ -2,6 +2,7 @@
 # Classes to Represent And Manage Nested Lists #
 ################################################
 
+from copy import deepcopy
 import multiplied as mp
 from typing import Any, Iterator
 
@@ -406,10 +407,12 @@ def matrix_merge(
     ----------
     source : dict[str, Matrix]
         A dictionary of matrices to merge
+
     bounds : dict[str, list[tuple[int, int]]]
         A dictionary of bounds for each matrix
-    carry : bool=True, optional
-        Whether to carry over the carry bit, by default True
+
+    carry : bool=True, optional, default: True
+        Whether to carry over the carry bit
 
     Returns
     -------
@@ -458,3 +461,111 @@ def matrix_merge(
 
             i += 2
     return Matrix(output)
+
+
+
+def matrix_scatter(
+    source: list[list],
+    bounds: dict[str, list[tuple[int, int]]],
+    fmt: str="auto"
+) -> dict[str, list[list]]:
+    """Return list of matrices containing subset of source matrix based on provided bounds.
+
+    Parameters
+    ----------
+    source : list[list]
+        Partial Product matrix to scatter.
+
+    bounds : dict[str, list[tuple[int, int]]]
+        The bounds for each unit to extract from the source.
+
+    fmt : str, optional, default: "auto".
+        "auto" : Infer format from source.
+        "empty" : :func:`raw_empty_matrix`
+        "zero" : :func:`raw_zero_matrix`
+        "map" : :func:`raw_map_matrix`
+
+    Returns
+    -------
+    dict[str, list[list]]
+        A dictionary of matrices containing the subset of source based on the provided bounds.
+
+    Notes
+    -----
+    Each unit is extracted and placed at the same position within an initialised matrix
+    with the same shape as the source.
+
+    See also
+    --------
+    :func:`collect_template_units` for bound extraction
+
+
+
+    Examples
+    --------
+    >>> source = [[0, 1, 2],
+    >>>           [3, 4, 5],
+    >>>           [6, 7, 8]]
+    >>> bounds = {"A": [(0, 0), (0, 1)],
+    >>>           "B": [(1, 1), (1, 2)]}
+    >>> matrix_scatter(source, bounds, fmt=empty)
+    [[[0, 1, _], [_, _, _], [_, _, _]],
+     [[_, _, _], [_, 4, 5], [_, _, _]]]
+
+    """
+
+
+    if isinstance(bounds, dict):
+        if not all([mp.ischar(k) for k in bounds.keys()]):
+            raise ValueError("Unrecognised Bounds")
+    else:
+        raise TypeError(f"Expected Dict got {type(bounds)}")
+
+    if not isinstance(source, list) and not all([isinstance(row, list) for row in source]):
+        raise TypeError(f"Expected List[List] got {type(source)}")
+
+    if fmt == "auto":
+        _litmus = source[0][0]
+        if mp.ischar(_litmus) or (mp.isint(_litmus) and (_litmus == "0" or _litmus == "1")):
+            fmt = "empty"
+        elif mp.ishex2(_litmus):
+            fmt = "map"
+        else:
+            fmt = "zero"
+
+    match fmt:
+        case "empty":
+            dest_matrix = [["_" for _ in row] for row in source]
+        case "zero":
+            dest_matrix = [["0" for _ in row] for row in source]
+        case "map":
+            dest_matrix = [["00" for _ in row] for row in source]
+        case _:
+            raise ValueError(f"Unrecognised fmt: {fmt}")
+
+    allchars = list(bounds.keys())
+
+    output = {}
+    for ch in allchars:
+        if len(bounds[ch]) % 2 != 0:
+            raise ValueError(f"Odd number of bounds for {ch}")
+        if ch == "_" and fmt == "empty":
+            output[ch] = deepcopy(dest_matrix)
+            continue
+
+        dest_matrix_copy = deepcopy(dest_matrix)
+
+        i = 0
+        while i < len(bounds[ch]):
+            start = bounds[ch][i][0]
+            end = bounds[ch][i + 1][0]
+            row = bounds[ch][i][1]
+
+            for col in range(start, end + 1): # include end
+                dest_matrix_copy[row][col] = source[row][col]
+
+            i += 2
+
+        output[ch] = dest_matrix_copy
+
+    return output
