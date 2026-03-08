@@ -321,17 +321,17 @@ class Template:
         elif isinstance(source, list) and all([isinstance(i, list) for i in source]):
             self.template = source
             self.pattern = []
-            self.__checksum()
+            self._checksum()
 
         else:
             raise TypeError
 
         self.bounds = self.update_bounding_box()
         if self.result == []:
-            self.__reduce_template()
+            self._reduce_template()
         return None
 
-    def __checksum(self) -> None:
+    def _checksum(self) -> None:
         row_len = self.bits << 1
         checksum = [0] * self.bits
         for i, row in enumerate(self.template):
@@ -352,7 +352,7 @@ class Template:
         self.checksum = checksum
         return None
 
-    def __reduce_template(self) -> None:
+    def _reduce_template(self) -> None:
         """"""
         units, bounds = self.collect_template_units()
         n = self.bits << 1
