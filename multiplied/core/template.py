@@ -189,8 +189,7 @@ def build_empty_slice(source_slice: mp.Slice) -> tuple[mp.Slice, mp.Slice]:
 
     empty_slice = deepcopy(source_slice)  # ensure no references
     for row in range(len(source_slice)):
-        for i in range(empty_slice.bits):
-            empty_slice[row][i] = "_"
+        empty_slice.slice[row] = ["_"] * (empty_slice.bits << 1)
     return empty_slice, deepcopy(empty_slice)
 
 
