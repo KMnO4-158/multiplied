@@ -28,15 +28,27 @@ def test_shallow_generator8() -> None:
 
 
 def main() -> None:
+    from multiplied.tests import REFERENCE
     alg = mp.Algorithm(8)
     empty_pattern = mp.Pattern(["a", "_", "_", "_", "_", "_", "_", "_"])
-    print()
+    print(mp.Matrix(8))
     alg.push(empty_pattern)
     print(alg)
+    alg.reset(mp.Matrix(8, a=12, b=2))
+    print(alg.step())
 
     alg = mp.Algorithm(8)
     alg.auto_resolve_stage(recursive=False)
     print(alg)
+
+    alg = mp.Algorithm(8)
+    ref_complex_template = mp.Template(REFERENCE["complex_template"][8]["T"])
+    print(ref_complex_template)
+    alg.push(ref_complex_template)
+    alg.auto_resolve_stage()
+    print(alg)
+    for i in alg.exec(15, 14).values():
+        print(i)
 
 if __name__ == "__main__":
     main()
