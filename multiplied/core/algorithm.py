@@ -31,7 +31,7 @@ class Algorithm:
     """
 
     def __init__(
-        self, bits: int, *, matrix: Any = None, saturation: bool = False, dadda=False
+        self, bits: int, *, matrix: Any = None, saturation: bool=False, dadda: bool=False
     ) -> None:
 
         mp.validate_bitwidth(bits)
@@ -62,7 +62,7 @@ class Algorithm:
         return None
 
     def push(
-        self, source: mp.Template | mp.Pattern, map_: Any = None, dadda=False
+        self, source: mp.Template | mp.Pattern, map_: Any = None, dadda: bool=False
     ) -> None:
         """Populate algorithm stage based on template. Generates pseudo
         result to represent output matrix
@@ -105,14 +105,14 @@ class Algorithm:
         if isinstance(source, mp.Pattern):
             template = mp.Template(source)
         elif isinstance(source, mp.Template):
-            template = source
+            template = deepcopy(source)
         else:
             raise TypeError("Invalid argument type. Expected mp.Template")
 
-        if not isinstance(template.result, list):
+        if not isinstance(template.result, (mp.Matrix)):
             raise ValueError("Template result is unset")
 
-        result = mp.Matrix(template.result)
+        result = template.result
         res_copy = deepcopy(result)
         stage_index = len(self.algorithm)
         if not map_ and result:
@@ -191,7 +191,7 @@ class Algorithm:
         n = self.bits << 1
         results = {}
         chars = list(bounds.keys())
-        chars.remove("_")
+        # chars.remove("_") # ! this deletes info about rows which are not reduced
         for ch in chars:
             base_index = bounds[ch][0][1]
             match bounds[ch][-1][1] - bounds[ch][0][1] + 1:  # row height
@@ -284,9 +284,11 @@ class Algorithm:
                         except IndexError:
                             continue
                 case _:
-                    raise ValueError(
-                        f"Unsupported unit type, len={bounds[ch][-1][1] - bounds[ch][0][1]}"
-                    )
+                    if ch != "_":
+                        raise ValueError(
+                            f"Unsupported unit type, len={bounds[ch][-1][1] - bounds[ch][0][1]}"
+                        )
+                    continue
 
             # -- build unit into matrix -----------------------------
             unit_result = [[]] * self.bits
