@@ -54,7 +54,7 @@ class Algorithm:
             hoist(self.matrix)
         self.saturation = saturation
         if self.saturation:
-            self.__clamp_bitwidth()
+            self._clamp_bitwidth()
 
         # -- TODO: update this when anything is modified ------------
         # create update() function
@@ -132,7 +132,7 @@ class Algorithm:
         self.algorithm[stage_index] = stage
         return None
 
-    def __clamp_bitwidth(self) -> bool:
+    def _clamp_bitwidth(self) -> bool:
         """Saturates matrix if current matrix has carried past original bitwidth"""
 
         boundary = (2**self.bits) - 1
@@ -155,7 +155,7 @@ class Algorithm:
     # ---------------------------------------------------------------
     # Mangled as execution order is sensitive and __reduce should only
     # be called by the algorithm itself via: self.step(), or self.exec()
-    def __reduce(self) -> None:
+    def _reduce(self) -> None:
         """use template or pattern to reduce a given matrix."""
         from copy import copy
 
@@ -391,8 +391,8 @@ class Algorithm:
             print("Algorithm completed")
             return self.matrix
         if self.saturation:
-            self.__clamp_bitwidth()
-        self.__reduce()
+            self._clamp_bitwidth()
+        self._reduce()
         self.state += 1
 
         # getattr for matrix, template and map to peek algorithm
@@ -425,9 +425,9 @@ class Algorithm:
         truth = {0: self.matrix}
         self.state = 0
         for n in range(len(self.algorithm)):
-            self.__reduce()
+            self._reduce()
             self.state += 1
-            if self.saturation and self.__clamp_bitwidth():
+            if self.saturation and self._clamp_bitwidth():
                 for i in range(n, len(self.algorithm)):
                     truth[i + 1] = deepcopy(self.matrix)
                 break
@@ -470,16 +470,6 @@ class Algorithm:
 
 
 # -- helper functions -----------------------------------------------
-
-
-# TODO: low priority
-def collect_arithmetic_units(
-    source: mp.Matrix, bounds: dict[str, list[tuple[int, int]]]
-) -> list[mp.Matrix]:
-    """
-    Extract arithmetic units from source template into a list of templates.
-    """
-    ...
 
 
 # TODO: implement x_checksum (current checksum is y_checksum)
@@ -526,12 +516,12 @@ def collect_template_units(
         i = 0  # coordinate index
         expected_y = None
         while i < len(bounds[ch]) - 1:
-            # -- intra-row boundary -------------------------------------- #
+            # == intra-row boundary ================================= #
             # bound[list_of_points][coord_i][y-axis]
             # "if 2 < points have the same y for a given unit"
             if 2 < sum([p[1] == bounds[ch][i][1] for p in bounds[ch]]):
                 raise ValueError(f"Multiple arithmetic units found for unit '{ch}'")
-            # ------------------------------------------------------------ #
+            # ======================================================= #
             start = bounds[ch][i]
             end = bounds[ch][i + 1]
             if start[1] != end[1]:
@@ -544,14 +534,14 @@ def collect_template_units(
             for x in range(start[0], end[0] + 1):
                 matrix[start[1]][x] = next(tff)
 
-            # -- inter-row boundary test --------------------------------- #
+            # == inter-row boundary test ============================ #
             if expected_y is not None and expected_y != start[1]:
                 raise ValueError(
                     f"Arithmetic unit '{ch}' spans multiple rows. "
                     f"Expected row {expected_y}, got row {start[1]}"
                 )
             expected_y = start[1] + 1
-            # ------------------------------------------------------------ #
+            # ======================================================= #
 
             i += 2
         units[ch] = mp.Template(matrix)
