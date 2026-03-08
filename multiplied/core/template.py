@@ -553,7 +553,7 @@ class Template:
 
         from .utils.char import chartff
 
-        bounds = self.find_bounding_box()
+        bounds = self.update_bounding_box()
         allchars = list(bounds.keys())
         allchars.remove("_")
 
