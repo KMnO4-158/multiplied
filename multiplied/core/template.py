@@ -400,13 +400,12 @@ class Template:
                 unit_result[i] = ["_"] * n
                 i += 1
             results[ch] = mp.Matrix(unit_result)
-
         if 1 < len(results):
             self.result = mp.matrix_merge(results, bounds)
         else:
             self.result = list(results.values())[0]
 
-        ...
+
         return None
 
 
@@ -490,7 +489,7 @@ class Template:
             template += i[0]
             result += i[1]
 
-        self.template, self.result = template, result
+        self.template, self.result = template, mp.Matrix(result)
         return None
 
     # ! currently not generalised:
