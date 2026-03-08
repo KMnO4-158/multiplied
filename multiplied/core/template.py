@@ -326,7 +326,7 @@ class Template:
         else:
             raise TypeError
 
-        self.bounds = self.find_bounding_box()
+        self.bounds = self.update_bounding_box()
         if self.result == []:
             self.__reduce_template()
         return None
@@ -497,7 +497,7 @@ class Template:
     #
     #  > or just detect empty, '_', characters as the boundary
     #       > This option means figuring out the correct key to use
-    def find_bounding_box(self) -> dict[str, list[tuple[int, int]]]:
+    def update_bounding_box(self) -> dict[str, list[tuple[int, int]]]:
         """Returns dictionary of arithmetic unit and coordinates for their boundaries."""
 
         matrix = self.template
