@@ -1,0 +1,42 @@
+import multiplied as mp
+
+
+def test_scope() -> None:
+    truth = mp.truth_scope((1, 65535), (1, 1_000_000))
+    for t in truth:
+        print(t)
+
+
+def test_shallow_generator4() -> None:
+    # truth4  = mp.truth_scope((1, 15), (1, 30))
+    # for t in truth4:
+    #     print(t)
+    truth4 = mp.truth_scope((1, 15), (1, 10))
+    alg4 = mp.Algorithm(4)
+    for m in mp.shallow_truth_table(truth4, alg4):
+        mp.mprint(m)
+
+
+def test_shallow_generator8() -> None:
+    # truth8  = mp.truth_scope((2, 64), (1, 2**15))
+    # for t in truth8:
+    #     print(t)
+    truth8 = mp.truth_scope((2, 64), (1, 22))
+    alg8 = mp.Algorithm(8)
+    for m in mp.shallow_truth_table(truth8, alg8):
+        mp.mprint(m)
+
+
+def main() -> None:
+    alg = mp.Algorithm(8)
+    empty_pattern = mp.Pattern(["a", "_", "_", "_", "_", "_", "_", "_"])
+    print()
+    alg.push(empty_pattern)
+    print(alg)
+
+    alg = mp.Algorithm(8)
+    alg.auto_resolve_stage(recursive=False)
+    print(alg)
+
+if __name__ == "__main__":
+    main()
