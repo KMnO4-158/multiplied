@@ -463,7 +463,6 @@ def matrix_merge(
     return Matrix(output)
 
 
-
 def matrix_scatter(
     source: list[list],
     bounds: dict[str, list[tuple[int, int]]],
@@ -499,8 +498,6 @@ def matrix_scatter(
     --------
     :func:`collect_template_units` for bound extraction
 
-
-
     Examples
     --------
     >>> source = [[0, 1, 2],
@@ -513,7 +510,6 @@ def matrix_scatter(
      [[_, _, _], [_, 4, 5], [_, _, _]]]
 
     """
-
 
     if isinstance(bounds, dict):
         if not all([mp.ischar(k) for k in bounds.keys()]):
@@ -550,11 +546,17 @@ def matrix_scatter(
         if len(bounds[ch]) % 2 != 0:
             raise ValueError(f"Odd number of bounds for {ch}")
 
-
         dest_matrix_copy = deepcopy(dest_matrix)
 
         i = 0
         while i < len(bounds[ch]):
+            if bounds[ch][i][1] != bounds[ch][i + 1][1]:
+                _start = bounds[ch][i]
+                _end = bounds[ch][i + 1]
+                raise ValueError(
+                    f"Bounding box error for unit '{ch}' "
+                    f"Points:{_start}, {_end}, error:  {_start[1]} != {_end[1]}"
+                )
             start = bounds[ch][i][0]
             end = bounds[ch][i + 1][0]
             row = bounds[ch][i][1]
