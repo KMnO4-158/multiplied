@@ -4,8 +4,10 @@
 
 from collections.abc import Generator
 
+from multiplied.core.utils.bool import isalpha
 
-def chargen() -> Generator[str]:
+
+def chargen(start: str = "A") -> Generator[str]:
     """Return Generator  characters from A to Z.
 
     Yields
@@ -24,7 +26,8 @@ def chargen() -> Generator[str]:
     >>> next(x)
     'C'
     """
-
+    if not isalpha(start):
+        raise TypeError("Start must be a single alphabetic character")
     i = 0
     while True:
         yield chr((i % 26) + 65)
