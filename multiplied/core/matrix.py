@@ -420,11 +420,11 @@ def matrix_merge(
 
     Examples
     --------
-    >>> source = {'A': Matrix([[1, 2], [3, 4]]), 'B': Matrix([[5, 6], [7, 8]])}
-    >>> bounds = {'A': [(0, 1), (2, 3)], 'B': [(0, 1), (2, 3)]}
+    >>> source = {'A': Matrix([[1, _], [3, _]]), 'B': Matrix([[_, 6], [_, 8]])}
+    >>> bounds = {'A': [(0, 0), (0, 0), (1, 1), (1, 1)],
+    >>>           'B': [(0, 1), (0, 1), (0, 1), (0, 1)]}
     >>> matrix_merge(source, bounds)
-    Matrix([[1, 2, 5, 6], [3, 4, 7, 8], [5, 6, 1, 2], [7, 8, 3, 4]])
-    .. warning:: simplified example, 2-bit operations are not supported
+    Matrix([[1, 6], [4, 8]])
 
     """
     if not isinstance(source, dict):
@@ -433,7 +433,7 @@ def matrix_merge(
         raise TypeError("All values of source must be of type Matrix")
     if len(source) < 2:
         raise ValueError("Source must contain at least two matrices")
-    if len(bounds) - 1 != len(source):
+    if len(bounds) != len(source):
         # new error message needed
         raise ValueError("Source must contain the same number of matrices as bounds")
 
@@ -454,10 +454,6 @@ def matrix_merge(
                 raise ValueError(f"Missing bound pair for row {y}")
             for j in range(box_left, box_right + 1):
                 output[y][j] = matrix.matrix[y][j]
-            if bounds[unit][-1][1] - bounds[unit][0][1] == 1:
-                if y == bounds[unit][0][1] and 0 <= box_left - 1:
-                    cout = box_left - 1
-                    output[y][cout] = matrix.matrix[y][cout]
 
             i += 2
     return Matrix(output)
