@@ -4,6 +4,8 @@
 
 from copy import copy, deepcopy
 from typing import Any
+
+from multiplied.core.matrix import Matrix
 from .utils.bool import isalpha, ischar
 import multiplied as mp
 
@@ -301,13 +303,24 @@ class Template:
         self,
         source: Pattern | list[list[str]],
         *,
-        result: list[Any] = [],
+        result: list[Any] | Matrix | None = None,
         matrix: Any = None,
-    ) -> None:  # Complex or pattern
+    ) -> None:
 
         mp.validate_bitwidth(len(source))
         self.bits = len(source)
-        self.result = result if isinstance(result, (Template, list)) else []
+        match result:
+            case Matrix():
+                self.result = result
+            case list():
+                if mp.allchars(result) == {}:
+                    raise ValueError("Invalid resultant matrix")
+                self.result = Matrix(result)
+            case None:
+                pass
+            case _:
+                raise TypeError("result must be a Matrix or list[list[str]]")
+
 
         # -- pattern handling ---------------------------------------
         if isinstance(source, Pattern):
@@ -327,7 +340,7 @@ class Template:
             raise TypeError
 
         self.bounds = self.update_bounding_box()
-        if self.result == []:
+        if self.result is None:
             self._reduce_template()
         return None
 
