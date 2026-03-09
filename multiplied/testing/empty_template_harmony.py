@@ -58,9 +58,9 @@ def main() -> None:
         mp.mprint(v)
 
 
-    matrix = template.result
-    print(matrix)
-    for k, v in mp.matrix_scatter(matrix.matrix, template.bounds).items():
+    result = template.result
+    print(result)
+    for k, v in mp.matrix_scatter(result.matrix, template.re_bounds).items():
         print(k)
         mp.mprint(v)
 
@@ -77,6 +77,8 @@ def main() -> None:
     for k, v in mp.matrix_scatter(map.map, template.bounds).items():
         print(k)
         mp.mprint(v)
+
+    print()
 
 if __name__ == "__main__":
     main()
