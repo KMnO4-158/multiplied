@@ -152,9 +152,6 @@ class Algorithm:
     # ! Matrix.x_checksum is only useful in the context of Algorithm.__reduce()
     # - Maybe use bounds to create x_checksum within __reduce()'s unit collection
     # - OR within, the same scope, use bounds to execute a given arithmetic unit
-    # ---------------------------------------------------------------
-    # Mangled as execution order is sensitive and __reduce should only
-    # be called by the algorithm itself via: self.step(), or self.exec()
     def _reduce(self) -> None:
         """use template or pattern to reduce a given matrix."""
         from copy import copy
@@ -174,7 +171,7 @@ class Algorithm:
         #   ...00101010... | ...________...
         #
         # run = 2:
-        #   binary adder: carry generates through propagates, with a
+        #   binary adder: generates carry through propagates, with a
         #   final carry extending past original width.
         #
         #   [input-------] | [output------]
@@ -182,27 +179,29 @@ class Algorithm:
         #   ...00101010... | ...________...
 
         # -- isolate units -----------------------------------------
-        # ! Implement result bounding box to create single point of truth ! #
-        # - currently every stage of every matrix reduction needs to resolve
-        #   conflicts dynamically before merging vs doing so once via the
-        #   resultant template
-        bounds: dict = self.algorithm[self.state]["template"].bounds
+
+        bounds = self.algorithm[self.state]["template"].bounds
+        units = mp.matrix_scatter(self.matrix.matrix, bounds)
+
         # -- reduce -------------------------------------------------
         n = self.bits << 1
         results = {}
         chars = list(bounds.keys())
-        # chars.remove("_") # ! this deletes info about rows which are not reduced
         for ch in chars:
             base_index = bounds[ch][0][1]
+            matrix = units[ch]
+
             match bounds[ch][-1][1] - bounds[ch][0][1] + 1:  # row height
                 case 1:  # NOOP
-                    output = [copy(self.matrix[base_index][0])]
+                    output = results[ch] = mp.Matrix(matrix)
+                    print(output)
+                    continue
 
                 case 2:  # ADD
                     # TODO: make use of checksums or use bounds
 
-                    operand_a = copy(self.matrix[base_index][0])
-                    operand_b = copy(self.matrix[base_index + 1][0])
+                    operand_a = copy(matrix[base_index])
+                    operand_b = copy(matrix[base_index + 1])
                     checksum = [False] * n
 
                     # -- skip empty rows ----------------------------
@@ -238,9 +237,10 @@ class Algorithm:
 
                 case 3:  # CSA
                     # TODO: make use of checksums or use bounds
-                    operand_a = copy(self.matrix[base_index][0])
-                    operand_b = copy(self.matrix[base_index + 1][0])
-                    operand_c = copy(self.matrix[base_index + 2][0])
+                    operand_a = copy(matrix[base_index])
+                    operand_b = copy(matrix[base_index + 1])
+                    operand_c = copy(matrix[base_index + 2])
+
                     empty = False
                     output = [["_"] * n, ["_"] * n]
                     start = 0
@@ -282,14 +282,16 @@ class Algorithm:
                             output[0][i] = "1" if csa_sum & 1 else "0"
                             output[1][i - 1] = "1" if csa_sum & 2 else "0"
                         except IndexError:
-                            continue
+                            pass
                 case _:
                     if ch != "_":
                         raise ValueError(
                             f"Unsupported unit type, len={bounds[ch][-1][1] - bounds[ch][0][1]}"
                         )
+                    results[ch] = mp.Matrix(matrix)
                     continue
 
+            print(output)
             # -- build unit into matrix -----------------------------
             unit_result = [[]] * self.bits
             i = 0
@@ -304,10 +306,6 @@ class Algorithm:
                 i += 1
             results[ch] = mp.Matrix(unit_result)
 
-        # -- merge units to matrix ----------------------------------
-        # Merge in any order, checking for overlaps between borders
-        # resolve conflicts by summing present bit positions and shifting
-        # a target unit's bit
 
         # ! difficult sanity checks --------------------------------- ! #
         # Complex scenarios, where NOOP, CSA and ADD units intersect
@@ -332,8 +330,10 @@ class Algorithm:
         # This functionality to be implemented at a later date.
 
         # -- merge --------------------------------------------------
+        re_bounds = self.algorithm[self.state]["template"].re_bounds
+
         if 1 < len(results):
-            self.matrix = mp.matrix_merge(results, bounds)
+            self.matrix = mp.matrix_merge(results, re_bounds)
         else:
             self.matrix = list(results.values())[0]
 

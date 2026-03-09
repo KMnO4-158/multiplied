@@ -2,7 +2,7 @@
 # Returns Template Objects Using User Patterns #
 ################################################
 
-from copy import copy, deepcopy
+from copy import deepcopy
 from typing import Any
 
 from multiplied.core.matrix import Matrix
@@ -339,7 +339,7 @@ class Template:
         else:
             raise TypeError
 
-        if self.result is None:
+        if result is None:
             self._reduce_template()
         self.bounds = self.update_bounding_box(self.template)
         self.re_bounds = self.update_bounding_box(self.result.matrix)
@@ -369,33 +369,58 @@ class Template:
     def _reduce_template(self) -> None:
         """"""
         units, bounds = self.collect_template_units()
-        n = self.bits << 1
+        re_bound = {}
         results = {}
         chars = list(bounds.keys())
-        chars.remove("_")
         for ch in chars:
             base_index = bounds[ch][0][1]
+            if ch == "_":
+                continue
+
             match bounds[ch][-1][1] - bounds[ch][0][1] + 1:  # row height
                 case 1:  # NOOP
-                    output = mp.Slice([copy(units[ch][base_index])])
+                    output = mp.Slice([units[ch][base_index]])
+
+                    re_bound[ch] = bounds[ch]
 
                 case 2:  # ADD
                     unit_slice = mp.Slice(
                         [
-                            copy(units[ch][base_index]),
-                            copy(units[ch][base_index + 1])
+                            units[ch][base_index],
+                            units[ch][base_index + 1]
                         ]
                     )
                     output = build_adder(ch, unit_slice)[1]
+
+                    y = bounds[ch][0][1]
+                    x_right = bounds[ch][1][0]
+                    x_left = bounds[ch][0][0]
+                    while output[0][x_left] != "_" and -1 < x_left:
+                        x_left -= 1
+
+                    re_bound[ch] = [(x_left, y), (x_right, y)]
+
                 case 3:  # CSA
                     unit_slice = mp.Slice(
                         [
-                            copy(units[ch][base_index]),
-                            copy(units[ch][base_index + 1]),
-                            copy(units[ch][base_index + 2])
+                            units[ch][base_index],
+                            units[ch][base_index + 1],
+                            units[ch][base_index + 2]
                         ]
                     )
                     output = build_csa(ch, unit_slice)[1]
+
+                    y = bounds[ch][0][1]
+                    x_right = bounds[ch][1][0]
+                    x_left = bounds[ch][-2][0]
+                    while output[0][x_left] != "_" and -1 < x_left:
+                        x_left -= 1
+
+                    re_bound[ch] = [
+                        (x_left - 1, y), (x_right, y),
+                        (x_left, y + 1), (x_right - 1, y + 1)
+                    ]
+
                 case _:
                     raise ValueError(
                         f"Unsupported unit type, len={bounds[ch][-1][1] - bounds[ch][0][1]}"
@@ -405,20 +430,22 @@ class Template:
             unit_result = [[]] * self.bits
             i = 0
             while i < base_index:
-                unit_result[i] = ["_"] * n
+                unit_result[i] = ["_"] * (self.bits << 1)
                 i += 1
             for row in output:
                 unit_result[i] = row
                 i += 1
             while i < self.bits:
-                unit_result[i] = ["_"] * n
+                unit_result[i] = ["_"] * (self.bits << 1)
                 i += 1
             results[ch] = mp.Matrix(unit_result)
+
         if 1 < len(results):
-            self.result = mp.matrix_merge(results, bounds)
+            self.result = mp.matrix_merge(results, re_bound)
         else:
             self.result = list(results.values())[0]
 
+        self.re_bounds = self.update_bounding_box(self.result.matrix)
 
         return None
 
@@ -460,20 +487,35 @@ class Template:
 
         # -- find run -----------------------------------------------
         template_slices = {}
+        char = mp.chargen()
         i = 1
         while i < len(pattern) + 1:
             run = 1
-            # replaced with get_runs when decoders are implemented
-            # decoders will likely take special characters to extract the type
-            # and likely require passing named tuples to current func to make
-            # things clearer
-            #
-            # see [ Preparing For Decoders ] ^
+
             while i < len(pattern) and pattern[i - 1] == pattern[i]:
                 run += 1
                 i += 1
 
-            # TODO: Add checks for templates which do not make sense for a given matrix #
+            # -- process noop run -----------------------------------
+            if pattern[i - run] == "_":
+                allchar = set(pattern.pattern)
+                for r in range(1, run + 1):
+                    ch = next(char)
+                    max_iter = 26
+
+                    while ch.lower() in allchar:
+                        if max_iter == 0:
+                            raise ValueError("No available characters for template")
+                        ch = next(char)
+                        max_iter -= 1
+
+                    template_slices[i - r] = build_noop(ch, matrix[i - r])
+                    allchar.add(ch)
+
+                i += run # advance past noop run
+                continue
+
+            # -- process arithmetic units ---------------------------
             match run:
                 case 1:  # Do nothing
                     template_slices[i - run] = build_noop(
@@ -488,20 +530,19 @@ class Template:
                         pattern[i - run], matrix[i - run : i]
                     )
                 case _:
-                    if pattern[i - run] != "_":
-                        raise ValueError(
-                            f"Unsupported run length {run}. Use '_' for empty rows"
-                        )
-
-                    template_slices[i - run] = build_empty_slice(matrix[i - run : i])
+                    raise ValueError(
+                        f"Unsupported run length {run}. Use '_' for empty rows"
+                    )
 
             i += 1
 
+        # -- build template and result ------------------------------
+        keys = sorted(template_slices.keys())
         template = []
         result = []
-        for i in template_slices.values():
-            template += i[0]
-            result += i[1]
+        for k in keys:
+            template += template_slices[k][0]
+            result += template_slices[k][1]
 
         self.template, self.result = template, mp.Matrix(result)
         return None
@@ -551,7 +592,6 @@ class Template:
 
             x = 0
             y += 1
-
         return bounds
 
     # TODO: implement x_checksum (current checksum is y_checksum)
@@ -564,49 +604,8 @@ class Template:
     ) -> tuple[dict[str, list], dict[str, list[tuple[int, int]]]]:
         """Return dict of isolated arithmetic units and their bounding box."""
 
-        from .utils.char import chartff
-
-        bounds = deepcopy(self.bounds)
-        allchars = list(bounds.keys())
-        allchars.remove("_")
-
-        units = {}
-        for ch in allchars:
-            matrix = mp.raw_empty_matrix(self.bits)
-            tff = chartff(ch)  # toggle flip flop
-            next(tff)  # sync to template case sensitivity
-            i = 0  # coordinate index
-            expected_y = None
-            while i < len(bounds[ch]) - 1:
-                # == intra-row boundary test ================================== #
-                # bound[list_of_points][coord_i][y-axis]
-                # "if 2 < points have the same y for a given unit"
-                if 2 < sum([p[1] == bounds[ch][i][1] for p in bounds[ch]]):
-                    raise ValueError(f"Multiple arithmetic units found for unit '{ch}'")
-                # ============================================================= #
-                start = bounds[ch][i]
-                end = bounds[ch][i + 1]
-                if start[1] != end[1]:
-                    raise ValueError(
-                        f"Bounding box error for unit '{ch}' "
-                        f"Points:{start}, {end}, error:  {start[1]} != {end[1]}"
-                    )
-                # -- traverse row ---------------------------------------
-                next(tff)  # sync to template case sensitivity
-                for x in range(start[0], end[0] + 1):
-                    matrix[start[1]][x] = next(tff)
-
-                # == inter-row boundary test ================================== #
-                if expected_y is not None and expected_y != start[1]:
-                    raise ValueError(
-                        f"Arithmetic unit '{ch}' spans multiple rows. "
-                        f"Expected row {expected_y}, got row {start[1]}"
-                    )
-                expected_y = start[1] + 1
-                # ============================================================= #
-
-                i += 2
-            units[ch] = matrix
+        bounds = self.update_bounding_box(self.template)
+        units = mp.matrix_scatter(self.template, bounds)
         return (units, bounds)
 
     # To be used in complex template results
