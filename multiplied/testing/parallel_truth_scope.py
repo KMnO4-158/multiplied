@@ -161,50 +161,20 @@ def main() -> None:
     df = pd.read_parquet(path)
     pd.set_option("display.max_rows", None)
 
-    print(df.head(100))
-    print(df.tail(100))
+    print(df.head())
+    print(df.tail())
     # print(df)
 
-    # start = perf_counter()
-    # scope = mp.truth_scope(DOMAIN, RANGE)
-    # df = mp.truth_dataframe(scope, alg)
-    # df.to_parquet(path.parent / "test_df.parquet")
-    # end = perf_counter()
-    # print(f"\tTime: {end - start}")
+    start = perf_counter()
+    scope = mp.truth_scope(DOMAIN, RANGE)
+    df = mp.truth_dataframe(scope, alg)
+    df.to_parquet(path.parent / "test_df.parquet")
+    end = perf_counter()
+    print(f"\tTime: {end - start}")
     # import pandas as pd
     # import pyarrow as pa
 
     # print(pa.Schema.from_pandas(df, preserve_index=False))
-
-
-
-
-
-
-    # min_in, max_in = DOMAIN
-    # min_out, max_out = RANGE
-
-    # ranges = [i for i in range(10)]
-
-    # print("PARALLEL TRUTH SCOPE")
-    # start = perf_counter()
-    # ranges = parallel_truth_scope(DOMAIN, RANGE, WORKERS)
-
-    # end = perf_counter()
-    # print(f"\tTime: {end - start}")
-    # print("DONE")
-
-    # print("TRUTH SCOPE")
-    # start = perf_counter()
-    # ranges = mp.truth_scope(DOMAIN, RANGE)
-    # first_batch = []
-    # for i in range(WORKERS):
-    #     first_batch.append(next(ranges))
-
-    # end = perf_counter()
-    # print(f"\tTime: {end - start}")
-    # print("DONE")
-
 
 
 
