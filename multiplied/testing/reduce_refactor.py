@@ -1,4 +1,5 @@
 import multiplied as mp
+from multiplied.tests import REFERENCE
 
 
 """Algorithm.__reduce method fails with complex templates
@@ -41,7 +42,7 @@ class ReduceRefactor(mp.Algorithm):
         #   ...00101010... | ...________...
         #
         # run = 2:
-        #   binary adder: carry generates through propagates, with a
+        #   binary adder: generates carry through propagates, with a
         #   final carry extending past original width.
         #
         #   [input-------] | [output------]
@@ -49,28 +50,30 @@ class ReduceRefactor(mp.Algorithm):
         #   ...00101010... | ...________...
 
         # -- isolate units -----------------------------------------
-        # ! Implement result bounding box to create single point of truth ! #
-        # - currently every stage of every matrix reduction needs to resolve
-        #   conflicts dynamically before merging vs doing so once via the
-        #   resultant template
-        bounds: dict = self.algorithm[self.state]["template"].bounds
+
+        bounds = self.algorithm[self.state]["template"].bounds
+        units = mp.matrix_scatter(self.matrix.matrix, bounds)
 
         # -- reduce -------------------------------------------------
         n = self.bits << 1
         results = {}
         chars = list(bounds.keys())
-        # chars.remove("_") # ! this deletes info about rows which are not reduced
         for ch in chars:
             base_index = bounds[ch][0][1]
+            matrix = units[ch]
+            print(ch, bounds[ch])
+            mp.mprint(matrix)
             match bounds[ch][-1][1] - bounds[ch][0][1] + 1:  # row height
                 case 1:  # NOOP
-                    output = [copy(self.matrix[base_index][0])]
+                    output = results[ch] = mp.Matrix(matrix)
+                    print(output)
+                    continue
 
                 case 2:  # ADD
                     # TODO: make use of checksums or use bounds
 
-                    operand_a = copy(self.matrix[base_index][0])
-                    operand_b = copy(self.matrix[base_index + 1][0])
+                    operand_a = copy(matrix[base_index])
+                    operand_b = copy(matrix[base_index + 1])
                     checksum = [False] * n
 
                     # -- skip empty rows ----------------------------
@@ -106,9 +109,10 @@ class ReduceRefactor(mp.Algorithm):
 
                 case 3:  # CSA
                     # TODO: make use of checksums or use bounds
-                    operand_a = copy(self.matrix[base_index][0])
-                    operand_b = copy(self.matrix[base_index + 1][0])
-                    operand_c = copy(self.matrix[base_index + 2][0])
+                    operand_a = copy(matrix[base_index])
+                    operand_b = copy(matrix[base_index + 1])
+                    operand_c = copy(matrix[base_index + 2])
+
                     empty = False
                     output = [["_"] * n, ["_"] * n]
                     start = 0
@@ -150,14 +154,16 @@ class ReduceRefactor(mp.Algorithm):
                             output[0][i] = "1" if csa_sum & 1 else "0"
                             output[1][i - 1] = "1" if csa_sum & 2 else "0"
                         except IndexError:
-                            continue
+                            pass
                 case _:
                     if ch != "_":
                         raise ValueError(
                             f"Unsupported unit type, len={bounds[ch][-1][1] - bounds[ch][0][1]}"
                         )
+                    results[ch] = mp.Matrix(matrix)
                     continue
 
+            print(output)
             # -- build unit into matrix -----------------------------
             unit_result = [[]] * self.bits
             i = 0
@@ -172,10 +178,6 @@ class ReduceRefactor(mp.Algorithm):
                 i += 1
             results[ch] = mp.Matrix(unit_result)
 
-        # -- merge units to matrix ----------------------------------
-        # Merge in any order, checking for overlaps between borders
-        # resolve conflicts by summing present bit positions and shifting
-        # a target unit's bit
 
         # ! difficult sanity checks --------------------------------- ! #
         # Complex scenarios, where NOOP, CSA and ADD units intersect
@@ -200,8 +202,10 @@ class ReduceRefactor(mp.Algorithm):
         # This functionality to be implemented at a later date.
 
         # -- merge --------------------------------------------------
+        re_bounds = self.algorithm[self.state]["template"].re_bounds
+
         if 1 < len(results):
-            self.matrix = mp.matrix_merge(results, bounds)
+            self.matrix = mp.matrix_merge(results, re_bounds)
         else:
             self.matrix = list(results.values())[0]
 
@@ -216,9 +220,55 @@ class ReduceRefactor(mp.Algorithm):
 
 
 def main() -> None:
-    alg = ReduceRefactor(8)
-    alg.auto_resolve_stage(recursive=False)
-    alg.step()
+    alg = mp.Algorithm(8)
+    template = mp.Template(mp.Pattern(["a", "b", "b", "c", "c", "c", "_", "_"]))
+    alg.push(template)
+    alg.auto_resolve_stage()
+    print(alg)
+    output = alg.exec(255, 128)
+    for i in output.values():
+        print(i)
+
+    product = int("".join(list(output.values())[-1][0][0]), 2)
+    print(product)
+
+
+    alg = mp.Algorithm(8)
+    ref_complex_template = mp.Template(REFERENCE["complex_template"][8]["T"])
+    print(ref_complex_template)
+    alg.push(ref_complex_template)
+    alg.auto_resolve_stage()
+    print(alg)
+    output = alg.exec(127, 255)
+    for i in output.values():
+        print(i)
+
+    product = int("".join(list(output.values())[-1][0][0]), 2)
+    print(product)
+    print(127 * 255)
 
 if __name__ == "__main__":
     main()
+
+"""
+
+# -- build template and result ------------------------------
+keys = sorted(template_slices.keys())
+template = []
+result = []
+for k in keys:
+    template += template_slices[k][0]
+    result += template_slices[k][1]
+
+
+
+[(6, 0), (15, 0), (6, 1), (11, 1), (13, 1), (14, 1), (13, 2), (13, 2)]
+______1011111111
+______111111_11_
+_____________1__
+________________
+________________
+________________
+________________
+________________
+"""
