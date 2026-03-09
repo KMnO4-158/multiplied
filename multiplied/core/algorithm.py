@@ -194,7 +194,6 @@ class Algorithm:
             match bounds[ch][-1][1] - bounds[ch][0][1] + 1:  # row height
                 case 1:  # NOOP
                     output = results[ch] = mp.Matrix(matrix)
-                    print(output)
                     continue
 
                 case 2:  # ADD
@@ -291,7 +290,6 @@ class Algorithm:
                     results[ch] = mp.Matrix(matrix)
                     continue
 
-            print(output)
             # -- build unit into matrix -----------------------------
             unit_result = [[]] * self.bits
             i = 0
