@@ -549,9 +549,7 @@ def matrix_scatter(
     for ch in allchars:
         if len(bounds[ch]) % 2 != 0:
             raise ValueError(f"Odd number of bounds for {ch}")
-        if ch == "_" and fmt == "empty":
-            output[ch] = deepcopy(dest_matrix)
-            continue
+
 
         dest_matrix_copy = deepcopy(dest_matrix)
 
