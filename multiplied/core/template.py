@@ -339,9 +339,10 @@ class Template:
         else:
             raise TypeError
 
-        self.bounds = self.update_bounding_box()
         if self.result is None:
             self._reduce_template()
+        self.bounds = self.update_bounding_box(self.template)
+        self.re_bounds = self.update_bounding_box(self.result.matrix)
         return None
 
     def _checksum(self) -> None:
@@ -510,10 +511,9 @@ class Template:
     #
     #  > or just detect empty, '_', characters as the boundary
     #       > This option means figuring out the correct key to use
-    def update_bounding_box(self) -> dict[str, list[tuple[int, int]]]:
+    def update_bounding_box(self, matrix: list[list]) -> dict[str, list[tuple[int, int]]]:
         """Returns dictionary of arithmetic unit and coordinates for their boundaries."""
 
-        matrix = self.template
         rows = self.bits
         items = self.bits << 1
         bounds = {}
@@ -566,7 +566,7 @@ class Template:
 
         from .utils.char import chartff
 
-        bounds = self.update_bounding_box()
+        bounds = deepcopy(self.bounds)
         allchars = list(bounds.keys())
         allchars.remove("_")
 
