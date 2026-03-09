@@ -25,6 +25,7 @@ TEST_ALGORITHM_EXECUTION = [
     TestCase("alg_exec", None, mp.Matrix, {"all": True, "exec": True}),
     TestCase("alg_step_one", 1, mp.Matrix, {"all": True, "step": True}),
     TestCase("alg_step_all", 0, mp.Matrix, {"all": True, "step": True}),
+    TestCase("alg_exec_complex", REFERENCE["complex_template"][8]["T"], None, {"exec": True}),
 ]
 
 # --
@@ -65,22 +66,36 @@ def test_algorithm_instance(algorithm_instance, supported_bitwidths):
 
 def test_algorithm_execution(algorithm_execution, supported_bitwidths):
     """Generic test for all Algorithm execution scenarios"""
-    result = process_value(
-        algorithm_execution.input_value,
-        algorithm_execution.metadata,
-        supported_bitwidths,
-    )
-    if not isinstance(result, dict):  # pragma: no cover
-        raise TypeError(f"Expected [dict] got {type(result)}")
+    if algorithm_execution.metadata.get("all"):
+        result = process_value(
+            algorithm_execution.input_value,
+            algorithm_execution.metadata,
+            supported_bitwidths,
+        )
+        if not isinstance(result, dict):  # pragma: no cover
+            raise TypeError(f"Expected [dict] got {type(result)}")
+    else:
+        result = process_algorithm(
+            algorithm_execution.input_value,
+            algorithm_execution.metadata,
+        )
+
     if algorithm_execution.metadata.get("ne"):
         assert not isinstance(result, algorithm_execution.expected_output)
-    else:
+    elif algorithm_execution.metadata.get("all"):
+        if not isinstance(result, dict):  # pragma: no cover
+            raise TypeError(f"Expected [dict] got {type(result)}")
         assert all(
             [
                 isinstance(r, algorithm_execution.expected_output)
                 for r in result.values()
             ]
         )
+    else:
+        if not isinstance(result, tuple):  # pragma: no cover
+            raise TypeError(f"Expected [tuple] got {type(result)}")
+        assert result[0] == result[1]
+
 
 
 def process_value(value, metadata, supported_bitwidths):
@@ -129,4 +144,33 @@ def process_value(value, metadata, supported_bitwidths):
         return data
 
     else:
-        return alg
+        return alg # to assert instance
+
+def process_algorithm(value, metadata):
+    if not isinstance(value, list) or not isinstance(value[0], list):
+        raise TypeError(f"Expected [list[list]] got {type(value)}")
+    bits = len(value)
+    mp.validate_bitwidth(bits)
+
+    alg = mp.Algorithm(bits)
+    alg.push(mp.Template(value))
+    alg.auto_resolve_stage()
+
+    if metadata.get("exec"):
+        output = alg.exec((2**bits) - 1, (2**bits) - 1)
+        print(list(output.values())[-1][0][0])
+        result = int("".join(list(output.values())[-1][0][0]), 2)
+        product = ((2**bits) - 1) * ((2**bits) - 1)
+        return (result, product)
+
+    if metadata.get("step"):
+        matrix = mp.Matrix(bits, a=((2**bits) - 1), b=((2**bits) - 1))
+        alg.reset(matrix)
+        output = [matrix]
+
+        for _ in range(alg.__len__()):
+            output.append(alg.step())
+        print(output[-1][0][0])
+        result = int("".join(output[-1][0][0]), 2)
+        product = ((2**bits) - 1) * ((2**bits) - 1)
+        return (result, product)
