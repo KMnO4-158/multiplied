@@ -1,13 +1,5 @@
 # Roadmap
 
-## IO
-
-- [x] Truth table generation -> json
-- [x] Algorithm -> json
-- [ ] json -> Algorithm
-- [x] Implement I/O via [Parquet](https://parquet.apache.org/)
-- [x] Truth table generation -> Parquet
-
 ## Analysis
 
 - [x] Find analytical tools outside of heatmaps -- traces/oscilloscope
@@ -38,10 +30,22 @@ before tackling:
 - [x] Multiprocessing support to handle higher bit-widths
 - [ ] 16-bit unsaturated multiplier
 - [ ] 16-bit saturated multiplier
-- [ ] Refactor code to use bytes/bytearray to prepare for rust integration
+- [ ] Refactor code to use ~~bytes/bytearray~~ [Numpy](https://numpy.org/) to prepare
+for rust integration
 - [ ] Use [rust](https://github.com/PyO3/pyo3)?
 - [ ] Use [numba](https://numba.pydata.org/)?
-- [ ] Research if 32/64/128-bit analysis latency is reasonable (1min? 5min? ???)
+- [x] Research if 32/64/128-bit analysis latency is reasonable (1min? 5min? ???)
+
+A 16-bit **complete** truth table will require:
+
+- [ ] Overhauling the entire library to work with Numpy, Numba and Rust
+- [ ] Redesign the pipeline to overcome Pandas overhead
+- [x] Parallel truth scope (``batched_truth_scope``)
+- [x] Parallel DataFrame generation (``truth_multi_parquet``)
+
+Even after all of this, it will take hours to complete the whole data set.
+
+32-bit+ would be limited to very small, targeted scopes.
 
 ## Extend Built-in Algorithm Support
 
@@ -63,6 +67,14 @@ Once the library is stable and optimised:
 - [ ] 64-bit ?
 
 ## Implemented
+
+### *IO*
+
+- [x] Truth table generation -> json
+- [x] Algorithm -> json
+- [ ] json -> Algorithm -- will not implement
+- [x] Implement I/O via [Parquet](https://parquet.apache.org/)
+- [x] Truth table generation -> Parquet
 
 ### *Algorithm*
 
