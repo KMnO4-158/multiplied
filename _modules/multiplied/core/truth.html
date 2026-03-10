@@ -9,7 +9,7 @@
       ? (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
       : m;
   })();
-  </script><link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8e8a900e" /><link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" /><link rel="stylesheet" type="text/css" href="../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" /><link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" /><link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=5037cee9" /><link rel="stylesheet" type="text/css" href="../../../_static/light-dark.css?v=51a238be" /><link rel="stylesheet" type="text/css" href="../../../_static/styles/breeze.css?v=227fd4f7" /><script defer="defer" src="../../../_static/scripts/breeze.js?v=dac9f8c6"></script></head>
+  </script><link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8e8a900e" /><link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" /><link rel="stylesheet" type="text/css" href="../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" /><link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" /><link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=5037cee9" /><link rel="stylesheet" type="text/css" href="../../../_static/light-dark.css?v=9721c31d" /><link rel="stylesheet" type="text/css" href="../../../_static/styles/breeze.css?v=227fd4f7" /><script defer="defer" src="../../../_static/scripts/breeze.js?v=dac9f8c6"></script></head>
 <body>
   
   
@@ -130,11 +130,15 @@
 <span class="c1"># Generate Multiplier Truth Table #</span>
 <span class="c1">###################################</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">multiplied</span><span class="w"> </span><span class="kn">import</span> <span class="n">Algorithm</span><span class="p">,</span> <span class="n">Matrix</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">multiprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pool</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">multiprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pool</span><span class="p">,</span> <span class="n">Process</span><span class="p">,</span> <span class="n">Queue</span><span class="p">,</span> <span class="n">cpu_count</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Generator</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
 
 <div class="viewcode-block" id="truth_scope">
@@ -147,9 +151,10 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    domain_: tuple[int,int]</span>
-<span class="sd">        A tuple of integers representing the domain of input values.</span>
+<span class="sd">        The maximum range of values operands a and b can be.</span>
+
 <span class="sd">    range_: tuple[int,int]</span>
-<span class="sd">        A tuple of integers representing the range of output values.</span>
+<span class="sd">        Limit a and b to range_min &lt;= a * b &lt;= range_max</span>
 
 <span class="sd">    Yields</span>
 <span class="sd">    ------</span>
@@ -173,60 +178,37 @@
         <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">max_in</span><span class="o">**</span><span class="mi">2</span> <span class="o">&lt;</span> <span class="n">min_out</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Range unreachable for the input domain </span><span class="si">{</span><span class="n">domain_</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Range </span><span class="si">{</span><span class="n">range_</span><span class="si">}</span><span class="s2"> unreachable for the input domain </span><span class="si">{</span><span class="n">domain_</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">min_out</span> <span class="o">&lt;</span> <span class="n">min_in</span><span class="p">:</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Loose domain and range alignment: min_out &lt; min_in [</span><span class="si">{</span><span class="n">min_out</span><span class="si">}</span><span class="s2"> &lt; </span><span class="si">{</span><span class="n">min_in</span><span class="si">}</span><span class="s2">]&quot;</span>
-        <span class="p">)</span>
-    <span class="k">if</span> <span class="n">max_out</span> <span class="o">&lt;</span> <span class="n">max_in</span><span class="p">:</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Loose domain and range alignment: min_out &lt; max_in [</span><span class="si">{</span><span class="n">max_out</span><span class="si">}</span><span class="s2"> &lt; </span><span class="si">{</span><span class="n">max_in</span><span class="si">}</span><span class="s2">]&quot;</span>
-        <span class="p">)</span>
+    <span class="c1"># if min_out &lt; min_in:</span>
+    <span class="c1">#     warnings.warn(</span>
+    <span class="c1">#         f&quot;Loose domain and range alignment: min_out &lt; min_in [{min_out} &lt; {min_in}]&quot;</span>
+    <span class="c1">#     )</span>
+    <span class="c1"># if max_out &lt; max_in:</span>
+    <span class="c1">#     warnings.warn(</span>
+    <span class="c1">#         f&quot;Loose domain and range alignment: min_out &lt; max_in [{max_out} &lt; {max_in}]&quot;</span>
+    <span class="c1">#     )</span>
 
     <span class="n">x</span> <span class="o">=</span> <span class="n">min_in</span>
     <span class="k">while</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">max_in</span><span class="p">:</span>
-        <span class="n">lower_bound</span> <span class="o">=</span> <span class="n">min_out</span> <span class="o">//</span> <span class="n">x</span> <span class="k">if</span> <span class="n">min_out</span> <span class="o">//</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="n">min_in</span> <span class="k">else</span> <span class="n">min_in</span>
-        <span class="n">upper_bound</span> <span class="o">=</span> <span class="n">max_out</span> <span class="o">//</span> <span class="n">x</span> <span class="k">if</span> <span class="n">max_out</span> <span class="o">//</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">max_in</span> <span class="k">else</span> <span class="n">max_in</span>
+        <span class="n">lower_bound</span> <span class="o">=</span> <span class="n">min_in</span>
+        <span class="k">if</span> <span class="n">min_out</span> <span class="o">//</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="n">min_in</span><span class="p">:</span>
+            <span class="n">lower_bound</span> <span class="o">=</span> <span class="n">min_out</span> <span class="o">//</span> <span class="n">x</span>
+
+        <span class="n">upper_bound</span> <span class="o">=</span> <span class="n">max_in</span>
+        <span class="k">if</span> <span class="n">max_out</span> <span class="o">//</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">max_in</span><span class="p">:</span>
+            <span class="n">upper_bound</span> <span class="o">=</span> <span class="n">max_out</span> <span class="o">//</span> <span class="n">x</span>
+
+        <span class="c1"># lower_bound = min_out // x if min_out // x &gt;= min_in else min_in</span>
+        <span class="c1"># upper_bound = max_out // x if max_out // x &lt;= max_in else max_in</span>
         <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">lower_bound</span><span class="p">,</span> <span class="n">upper_bound</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">min_out</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">k</span> <span class="o">:=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">max_out</span><span class="p">:</span>
+            <span class="n">prod</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span>
+            <span class="k">if</span> <span class="n">min_out</span> <span class="o">&lt;=</span> <span class="n">prod</span> <span class="o">&lt;=</span> <span class="n">max_out</span><span class="p">:</span>
                 <span class="k">yield</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">max_out</span> <span class="o">&lt;</span> <span class="n">k</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">max_out</span> <span class="o">&lt;</span> <span class="n">prod</span><span class="p">:</span>
                 <span class="k">break</span>
         <span class="n">x</span> <span class="o">+=</span> <span class="mi">1</span></div>
 
-
-
-<span class="c1"># def truth_scope_batch(domain_: tuple[int,int], range_: tuple[int,int], chunk_size: int</span>
-<span class="c1"># ) -&gt; Generator[list[tuple]]:</span>
-<span class="c1">#     &quot;&quot;&quot;Yields list of tuples from domain such that it&#39;s product (ab) lies within range</span>
-
-<span class="c1">#     Domain: A tuple of integers representing the domain of input values.</span>
-<span class="c1">#     Range: A tuple of integers representing the range of output values.</span>
-
-<span class="c1">#     Yields tuple: (operand_a, operand_b)</span>
-<span class="c1">#     &quot;&quot;&quot;</span>
-
-<span class="c1">#     if not all([isinstance(d, int) for d in domain_]):</span>
-<span class="c1">#         raise TypeError(&quot;Domain must be a tuple of integers.&quot;)</span>
-<span class="c1">#     if not all([isinstance(r, int) for r in range_]):</span>
-<span class="c1">#         raise TypeError(&quot;Range must be a tuple of integers.&quot;)</span>
-
-<span class="c1">#     min_in, max_in = domain_</span>
-<span class="c1">#     min_out, max_out = range_</span>
-
-<span class="c1">#     # improve error messages</span>
-<span class="c1">#     if min_in &lt;= 0 or min_out &lt;= 0:</span>
-<span class="c1">#         raise ValueError(&quot;Minimum input and output values must be greater than zero.&quot;)</span>
-<span class="c1">#     if min_in &gt; max_in:</span>
-<span class="c1">#         raise ValueError(&quot;Minimum input value greater than maximum input value.&quot;)</span>
-<span class="c1">#     if min_out &gt; max_out:</span>
-<span class="c1">#         raise ValueError(&quot;Minimum output greater than maximum output value.&quot;)</span>
-<span class="c1">#     if min_in &gt; max_out:</span>
-<span class="c1">#         raise ValueError(&quot;Minimum input value greater than maximum output value.&quot;)</span>
-<span class="c1">#     if min_out &gt; max_in:</span>
-<span class="c1">#         raise ValueError(&quot;Minimum output value greater than maximum input value.&quot;)</span>
-<span class="c1">#     ...</span>
 
 
 <div class="viewcode-block" id="shallow_truth_table">
@@ -286,7 +268,7 @@
     <span class="k">for</span> <span class="n">stage</span><span class="p">,</span> <span class="n">matrix</span> <span class="ow">in</span> <span class="n">alg</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">for</span> <span class="n">r</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">b</span><span class="p">,</span> <span class="n">bit</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">row</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
-                <span class="n">entry</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;s</span><span class="si">{</span><span class="n">stage</span><span class="si">}</span><span class="s2">_p</span><span class="si">{</span><span class="n">r</span><span class="si">}</span><span class="s2">_b</span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">bit</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="mi">1</span>
+                <span class="n">entry</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;s</span><span class="si">{</span><span class="n">stage</span><span class="si">}</span><span class="s2">_p</span><span class="si">{</span><span class="n">r</span><span class="si">}</span><span class="s2">_b</span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">bit</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span> <span class="k">else</span> <span class="mi">0</span>
     <span class="k">return</span> <span class="n">entry</span>
 
 
@@ -311,16 +293,6 @@
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Scope must be a generator.&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">alg</span><span class="p">,</span> <span class="n">Algorithm</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected Algorithm instance got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">alg</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-    <span class="c1"># -- old plan ---------------------------------------------------</span>
-    <span class="c1"># columns:: index | a | b | ppm_0 | ppm_1 | ... | ppm_s0 | ppm_s1 | ...</span>
-    <span class="c1"># ppm = partial product matrix, _&lt;index&gt; = row , _s&lt;index&gt; = formatted row</span>
-    <span class="c1"># df row = index | a | b | output | matrix[i]: int | ... | matrix[i]: str | ... |</span>
-
-    <span class="c1"># -- new multi-index plan ---------------------------------------</span>
-    <span class="c1">#               | ppm_0              | ppm_1              |</span>
-    <span class="c1"># index | a | b | b0 | b1 | ... | bn | b0 | b1 | ... | bn | ... | ppm_s0 | ppm_s1 | ...</span>
-    <span class="c1"># 0     | 0 | 5 | 0  | 0  | ... | 0  | 0  | 0  | ... | 0  | ... |&#39;000...&#39;|&#39;000...&#39;| ...</span>
 
     <span class="c1"># -- duplicate generators for each pool -------------------------</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">tee</span>
@@ -354,6 +326,172 @@
     <span class="n">table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">col</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;int8&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">operand_columns</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">pretty_columns</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># ===================================================================</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_multi_parquet_worker</span><span class="p">(</span><span class="n">gen</span><span class="p">:</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">alg</span><span class="p">:</span> <span class="n">Algorithm</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+
+    <span class="n">operands</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">pretty</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">gen</span><span class="p">:</span>
+        <span class="n">operands</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span><span class="p">))</span>
+        <span class="n">entry</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">pretty_matrix</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">stage</span><span class="p">,</span> <span class="n">matrix</span> <span class="ow">in</span> <span class="n">alg</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">pretty_matrix</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">matrix</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">r</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">b</span><span class="p">,</span> <span class="n">bit</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">row</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+                    <span class="n">entry</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;s</span><span class="si">{</span><span class="n">stage</span><span class="si">}</span><span class="s2">_p</span><span class="si">{</span><span class="n">r</span><span class="si">}</span><span class="s2">_b</span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">bit</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="mi">1</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+        <span class="n">pretty</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pretty_matrix</span><span class="p">)</span>
+
+    <span class="n">col</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">alg</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">alg</span><span class="o">.</span><span class="n">bits</span> <span class="o">*</span> <span class="p">(</span><span class="n">alg</span><span class="o">.</span><span class="n">bits</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">ppm_s_col</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">alg</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">alg</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">alg</span><span class="o">.</span><span class="n">bits</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">((</span><span class="n">alg</span><span class="o">.</span><span class="n">bits</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                <span class="n">col</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;s</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">_p</span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s2">_b</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">ppm_s_col</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;ppm_s_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="n">operand_columns</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="n">operands</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;output&quot;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int32&quot;</span>
+    <span class="p">)</span>
+    <span class="n">pretty_columns</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">pretty</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">ppm_s_col</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;str&quot;</span><span class="p">)</span>
+    <span class="n">table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">col</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;int8&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">operand_columns</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">pretty_columns</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_write_temp_pickle_atomic</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Algorithm</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="c1"># create temp file in same dir, write to a unique tmp file, then atomically move to final name</span>
+    <span class="c1"># avoids workers from racing and reading partial data</span>
+    <span class="n">dirpath</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">gettempdir</span><span class="p">()</span>
+    <span class="n">final</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">dirpath</span><span class="p">)</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;algorithm_sharedobj_</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()</span><span class="si">}</span><span class="s2">.pkl&quot;</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">final</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.writing&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="n">pickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span>
+        <span class="c1"># make atomic</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="n">final</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">final</span><span class="p">,</span> <span class="mo">0o444</span><span class="p">)</span>  <span class="c1"># optional read-only</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">final</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">tmp</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">raise</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_load_shared_pickle</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_truth_scope_worker</span><span class="p">(</span><span class="nb">dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">tmp_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">in_q</span><span class="p">:</span> <span class="n">Queue</span><span class="p">,</span> <span class="n">worker_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="c1"># print(f&quot;worker {worker_id} started (pid {os.getpid()})&quot;, flush=True)</span>
+    <span class="c1"># process item</span>
+    <span class="n">domain_</span><span class="p">,</span> <span class="n">range_</span> <span class="o">=</span> <span class="n">in_q</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="n">algorithm</span> <span class="o">=</span> <span class="n">_load_shared_pickle</span><span class="p">(</span><span class="n">tmp_file</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">algorithm</span><span class="p">,</span> <span class="n">Algorithm</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Expected Algorithm instance&quot;</span><span class="p">)</span>
+    <span class="n">gen</span> <span class="o">=</span> <span class="n">truth_scope</span><span class="p">(</span><span class="n">domain_</span><span class="p">,</span> <span class="n">range_</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">_multi_parquet_worker</span><span class="p">(</span><span class="n">gen</span><span class="p">,</span> <span class="n">algorithm</span><span class="p">)</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">to_parquet</span><span class="p">(</span><span class="nb">dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;part_</span><span class="si">{</span><span class="n">worker_id</span><span class="si">}</span><span class="s2">_pid_</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()</span><span class="si">}</span><span class="s2">.parquet&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_batch_producer</span><span class="p">(</span>
+    <span class="n">gen</span><span class="p">:</span> <span class="n">Generator</span><span class="p">,</span>
+    <span class="n">out_q</span><span class="p">:</span> <span class="n">Queue</span><span class="p">,</span>
+    <span class="n">workers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Process</span><span class="p">],</span>
+<span class="p">):</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">gen</span><span class="p">:</span>
+        <span class="n">out_q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+    <span class="c1"># send one sentinel per worker</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">workers</span><span class="p">)):</span>
+        <span class="n">out_q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_batch_truth_scope</span><span class="p">(</span>
+    <span class="n">domain_</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">range_</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">workers</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]:</span>
+
+    <span class="n">min_in</span><span class="p">,</span> <span class="n">max_in</span> <span class="o">=</span> <span class="n">domain_</span>
+    <span class="n">min_out</span><span class="p">,</span> <span class="n">max_out</span> <span class="o">=</span> <span class="n">range_</span>
+    <span class="n">batch_size</span> <span class="o">=</span> <span class="p">(</span><span class="n">max_out</span> <span class="o">-</span> <span class="n">min_out</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="n">workers</span>
+
+    <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">workers</span><span class="p">):</span>
+        <span class="n">r_min_chunk</span> <span class="o">=</span> <span class="n">min_out</span> <span class="o">+</span> <span class="n">w</span> <span class="o">*</span> <span class="n">batch_size</span>
+        <span class="n">r_max_chunk</span> <span class="o">=</span> <span class="n">r_min_chunk</span> <span class="o">+</span> <span class="n">batch_size</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">r_max_chunk</span> <span class="o">&gt;</span> <span class="n">max_out</span><span class="p">:</span>
+            <span class="n">r_max_chunk</span> <span class="o">=</span> <span class="n">max_out</span>
+        <span class="k">yield</span> <span class="p">(</span><span class="n">domain_</span><span class="p">,</span> <span class="p">(</span><span class="n">r_min_chunk</span><span class="p">,</span> <span class="n">r_max_chunk</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="truth_multi_parquet">
+<a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.truth_multi_parquet">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">truth_multi_parquet</span><span class="p">(</span>
+    <span class="nb">dir</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">domain_</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+    <span class="n">range_</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+    <span class="n">alg</span><span class="p">:</span> <span class="n">Algorithm</span><span class="p">,</span>
+    <span class="n">workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">cpu_count</span><span class="p">(),</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a truth table and save it to a multi-part Parquet directory.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dir : Path | str</span>
+<span class="sd">        Directory to store multi-part .parquet files</span>
+
+<span class="sd">    domain_: tuple[int,int]</span>
+<span class="sd">        The maximum range of values operands a and b can be.</span>
+
+<span class="sd">    range_: tuple[int,int]</span>
+<span class="sd">        Limit a and b to range_min &lt;= a * b &lt;= range_max</span>
+
+<span class="sd">    alg : Algorithm</span>
+<span class="sd">        An instance of the Algorithm class.</span>
+
+<span class="sd">    workers : int=cpu_count()</span>
+<span class="sd">        number of .parquet files to create in parallel</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">dir</span><span class="p">,</span> <span class="n">Path</span><span class="p">):</span>
+        <span class="nb">dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="nb">dir</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">dir</span><span class="o">.</span><span class="n">suffix</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="nb">dir</span><span class="o">.</span><span class="n">suffix</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Output directory </span><span class="si">{</span><span class="nb">dir</span><span class="si">}</span><span class="s2"> must be a directory, not a file.&quot;</span><span class="p">)</span>
+
+    <span class="nb">dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">alg_pkl_path</span> <span class="o">=</span> <span class="n">_write_temp_pickle_atomic</span><span class="p">(</span><span class="n">alg</span><span class="p">)</span>
+
+    <span class="n">task_q</span> <span class="o">=</span> <span class="n">Queue</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="n">workers</span><span class="p">)</span>
+    <span class="n">procs</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">_truth_scope_worker</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="nb">dir</span><span class="p">,</span> <span class="n">alg_pkl_path</span><span class="p">,</span> <span class="n">task_q</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">workers</span><span class="p">)</span>
+    <span class="p">]</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">procs</span><span class="p">:</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+    <span class="n">_batch_producer</span><span class="p">(</span><span class="n">_batch_truth_scope</span><span class="p">(</span><span class="n">domain_</span><span class="p">,</span> <span class="n">range_</span><span class="p">,</span> <span class="n">workers</span><span class="p">),</span> <span class="n">task_q</span><span class="p">,</span> <span class="n">procs</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">procs</span><span class="p">:</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">alg_pkl_path</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+        <span class="k">pass</span></div>
 
 </pre></div>
 </article><footer class="bz-article-footer">
@@ -429,5 +567,5 @@
   <label class="bz-overlay bz-overlay-primary" for="bz-sidebar-primary"></label>
   <label class="bz-overlay bz-overlay-secondary" for="bz-sidebar-secondary"></label>
   <input type="checkbox" name="bz-sidebar-primary" id="bz-sidebar-primary" aria-label="Toggle section navigation">
-  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../../../_static/documentation_options.js?v=a85d417d"></script><script src="../../../_static/doctools.js?v=fd6eb6e6"></script><script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script><script src="../../../_static/clipboard.min.js?v=a7894cd8"></script><script src="../../../_static/copybutton.js?v=f281be69"></script><script src="../../../_static/design-tabs.js?v=f930bc37"></script></body>
+  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../../../_static/documentation_options.js?v=cc929139"></script><script src="../../../_static/doctools.js?v=fd6eb6e6"></script><script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script><script src="../../../_static/clipboard.min.js?v=a7894cd8"></script><script src="../../../_static/copybutton.js?v=f281be69"></script><script src="../../../_static/design-tabs.js?v=f930bc37"></script></body>
 </html>

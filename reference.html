@@ -21,7 +21,7 @@
       ? (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
       : m;
   })();
-  </script><link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8e8a900e" /><link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" /><link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" /><link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" /><link rel="stylesheet" type="text/css" href="_static/custom.css?v=5037cee9" /><link rel="stylesheet" type="text/css" href="_static/light-dark.css?v=51a238be" /><link rel="stylesheet" type="text/css" href="_static/styles/breeze.css?v=227fd4f7" /><script defer="defer" src="_static/scripts/breeze.js?v=dac9f8c6"></script></head>
+  </script><link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8e8a900e" /><link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" /><link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" /><link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" /><link rel="stylesheet" type="text/css" href="_static/custom.css?v=5037cee9" /><link rel="stylesheet" type="text/css" href="_static/light-dark.css?v=9721c31d" /><link rel="stylesheet" type="text/css" href="_static/styles/breeze.css?v=227fd4f7" /><script defer="defer" src="_static/scripts/breeze.js?v=dac9f8c6"></script></head>
 <body>
   
   
@@ -246,7 +246,6 @@
 <li class="toctree-l4"><a class="reference internal" href="api/multiplied.core.html#multiplied.core.algorithm.Algorithm.step"><code class="docutils literal notranslate"><span class="pre">Algorithm.step()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="api/multiplied.core.html#multiplied.core.algorithm.collect_arithmetic_units"><code class="docutils literal notranslate"><span class="pre">collect_arithmetic_units()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/multiplied.core.html#multiplied.core.algorithm.collect_template_units"><code class="docutils literal notranslate"><span class="pre">collect_template_units()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/multiplied.core.html#multiplied.core.algorithm.hoist"><code class="docutils literal notranslate"><span class="pre">hoist()</span></code></a></li>
 </ul>
@@ -272,6 +271,7 @@
 <li class="toctree-l3"><a class="reference internal" href="api/multiplied.core.html#multiplied.core.matrix.Slice"><code class="docutils literal notranslate"><span class="pre">Slice</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/multiplied.core.html#multiplied.core.matrix.empty_rows"><code class="docutils literal notranslate"><span class="pre">empty_rows()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/multiplied.core.html#multiplied.core.matrix.matrix_merge"><code class="docutils literal notranslate"><span class="pre">matrix_merge()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/multiplied.core.html#multiplied.core.matrix.matrix_scatter"><code class="docutils literal notranslate"><span class="pre">matrix_scatter()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/multiplied.core.html#multiplied.core.matrix.raw_empty_matrix"><code class="docutils literal notranslate"><span class="pre">raw_empty_matrix()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/multiplied.core.html#multiplied.core.matrix.raw_zero_matrix"><code class="docutils literal notranslate"><span class="pre">raw_zero_matrix()</span></code></a></li>
 </ul>
@@ -286,8 +286,8 @@
 <li class="toctree-l3"><a class="reference internal" href="api/multiplied.core.html#multiplied.core.template.Template"><code class="docutils literal notranslate"><span class="pre">Template</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="api/multiplied.core.html#multiplied.core.template.Template.build_from_pattern"><code class="docutils literal notranslate"><span class="pre">Template.build_from_pattern()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/multiplied.core.html#multiplied.core.template.Template.collect_template_units"><code class="docutils literal notranslate"><span class="pre">Template.collect_template_units()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/multiplied.core.html#multiplied.core.template.Template.find_bounding_box"><code class="docutils literal notranslate"><span class="pre">Template.find_bounding_box()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/multiplied.core.html#multiplied.core.template.Template.merge"><code class="docutils literal notranslate"><span class="pre">Template.merge()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/multiplied.core.html#multiplied.core.template.Template.update_bounding_box"><code class="docutils literal notranslate"><span class="pre">Template.update_bounding_box()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="api/multiplied.core.html#multiplied.core.template.build_adder"><code class="docutils literal notranslate"><span class="pre">build_adder()</span></code></a></li>
@@ -301,6 +301,7 @@
 <li class="toctree-l2"><a class="reference internal" href="api/multiplied.core.html#module-multiplied.core.truth">multiplied.core.truth module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="api/multiplied.core.html#multiplied.core.truth.shallow_truth_table"><code class="docutils literal notranslate"><span class="pre">shallow_truth_table()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/multiplied.core.html#multiplied.core.truth.truth_dataframe"><code class="docutils literal notranslate"><span class="pre">truth_dataframe()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/multiplied.core.html#multiplied.core.truth.truth_multi_parquet"><code class="docutils literal notranslate"><span class="pre">truth_multi_parquet()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/multiplied.core.html#multiplied.core.truth.truth_scope"><code class="docutils literal notranslate"><span class="pre">truth_scope()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/multiplied.core.html#multiplied.core.truth.truth_table"><code class="docutils literal notranslate"><span class="pre">truth_table()</span></code></a></li>
 </ul>
@@ -411,5 +412,5 @@
   <label class="bz-overlay bz-overlay-primary" for="bz-sidebar-primary"></label>
   <label class="bz-overlay bz-overlay-secondary" for="bz-sidebar-secondary"></label>
   <input type="checkbox" name="bz-sidebar-primary" id="bz-sidebar-primary" aria-label="Toggle section navigation">
-  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="_static/documentation_options.js?v=a85d417d"></script><script src="_static/doctools.js?v=fd6eb6e6"></script><script src="_static/sphinx_highlight.js?v=6ffebe34"></script><script src="_static/clipboard.min.js?v=a7894cd8"></script><script src="_static/copybutton.js?v=f281be69"></script><script src="_static/design-tabs.js?v=f930bc37"></script></body>
+  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="_static/documentation_options.js?v=cc929139"></script><script src="_static/doctools.js?v=fd6eb6e6"></script><script src="_static/sphinx_highlight.js?v=6ffebe34"></script><script src="_static/clipboard.min.js?v=a7894cd8"></script><script src="_static/copybutton.js?v=f281be69"></script><script src="_static/design-tabs.js?v=f930bc37"></script></body>
 </html>

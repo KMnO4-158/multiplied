@@ -1,4 +1,4 @@
-/* -- theme based image blo -- */
+/* -- theme based image block -- */
 
 /* default: show light image, hide dark */
 img.dark { display: none; }

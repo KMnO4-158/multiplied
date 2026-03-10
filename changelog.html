@@ -6,12 +6,12 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="changelog.html" />
 <meta property="og:site_name" content="multiplied" />
-<meta property="og:description" content="v0.8: v0.8.0: Updates Added raw_zero_map, raw_dadda_map ( c28e2ef), Added raw_zero_matrix(), renamed empty_matrix() to raw_empty_matrix() ( c7f6d80). Tests: Initial implementation of Core tests via..." />
+<meta property="og:description" content="v0.8: v0.8.1: Updates Complex Templates Now Usable ( 42c1a99), Automatic Template Result Generation ( fdae851), Refactor Reduction via Bounding Boxes ( aa15fb3), Ensure Empty Chars Force NOOPs ( 18..." />
 <meta property="og:image:width" content="1146" />
 <meta property="og:image:height" content="600" />
-<meta property="og:image" content="_images/social_previews/summary_changelog_6ef87500.png" />
-<meta property="og:image:alt" content="v0.8: v0.8.0: Updates Added raw_zero_map, raw_dadda_map ( c28e2ef), Added raw_zero_matrix(), renamed empty_matrix() to raw_empty_matrix() ( c7f6d80). Tests: Initial implementation of Core tests via..." />
-<meta name="description" content="v0.8: v0.8.0: Updates Added raw_zero_map, raw_dadda_map ( c28e2ef), Added raw_zero_matrix(), renamed empty_matrix() to raw_empty_matrix() ( c7f6d80). Tests: Initial implementation of Core tests via..." />
+<meta property="og:image" content="_images/social_previews/summary_changelog_b9fa8897.png" />
+<meta property="og:image:alt" content="v0.8: v0.8.1: Updates Complex Templates Now Usable ( 42c1a99), Automatic Template Result Generation ( fdae851), Refactor Reduction via Bounding Boxes ( aa15fb3), Ensure Empty Chars Force NOOPs ( 18..." />
+<meta name="description" content="v0.8: v0.8.1: Updates Complex Templates Now Usable ( 42c1a99), Automatic Template Result Generation ( fdae851), Refactor Reduction via Bounding Boxes ( aa15fb3), Ensure Empty Chars Force NOOPs ( 18..." />
 <meta name="twitter:card" content="summary_large_image" />
 <title>Changelog - multiplied</title><link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="API Reference" href="reference.html"><link rel="prev" title="Visualisation" href="guide/visualisation.html"><script data-cfasync="false">(function(){
     const m = localStorage.getItem("breeze-mode") || "auto";
@@ -21,7 +21,7 @@
       ? (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
       : m;
   })();
-  </script><link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8e8a900e" /><link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" /><link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" /><link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" /><link rel="stylesheet" type="text/css" href="_static/custom.css?v=5037cee9" /><link rel="stylesheet" type="text/css" href="_static/light-dark.css?v=51a238be" /><link rel="stylesheet" type="text/css" href="_static/styles/breeze.css?v=227fd4f7" /><script defer="defer" src="_static/scripts/breeze.js?v=dac9f8c6"></script></head>
+  </script><link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8e8a900e" /><link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" /><link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" /><link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" /><link rel="stylesheet" type="text/css" href="_static/custom.css?v=5037cee9" /><link rel="stylesheet" type="text/css" href="_static/light-dark.css?v=9721c31d" /><link rel="stylesheet" type="text/css" href="_static/styles/breeze.css?v=227fd4f7" /><script defer="defer" src="_static/scripts/breeze.js?v=dac9f8c6"></script></head>
 <body>
   
   
@@ -140,7 +140,21 @@
 <section id="v0-8">
 <h2>v0.8<a class="headerlink" href="#v0-8" title="Link to this heading">#</a></h2>
 <section id="id1">
-<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.8.0">v0.8.0</a><a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.8.1">v0.8.1</a><a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<p>Updates</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Complex Templates Now Usable (<a class="reference external" href="https://github.com/KMnO4-158/multiplied/commit/42c1a99">42c1a99</a>)</p></li>
+<li><p>Automatic Template Result Generation (<a class="reference external" href="https://github.com/KMnO4-158/multiplied/commit/fdae851">fdae851</a>)</p></li>
+<li><p>Refactor Reduction via Bounding Boxes (<a class="reference external" href="https://github.com/KMnO4-158/multiplied/commit/aa15fb3">aa15fb3</a>)</p></li>
+<li><p>Ensure Empty Chars Force NOOPs (<a class="reference external" href="https://github.com/KMnO4-158/multiplied/commit/18bf6cb">18bf6cb</a>)</p></li>
+<li><p>Implement Truth Scope Batching (<a class="reference external" href="https://github.com/KMnO4-158/multiplied/commit/2b434c7">2b434c7</a>)</p></li>
+</ul>
+</div></blockquote>
+<p>See full changelog <a class="reference external" href="https://github.com/KMnO4-158/multiplied/pull/124">here</a></p>
+</section>
+<section id="id2">
+<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.8.0">v0.8.0</a><a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
 <p>Updates</p>
 <blockquote>
 <div><ul class="simple">
@@ -179,8 +193,8 @@
 </section>
 <section id="v0-7">
 <h2>v0.7<a class="headerlink" href="#v0-7" title="Link to this heading">#</a></h2>
-<section id="id2">
-<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.7.3">v0.7.3</a><a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<section id="id4">
+<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.7.3">v0.7.3</a><a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
 <p>Updates:</p>
 <blockquote>
 <div><ul class="simple">
@@ -203,8 +217,8 @@
 </div></blockquote>
 <p>See full changelog <a class="reference external" href="https://github.com/KMnO4-158/multiplied/pull/111">here</a></p>
 </section>
-<section id="id4">
-<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.7.2">v0.7.2</a><a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<section id="id6">
+<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.7.2">v0.7.2</a><a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
 <p>Added:</p>
 <blockquote>
 <div><ul class="simple">
@@ -227,8 +241,8 @@
 </div></blockquote>
 <p>See full changelog <a class="reference external" href="https://github.com/KMnO4-158/multiplied/pull/105">here</a></p>
 </section>
-<section id="id7">
-<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.7.1">v0.7.1</a><a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<section id="id9">
+<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.7.1">v0.7.1</a><a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
 <p>Updates:</p>
 <blockquote>
 <div><ul class="simple">
@@ -264,8 +278,8 @@
 </section>
 <section id="v0-6">
 <h2>v0.6<a class="headerlink" href="#v0-6" title="Link to this heading">#</a></h2>
-<section id="id9">
-<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.6.2">v0.6.2</a><a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<section id="id11">
+<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.6.2">v0.6.2</a><a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
 <p>Bug Fixes:</p>
 <blockquote>
 <div><ul class="simple">
@@ -276,8 +290,8 @@
 </div></blockquote>
 <p>See full changelog <a class="reference external" href="https://github.com/KMnO4-158/multiplied/pull/96">here</a>.</p>
 </section>
-<section id="id11">
-<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.6.0">v0.6.0</a><a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<section id="id13">
+<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.6.0">v0.6.0</a><a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
 <p>Updates:</p>
 <blockquote>
 <div><ul class="simple">
@@ -309,8 +323,8 @@
 </section>
 <section id="v0-5">
 <h2>v0.5<a class="headerlink" href="#v0-5" title="Link to this heading">#</a></h2>
-<section id="id13">
-<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.5.0">v0.5.0</a><a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
+<section id="id15">
+<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.5.0">v0.5.0</a><a class="headerlink" href="#id15" title="Link to this heading">#</a></h3>
 <p>Updates:</p>
 <blockquote>
 <div><ul class="simple">
@@ -344,8 +358,8 @@
 </section>
 <section id="v0-4">
 <h2>v0.4<a class="headerlink" href="#v0-4" title="Link to this heading">#</a></h2>
-<section id="id15">
-<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.4.0">v0.4.0</a><a class="headerlink" href="#id15" title="Link to this heading">#</a></h3>
+<section id="id17">
+<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.4.0">v0.4.0</a><a class="headerlink" href="#id17" title="Link to this heading">#</a></h3>
 <p>Updates:</p>
 <blockquote>
 <div><ul class="simple">
@@ -376,8 +390,8 @@
 </section>
 <section id="v0-3">
 <h2>v0.3<a class="headerlink" href="#v0-3" title="Link to this heading">#</a></h2>
-<section id="id17">
-<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.3.3">v0.3.3</a><a class="headerlink" href="#id17" title="Link to this heading">#</a></h3>
+<section id="id19">
+<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.3.3">v0.3.3</a><a class="headerlink" href="#id19" title="Link to this heading">#</a></h3>
 <p>Updates:</p>
 <blockquote>
 <div><ul class="simple">
@@ -408,8 +422,8 @@
 </div></blockquote>
 <p>See full changelog <a class="reference external" href="https://github.com/KMnO4-158/multiplied/commits/v0.3.3">here</a>.</p>
 </section>
-<section id="id19">
-<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.3.0">v0.3.0</a><a class="headerlink" href="#id19" title="Link to this heading">#</a></h3>
+<section id="id21">
+<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.3.0">v0.3.0</a><a class="headerlink" href="#id21" title="Link to this heading">#</a></h3>
 <p>Updates:</p>
 <blockquote>
 <div><ul class="simple">
@@ -442,8 +456,8 @@
 </section>
 <section id="v0-2">
 <h2>v0.2<a class="headerlink" href="#v0-2" title="Link to this heading">#</a></h2>
-<section id="id22">
-<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.2.0">v0.2.0</a><a class="headerlink" href="#id22" title="Link to this heading">#</a></h3>
+<section id="id24">
+<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.2.0">v0.2.0</a><a class="headerlink" href="#id24" title="Link to this heading">#</a></h3>
 <p>Updates:</p>
 <blockquote>
 <div><ul class="simple">
@@ -472,8 +486,8 @@
 </section>
 <section id="v0-1">
 <h2>v0.1<a class="headerlink" href="#v0-1" title="Link to this heading">#</a></h2>
-<section id="id23">
-<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.1.1">v0.1.1</a><a class="headerlink" href="#id23" title="Link to this heading">#</a></h3>
+<section id="id25">
+<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.1.1">v0.1.1</a><a class="headerlink" href="#id25" title="Link to this heading">#</a></h3>
 <p>This patch is focused on documentation and testing the api reference site locally</p>
 <p>Updates:</p>
 <blockquote>
@@ -486,8 +500,8 @@
 </ul>
 </div></blockquote>
 </section>
-<section id="id24">
-<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.1.0">v0.1.0</a><a class="headerlink" href="#id24" title="Link to this heading">#</a></h3>
+<section id="id26">
+<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.1.0">v0.1.0</a><a class="headerlink" href="#id26" title="Link to this heading">#</a></h3>
 <p>This release is a complete refactor of the original script, widening it’s scope and turning it into a library.</p>
 <p>Added:</p>
 <blockquote>
@@ -524,40 +538,41 @@
     <nav class="bz-sidebar-toc" aria-label="Table of contents">
   <p>On this page</p><ul>
 <li><a class="reference internal" href="#v0-8">v0​.8</a><ul>
-<li><a class="reference internal" href="#id1">v0​.8​.0</a></li>
+<li><a class="reference internal" href="#id1">v0​.8​.1</a></li>
+<li><a class="reference internal" href="#id2">v0​.8​.0</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v0-7">v0​.7</a><ul>
-<li><a class="reference internal" href="#id2">v0​.7​.3</a></li>
-<li><a class="reference internal" href="#id4">v0​.7​.2</a></li>
-<li><a class="reference internal" href="#id7">v0​.7​.1</a></li>
+<li><a class="reference internal" href="#id4">v0​.7​.3</a></li>
+<li><a class="reference internal" href="#id6">v0​.7​.2</a></li>
+<li><a class="reference internal" href="#id9">v0​.7​.1</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v0-6">v0​.6</a><ul>
-<li><a class="reference internal" href="#id9">v0​.6​.2</a></li>
-<li><a class="reference internal" href="#id11">v0​.6​.0</a></li>
+<li><a class="reference internal" href="#id11">v0​.6​.2</a></li>
+<li><a class="reference internal" href="#id13">v0​.6​.0</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v0-5">v0​.5</a><ul>
-<li><a class="reference internal" href="#id13">v0​.5​.0</a></li>
+<li><a class="reference internal" href="#id15">v0​.5​.0</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v0-4">v0​.4</a><ul>
-<li><a class="reference internal" href="#id15">v0​.4​.0</a></li>
+<li><a class="reference internal" href="#id17">v0​.4​.0</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v0-3">v0​.3</a><ul>
-<li><a class="reference internal" href="#id17">v0​.3​.3</a></li>
-<li><a class="reference internal" href="#id19">v0​.3​.0</a></li>
+<li><a class="reference internal" href="#id19">v0​.3​.3</a></li>
+<li><a class="reference internal" href="#id21">v0​.3​.0</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v0-2">v0​.2</a><ul>
-<li><a class="reference internal" href="#id22">v0​.2​.0</a></li>
+<li><a class="reference internal" href="#id24">v0​.2​.0</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v0-1">v0​.1</a><ul>
-<li><a class="reference internal" href="#id23">v0​.1​.1</a></li>
-<li><a class="reference internal" href="#id24">v0​.1​.0</a></li>
+<li><a class="reference internal" href="#id25">v0​.1​.1</a></li>
+<li><a class="reference internal" href="#id26">v0​.1​.0</a></li>
 </ul>
 </li>
 </ul></nav>
@@ -629,5 +644,5 @@
   <label class="bz-overlay bz-overlay-primary" for="bz-sidebar-primary"></label>
   <label class="bz-overlay bz-overlay-secondary" for="bz-sidebar-secondary"></label>
   <input type="checkbox" name="bz-sidebar-primary" id="bz-sidebar-primary" aria-label="Toggle section navigation">
-  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="_static/documentation_options.js?v=a85d417d"></script><script src="_static/doctools.js?v=fd6eb6e6"></script><script src="_static/sphinx_highlight.js?v=6ffebe34"></script><script src="_static/clipboard.min.js?v=a7894cd8"></script><script src="_static/copybutton.js?v=f281be69"></script><script src="_static/design-tabs.js?v=f930bc37"></script></body>
+  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="_static/documentation_options.js?v=cc929139"></script><script src="_static/doctools.js?v=fd6eb6e6"></script><script src="_static/sphinx_highlight.js?v=6ffebe34"></script><script src="_static/clipboard.min.js?v=a7894cd8"></script><script src="_static/copybutton.js?v=f281be69"></script><script src="_static/design-tabs.js?v=f930bc37"></script></body>
 </html>

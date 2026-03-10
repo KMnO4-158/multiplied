@@ -9,7 +9,7 @@
       ? (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
       : m;
   })();
-  </script><link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8e8a900e" /><link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" /><link rel="stylesheet" type="text/css" href="../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" /><link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" /><link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=5037cee9" /><link rel="stylesheet" type="text/css" href="../../../_static/light-dark.css?v=51a238be" /><link rel="stylesheet" type="text/css" href="../../../_static/styles/breeze.css?v=227fd4f7" /><script defer="defer" src="../../../_static/scripts/breeze.js?v=dac9f8c6"></script></head>
+  </script><link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8e8a900e" /><link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" /><link rel="stylesheet" type="text/css" href="../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" /><link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" /><link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=5037cee9" /><link rel="stylesheet" type="text/css" href="../../../_static/light-dark.css?v=9721c31d" /><link rel="stylesheet" type="text/css" href="../../../_static/styles/breeze.css?v=227fd4f7" /><script defer="defer" src="../../../_static/scripts/breeze.js?v=dac9f8c6"></script></head>
 <body>
   
   
@@ -130,6 +130,7 @@
 <span class="c1"># Classes to Represent And Manage Nested Lists #</span>
 <span class="c1">################################################</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">multiplied</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mp</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterator</span>
 
@@ -557,10 +558,12 @@
 <span class="sd">    ----------</span>
 <span class="sd">    source : dict[str, Matrix]</span>
 <span class="sd">        A dictionary of matrices to merge</span>
+
 <span class="sd">    bounds : dict[str, list[tuple[int, int]]]</span>
 <span class="sd">        A dictionary of bounds for each matrix</span>
-<span class="sd">    carry : bool=True, optional</span>
-<span class="sd">        Whether to carry over the carry bit, by default True</span>
+
+<span class="sd">    carry : bool=True, optional, default: True</span>
+<span class="sd">        Whether to carry over the carry bit</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -568,11 +571,11 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; source = {&#39;A&#39;: Matrix([[1, 2], [3, 4]]), &#39;B&#39;: Matrix([[5, 6], [7, 8]])}</span>
-<span class="sd">    &gt;&gt;&gt; bounds = {&#39;A&#39;: [(0, 1), (2, 3)], &#39;B&#39;: [(0, 1), (2, 3)]}</span>
+<span class="sd">    &gt;&gt;&gt; source = {&#39;A&#39;: Matrix([[1, _], [3, _]]), &#39;B&#39;: Matrix([[_, 6], [_, 8]])}</span>
+<span class="sd">    &gt;&gt;&gt; bounds = {&#39;A&#39;: [(0, 0), (0, 0), (1, 1), (1, 1)],</span>
+<span class="sd">    &gt;&gt;&gt;           &#39;B&#39;: [(0, 1), (0, 1), (0, 1), (0, 1)]}</span>
 <span class="sd">    &gt;&gt;&gt; matrix_merge(source, bounds)</span>
-<span class="sd">    Matrix([[1, 2, 5, 6], [3, 4, 7, 8], [5, 6, 1, 2], [7, 8, 3, 4]])</span>
-<span class="sd">    .. warning:: simplified example, 2-bit operations are not supported</span>
+<span class="sd">    Matrix([[1, 6], [4, 8]])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
@@ -581,7 +584,7 @@
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;All values of source must be of type Matrix&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">source</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Source must contain at least two matrices&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bounds</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bounds</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
         <span class="c1"># new error message needed</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Source must contain the same number of matrices as bounds&quot;</span><span class="p">)</span>
 
@@ -602,13 +605,122 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Missing bound pair for row </span><span class="si">{</span><span class="n">y</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">box_left</span><span class="p">,</span> <span class="n">box_right</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
                 <span class="n">output</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">bounds</span><span class="p">[</span><span class="n">unit</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">bounds</span><span class="p">[</span><span class="n">unit</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">y</span> <span class="o">==</span> <span class="n">bounds</span><span class="p">[</span><span class="n">unit</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">box_left</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="n">cout</span> <span class="o">=</span> <span class="n">box_left</span> <span class="o">-</span> <span class="mi">1</span>
-                    <span class="n">output</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">cout</span><span class="p">]</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">cout</span><span class="p">]</span>
 
             <span class="n">i</span> <span class="o">+=</span> <span class="mi">2</span>
     <span class="k">return</span> <span class="n">Matrix</span><span class="p">(</span><span class="n">output</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="matrix_scatter">
+<a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.matrix_scatter">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">matrix_scatter</span><span class="p">(</span>
+    <span class="n">source</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">],</span> <span class="n">bounds</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]],</span> <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;auto&quot;</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return list of matrices containing subset of source matrix based on provided bounds.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    source : list[list]</span>
+<span class="sd">        Partial Product matrix to scatter.</span>
+
+<span class="sd">    bounds : dict[str, list[tuple[int, int]]]</span>
+<span class="sd">        The bounds for each unit to extract from the source.</span>
+
+<span class="sd">    fmt : str, optional, default: &quot;auto&quot;.</span>
+<span class="sd">        &quot;auto&quot; : Infer format from source.</span>
+<span class="sd">        &quot;empty&quot; : :func:`raw_empty_matrix`</span>
+<span class="sd">        &quot;zero&quot; : :func:`raw_zero_matrix`</span>
+<span class="sd">        &quot;map&quot; : :func:`raw_map_matrix`</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict[str, list[list]]</span>
+<span class="sd">        A dictionary of matrices containing the subset of source based on the provided bounds.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Each unit is extracted and placed at the same position within an initialised matrix</span>
+<span class="sd">    with the same shape as the source.</span>
+
+<span class="sd">    See also</span>
+<span class="sd">    --------</span>
+<span class="sd">    :func:`collect_template_units` for bound extraction</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; source = [[0, 1, 2],</span>
+<span class="sd">    &gt;&gt;&gt;           [3, 4, 5],</span>
+<span class="sd">    &gt;&gt;&gt;           [6, 7, 8]]</span>
+<span class="sd">    &gt;&gt;&gt; bounds = {&quot;A&quot;: [(0, 0), (0, 1)],</span>
+<span class="sd">    &gt;&gt;&gt;           &quot;B&quot;: [(1, 1), (1, 2)]}</span>
+<span class="sd">    &gt;&gt;&gt; matrix_scatter(source, bounds, fmt=empty)</span>
+<span class="sd">    [[[0, 1, _], [_, _, _], [_, _, _]],</span>
+<span class="sd">     [[_, _, _], [_, 4, 5], [_, _, _]]]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bounds</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="n">mp</span><span class="o">.</span><span class="n">ischar</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">bounds</span><span class="o">.</span><span class="n">keys</span><span class="p">()]):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unrecognised Bounds&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected Dict got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">bounds</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span>
+        <span class="p">[</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">source</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected List[List] got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">source</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
+        <span class="n">_litmus</span> <span class="o">=</span> <span class="n">source</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">mp</span><span class="o">.</span><span class="n">ischar</span><span class="p">(</span><span class="n">_litmus</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+            <span class="n">mp</span><span class="o">.</span><span class="n">isint</span><span class="p">(</span><span class="n">_litmus</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">_litmus</span> <span class="o">==</span> <span class="s2">&quot;0&quot;</span> <span class="ow">or</span> <span class="n">_litmus</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;empty&quot;</span>
+        <span class="k">elif</span> <span class="n">mp</span><span class="o">.</span><span class="n">ishex2</span><span class="p">(</span><span class="n">_litmus</span><span class="p">):</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;map&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;zero&quot;</span>
+
+    <span class="k">match</span> <span class="n">fmt</span><span class="p">:</span>
+        <span class="k">case</span> <span class="s2">&quot;empty&quot;</span><span class="p">:</span>
+            <span class="n">dest_matrix</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;_&quot;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">row</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">source</span><span class="p">]</span>
+        <span class="k">case</span> <span class="s2">&quot;zero&quot;</span><span class="p">:</span>
+            <span class="n">dest_matrix</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;0&quot;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">row</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">source</span><span class="p">]</span>
+        <span class="k">case</span> <span class="s2">&quot;map&quot;</span><span class="p">:</span>
+            <span class="n">dest_matrix</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;00&quot;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">row</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">source</span><span class="p">]</span>
+        <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unrecognised fmt: </span><span class="si">{</span><span class="n">fmt</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">allchars</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">bounds</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+    <span class="n">output</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">allchars</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">])</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Odd number of bounds for </span><span class="si">{</span><span class="n">ch</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">dest_matrix_copy</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">dest_matrix</span><span class="p">)</span>
+
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">][</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="n">_start</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">_end</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">][</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Bounding box error for unit &#39;</span><span class="si">{</span><span class="n">ch</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Points:</span><span class="si">{</span><span class="n">_start</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">_end</span><span class="si">}</span><span class="s2">, error:  </span><span class="si">{</span><span class="n">_start</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> != </span><span class="si">{</span><span class="n">_end</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">][</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>  <span class="c1"># include end</span>
+                <span class="n">dest_matrix_copy</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">source</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">]</span>
+
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">2</span>
+
+        <span class="n">output</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span> <span class="o">=</span> <span class="n">dest_matrix_copy</span>
+
+    <span class="k">return</span> <span class="n">output</span></div>
 
 </pre></div>
 </article><footer class="bz-article-footer">
@@ -684,5 +796,5 @@
   <label class="bz-overlay bz-overlay-primary" for="bz-sidebar-primary"></label>
   <label class="bz-overlay bz-overlay-secondary" for="bz-sidebar-secondary"></label>
   <input type="checkbox" name="bz-sidebar-primary" id="bz-sidebar-primary" aria-label="Toggle section navigation">
-  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../../../_static/documentation_options.js?v=a85d417d"></script><script src="../../../_static/doctools.js?v=fd6eb6e6"></script><script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script><script src="../../../_static/clipboard.min.js?v=a7894cd8"></script><script src="../../../_static/copybutton.js?v=f281be69"></script><script src="../../../_static/design-tabs.js?v=f930bc37"></script></body>
+  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../../../_static/documentation_options.js?v=cc929139"></script><script src="../../../_static/doctools.js?v=fd6eb6e6"></script><script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script><script src="../../../_static/clipboard.min.js?v=a7894cd8"></script><script src="../../../_static/copybutton.js?v=f281be69"></script><script src="../../../_static/design-tabs.js?v=f930bc37"></script></body>
 </html>
