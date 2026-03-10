@@ -40,24 +40,19 @@ class Map:
             self.rmap = ["00"] * self.bits
             return None
 
-        # -- handle standard maps -------------------------------
+        # -- handle complex maps ------------------------------------
         self.map = map
         if isinstance(self.map[0], list):
             self.rmap = []
+
+            # -- sanity check ---------------------------------------
+            # ! Can be parallelised
+            for y in map:
+                for x in y:
+                    if not mp.ishex2(x):
+                        raise ValueError(f"Invalid row map element {x}")
             return None
 
-        # -- handle row maps ----------------------------------------
-        # TODO: refactor -> coordinate based mapping
-        # TODO: calculate when map results in out-of-bound mapping(s)
-        checksum = [0] * self.bits
-        for i, x in enumerate(map):
-            if 2 != len(x) or not (0 <= int(x, 16) <= 255):
-                raise TypeError(
-                    f"Expected hex value in range '00' to 'FF', got mapping {x}"
-                )
-            checksum[i] = 1 if x != "00" else 0
-
-        self.checksum = checksum
         self.map = self.build_map(map)
         self.rmap = map
         return None
@@ -80,7 +75,7 @@ class Map:
         mp.validate_bitwidth(n := len(rmap))
         map = []
         for i in range(n):
-            if len(rmap[i]) != 2 and not (isinstance(rmap[i], str)):
+            if not mp.ishex2(rmap[i]):
                 raise ValueError(f"Invalid row map element {rmap[i]}")
             map.append([rmap[i] for _ in range(n * 2)])
         return map
