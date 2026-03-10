@@ -29,7 +29,7 @@ class TestMapInstance:
 
     def test_row_map_type(self, size):
         print(size)
-        with pytest.raises(TypeError):
+        with pytest.raises(ValueError):
             mp.Map(["0"] * size)  # Not 2-bit hex
             mp.Map(["F"] * size)  # Not 2-bit hex
 
