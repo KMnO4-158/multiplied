@@ -176,6 +176,10 @@ REFERENCE = {
             "d",
         ],
     },
+    "noop_pattern": {
+        4: ["_"] * 4,
+        8: ["_"] * 8,
+    },
     "noop_template": {
         4: {"T": (noop_template_4 := [
                 ["_", "_", "_", "_", "A", "a", "A", "a"],
