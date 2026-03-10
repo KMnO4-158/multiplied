@@ -10,6 +10,25 @@ Changelog
 v0.8
 =====
 
+`v0.8.1 <https://github.com/KMnO4-158/multiplied/releases/tag/v0.8.1>`_
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Updates
+
+    - Complex Templates Now Usable (`42c1a99`_)
+    - Automatic Template Result Generation (`fdae851`_)
+    - Refactor Reduction via Bounding Boxes (`aa15fb3`_)
+    - Ensure Empty Chars Force NOOPs (`18bf6cb`_)
+    - Implement Truth Scope Batching (`2b434c7`_)
+
+See full changelog `here <https://github.com/KMnO4-158/multiplied/pull/124>`_
+
+.. _42c1a99: https://github.com/KMnO4-158/multiplied/commit/42c1a99
+.. _fdae851: https://github.com/KMnO4-158/multiplied/commit/fdae851
+.. _aa15fb3: https://github.com/KMnO4-158/multiplied/commit/aa15fb3
+.. _18bf6cb: https://github.com/KMnO4-158/multiplied/commit/18bf6cb
+.. _2b434c7: https://github.com/KMnO4-158/multiplied/commit/2b434c7
+
 `v0.8.0 <https://github.com/KMnO4-158/multiplied/releases/tag/v0.8.0>`_
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
