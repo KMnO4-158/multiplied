@@ -460,9 +460,7 @@ def matrix_merge(
 
 
 def matrix_scatter(
-    source: list[list],
-    bounds: dict[str, list[tuple[int, int]]],
-    fmt: str="auto"
+    source: list[list], bounds: dict[str, list[tuple[int, int]]], fmt: str = "auto"
 ) -> dict[str, list[list]]:
     """Return list of matrices containing subset of source matrix based on provided bounds.
 
@@ -513,12 +511,16 @@ def matrix_scatter(
     else:
         raise TypeError(f"Expected Dict got {type(bounds)}")
 
-    if not isinstance(source, list) and not all([isinstance(row, list) for row in source]):
+    if not isinstance(source, list) and not all(
+        [isinstance(row, list) for row in source]
+    ):
         raise TypeError(f"Expected List[List] got {type(source)}")
 
     if fmt == "auto":
         _litmus = source[0][0]
-        if mp.ischar(_litmus) or (mp.isint(_litmus) and (_litmus == "0" or _litmus == "1")):
+        if mp.ischar(_litmus) or (
+            mp.isint(_litmus) and (_litmus == "0" or _litmus == "1")
+        ):
             fmt = "empty"
         elif mp.ishex2(_litmus):
             fmt = "map"
@@ -557,7 +559,7 @@ def matrix_scatter(
             end = bounds[ch][i + 1][0]
             row = bounds[ch][i][1]
 
-            for col in range(start, end + 1): # include end
+            for col in range(start, end + 1):  # include end
                 dest_matrix_copy[row][col] = source[row][col]
 
             i += 2

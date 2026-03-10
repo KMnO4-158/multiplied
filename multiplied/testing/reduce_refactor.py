@@ -16,12 +16,12 @@ Strategy:
               non-conflicting column index.
 
 """
-class ReduceRefactor(mp.Algorithm):
 
+
+class ReduceRefactor(mp.Algorithm):
     # def __init__(self, *args, **kwargs):
     #     super().__init__(*args, **kwargs)   # runs Parent.__init__
     #     print("init")
-
 
     def _reduce(self) -> None:
         """use template or pattern to reduce a given matrix."""
@@ -178,7 +178,6 @@ class ReduceRefactor(mp.Algorithm):
                 i += 1
             results[ch] = mp.Matrix(unit_result)
 
-
         # ! difficult sanity checks --------------------------------- ! #
         # Complex scenarios, where NOOP, CSA and ADD units intersect
         # will require extensive checks:
@@ -216,9 +215,6 @@ class ReduceRefactor(mp.Algorithm):
         return None
 
 
-
-
-
 def main() -> None:
     alg = mp.Algorithm(8)
     template = mp.Template(mp.Pattern(["a", "b", "b", "c", "c", "c", "_", "_"]))
@@ -231,7 +227,6 @@ def main() -> None:
 
     product = int("".join(list(output.values())[-1][0][0]), 2)
     print(product)
-
 
     alg = mp.Algorithm(8)
     ref_complex_template = mp.Template(REFERENCE["complex_template"][8]["T"])
@@ -246,6 +241,7 @@ def main() -> None:
     product = int("".join(list(output.values())[-1][0][0]), 2)
     print(product)
     print(127 * 255)
+
 
 if __name__ == "__main__":
     main()

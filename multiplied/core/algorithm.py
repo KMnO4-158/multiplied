@@ -6,6 +6,7 @@ from copy import deepcopy
 from typing import Any, Iterable
 import multiplied as mp
 
+
 # -- TODO: sanity checks --------------------------------------------
 #
 # - Use setattr to block changes to self.matrix if state != 0, suggest self.reset().
@@ -31,7 +32,12 @@ class Algorithm:
     """
 
     def __init__(
-        self, bits: int, *, matrix: Any = None, saturation: bool=False, dadda: bool=False
+        self,
+        bits: int,
+        *,
+        matrix: Any = None,
+        saturation: bool = False,
+        dadda: bool = False,
     ) -> None:
 
         mp.validate_bitwidth(bits)
@@ -62,7 +68,7 @@ class Algorithm:
         return None
 
     def push(
-        self, source: mp.Template | mp.Pattern, map_: Any = None, dadda: bool=False
+        self, source: mp.Template | mp.Pattern, map_: Any = None, dadda: bool = False
     ) -> None:
         """Populate algorithm stage based on template. Generates pseudo
         result to represent output matrix
@@ -303,7 +309,6 @@ class Algorithm:
                 unit_result[i] = ["_"] * n
                 i += 1
             results[ch] = mp.Matrix(unit_result)
-
 
         # ! difficult sanity checks --------------------------------- ! #
         # Complex scenarios, where NOOP, CSA and ADD units intersect

@@ -25,7 +25,9 @@ TEST_ALGORITHM_EXECUTION = [
     TestCase("alg_exec", None, mp.Matrix, {"all": True, "exec": True}),
     TestCase("alg_step_one", 1, mp.Matrix, {"all": True, "step": True}),
     TestCase("alg_step_all", 0, mp.Matrix, {"all": True, "step": True}),
-    TestCase("alg_exec_complex", REFERENCE["complex_template"][8]["T"], None, {"exec": True}),
+    TestCase(
+        "alg_exec_complex", REFERENCE["complex_template"][8]["T"], None, {"exec": True}
+    ),
 ]
 
 # --
@@ -97,7 +99,6 @@ def test_algorithm_execution(algorithm_execution, supported_bitwidths):
         assert result[0] == result[1]
 
 
-
 def process_value(value, metadata, supported_bitwidths):
 
     # -- instantiate ------------------------------------------------
@@ -144,7 +145,8 @@ def process_value(value, metadata, supported_bitwidths):
         return data
 
     else:
-        return alg # to assert instance
+        return alg  # to assert instance
+
 
 def process_algorithm(value, metadata):
     if not isinstance(value, list) or not isinstance(value[0], list):

@@ -11,20 +11,11 @@ from numba import njit, jit
 from pathlib import Path
 
 
-
-
-
-
-
-
 def truth_scope_worker(in_q: Queue, worker_id: int):
     # print(f"worker {worker_id} started (pid {os.getpid()})", flush=True)
     # process item
     domain_, range_ = in_q.get()
     gen = mp.truth_scope(domain_, range_)
-
-
-
 
 
 def producer(
@@ -40,12 +31,8 @@ def producer(
 
 
 def batch_truth_scope(
-    domain_: tuple[int, int],
-    range_: tuple[int, int],
-    workers: int
+    domain_: tuple[int, int], range_: tuple[int, int], workers: int
 ) -> Generator[tuple[tuple[int, int], tuple[int, int]]]:
-
-
 
     min_in, max_in = domain_
     min_out, max_out = range_
@@ -65,9 +52,10 @@ def parallel_truth_scope(
     workers: int,
 ) -> None:
 
-
     task_q = Queue(maxsize=workers)
-    procs = [Process(target=truth_scope_worker, args=(task_q, i)) for i in range(workers)]
+    procs = [
+        Process(target=truth_scope_worker, args=(task_q, i)) for i in range(workers)
+    ]
     for p in procs:
         p.start()
 
@@ -77,14 +65,9 @@ def parallel_truth_scope(
         p.join()
 
 
-
-def linear_range_gen(
-    domain_: tuple[int, int],
-    range_: tuple[int, int]
-) -> list[Any]:
+def linear_range_gen(domain_: tuple[int, int], range_: tuple[int, int]) -> list[Any]:
 
     test = list(mp.truth_scope(domain_, range_))
-
 
 
 def _write_temp_pickle_atomic(obj: mp.Algorithm) -> str:
@@ -106,12 +89,13 @@ def _write_temp_pickle_atomic(obj: mp.Algorithm) -> str:
             pass
         raise
 
+
 def _load_shared_pickle(path: str):
     with open(path, "rb") as f:
         return pickle.load(f)
 
-def test_obj_pickling(obj: mp.Algorithm):
 
+def test_obj_pickling(obj: mp.Algorithm):
 
     temp_path = _write_temp_pickle_atomic(obj)
     loaded = _load_shared_pickle(temp_path)
@@ -125,16 +109,14 @@ def test_obj_pickling(obj: mp.Algorithm):
     return loaded
 
 
-
 def main() -> None:
     from multiplied.core.truth import truth_multi_parquet
     from time import perf_counter
     import pandas as pd
-    DOMAIN = (1, (2**8)-1)
-    RANGE = (1, (2**16)-1)
+
+    DOMAIN = (1, (2**8) - 1)
+    RANGE = (1, (2**16) - 1)
     WORKERS = 8
-
-
 
     # for i in batch_truth_scope(DOMAIN, RANGE, WORKERS):
     #     print(i)
@@ -142,16 +124,12 @@ def main() -> None:
     # for i in batch_truth_scope(DOMAIN, RANGE, WORKERS):
     #     print(list(mp.truth_scope(i[0], i[1])))
 
-
     alg = mp.Algorithm(8)
     alg.auto_resolve_stage()
     # pkl_alg = test_obj_pickling(alg)
     # print(pkl_alg)
 
     path = Path(__file__).parent.parent.parent / "examples/datasets/test_multi"
-
-
-
 
     start = perf_counter()
     truth_multi_parquet(path, DOMAIN, RANGE, alg)
@@ -175,9 +153,6 @@ def main() -> None:
     # import pyarrow as pa
 
     # print(pa.Schema.from_pandas(df, preserve_index=False))
-
-
-
 
 
 if __name__ == "__main__":

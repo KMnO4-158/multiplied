@@ -22,8 +22,7 @@ def main() -> None:
 
     shape = (len(ref_dadda_map), len(ref_dadda_map[0]))
     print(f"Cycles wasted: {count}")
-    print(f"Efficiency: % {100 * count/(shape[0]*shape[1])}")
-
+    print(f"Efficiency: % {100 * count / (shape[0] * shape[1])}")
 
 
 if __name__ == "__main__":

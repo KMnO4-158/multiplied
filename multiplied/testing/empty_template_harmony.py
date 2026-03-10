@@ -26,8 +26,10 @@ def test_shallow_generator8() -> None:
     for m in mp.shallow_truth_table(truth8, alg8):
         mp.mprint(m)
 
+
 def test_complex_templates() -> None:
     from multiplied.tests import REFERENCE
+
     alg = mp.Algorithm(8)
     empty_pattern = mp.Pattern(["a", "_", "_", "_", "_", "_", "_", "_"])
     print(mp.Matrix(8))
@@ -57,7 +59,6 @@ def main() -> None:
         print(k)
         mp.mprint(v)
 
-
     result = template.result
     print(result)
     for k, v in mp.matrix_scatter(result.matrix, template.re_bounds).items():
@@ -79,6 +80,7 @@ def main() -> None:
         mp.mprint(v)
 
     print()
+
 
 if __name__ == "__main__":
     main()

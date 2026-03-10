@@ -321,7 +321,6 @@ class Template:
             case _:
                 raise TypeError("result must be a Matrix or list[list[str]]")
 
-
         # -- pattern handling ---------------------------------------
         if isinstance(source, Pattern):
             self.pattern = source
@@ -385,10 +384,7 @@ class Template:
 
                 case 2:  # ADD
                     unit_slice = mp.Slice(
-                        [
-                            units[ch][base_index],
-                            units[ch][base_index + 1]
-                        ]
+                        [units[ch][base_index], units[ch][base_index + 1]]
                     )
                     output = build_adder(ch, unit_slice)[1]
 
@@ -405,7 +401,7 @@ class Template:
                         [
                             units[ch][base_index],
                             units[ch][base_index + 1],
-                            units[ch][base_index + 2]
+                            units[ch][base_index + 2],
                         ]
                     )
                     output = build_csa(ch, unit_slice)[1]
@@ -417,15 +413,16 @@ class Template:
                         x_left -= 1
 
                     re_bound[ch] = [
-                        (x_left - 1, y), (x_right, y),
-                        (x_left, y + 1), (x_right - 1, y + 1)
+                        (x_left - 1, y),
+                        (x_right, y),
+                        (x_left, y + 1),
+                        (x_right - 1, y + 1),
                     ]
 
                 case _:
                     raise ValueError(
                         f"Unsupported unit type, len={bounds[ch][-1][1] - bounds[ch][0][1]}"
                     )
-
 
             unit_result = [[]] * self.bits
             i = 0
@@ -448,7 +445,6 @@ class Template:
         self.re_bounds = self.update_bounding_box(self.result.matrix)
 
         return None
-
 
     # Templates must be built using matrix
     def build_from_pattern(self, pattern: Pattern, matrix: mp.Matrix) -> None:
@@ -512,7 +508,7 @@ class Template:
                     template_slices[i - r] = build_noop(ch, matrix[i - r])
                     allchar.add(ch)
 
-                i += run # advance past noop run
+                i += run  # advance past noop run
                 continue
 
             # -- process arithmetic units ---------------------------
@@ -552,7 +548,9 @@ class Template:
     #
     #  > or just detect empty, '_', characters as the boundary
     #       > This option means figuring out the correct key to use
-    def update_bounding_box(self, matrix: list[list]) -> dict[str, list[tuple[int, int]]]:
+    def update_bounding_box(
+        self, matrix: list[list]
+    ) -> dict[str, list[tuple[int, int]]]:
         """Returns dictionary of arithmetic unit and coordinates for their boundaries."""
 
         rows = self.bits

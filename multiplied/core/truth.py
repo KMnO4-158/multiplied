@@ -69,7 +69,6 @@ def truth_scope(
         if max_out // x <= max_in:
             upper_bound = max_out // x
 
-
         # lower_bound = min_out // x if min_out // x >= min_in else min_in
         # upper_bound = max_out // x if max_out // x <= max_in else max_in
         for y in range(lower_bound, upper_bound + 1):
@@ -79,9 +78,6 @@ def truth_scope(
             if max_out < prod:
                 break
         x += 1
-
-
-
 
 
 def shallow_truth_table(scope: Generator[tuple], alg: Algorithm) -> Generator[Matrix]:
@@ -193,8 +189,8 @@ def truth_dataframe(scope: Generator[tuple[int, int]], alg: Algorithm) -> pd.Dat
     return pd.concat([operand_columns, table, pretty_columns], axis=1)
 
 
-
 # ===================================================================
+
 
 def _multi_parquet_worker(gen: Generator, alg: Algorithm) -> pd.DataFrame:
 
@@ -232,6 +228,7 @@ def _multi_parquet_worker(gen: Generator, alg: Algorithm) -> pd.DataFrame:
 
     return pd.concat([operand_columns, table, pretty_columns], axis=1)
 
+
 def _write_temp_pickle_atomic(obj: Algorithm) -> str:
     # create temp file in same dir, write to a unique tmp file, then atomically move to final name
     # avoids workers from racing and reading partial data
@@ -252,11 +249,13 @@ def _write_temp_pickle_atomic(obj: Algorithm) -> str:
             pass
         raise
 
+
 def _load_shared_pickle(path: str):
     with open(path, "rb") as f:
         return pickle.load(f)
 
-def _truth_scope_worker(dir: Path, tmp_file: str,  in_q: Queue, worker_id: int):
+
+def _truth_scope_worker(dir: Path, tmp_file: str, in_q: Queue, worker_id: int):
     # print(f"worker {worker_id} started (pid {os.getpid()})", flush=True)
     # process item
     domain_, range_ = in_q.get()
@@ -281,12 +280,8 @@ def _batch_producer(
 
 
 def _batch_truth_scope(
-    domain_: tuple[int, int],
-    range_: tuple[int, int],
-    workers: int
+    domain_: tuple[int, int], range_: tuple[int, int], workers: int
 ) -> Generator[tuple[tuple[int, int], tuple[int, int]]]:
-
-
 
     min_in, max_in = domain_
     min_out, max_out = range_
@@ -299,12 +294,13 @@ def _batch_truth_scope(
             r_max_chunk = max_out
         yield (domain_, (r_min_chunk, r_max_chunk))
 
+
 def truth_multi_parquet(
     dir: Path | str,
     domain_: tuple[int, int],
     range_: tuple[int, int],
     alg: Algorithm,
-    workers: int=cpu_count()
+    workers: int = cpu_count(),
 ) -> None:
     """Generate a truth table and save it to a multi-part Parquet directory.
 
@@ -329,7 +325,7 @@ def truth_multi_parquet(
 
     if not isinstance(dir, Path):
         dir = Path(dir)
-    if dir.suffix != '':
+    if dir.suffix != "":
         print(dir.suffix)
         raise ValueError(f"Output directory {dir} must be a directory, not a file.")
 
@@ -338,13 +334,14 @@ def truth_multi_parquet(
     alg_pkl_path = _write_temp_pickle_atomic(alg)
 
     task_q = Queue(maxsize=workers)
-    procs = [Process(target=_truth_scope_worker, args=(dir, alg_pkl_path, task_q, i)) for i in range(workers)]
+    procs = [
+        Process(target=_truth_scope_worker, args=(dir, alg_pkl_path, task_q, i))
+        for i in range(workers)
+    ]
     for p in procs:
         p.start()
 
     _batch_producer(_batch_truth_scope(domain_, range_, workers), task_q, procs)
-
-
 
     for p in procs:
         p.join()

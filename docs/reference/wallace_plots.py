@@ -1,7 +1,12 @@
 from pathlib import Path
-from multiplied import df_global_heatmap, df_global_3d_heatmap, pq_extract_stages, SUPPORTED_BITWIDTHS
+from multiplied import (
+    df_global_heatmap,
+    df_global_3d_heatmap,
+    pq_extract_stages,
+    SUPPORTED_BITWIDTHS,
+)
 
-THEMES = ["", "_dark"] # "" == default. Do not delete.
+THEMES = ["", "_dark"]  # "" == default. Do not delete.
 FILE_TYPES = ["png", "svg"]
 
 
