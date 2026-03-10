@@ -2,11 +2,15 @@
 # Generate Multiplier Truth Table #
 ###################################
 
-import warnings
+from pathlib import Path
+
 from multiplied import Algorithm, Matrix
-import pandas as pd
-from multiprocessing import Pool
+from multiprocessing import Pool, Process, Queue, cpu_count
 from collections.abc import Generator
+import pandas as pd
+import tempfile
+import pickle
+import os
 
 
 def truth_scope(
@@ -17,9 +21,10 @@ def truth_scope(
     Parameters
     ----------
     domain_: tuple[int,int]
-        A tuple of integers representing the domain of input values.
+        The maximum range of values operands a and b can be.
+
     range_: tuple[int,int]
-        A tuple of integers representing the range of output values.
+        Limit a and b to range_min <= a * b <= range_max
 
     Yields
     ------
@@ -43,59 +48,36 @@ def truth_scope(
         )
 
     if max_in**2 < min_out:
-        raise ValueError(f"Range unreachable for the input domain {domain_}")
+        raise ValueError(f"Range {range_} unreachable for the input domain {domain_}")
 
-    if min_out < min_in:
-        warnings.warn(
-            f"Loose domain and range alignment: min_out < min_in [{min_out} < {min_in}]"
-        )
-    if max_out < max_in:
-        warnings.warn(
-            f"Loose domain and range alignment: min_out < max_in [{max_out} < {max_in}]"
-        )
+    # if min_out < min_in:
+    #     warnings.warn(
+    #         f"Loose domain and range alignment: min_out < min_in [{min_out} < {min_in}]"
+    #     )
+    # if max_out < max_in:
+    #     warnings.warn(
+    #         f"Loose domain and range alignment: min_out < max_in [{max_out} < {max_in}]"
+    #     )
 
     x = min_in
     while x <= max_in:
-        lower_bound = min_out // x if min_out // x >= min_in else min_in
-        upper_bound = max_out // x if max_out // x <= max_in else max_in
+        lower_bound = min_in
+        if min_out // x >= min_in:
+            lower_bound = min_out // x
+
+        upper_bound = max_in
+        if max_out // x <= max_in:
+            upper_bound = max_out // x
+
+        # lower_bound = min_out // x if min_out // x >= min_in else min_in
+        # upper_bound = max_out // x if max_out // x <= max_in else max_in
         for y in range(lower_bound, upper_bound + 1):
-            if min_out <= (k := x * y) <= max_out:
+            prod = x * y
+            if min_out <= prod <= max_out:
                 yield (x, y)
-            if max_out < k:
+            if max_out < prod:
                 break
         x += 1
-
-
-# def truth_scope_batch(domain_: tuple[int,int], range_: tuple[int,int], chunk_size: int
-# ) -> Generator[list[tuple]]:
-#     """Yields list of tuples from domain such that it's product (ab) lies within range
-
-#     Domain: A tuple of integers representing the domain of input values.
-#     Range: A tuple of integers representing the range of output values.
-
-#     Yields tuple: (operand_a, operand_b)
-#     """
-
-#     if not all([isinstance(d, int) for d in domain_]):
-#         raise TypeError("Domain must be a tuple of integers.")
-#     if not all([isinstance(r, int) for r in range_]):
-#         raise TypeError("Range must be a tuple of integers.")
-
-#     min_in, max_in = domain_
-#     min_out, max_out = range_
-
-#     # improve error messages
-#     if min_in <= 0 or min_out <= 0:
-#         raise ValueError("Minimum input and output values must be greater than zero.")
-#     if min_in > max_in:
-#         raise ValueError("Minimum input value greater than maximum input value.")
-#     if min_out > max_out:
-#         raise ValueError("Minimum output greater than maximum output value.")
-#     if min_in > max_out:
-#         raise ValueError("Minimum input value greater than maximum output value.")
-#     if min_out > max_in:
-#         raise ValueError("Minimum output value greater than maximum input value.")
-#     ...
 
 
 def shallow_truth_table(scope: Generator[tuple], alg: Algorithm) -> Generator[Matrix]:
@@ -149,7 +131,7 @@ def _dataframe_entry_worker(a: int, b: int, alg: Algorithm) -> dict:
     for stage, matrix in alg.exec(a=a, b=b).items():
         for r, row in enumerate(matrix):
             for b, bit in enumerate(row[::-1]):
-                entry[f"s{stage}_p{r}_b{b}"] = 0 if bit in ["_", "0"] else 1
+                entry[f"s{stage}_p{r}_b{b}"] = 1 if bit == "1" else 0
     return entry
 
 
@@ -172,16 +154,6 @@ def truth_dataframe(scope: Generator[tuple[int, int]], alg: Algorithm) -> pd.Dat
         raise TypeError("Scope must be a generator.")
     if not isinstance(alg, Algorithm):
         raise TypeError(f"Expected Algorithm instance got {type(alg)}")
-
-    # -- old plan ---------------------------------------------------
-    # columns:: index | a | b | ppm_0 | ppm_1 | ... | ppm_s0 | ppm_s1 | ...
-    # ppm = partial product matrix, _<index> = row , _s<index> = formatted row
-    # df row = index | a | b | output | matrix[i]: int | ... | matrix[i]: str | ... |
-
-    # -- new multi-index plan ---------------------------------------
-    #               | ppm_0              | ppm_1              |
-    # index | a | b | b0 | b1 | ... | bn | b0 | b1 | ... | bn | ... | ppm_s0 | ppm_s1 | ...
-    # 0     | 0 | 5 | 0  | 0  | ... | 0  | 0  | 0  | ... | 0  | ... |'000...'|'000...'| ...
 
     # -- duplicate generators for each pool -------------------------
     from itertools import tee
@@ -215,3 +187,166 @@ def truth_dataframe(scope: Generator[tuple[int, int]], alg: Algorithm) -> pd.Dat
     table = pd.DataFrame(data, columns=col).astype("int8")
 
     return pd.concat([operand_columns, table, pretty_columns], axis=1)
+
+
+# ===================================================================
+
+
+def _multi_parquet_worker(gen: Generator, alg: Algorithm) -> pd.DataFrame:
+
+    operands = []
+    pretty = []
+    data = []
+
+    for a, b in gen:
+        operands.append((a, b, a * b))
+        entry = {}
+        pretty_matrix = []
+        for stage, matrix in alg.exec(a=a, b=b).items():
+            pretty_matrix.append(matrix.__str__().split("\n")[:-1])
+            for r, row in enumerate(matrix):
+                for b, bit in enumerate(row[::-1]):
+                    entry[f"s{stage}_p{r}_b{b}"] = 0 if bit in ["_", "0"] else 1
+        data.append(entry)
+        pretty.append(pretty_matrix)
+
+    col = [""] * ((len(alg) + 1) * alg.bits * (alg.bits << 1))
+    ppm_s_col = [""] * (len(alg) + 1)
+    n = 0
+    for i in range(len(alg) + 1):
+        for j in range(alg.bits):
+            for k in range((alg.bits << 1) - 1, -1, -1):
+                col[n] = f"s{i}_p{j}_b{k}"
+                n += 1
+        ppm_s_col[i] = f"ppm_s_{i}"
+
+    operand_columns = pd.DataFrame(
+        operands, columns=["a", "b", "output"], dtype="int32"
+    )
+    pretty_columns = pd.DataFrame(pretty, columns=ppm_s_col, dtype="str")
+    table = pd.DataFrame(data, columns=col).astype("int8")
+
+    return pd.concat([operand_columns, table, pretty_columns], axis=1)
+
+
+def _write_temp_pickle_atomic(obj: Algorithm) -> str:
+    # create temp file in same dir, write to a unique tmp file, then atomically move to final name
+    # avoids workers from racing and reading partial data
+    dirpath = tempfile.gettempdir()
+    final = Path(dirpath) / f"algorithm_sharedobj_{os.getpid()}.pkl"
+    tmp = Path(str(final) + ".writing")
+    try:
+        with open(tmp, "wb") as f:
+            pickle.dump(obj, f, protocol=pickle.HIGHEST_PROTOCOL)
+        # make atomic
+        os.replace(tmp, final)
+        os.chmod(final, 0o444)  # optional read-only
+        return str(final)
+    except Exception:
+        try:
+            tmp.unlink()
+        except Exception:
+            pass
+        raise
+
+
+def _load_shared_pickle(path: str):
+    with open(path, "rb") as f:
+        return pickle.load(f)
+
+
+def _truth_scope_worker(dir: Path, tmp_file: str, in_q: Queue, worker_id: int):
+    # print(f"worker {worker_id} started (pid {os.getpid()})", flush=True)
+    # process item
+    domain_, range_ = in_q.get()
+    algorithm = _load_shared_pickle(tmp_file)
+    if not isinstance(algorithm, Algorithm):
+        raise TypeError("Expected Algorithm instance")
+    gen = truth_scope(domain_, range_)
+    df = _multi_parquet_worker(gen, algorithm)
+    df.to_parquet(dir / f"part_{worker_id}_pid_{os.getpid()}.parquet")
+
+
+def _batch_producer(
+    gen: Generator,
+    out_q: Queue,
+    workers: list[Process],
+):
+    for item in gen:
+        out_q.put(item)
+    # send one sentinel per worker
+    for _ in range(len(workers)):
+        out_q.put(None)
+
+
+def _batch_truth_scope(
+    domain_: tuple[int, int], range_: tuple[int, int], workers: int
+) -> Generator[tuple[tuple[int, int], tuple[int, int]]]:
+
+    min_in, max_in = domain_
+    min_out, max_out = range_
+    batch_size = (max_out - min_out + 1) // workers
+
+    for w in range(workers):
+        r_min_chunk = min_out + w * batch_size
+        r_max_chunk = r_min_chunk + batch_size - 1
+        if r_max_chunk > max_out:
+            r_max_chunk = max_out
+        yield (domain_, (r_min_chunk, r_max_chunk))
+
+
+def truth_multi_parquet(
+    dir: Path | str,
+    domain_: tuple[int, int],
+    range_: tuple[int, int],
+    alg: Algorithm,
+    workers: int = cpu_count(),
+) -> None:
+    """Generate a truth table and save it to a multi-part Parquet directory.
+
+    Parameters
+    ----------
+    dir : Path | str
+        Directory to store multi-part .parquet files
+
+    domain_: tuple[int,int]
+        The maximum range of values operands a and b can be.
+
+    range_: tuple[int,int]
+        Limit a and b to range_min <= a * b <= range_max
+
+    alg : Algorithm
+        An instance of the Algorithm class.
+
+    workers : int=cpu_count()
+        number of .parquet files to create in parallel
+
+    """
+
+    if not isinstance(dir, Path):
+        dir = Path(dir)
+    if dir.suffix != "":
+        print(dir.suffix)
+        raise ValueError(f"Output directory {dir} must be a directory, not a file.")
+
+    dir.mkdir(parents=True)
+
+    alg_pkl_path = _write_temp_pickle_atomic(alg)
+
+    task_q = Queue(maxsize=workers)
+    procs = [
+        Process(target=_truth_scope_worker, args=(dir, alg_pkl_path, task_q, i))
+        for i in range(workers)
+    ]
+    for p in procs:
+        p.start()
+
+    _batch_producer(_batch_truth_scope(domain_, range_, workers), task_q, procs)
+
+    for p in procs:
+        p.join()
+
+    try:
+        os.unlink(alg_pkl_path)
+    except FileNotFoundError:
+        pass

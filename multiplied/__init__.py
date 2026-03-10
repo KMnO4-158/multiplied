@@ -3,10 +3,10 @@
 ##########################################################
 
 
-# -- version -----------------------------------------------------------
+# -- version --------------------------------------------------------
 
-__version_info__ = (0, 8, 0)
-__version__ = "0.8.0"
+__version_info__ = (0, 8, 1)
+__version__ = "0.8.1"
 
 # -- core -----------------------------------------------------------
 
@@ -24,6 +24,7 @@ from .core.matrix import (
     empty_rows,
     raw_empty_matrix,
     raw_zero_matrix,
+    matrix_scatter,
     matrix_merge,
 )
 
@@ -41,7 +42,6 @@ from .core.template import (
 from .core.algorithm import (
     Algorithm,
     hoist,
-    collect_arithmetic_units,
 )
 
 from .core.truth import (
@@ -49,6 +49,7 @@ from .core.truth import (
     truth_table,
     truth_dataframe,
     shallow_truth_table,
+    truth_multi_parquet,
 )
 
 
@@ -133,18 +134,19 @@ __all__ = [
     "empty_rows",
     "raw_empty_matrix",
     "raw_zero_matrix",
+    "matrix_scatter",
     "matrix_merge",
     "hoist",
-    "collect_arithmetic_units",
     "build_csa",
     "build_adder",
     "build_noop",
     "build_empty_slice",
     "resolve_pattern",
     "truth_scope",
-    "shallow_truth_table",
     "truth_table",
     "truth_dataframe",
+    "shallow_truth_table",
+    "truth_multi_parquet",
     "ischar",
     "isalpha",
     "ishex2",

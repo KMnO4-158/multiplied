@@ -32,7 +32,12 @@ class Algorithm:
     """
 
     def __init__(
-        self, bits: int, *, matrix: Any = None, saturation: bool = False, dadda=False
+        self,
+        bits: int,
+        *,
+        matrix: Any = None,
+        saturation: bool = False,
+        dadda: bool = False,
     ) -> None:
 
         mp.validate_bitwidth(bits)
@@ -55,7 +60,7 @@ class Algorithm:
             hoist(self.matrix)
         self.saturation = saturation
         if self.saturation:
-            self.__clamp_bitwidth()
+            self._clamp_bitwidth()
 
         # -- TODO: update this when anything is modified ------------
         # create update() function
@@ -63,7 +68,7 @@ class Algorithm:
         return None
 
     def push(
-        self, source: mp.Template | mp.Pattern, map_: Any = None, dadda=False
+        self, source: mp.Template | mp.Pattern, map_: Any = None, dadda: bool = False
     ) -> None:
         """Populate algorithm stage based on template. Generates pseudo
         result to represent output matrix
@@ -106,14 +111,14 @@ class Algorithm:
         if isinstance(source, mp.Pattern):
             template = mp.Template(source)
         elif isinstance(source, mp.Template):
-            template = source
+            template = deepcopy(source)
         else:
             raise TypeError("Invalid argument type. Expected mp.Template")
 
-        if not isinstance(template.result, list):
+        if not isinstance(template.result, (mp.Matrix)):
             raise ValueError("Template result is unset")
 
-        result = mp.Matrix(template.result)
+        result = template.result
         res_copy = deepcopy(result)
         stage_index = len(self.algorithm)
         if not map_ and result:
@@ -133,7 +138,7 @@ class Algorithm:
         self.algorithm[stage_index] = stage
         return None
 
-    def __clamp_bitwidth(self) -> bool:
+    def _clamp_bitwidth(self) -> bool:
         """Saturates matrix if current matrix has carried past original bitwidth"""
 
         boundary = (2**self.bits) - 1
@@ -153,10 +158,7 @@ class Algorithm:
     # ! Matrix.x_checksum is only useful in the context of Algorithm.__reduce()
     # - Maybe use bounds to create x_checksum within __reduce()'s unit collection
     # - OR within, the same scope, use bounds to execute a given arithmetic unit
-    # ---------------------------------------------------------------
-    # Mangled as execution order is sensitive and __reduce should only
-    # be called by the algorithm itself via: self.step(), or self.exec()
-    def __reduce(self) -> None:
+    def _reduce(self) -> None:
         """use template or pattern to reduce a given matrix."""
         from copy import copy
 
@@ -175,7 +177,7 @@ class Algorithm:
         #   ...00101010... | ...________...
         #
         # run = 2:
-        #   binary adder: carry generates through propagates, with a
+        #   binary adder: generates carry through propagates, with a
         #   final carry extending past original width.
         #
         #   [input-------] | [output------]
@@ -183,27 +185,28 @@ class Algorithm:
         #   ...00101010... | ...________...
 
         # -- isolate units -----------------------------------------
-        # ! Implement result bounding box to create single point of truth ! #
-        # - currently every stage of every matrix reduction needs to resolve
-        #   conflicts dynamically before merging vs doing so once via the
-        #   resultant template
-        bounds: dict = self.algorithm[self.state]["template"].bounds
+
+        bounds = self.algorithm[self.state]["template"].bounds
+        units = mp.matrix_scatter(self.matrix.matrix, bounds)
+
         # -- reduce -------------------------------------------------
         n = self.bits << 1
         results = {}
         chars = list(bounds.keys())
-        chars.remove("_")
         for ch in chars:
             base_index = bounds[ch][0][1]
+            matrix = units[ch]
+
             match bounds[ch][-1][1] - bounds[ch][0][1] + 1:  # row height
                 case 1:  # NOOP
-                    output = [copy(self.matrix[base_index][0])]
+                    output = results[ch] = mp.Matrix(matrix)
+                    continue
 
                 case 2:  # ADD
                     # TODO: make use of checksums or use bounds
 
-                    operand_a = copy(self.matrix[base_index][0])
-                    operand_b = copy(self.matrix[base_index + 1][0])
+                    operand_a = copy(matrix[base_index])
+                    operand_b = copy(matrix[base_index + 1])
                     checksum = [False] * n
 
                     # -- skip empty rows ----------------------------
@@ -239,9 +242,10 @@ class Algorithm:
 
                 case 3:  # CSA
                     # TODO: make use of checksums or use bounds
-                    operand_a = copy(self.matrix[base_index][0])
-                    operand_b = copy(self.matrix[base_index + 1][0])
-                    operand_c = copy(self.matrix[base_index + 2][0])
+                    operand_a = copy(matrix[base_index])
+                    operand_b = copy(matrix[base_index + 1])
+                    operand_c = copy(matrix[base_index + 2])
+
                     empty = False
                     output = [["_"] * n, ["_"] * n]
                     start = 0
@@ -283,11 +287,14 @@ class Algorithm:
                             output[0][i] = "1" if csa_sum & 1 else "0"
                             output[1][i - 1] = "1" if csa_sum & 2 else "0"
                         except IndexError:
-                            continue
+                            pass
                 case _:
-                    raise ValueError(
-                        f"Unsupported unit type, len={bounds[ch][-1][1] - bounds[ch][0][1]}"
-                    )
+                    if ch != "_":
+                        raise ValueError(
+                            f"Unsupported unit type, len={bounds[ch][-1][1] - bounds[ch][0][1]}"
+                        )
+                    results[ch] = mp.Matrix(matrix)
+                    continue
 
             # -- build unit into matrix -----------------------------
             unit_result = [[]] * self.bits
@@ -302,11 +309,6 @@ class Algorithm:
                 unit_result[i] = ["_"] * n
                 i += 1
             results[ch] = mp.Matrix(unit_result)
-
-        # -- merge units to matrix ----------------------------------
-        # Merge in any order, checking for overlaps between borders
-        # resolve conflicts by summing present bit positions and shifting
-        # a target unit's bit
 
         # ! difficult sanity checks --------------------------------- ! #
         # Complex scenarios, where NOOP, CSA and ADD units intersect
@@ -331,8 +333,10 @@ class Algorithm:
         # This functionality to be implemented at a later date.
 
         # -- merge --------------------------------------------------
+        re_bounds = self.algorithm[self.state]["template"].re_bounds
+
         if 1 < len(results):
-            self.matrix = mp.matrix_merge(results, bounds)
+            self.matrix = mp.matrix_merge(results, re_bounds)
         else:
             self.matrix = list(results.values())[0]
 
@@ -390,8 +394,8 @@ class Algorithm:
             print("Algorithm completed")
             return self.matrix
         if self.saturation:
-            self.__clamp_bitwidth()
-        self.__reduce()
+            self._clamp_bitwidth()
+        self._reduce()
         self.state += 1
 
         # getattr for matrix, template and map to peek algorithm
@@ -424,9 +428,9 @@ class Algorithm:
         truth = {0: self.matrix}
         self.state = 0
         for n in range(len(self.algorithm)):
-            self.__reduce()
+            self._reduce()
             self.state += 1
-            if self.saturation and self.__clamp_bitwidth():
+            if self.saturation and self._clamp_bitwidth():
                 for i in range(n, len(self.algorithm)):
                     truth[i + 1] = deepcopy(self.matrix)
                 break
@@ -469,16 +473,6 @@ class Algorithm:
 
 
 # -- helper functions -----------------------------------------------
-
-
-# TODO: low priority
-def collect_arithmetic_units(
-    source: mp.Matrix, bounds: dict[str, list[tuple[int, int]]]
-) -> list[mp.Matrix]:
-    """
-    Extract arithmetic units from source template into a list of templates.
-    """
-    ...
 
 
 # TODO: implement x_checksum (current checksum is y_checksum)
@@ -525,12 +519,12 @@ def collect_template_units(
         i = 0  # coordinate index
         expected_y = None
         while i < len(bounds[ch]) - 1:
-            # -- intra-row boundary -------------------------------------- #
+            # == intra-row boundary ================================= #
             # bound[list_of_points][coord_i][y-axis]
             # "if 2 < points have the same y for a given unit"
             if 2 < sum([p[1] == bounds[ch][i][1] for p in bounds[ch]]):
                 raise ValueError(f"Multiple arithmetic units found for unit '{ch}'")
-            # ------------------------------------------------------------ #
+            # ======================================================= #
             start = bounds[ch][i]
             end = bounds[ch][i + 1]
             if start[1] != end[1]:
@@ -543,14 +537,14 @@ def collect_template_units(
             for x in range(start[0], end[0] + 1):
                 matrix[start[1]][x] = next(tff)
 
-            # -- inter-row boundary test --------------------------------- #
+            # == inter-row boundary test ============================ #
             if expected_y is not None and expected_y != start[1]:
                 raise ValueError(
                     f"Arithmetic unit '{ch}' spans multiple rows. "
                     f"Expected row {expected_y}, got row {start[1]}"
                 )
             expected_y = start[1] + 1
-            # ------------------------------------------------------------ #
+            # ======================================================= #
 
             i += 2
         units[ch] = mp.Template(matrix)

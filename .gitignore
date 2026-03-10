@@ -1,6 +1,8 @@
 # [Environmental]
 *.egg-info
 *.venv
+codebook.toml
+.codebook.toml
 
 # [Redundant]
 *.python-version

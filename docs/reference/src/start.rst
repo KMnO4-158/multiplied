@@ -26,7 +26,7 @@ Installation
 
         .. code:: sh
 
-            pip install multiplied@git+https://github.com/EphraimCompEng/multiplied.git
+            pip install multiplied@git+https://github.com/KMnO4-158/multiplied.git
 
 Verify
 ------
@@ -41,7 +41,7 @@ Tutorials
 ---------
 
 .. grid:: 2
-    :gutter: 4
+    :gutter: 3
 
     .. grid-item-card:: Multiplied Quickstart
         :link: guide/quickstart.html

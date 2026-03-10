@@ -2,6 +2,7 @@
 # Classes to Represent And Manage Nested Lists #
 ################################################
 
+from copy import deepcopy
 import multiplied as mp
 from typing import Any, Iterator
 
@@ -406,10 +407,12 @@ def matrix_merge(
     ----------
     source : dict[str, Matrix]
         A dictionary of matrices to merge
+
     bounds : dict[str, list[tuple[int, int]]]
         A dictionary of bounds for each matrix
-    carry : bool=True, optional
-        Whether to carry over the carry bit, by default True
+
+    carry : bool=True, optional, default: True
+        Whether to carry over the carry bit
 
     Returns
     -------
@@ -417,11 +420,11 @@ def matrix_merge(
 
     Examples
     --------
-    >>> source = {'A': Matrix([[1, 2], [3, 4]]), 'B': Matrix([[5, 6], [7, 8]])}
-    >>> bounds = {'A': [(0, 1), (2, 3)], 'B': [(0, 1), (2, 3)]}
+    >>> source = {'A': Matrix([[1, _], [3, _]]), 'B': Matrix([[_, 6], [_, 8]])}
+    >>> bounds = {'A': [(0, 0), (0, 0), (1, 1), (1, 1)],
+    >>>           'B': [(0, 1), (0, 1), (0, 1), (0, 1)]}
     >>> matrix_merge(source, bounds)
-    Matrix([[1, 2, 5, 6], [3, 4, 7, 8], [5, 6, 1, 2], [7, 8, 3, 4]])
-    .. warning:: simplified example, 2-bit operations are not supported
+    Matrix([[1, 6], [4, 8]])
 
     """
     if not isinstance(source, dict):
@@ -430,7 +433,7 @@ def matrix_merge(
         raise TypeError("All values of source must be of type Matrix")
     if len(source) < 2:
         raise ValueError("Source must contain at least two matrices")
-    if len(bounds) - 1 != len(source):
+    if len(bounds) != len(source):
         # new error message needed
         raise ValueError("Source must contain the same number of matrices as bounds")
 
@@ -451,10 +454,116 @@ def matrix_merge(
                 raise ValueError(f"Missing bound pair for row {y}")
             for j in range(box_left, box_right + 1):
                 output[y][j] = matrix.matrix[y][j]
-            if bounds[unit][-1][1] - bounds[unit][0][1] == 1:
-                if y == bounds[unit][0][1] and 0 <= box_left - 1:
-                    cout = box_left - 1
-                    output[y][cout] = matrix.matrix[y][cout]
 
             i += 2
     return Matrix(output)
+
+
+def matrix_scatter(
+    source: list[list], bounds: dict[str, list[tuple[int, int]]], fmt: str = "auto"
+) -> dict[str, list[list]]:
+    """Return list of matrices containing subset of source matrix based on provided bounds.
+
+    Parameters
+    ----------
+    source : list[list]
+        Partial Product matrix to scatter.
+
+    bounds : dict[str, list[tuple[int, int]]]
+        The bounds for each unit to extract from the source.
+
+    fmt : str, optional, default: "auto".
+        "auto" : Infer format from source.
+        "empty" : :func:`raw_empty_matrix`
+        "zero" : :func:`raw_zero_matrix`
+        "map" : :func:`raw_map_matrix`
+
+    Returns
+    -------
+    dict[str, list[list]]
+        A dictionary of matrices containing the subset of source based on the provided bounds.
+
+    Notes
+    -----
+    Each unit is extracted and placed at the same position within an initialised matrix
+    with the same shape as the source.
+
+    See also
+    --------
+    :func:`collect_template_units` for bound extraction
+
+    Examples
+    --------
+    >>> source = [[0, 1, 2],
+    >>>           [3, 4, 5],
+    >>>           [6, 7, 8]]
+    >>> bounds = {"A": [(0, 0), (0, 1)],
+    >>>           "B": [(1, 1), (1, 2)]}
+    >>> matrix_scatter(source, bounds, fmt=empty)
+    [[[0, 1, _], [_, _, _], [_, _, _]],
+     [[_, _, _], [_, 4, 5], [_, _, _]]]
+
+    """
+
+    if isinstance(bounds, dict):
+        if not all([mp.ischar(k) for k in bounds.keys()]):
+            raise ValueError("Unrecognised Bounds")
+    else:
+        raise TypeError(f"Expected Dict got {type(bounds)}")
+
+    if not isinstance(source, list) and not all(
+        [isinstance(row, list) for row in source]
+    ):
+        raise TypeError(f"Expected List[List] got {type(source)}")
+
+    if fmt == "auto":
+        _litmus = source[0][0]
+        if mp.ischar(_litmus) or (
+            mp.isint(_litmus) and (_litmus == "0" or _litmus == "1")
+        ):
+            fmt = "empty"
+        elif mp.ishex2(_litmus):
+            fmt = "map"
+        else:
+            fmt = "zero"
+
+    match fmt:
+        case "empty":
+            dest_matrix = [["_" for _ in row] for row in source]
+        case "zero":
+            dest_matrix = [["0" for _ in row] for row in source]
+        case "map":
+            dest_matrix = [["00" for _ in row] for row in source]
+        case _:
+            raise ValueError(f"Unrecognised fmt: {fmt}")
+
+    allchars = list(bounds.keys())
+
+    output = {}
+    for ch in allchars:
+        if len(bounds[ch]) % 2 != 0:
+            raise ValueError(f"Odd number of bounds for {ch}")
+
+        dest_matrix_copy = deepcopy(dest_matrix)
+
+        i = 0
+        while i < len(bounds[ch]):
+            if bounds[ch][i][1] != bounds[ch][i + 1][1]:
+                _start = bounds[ch][i]
+                _end = bounds[ch][i + 1]
+                raise ValueError(
+                    f"Bounding box error for unit '{ch}' "
+                    f"Points:{_start}, {_end}, error:  {_start[1]} != {_end[1]}"
+                )
+            start = bounds[ch][i][0]
+            end = bounds[ch][i + 1][0]
+            row = bounds[ch][i][1]
+
+            for col in range(start, end + 1):  # include end
+                dest_matrix_copy[row][col] = source[row][col]
+
+            i += 2
+
+        output[ch] = dest_matrix_copy
+
+    return output
