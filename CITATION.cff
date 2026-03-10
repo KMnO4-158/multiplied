@@ -5,7 +5,7 @@ type: software
 authors:
   - given-names: Ephraim
     family-names: M
-repository-code: 'https://github.com/EphraimCompEng/multiplied'
+repository-code: 'https://github.com/KMnO4-158/multiplied'
 abstract: >-
   multiplied is a powerful tool to build, test, and analyse multiplier designs.
 keywords:
@@ -15,4 +15,4 @@ keywords:
   - data analysis
   - simulation
 license: AGPL-3.0-or-later
-version: 0.8.0
+version: 0.8.1

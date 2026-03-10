@@ -1,6 +1,6 @@
 [project]
 name = "multiplied"
-version = "0.8.0"
+version = "0.8.1"
 description = "A powerful tool to build, test, and analyse multiplier designs."
 readme = "README.md"
 license = "AGPL-3.0-or-later"
@@ -8,18 +8,17 @@ license-files = ["LICENSE"]
 requires-python = ">=3.13"
 dependencies = [
     "matplotlib>=3.10.8",
-    "numba>=0.64.0",
     "pandas>=3.0.0",
     "pyarrow>=23.0.0",
     "toml>=0.10.2",
 ]
 
 [project.urls]
-Homepage = "https://github.com/EphraimCompEng/multiplied"
-Issues = "https://github.com/EphraimCompEng/multiplied/issues"
+Homepage = "https://github.com/KMnO4-158/multiplied"
+Issues = "https://github.com/KMnO4-158/multiplied/issues"
 
 [build-system]
-requires = ["uv_build>=0.9.18,<0.10.0"]
+requires = ["uv_build>=0.9.18,<0.10.8-1"]
 build-backend = "uv_build"
 
 [tool.uv.build-backend]
