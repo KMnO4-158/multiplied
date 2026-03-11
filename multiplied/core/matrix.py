@@ -241,14 +241,16 @@ class Matrix:
             rmap.append(f"{val:02X}"[-2:])
         return mp.Map(rmap)
 
-    # ! Update to use checksums  or coordinates
-    def apply_map(self, map_: mp.Map) -> None:
+    def apply_map(self, map_: mp.Map, *, unified_bounds: dict[str, list[int]] = {}) -> None:
         """Use Multiplied Map object to apply mapping to matrix
 
         Parameters
         ----------
         map_ : Map
             Map object containing the generated row mapping
+
+        bounds : dict[str: list[int]]
+            Unified bounds for all arithmetic units
 
         Returns
         -------
@@ -268,6 +270,8 @@ class Matrix:
             # matrix = deepcopy(self.matrix) # TODO make this modify in-place
             for i in range(self.bits):
                 # convert signed hex to 2s complement if -ve
+                if rmap[i] == "00":
+                    continue
                 if (val := int(rmap[i], 16)) & 128:
                     val = (~val + 1) & 255  # 2s complement
                 # matrix[i]     = ["_"] * (self.bits*2)
@@ -276,15 +280,14 @@ class Matrix:
                     self.matrix[i - val],
                 )
 
-                # deprecate checksum in favor of coordinates
-                # self.y_checksum[i]     = 0
-                # self.y_checksum[i-val] = 1
-            # self.matrix = matrix
-
             return None
 
+        # -- bounding box mapping -----------------------------------
+
+
+
         # -- bit-wise mapping ---------------------------------------
-        # TODO Update to use coordinates -- way too expensive currently
+        # Expensive fallback
         for y in range(self.bits):
             for x in range(self.bits << 1):
                 # convert signed hex to 2s complement if -ve
