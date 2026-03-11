@@ -214,7 +214,7 @@ class Pattern:
 
     def __init__(self, pattern: list[str]):
         if not (isinstance(pattern, list) and all(ischar(row) for row in pattern)):
-            raise ValueError("Error: Invalid pattern format. Expected list[char]")
+            raise ValueError("Invalid pattern format. Expected list[char]")
         self.pattern = pattern
         self.bits = len(pattern)
 
