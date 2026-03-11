@@ -47,14 +47,14 @@ def apply_complex_map(matrix: mp.Matrix, map: mp.Map, bounds: dict) -> None:
 
     Parameters
     ----------
-    bounds : dict
-        Bounding box for each arithmetic unit in Template object
-
     matrix : mp.Matrix
         Matrix to apply mapping to
 
     map : mp.Map
         Multiplied Map object to apply mapping from
+
+    bounds : dict[str: list[int]]
+        Unified bounds for all arithmetic units
     """
     if not all([isinstance(r, int) for r in bounds]):
         raise TypeError("Expected all row bounds to be integers")
