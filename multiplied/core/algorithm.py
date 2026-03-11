@@ -242,9 +242,9 @@ class Algorithm:
 
                 case 3:  # CSA
                     # TODO: make use of checksums or use bounds
-                    operand_a = copy(matrix[base_index])
-                    operand_b = copy(matrix[base_index + 1])
-                    operand_c = copy(matrix[base_index + 2])
+                    operand_a = matrix[base_index]
+                    operand_b = matrix[base_index + 1]
+                    operand_c = matrix[base_index + 2]
 
                     empty = False
                     output = [["_"] * n, ["_"] * n]
