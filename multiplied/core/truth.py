@@ -44,7 +44,7 @@ def truth_scope(
         raise ValueError("Minimum input and output values must be greater than zero.")
     if (min_in > max_in) or (min_out > max_out):
         raise ValueError(
-            "Domain: (a, b) and range: (c, d) must satisfy a <= b and c <= d."
+            f"Domain: {domain_} and range: {range_} must satisfy a <= b and c <= d."
         )
 
     if max_in**2 < min_out:
@@ -285,14 +285,50 @@ def _batch_truth_scope(
 
     min_in, max_in = domain_
     min_out, max_out = range_
-    batch_size = (max_out - min_out + 1) // workers
 
+    if (max_in - min_in)**2 < 1000 or (max_out - min_out) < 100 or workers == 1:
+        yield (domain_, range_)
+        return
+
+    batch_size = (max_out - min_out + 1) // workers
+    scale = 0.95 - (max_in - min_in)/(max_out - min_out)/2
+
+    offset = int((batch_size + 1) * scale)
+    balance = [0] * workers
+    for i in range(workers >> 1):
+        if i == 0:
+            balance[i] = -(offset >> 1)
+            continue
+        balance[i] = -(offset >> i)
+
+    for i in range(workers >> 1):
+        balance[-i - 1] = abs(balance[i])
+
+    r_min_chunk = min_out
     for w in range(workers):
-        r_min_chunk = min_out + w * batch_size
-        r_max_chunk = r_min_chunk + batch_size - 1
+        r_max_chunk = r_min_chunk + (w + batch_size ) - 1  + balance[w]
         if r_max_chunk > max_out:
             r_max_chunk = max_out
-        yield (domain_, (r_min_chunk, r_max_chunk))
+
+        adjust_min_in = int(r_min_chunk ** (1/2))
+        yield ((adjust_min_in, max_in), (r_min_chunk, r_max_chunk))
+        r_min_chunk = r_max_chunk + 1
+
+
+# def _batch_truth_scope(
+#     domain_: tuple[int, int], range_: tuple[int, int], workers: int
+# ) -> Generator[tuple[tuple[int, int], tuple[int, int]]]:
+
+#     min_in, max_in = domain_
+#     min_out, max_out = range_
+#     batch_size = (max_out - min_out + 1) // workers
+
+#     for w in range(workers):
+#         r_min_chunk = min_out + w * batch_size
+#         r_max_chunk = r_min_chunk + batch_size - 1
+#         if r_max_chunk > max_out:
+#             r_max_chunk = max_out
+#         yield (domain_, (r_min_chunk, r_max_chunk))
 
 
 def truth_multi_parquet(
