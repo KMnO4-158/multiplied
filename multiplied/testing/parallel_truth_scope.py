@@ -1,6 +1,8 @@
+from time import perf_counter
 from typing import Generator
+import warnings
 import multiplied as mp
-from pathlib import Path
+# from pathlib import Path
 
 
 
@@ -8,167 +10,140 @@ def _batch_truth_scope(
     domain_: tuple[int, int], range_: tuple[int, int], workers: int
 ) -> Generator[tuple[tuple[int, int], tuple[int, int]]]:
     from math import log2
-    if workers % 2 != 0:
-        raise ValueError("workers must be even")
-    if workers > 64:
-        raise ValueError("workers must be less than or equal to 64")
 
+    print(domain_, range_, log2(range_[1] + 1))
     min_in, max_in = domain_
     min_out, max_out = range_
 
-    if (max_in - min_in)**2 < 1000 or (max_out - min_out) < 100 or workers == 1:
+    slope = (max_in - min_in) / (max_out - min_out)
+    print(slope)
+
+    if (max_in - min_in)**2 < 1000 or (max_out - min_out) < 256:
+        if workers > 1:
+            warnings.warn("workers > 1 not recommended for small domains/ranges")
         yield (domain_, range_)
         return
 
-    # chosen heuristics are a band-aid until a proper solution is found
-    print(1.04 - (1/log2(max_in - min_in))/1)
-    scale = 1.04 - (1/log2(max_in - min_in))/1  # heuristic
-    # scale = 0.5
-    print((max_in - min_in)**2)
-    print((max_out - min_out)**2)
-
 
     if workers == 2:
-        adjusted_min_out = int((max_out - min_out) / (5 * scale))  # heuristic
+        adjusted_min_out = int((max_out - min_out) >> int(2 / (1 + slope)))  # heuristic
         yield (domain_, (min_out, adjusted_min_out) )
         yield (domain_, (adjusted_min_out + 1, max_out))
         return
 
-    batch_size = (max_out - min_out + 1) // workers
+    in_batch_size = (max_in - min_in + 1) // workers
+    out_batch_size = (max_out - min_out + 1) // workers
+    print(f"in batch: {in_batch_size}")
+    print(f"out batch: {out_batch_size}")
 
-    offset = int((batch_size + 1) * scale)
-    balance = [0] * workers
 
-    for i in range(workers):
-        if i == 0:
-            balance[i] = -int(offset *(scale))
-            continue
-        balance[i] = balance[i - 1] + (int(offset*(scale)) >> (i + 3))
+    first_last_ratio = in_batch_size / out_batch_size
+    print(first_last_ratio)
+
+
+    # heuristic balances operands / batch ===========================
+    #
+    # The first batch of a given scope(DOMAIN, RANGE), will always
+    # produce the most operands. For complete truth tables the
+    # difference is at least one order of magnitude.
+    #
+    # Using an estimate (acc)
+    #
+
+    balance = [0] * workers  # heuristic scaling per batch
+
+    # -- approximate operands in first batch ------------------------
+    acc = 0
+    for n in range(min_out, max_out + 1):
+        # over/under estimate is accounted for later
+        acc += (out_batch_size//n)
+    print(acc)
+
+    # -- distribute linear offsets ----------------------------------
+    for i in range((workers)):
+        balance[i] = -int(((acc) * (1 - (slope))) // ((i + 12)))
+
+    print(((max_in - min_in + 2) >> workers ))
+    # -- distribute dyadic (?) offsets ------------------------------
+    for i in range((workers) >> ((max_in - min_in + 2) >> workers )):
+        balance[-i - 1] += int(((acc) * (1 - slope))) >> (i + 3)
+
+
+    print(sum(balance))
+
+    # -- clamp to original range ------------------------------------
+    rem = -sum(balance)
+
+    # domain far from range
+    if slope < 0.01:
+        for i in range((workers)):
+            balance[-i - 1] += (rem >> int(log2(workers) + i))
+
+        final = sum(balance)
+        balance[-1] += -int(final * 0.95) + 1  # collect 95% of remainder to final batch
+        balance[(workers >> 1) -1] += -int(final * 0.05) # 5% applied to low midpoint
+
+    # domain close to range
+    else:
+        for i in range((workers)):
+            balance[i] += (rem >> int(log2(workers)))
+
+    print("rem", rem)
+    print(sum(balance))
+    # ==============================================================
+
 
     print(balance)
-    print("balance", sum(balance))
-    # dist = -int(sum(balance) // ((workers + 2) * scale))
-    dist = -int(sum(balance)) // workers
-    print("dist", dist)
-    for i in range(workers):
-        balance[-i - 1] += dist # >> int(i*scale)
-        # balance[i] -= dist
-
-    print("balance", sum(balance))
-    rem = sum(balance)
-    print("remainder", rem)
-    if rem < 0:
-        # balance[0] -= int(rem*(1-scale))
-        balance[-1] -= int(rem*scale)
-    print(balance)
-
-    # for i in range(workers >> 1):
-    #     if i == 0:
-    #         balance[i] = -(offset >> 1)
-    #         continue
-    #     balance[i] = -(offset >> i)
-
-    # for i in range(workers >> 1):
-    #     balance[-i - 1] = abs(balance[i])
-
-
-    print(batch_size, domain_, range_)
 
     r_min_chunk = min_out
     for w in range(workers):
-        r_max_chunk = r_min_chunk + (w + batch_size ) - 1  + balance[w]
-        if r_max_chunk > max_out:
-            r_max_chunk = max_out
-
-
-        adjust_min_in = int(r_min_chunk ** (1/2))
-        yield ((adjust_min_in, max_in), (r_min_chunk, r_max_chunk))
-        r_min_chunk = r_max_chunk + 1
-
-
-
-def batch_truth_scope(
-    domain_: tuple[int, int], range_: tuple[int, int], workers: int
-) -> Generator[tuple[tuple[int, int], tuple[int, int]]]:
-
-    min_in, max_in = domain_
-    min_out, max_out = range_
-    total = max_out - min_out + 1
-
-    base = total // workers                      # base size per worker
-    rem = total % workers                        # remainder to distribute
-
-    start = min_out
-    for w in range(workers):
-        size = base + (1 if w < rem else 0)      # give one extra to first 'rem' workers
-        if size <= 0:
-            r_min_chunk = r_max_chunk = start - 1  # empty chunk if more workers than items
+        if w == 0:
+            r_max_chunk = out_batch_size  + balance[w]
         else:
-            r_min_chunk = start
-            r_max_chunk = start + size - 1
-            start = r_max_chunk + 1
+            r_max_chunk = r_min_chunk + out_batch_size + balance[w]
         if r_max_chunk > max_out:
             r_max_chunk = max_out
 
-        adjust_min_in = int(r_min_chunk ** (1/2))
-        yield ((adjust_min_in, max_in), (r_min_chunk, r_max_chunk))
-
-
+        adjust_max_in = min(max_in, r_max_chunk)
+        yield ((min_in, adjust_max_in), (r_min_chunk, r_max_chunk))
+        r_min_chunk = r_max_chunk + 1
 
 
 def main() -> None:
     from multiplied.core.truth import truth_multi_parquet
-    from time import perf_counter
     import pandas as pd
+    from pathlib import Path
 
 
     DOMAIN = (1, (2**8) - 1)
     RANGE = (1, (2**16) - 1)
     WORKERS = 8
 
-    offset = (RANGE[1] + 1)// WORKERS
 
-    balance = [0] * WORKERS
 
+    # offset = (RANGE[1] + 1)// WORKERS
+    # balance = [0] * WORKERS
     # balance = [-(offset) >> i for i in range(WORKERS)]
     # print(balance)
 
     # for i in _batch_truth_scope(DOMAIN, RANGE, WORKERS):
     #     print(i)
-
     # count = 0
+    # operands = set()
     # start = perf_counter()
     # for i in _batch_truth_scope(DOMAIN, RANGE, WORKERS):
-    #     scope_len = len(list(mp.truth_scope(i[0], i[1])))
-    #     print(scope_len)
-    #     count += scope_len
+    #     scope = list(mp.truth_scope(i[0], i[1]))
+    #     count += len(scope)
+    #     print(len(scope))
+    #     operands |= set(scope)
     # end = perf_counter()
     # print(f"Elapsed: {end - start}s")
     # start = end
     # print(count)
-
+    # print(len(operands))
 # -------------------------------------------------------------------
 
-    """
 
-    ((1, 255), (1, 8192))
-    ((1, 255), (8193, 16384))
-    ((1, 255), (16385, 24576))
-    ((1, 255), (24577, 32768))
-    ((1, 255), (32769, 40960))
-    ((1, 255), (40961, 49152))
-    ((1, 255), (49153, 57344))
-    ((1, 255), (57345, 65535))
-    24952
-    13838
-    9542
-    6775
-    4687
-    3049
-    1678
-    504
-
-    """
 
     # for i in batch_truth_scope(DOMAIN, RANGE, WORKERS):
     #     print(i)
@@ -182,7 +157,7 @@ def main() -> None:
     alg = mp.Algorithm(8)
     alg.auto_resolve_stage()
 
-    path = Path(__file__).parent.parent.parent / "examples/datasets/test_multi_new_batch_width"
+    path = Path(__file__).parent.parent.parent / "examples/datasets/test_multi_balanced_batch"
 
     start = perf_counter()
     truth_multi_parquet(path, DOMAIN, RANGE, alg)

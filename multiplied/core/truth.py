@@ -282,53 +282,88 @@ def _batch_producer(
 def _batch_truth_scope(
     domain_: tuple[int, int], range_: tuple[int, int], workers: int
 ) -> Generator[tuple[tuple[int, int], tuple[int, int]]]:
+    from math import log2
+    import warnings
 
     min_in, max_in = domain_
     min_out, max_out = range_
 
-    if (max_in - min_in)**2 < 1000 or (max_out - min_out) < 100 or workers == 1:
+    slope = (max_in - min_in) / (max_out - min_out)
+
+    if (max_in - min_in)**2 < 1000 or (max_out - min_out) < 256:
+        if workers > 1:
+            warnings.warn("workers > 1 not recommended for small domains/ranges")
         yield (domain_, range_)
         return
 
-    batch_size = (max_out - min_out + 1) // workers
-    scale = 0.95 - (max_in - min_in)/(max_out - min_out)/2
+    if workers == 2:
+        adjusted_min_out = int((max_out - min_out) >> int(2 / (1 + slope)))  # heuristic
+        yield (domain_, (min_out, adjusted_min_out) )
+        yield (domain_, (adjusted_min_out + 1, max_out))
+        return
 
-    offset = int((batch_size + 1) * scale)
-    balance = [0] * workers
-    for i in range(workers >> 1):
-        if i == 0:
-            balance[i] = -(offset >> 1)
-            continue
-        balance[i] = -(offset >> i)
 
-    for i in range(workers >> 1):
-        balance[-i - 1] = abs(balance[i])
+
+    # heuristic balances operands / batch ===========================
+    #
+    # The first batch of a given scope(DOMAIN, RANGE), will always
+    # produce the most operands. For complete truth tables the
+    # difference is at least one order of magnitude.
+    #
+    # Using an estimate (acc)
+    #
+
+    balance = [0] * workers  # heuristic scaling per batch
+
+    # -- approximate operands in first batch ------------------------
+    out_batch_size = (max_out - min_out + 1) // workers
+
+    acc = 0
+    for n in range(min_out, max_out + 1):
+        # over/under estimate is accounted for later
+        acc += (out_batch_size//n)
+
+    # -- distribute linear offsets ----------------------------------
+    for i in range((workers)):
+        balance[i] = -int(((acc) * (1 - (slope))) // ((i + 12)))
+
+    # -- distribute dyadic (?) offsets ------------------------------
+    for i in range((workers) >> ((max_in - min_in + 2) >> workers )):
+        balance[-i - 1] += int(((acc) * (1 - slope))) >> (i + 3)
+
+
+
+    # -- clamp to original range ------------------------------------
+    rem = -sum(balance)
+
+    # domain far from range
+    if slope < 0.01:
+        for i in range((workers)):
+            balance[-i - 1] += (rem >> int(log2(workers) + i))
+
+        final = sum(balance)
+        balance[-1] += -int(final * 0.95) + 1  # collect 95% of remainder to final batch
+        balance[(workers >> 1) -1] += -int(final * 0.05) # 5% applied to low midpoint
+
+    # domain close to range
+    else:
+        for i in range((workers)):
+            balance[i] += (rem >> int(log2(workers)))
+
+    # ==============================================================
 
     r_min_chunk = min_out
     for w in range(workers):
-        r_max_chunk = r_min_chunk + (w + batch_size ) - 1  + balance[w]
+        if w == 0:
+            r_max_chunk = out_batch_size  + balance[w]
+        else:
+            r_max_chunk = r_min_chunk + out_batch_size + balance[w]
         if r_max_chunk > max_out:
             r_max_chunk = max_out
 
-        adjust_min_in = int(r_min_chunk ** (1/2))
-        yield ((adjust_min_in, max_in), (r_min_chunk, r_max_chunk))
+        adjust_max_in = min(max_in, r_max_chunk)
+        yield ((min_in, adjust_max_in), (r_min_chunk, r_max_chunk))
         r_min_chunk = r_max_chunk + 1
-
-
-# def _batch_truth_scope(
-#     domain_: tuple[int, int], range_: tuple[int, int], workers: int
-# ) -> Generator[tuple[tuple[int, int], tuple[int, int]]]:
-
-#     min_in, max_in = domain_
-#     min_out, max_out = range_
-#     batch_size = (max_out - min_out + 1) // workers
-
-#     for w in range(workers):
-#         r_min_chunk = min_out + w * batch_size
-#         r_max_chunk = r_min_chunk + batch_size - 1
-#         if r_max_chunk > max_out:
-#             r_max_chunk = max_out
-#         yield (domain_, (r_min_chunk, r_max_chunk))
 
 
 def truth_multi_parquet(
@@ -364,6 +399,10 @@ def truth_multi_parquet(
     if dir.suffix != "":
         print(dir.suffix)
         raise ValueError(f"Output directory {dir} must be a directory, not a file.")
+    if workers % 2 != 0:
+        raise ValueError("workers must be even")
+    if workers > 64:
+        raise ValueError("workers must be less than or equal to 64")
 
     dir.mkdir(parents=True)
 
