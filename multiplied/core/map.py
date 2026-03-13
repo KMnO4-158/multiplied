@@ -2,11 +2,15 @@
 # Map Bits Inside A Matrix #
 ############################
 
-import multiplied as mp
+
 from typing import Any, Iterator
 
+from multiplied.core.dtypes.base import MultipliedMeta
+from multiplied.core.utils.bool import ishex2, validate_bitwidth
+from multiplied.core.utils.pretty import pretty
 
-class Map:
+
+class Map(MultipliedMeta):
     """Generates Map object from row map or standard map.
 
     Each Mapping is defined by a 2-bit hexadecimal value. Positive
@@ -32,7 +36,7 @@ class Map:
         if not isinstance(map, (list, int)):
             raise TypeError(f"Map must be type list or int got {type(map)}")
         self.bits = map if isinstance(map, int) else len(map)
-        mp.validate_bitwidth(self.bits)
+        validate_bitwidth(self.bits)
 
         # -- handle bit defined maps --------------------------------
         if isinstance(map, int):
@@ -49,12 +53,15 @@ class Map:
             # ! Can be parallelised
             for y in map:
                 for x in y:
-                    if not mp.ishex2(x):
+                    if not ishex2(x):
                         raise ValueError(f"Invalid row map element {x}")
             return None
 
         self.map = self.build_map(map)
         self.rmap = map
+
+        self._soft_type = list
+        self._dtype = "Map"
         return None
 
     def build_map(self, rmap: list[str]) -> list[list[str]]:
@@ -72,10 +79,10 @@ class Map:
             Standard map of the multiplied matrix.
         """
 
-        mp.validate_bitwidth(n := len(rmap))
+        validate_bitwidth(n := len(rmap))
         map = []
         for i in range(n):
-            if not mp.ishex2(rmap[i]):
+            if not ishex2(rmap[i]):
                 raise ValueError(f"Invalid row map element {rmap[i]}")
             map.append([rmap[i] for _ in range(n * 2)])
         return map
@@ -88,7 +95,7 @@ class Map:
         return f"<multiplied.{self.__class__.__name__} object at {hex(id(self))}>"
 
     def __str__(self) -> str:
-        return mp.pretty(self.map)
+        return pretty(self.map)
 
     def __iter__(self) -> Iterator[list[str]]:
         return iter(self.map)
@@ -102,13 +109,13 @@ class Map:
 
 def empty_map(bits: int) -> Map:
     """Return empty Multiplied Map object"""
-    mp.validate_bitwidth(bits)
+    validate_bitwidth(bits)
     return Map(["00"] * bits)
 
 
 def build_dadda_map(bits: int) -> Map:
     """Return map representing the starting point of Dadda tree algorithm."""
-    mp.validate_bitwidth(bits)
+    validate_bitwidth(bits)
     return Map(raw_dadda_map(bits))
 
 

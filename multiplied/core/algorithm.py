@@ -5,13 +5,14 @@
 from copy import deepcopy
 from typing import Any, Iterable
 import multiplied as mp
+from multiplied.core.dtypes.base import MultipliedMeta
 
 
 # -- TODO: sanity checks --------------------------------------------
 #
 # - Use setattr to block changes to self.matrix if state != 0, suggest self.reset().
 #   Actually, this also applies to all attributes
-class Algorithm:
+class Algorithm(MultipliedMeta):
     """Manages and sequences operations via a series of stages defined by templates and maps.
 
     Attributes
@@ -65,6 +66,8 @@ class Algorithm:
         # -- TODO: update this when anything is modified ------------
         # create update() function
         # add to each modifying class method
+
+        self._soft_type = dict
         return None
 
     def push(

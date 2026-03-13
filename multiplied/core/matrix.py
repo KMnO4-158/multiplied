@@ -3,8 +3,12 @@
 ################################################
 
 from copy import deepcopy
-import multiplied as mp
 from typing import Any, Iterator
+
+from multiplied.core.dtypes.base import MultipliedMeta
+from multiplied.core.map import Map
+from multiplied.core.utils.bool import ischar, ishex2, isint, validate_bitwidth
+from multiplied.core.utils.pretty import pretty
 
 
 # ! Review slices and their integration to the wider library
@@ -12,7 +16,7 @@ from typing import Any, Iterator
 # IDEAS:
 # - work exclusively with multiplied objects
 # - Slice also slices metadata from source object
-class Slice:
+class Slice(MultipliedMeta):
     """Matrix slice which adheres to multiplied formatting rules.
     Retains metadata slice from source object:
 
@@ -40,8 +44,10 @@ class Slice:
         elif isinstance(matrix, list) and isinstance(matrix[0], str):
             self.bits = len(matrix) >> 1
 
-        mp.validate_bitwidth(self.bits)
+        validate_bitwidth(self.bits)
         self.slice = matrix if isinstance(matrix[0], list) else [matrix]
+
+        self._soft_type = list
         return None
 
     # TODO:: look into overloads for accurate type usage
@@ -64,7 +70,7 @@ class Slice:
         return f"<multiplied.{self.__class__.__name__} object at {hex(id(self))}>"
 
     def __str__(self):
-        return str(mp.pretty(self.slice))
+        return str(pretty(self.slice))
 
     def __len__(self) -> int:
         return len(self.slice)
@@ -82,7 +88,7 @@ class Slice:
 # ! Matrix.x_checksum is only useful in the context of Algorithm.__reduce()
 # - Maybe use bounds to create x_checksum within __reduce()'s unit collection
 # - OR within, the same scope, use bounds to execute a given arithmetic unit
-class Matrix:
+class Matrix(MultipliedMeta):
     """Partial Product Matrix
 
     Parameters
@@ -107,41 +113,18 @@ class Matrix:
         # -- sanity check -------------------------------------------
         if isinstance(source, int):
             self.bits = source
-            mp.validate_bitwidth(self.bits)
+            validate_bitwidth(self.bits)
             self.__build_matrix(a, b)
             return
         elif isinstance(source, (list, Slice)) and isinstance(source[0], list):
             self.bits = len(source)
-            mp.validate_bitwidth(self.bits)
+            validate_bitwidth(self.bits)
         else:
             raise TypeError(f"Expected integer or nested list, got {type(source)}")
 
         self.matrix = source
 
-        # -- process custom matrix ----------------------------------
-        # row_len  = self.bits << 1
-        # x_checksum = [0] * row_len
-        # y_checksum = [0] * self.bits
-        # # ! needs refactor
-        # for i, row in enumerate(source):
-        #     if not isinstance(row, (list, Slice)):
-        #         raise ValueError("Invalid input. Expected list or slice.")
-        #     if row_len != len(row):
-        #         raise ValueError("Inconsistent rows. Matrix must be 2m * m")
-        #     ch = 0
-        #     while ch < row_len:
-        #         if ch == row_len or row[ch] == '0' or row[ch] == '1':
-        #             for x in range(ch, row_len):
-        #                 if row[x] == '_':
-        #                     break
-        #                 x_checksum[x] = 1
-        #             y_checksum[i]
-        #             break
-        #         else:
-        #             ch += 1
-
-        # self.x_checksum = x_checksum
-        # self.y_checksum = y_checksum
+        self._soft_type = list
         return None
 
     def __zero_matrix(self, bits: int) -> None:
@@ -156,7 +139,7 @@ class Matrix:
     def __build_matrix(self, operand_a: int, operand_b: int) -> None:
         """Build Logical AND matrix using source operands and it's checksum."""
 
-        mp.validate_bitwidth((bits := self.bits))
+        validate_bitwidth((bits := self.bits))
         if (operand_a > ((2**bits) - 1)) or (operand_b > ((2**bits) - 1)):
             raise ValueError("Operand bit width exceeds matrix bit width")
 
@@ -214,7 +197,7 @@ class Matrix:
         self.y_checksum = y_checksum
         return None
 
-    def resolve_rmap(self, *, ignore_zeros: bool = True) -> mp.Map:
+    def resolve_rmap(self, *, ignore_zeros: bool = True) -> Map:
         """Find empty rows, create simple map to efficiently pack rows
 
         Parameters
@@ -239,9 +222,9 @@ class Matrix:
             else:
                 val = (offset ^ 255) + 1  # 2s complement
             rmap.append(f"{val:02X}"[-2:])
-        return mp.Map(rmap)
+        return Map(rmap)
 
-    def apply_map(self, map_: mp.Map, *, unified_bounds: dict[str, list[int]] = {}) -> None:
+    def apply_map(self, map_: Map, *, unified_bounds: dict[str, list[int]] = {}) -> None:
         """Use Multiplied Map object to apply mapping to matrix
 
         Parameters
@@ -257,7 +240,7 @@ class Matrix:
         None
 
         """
-        if not isinstance(map_, mp.Map):
+        if not isinstance(map_, Map):
             raise TypeError(f"Expected Map, got {type(map_)}")
         if map_.bits != self.bits:
             raise ValueError(
@@ -267,14 +250,13 @@ class Matrix:
         # -- row-wise mapping ---------------------------------------
 
         if rmap := map_.rmap:
-            # matrix = deepcopy(self.matrix) # TODO make this modify in-place
             for i in range(self.bits):
                 # convert signed hex to 2s complement if -ve
                 if rmap[i] == "00":
                     continue
                 if (val := int(rmap[i], 16)) & 128:
                     val = (~val + 1) & 255  # 2s complement
-                # matrix[i]     = ["_"] * (self.bits*2)
+
                 self.matrix[i - val], self.matrix[i] = (
                     self.matrix[i],
                     self.matrix[i - val],
@@ -283,6 +265,7 @@ class Matrix:
             return None
 
         # -- bounding box mapping -----------------------------------
+
 
 
 
@@ -304,7 +287,7 @@ class Matrix:
         return f"<multiplied.{self.__class__.__name__} object at {hex(id(self))}>"
 
     def __str__(self) -> str:
-        return mp.pretty(self.matrix)
+        return pretty(self.matrix)
 
     def __len__(self) -> int:
         return self.bits
@@ -363,7 +346,7 @@ def raw_empty_matrix(bits: int) -> list[list[str]]:
     An empty matrix is completely filled with underscores, following Multipied's convention
 
     """
-    mp.validate_bitwidth(bits)
+    validate_bitwidth(bits)
     matrix = []
     for i in range(bits):
         matrix.append(["_"] * (bits * 2))
@@ -509,7 +492,7 @@ def matrix_scatter(
     """
 
     if isinstance(bounds, dict):
-        if not all([mp.ischar(k) for k in bounds.keys()]):
+        if not all([ischar(k) for k in bounds.keys()]):
             raise ValueError("Unrecognised Bounds")
     else:
         raise TypeError(f"Expected Dict got {type(bounds)}")
@@ -521,11 +504,11 @@ def matrix_scatter(
 
     if fmt == "auto":
         _litmus = source[0][0]
-        if mp.ischar(_litmus) or (
-            mp.isint(_litmus) and (_litmus == "0" or _litmus == "1")
+        if ischar(_litmus) or (
+            isint(_litmus) and (_litmus == "0" or _litmus == "1")
         ):
             fmt = "empty"
-        elif mp.ishex2(_litmus):
+        elif ishex2(_litmus):
             fmt = "map"
         else:
             fmt = "zero"

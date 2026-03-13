@@ -1,10 +1,10 @@
 from copy import deepcopy
 from typing import Any
-from multiplied import Matrix, Slice, Map, Algorithm, Template
+from ..dtypes.base import MultipliedMeta
 import io
 
 
-def pretty(listy_object: Any | Algorithm | Template | Matrix | Slice | Map) -> str:
+def pretty(listy_object: Any) -> str:
     """Format Multiplied types, or list as a string.
 
     Parameters
@@ -26,26 +26,18 @@ def pretty(listy_object: Any | Algorithm | Template | Matrix | Slice | Map) -> s
     _0000___
     """
 
-    if not isinstance(
-        listy_object,
-        (
-            Algorithm,
-            Template,
-            Matrix,
-            Slice,
-            Map,
-            list,
-            dict,
-        ),
-    ):
+    if issubclass(type(listy_object), MultipliedMeta):
+        dtype = listy_object._soft_type
+        print(listy_object)
+    elif isinstance(listy_object, (list, dict)):
+        dtype = type(listy_object)
+    else:
         raise TypeError(f"Unsupported type {type(listy_object)}")
 
-    match listy_object:
-        case Matrix() | Slice() | Map() | list():
+    match dtype:
+        case x if x is list:
             return pretty_nested_list(listy_object)
-        case Template():
-            return pretty_nested_list(listy_object.template)
-        case Algorithm() | dict():
+        case x if x is dict:
             return pretty_dict(listy_object)
         case _:
             raise TypeError(f"Unsupported type {type(listy_object)}")
@@ -72,7 +64,7 @@ def pretty_dict(listy_dict: Any) -> str:
 
         # ! Not sure if this is the best way to avoid + or += concatination
         for item_, list_ in value.items():
-            if isinstance(list_, Map):
+            if list_._dtype == "Map":
                 pretty.write(f"\n{item_}:")
                 pretty.write("{")
                 pretty.write(f"\n\n{pretty_nested_list(list_, whitespace=True)}")

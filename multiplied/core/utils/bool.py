@@ -4,7 +4,6 @@
 
 from typing import Any
 
-
 SUPPORTED_BITWIDTHS = {4, 8}
 
 

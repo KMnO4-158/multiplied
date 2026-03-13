@@ -5,16 +5,18 @@
 from copy import deepcopy
 from typing import Any
 
-from multiplied.core.matrix import Matrix
-from .utils.bool import isalpha, ischar
-import multiplied as mp
+from .dtypes.base import MultipliedMeta
+from .matrix import Matrix, Slice, empty_rows, matrix_merge, matrix_scatter
+from .utils.char import allchars, chargen, chartff
+from .utils.pretty import pretty
+from .utils.bool import isalpha, ischar, validate_bitwidth
 
 # -- Template and Slice dependencies  ------------------------------- #
 
 
 def build_csa(
-    char: str, source_slice: mp.Slice
-) -> tuple[mp.Slice, mp.Slice]:  # Carry Save Adder -> (template, result)
+    char: str, source_slice: Slice
+) -> tuple[Slice, Slice]:  # Carry Save Adder -> (template, result)
     """Create CSA template slice with source slice and chosen char.
 
     Parameters
@@ -38,14 +40,14 @@ def build_csa(
     """
     if not ischar(char):
         raise ValueError("Expected character. String length must equal 1")
-    if not isinstance(source_slice, mp.Slice):
-        raise TypeError(f"Expected type mp.Slice, got {type(source_slice)}")
+    if not isinstance(source_slice, Slice):
+        raise TypeError(f"Expected type Slice, got {type(source_slice)}")
     if len(source_slice) != 3:
         raise ValueError("Invalid template slice: must be 3 rows")
 
     # loop setup
     n = len(source_slice[0])
-    tff = mp.chartff(char)  # Toggle flip flop
+    tff = chartff(char)  # Toggle flip flop
     result = [["_"] * n, ["_"] * n, ["_"] * n]
     csa_slice = deepcopy(source_slice)
 
@@ -61,12 +63,12 @@ def build_csa(
 
         result[0][i] = char if 1 <= (y0 + y1 + y2) else "_"
         result[1][i - 1] = char if 1 < (y0 + y1 + y2) else "_"
-    return csa_slice, mp.Slice(result)
+    return csa_slice, Slice(result)
 
 
 def build_adder(
-    char: str, source_slice: mp.Slice
-) -> tuple[mp.Slice, mp.Slice]:  # Carry Save Adder -> (template, result)
+    char: str, source_slice: Slice
+) -> tuple[Slice, Slice]:  # Carry Save Adder -> (template, result)
     """Create Adder template slice with zero initialised slice and chosen char.
 
     Parameters
@@ -89,14 +91,14 @@ def build_adder(
     """
     if not ischar(char):
         raise ValueError("Expected character. String length must equal 1")
-    if not isinstance(source_slice, mp.Slice):
-        raise TypeError(f"Expected type mp.Slice, got {type(source_slice)}")
+    if not isinstance(source_slice, Slice):
+        raise TypeError(f"Expected type Slice, got {type(source_slice)}")
     if len(source_slice) != 2:
         raise ValueError("Invalid template slice: must be 2 rows")
 
     # loop setup
     n = len(source_slice[0])
-    tff = mp.chartff(char)  # Toggle flip flop
+    tff = chartff(char)  # Toggle flip flop
     result = [["_"] * n, ["_"] * n]
     adder_slice = deepcopy(source_slice)  # ensure no references
 
@@ -118,10 +120,10 @@ def build_adder(
     if carry and 0 < index:
         result[0][index - 1] = next(tff)  # Final carry place in result template
 
-    return adder_slice, mp.Slice(result)
+    return adder_slice, Slice(result)
 
 
-def build_noop(char: str, source_slice: mp.Slice) -> tuple[mp.Slice, mp.Slice]:
+def build_noop(char: str, source_slice: Slice) -> tuple[Slice, Slice]:
     """Create a No-op template slice with zero initialised slice and chosen char.
 
     Parameters
@@ -144,13 +146,13 @@ def build_noop(char: str, source_slice: mp.Slice) -> tuple[mp.Slice, mp.Slice]:
     """
     if not ischar(char):
         raise ValueError("Expected character. String length must equal 1")
-    if not isinstance(source_slice, mp.Slice):
-        raise TypeError(f"Expected type mp.Slice, got {type(source_slice)}")
+    if not isinstance(source_slice, Slice):
+        raise TypeError(f"Expected type Slice, got {type(source_slice)}")
     if len(source_slice) != 1:
         raise ValueError("Invalid template slice: must be 1 rows")
 
     n = len(source_slice[0])
-    tff = mp.chartff(char)  # Toggle flip flop
+    tff = chartff(char)  # Toggle flip flop
     noop_slice = deepcopy(source_slice)  # ensure no references
     for i in range(n):
         noop_slice[0][i] = next(tff) if (noop_slice[0][i] != "_") else "_"
@@ -158,7 +160,7 @@ def build_noop(char: str, source_slice: mp.Slice) -> tuple[mp.Slice, mp.Slice]:
     return noop_slice, deepcopy(noop_slice)  # avoids pointing to same object
 
 
-def build_empty_slice(source_slice: mp.Slice) -> tuple[mp.Slice, mp.Slice]:
+def build_empty_slice(source_slice: Slice) -> tuple[Slice, Slice]:
     """Create an empty template slice. Returns template "slices" and resulting slice.
     Variable length, determined by source slice.
 
@@ -186,8 +188,8 @@ def build_empty_slice(source_slice: mp.Slice) -> tuple[mp.Slice, mp.Slice]:
     >>> ...      || ...      || ...
     """
 
-    if not isinstance(source_slice, mp.Slice):
-        raise TypeError(f"Expected type mp.Slice, got {type(source_slice)}")
+    if not isinstance(source_slice, Slice):
+        raise TypeError(f"Expected type Slice, got {type(source_slice)}")
 
     empty_slice = deepcopy(source_slice)  # ensure no references
     for row in range(len(source_slice)):
@@ -195,7 +197,7 @@ def build_empty_slice(source_slice: mp.Slice) -> tuple[mp.Slice, mp.Slice]:
     return empty_slice, deepcopy(empty_slice)
 
 
-class Pattern:
+class Pattern(MultipliedMeta):
     """Simplified representation of a Template.
 
     Parameters
@@ -212,11 +214,14 @@ class Pattern:
 
     """
 
-    def __init__(self, pattern: list[str]):
+    def __init__(self, pattern: list[str]) -> None:
         if not (isinstance(pattern, list) and all(ischar(row) for row in pattern)):
             raise ValueError("Invalid pattern format. Expected list[char]")
         self.pattern = pattern
         self.bits = len(pattern)
+
+        self._soft_type = list
+        return None
 
     def get_runs(self) -> list[tuple[int, int, int]]:
         """Returns list of tuples of length, position, and run of a given char in pattern
@@ -278,7 +283,7 @@ class Pattern:
 #
 #   Improves clarity as library becomes increasingly complex.
 #
-class Template:
+class Template(MultipliedMeta):
     """A structure representing collections of arithmetic units using characters.
     Generated using a partial product matrix and a Pattern or custom template
 
@@ -307,13 +312,13 @@ class Template:
         matrix: Any = None,
     ) -> None:
 
-        mp.validate_bitwidth(len(source))
+        validate_bitwidth(len(source))
         self.bits = len(source)
         match result:
             case Matrix():
                 self.result = result
             case list():
-                if mp.allchars(result) == {}:
+                if allchars(result) == {}:
                     raise ValueError("Invalid resultant matrix")
                 self.result = Matrix(result)
             case None:
@@ -326,7 +331,7 @@ class Template:
             self.pattern = source
             self.checksum = [1 if ch != "_" else 0 for ch in source]
             if matrix is None:
-                matrix = mp.Matrix(self.bits)
+                matrix = Matrix(self.bits)
             self.build_from_pattern(self.pattern, matrix)
 
         # -- template handling ---------------------------------------
@@ -342,6 +347,8 @@ class Template:
             self._reduce_template()
         self.bounds = self.update_bounding_box(self.template)
         self.re_bounds = self.update_bounding_box(self.result.matrix)
+
+        self._soft_type = list
         return None
 
     def _checksum(self) -> None:
@@ -378,12 +385,12 @@ class Template:
 
             match bounds[ch][-1][1] - bounds[ch][0][1] + 1:  # row height
                 case 1:  # NOOP
-                    output = mp.Slice([units[ch][base_index]])
+                    output = Slice([units[ch][base_index]])
 
                     re_bound[ch] = bounds[ch]
 
                 case 2:  # ADD
-                    unit_slice = mp.Slice(
+                    unit_slice = Slice(
                         [units[ch][base_index], units[ch][base_index + 1]]
                     )
                     output = build_adder(ch, unit_slice)[1]
@@ -397,7 +404,7 @@ class Template:
                     re_bound[ch] = [(x_left, y), (x_right, y)]
 
                 case 3:  # CSA
-                    unit_slice = mp.Slice(
+                    unit_slice = Slice(
                         [
                             units[ch][base_index],
                             units[ch][base_index + 1],
@@ -435,10 +442,10 @@ class Template:
             while i < self.bits:
                 unit_result[i] = ["_"] * (self.bits << 1)
                 i += 1
-            results[ch] = mp.Matrix(unit_result)
+            results[ch] = Matrix(unit_result)
 
         if 1 < len(results):
-            self.result = mp.matrix_merge(results, re_bound)
+            self.result = matrix_merge(results, re_bound)
         else:
             self.result = list(results.values())[0]
 
@@ -447,7 +454,7 @@ class Template:
         return None
 
     # Templates must be built using matrix
-    def build_from_pattern(self, pattern: Pattern, matrix: mp.Matrix) -> None:
+    def build_from_pattern(self, pattern: Pattern, matrix: Matrix) -> None:
         """Build a simple template and it's result for a given bitwidth based
         on matrix. Defaults to empty matrix if matrix=None.
 
@@ -455,7 +462,7 @@ class Template:
         ----------
         pattern : Pattern
             The pattern to build the template from.
-        matrix : mp.Matrix
+        matrix : Matrix
             The matrix to build the template from.
 
         Returns
@@ -479,11 +486,11 @@ class Template:
         # -- sanity check -------------------------------------------
         if not (isinstance(pattern, Pattern)):
             raise ValueError("Expected Pattern")
-        mp.validate_bitwidth(len(pattern))
+        validate_bitwidth(len(pattern))
 
         # -- find run -----------------------------------------------
         template_slices = {}
-        char = mp.chargen()
+        char = chargen()
         i = 1
         while i < len(pattern) + 1:
             run = 1
@@ -540,7 +547,7 @@ class Template:
             template += template_slices[k][0]
             result += template_slices[k][1]
 
-        self.template, self.result = template, mp.Matrix(result)
+        self.template, self.result = template, Matrix(result)
         return None
 
     # ! currently not generalised:
@@ -603,7 +610,7 @@ class Template:
         """Return dict of isolated arithmetic units and their bounding box."""
 
         bounds = self.update_bounding_box(self.template)
-        units = mp.matrix_scatter(self.template, bounds)
+        units = matrix_scatter(self.template, bounds)
         return (units, bounds)
 
     # To be used in complex template results
@@ -623,7 +630,7 @@ class Template:
         ...
 
     def __str__(self) -> str:
-        return f"{mp.pretty(self.template)}\n{mp.pretty(self.result)}"
+        return f"{pretty(self.template)}\n{pretty(self.result)}"
 
     def __repr__(self) -> str:
         return f"<multiplied.{self.__class__.__name__} object at {hex(id(self))}>"
@@ -633,12 +640,12 @@ class Template:
 
 
 # TODO: add examples
-def resolve_pattern(matrix: mp.Matrix) -> Pattern:
+def resolve_pattern(matrix: Matrix) -> Pattern:
     """For a given matrix, progressively allocate CSAs then adders to pattern
 
     Parameters
     ----------
-    matrix : mp.Matrix
+    matrix : Matrix
         The matrix to resolve the pattern for.
 
     Returns
@@ -651,11 +658,11 @@ def resolve_pattern(matrix: mp.Matrix) -> Pattern:
     from multiplied.core.utils.char import chargen
 
     char = chargen()
-    if (empty_rows := mp.empty_rows(matrix)) == matrix.bits:
+    if (empty_rows_ := empty_rows(matrix)) == matrix.bits:
         return Pattern(["_"] * matrix.bits)
 
     # TODO use io.StringIO()
-    scope = matrix.bits - empty_rows
+    scope = matrix.bits - empty_rows_
     new_pattern = []
     while 0 < scope:
         ch = next(char)
@@ -669,7 +676,7 @@ def resolve_pattern(matrix: mp.Matrix) -> Pattern:
             new_pattern += [ch]
 
         scope -= len(new_pattern) - n
-    new_pattern += ["_"] * empty_rows
+    new_pattern += ["_"] * empty_rows_
     return Pattern(new_pattern)
 
 
