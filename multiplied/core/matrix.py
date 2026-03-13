@@ -265,9 +265,11 @@ class Matrix(MultipliedMeta):
             return None
 
         # -- bounding box mapping -----------------------------------
+        from multiplied.core.map import apply_complex_map
 
-
-
+        if unified_bounds:
+            apply_complex_map(self.matrix, map_, unified_bounds)
+            return None
 
         # -- bit-wise mapping ---------------------------------------
         # Expensive fallback
@@ -280,7 +282,6 @@ class Matrix(MultipliedMeta):
                     self.matrix[y - val][x] = self.matrix[y][x]
                     self.matrix[y][x] = "_"
 
-        self.checksum = [0] * self.bits
         return None
 
     def __repr__(self) -> str:

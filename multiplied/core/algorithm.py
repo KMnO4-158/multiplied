@@ -102,14 +102,7 @@ class Algorithm(MultipliedMeta):
         if source.bits != self.bits:
             raise ValueError("Template bitwidth must match Algorithm bitwidth.")
         if map_ and not (isinstance(map_, (mp.Map))):
-            raise TypeError("Invalid argument type. Expected mp.Map")
-
-        # -- [TODO] ------------------------------------------------- #
-        if map_ and not map_.rmap:  #
-            raise NotImplementedError(
-                "Complex map not implemented"
-            )  # # pragma: no cover
-        # ----------------------------------------------------------- #
+            raise TypeError("Invalid argument type. Expected Map")
 
         if isinstance(source, mp.Pattern):
             template = mp.Template(source)
@@ -121,17 +114,20 @@ class Algorithm(MultipliedMeta):
         if not isinstance(template.result, (mp.Matrix)):
             raise ValueError("Template result is unset")
 
+        from multiplied.core.map import unify_bounds
+
         result = template.result
         res_copy = deepcopy(result)
+        map_bounds = unify_bounds(template.re_bounds)
         stage_index = len(self.algorithm)
         if not map_ and result:
             if dadda:
                 map_ = hoist(res_copy)
             else:
                 map_ = result.resolve_rmap()
-            res_copy.apply_map(map_)
+            res_copy.apply_map(map_, unified_bounds=map_bounds)
         else:
-            res_copy.apply_map(map_)
+            res_copy.apply_map(map_, unified_bounds=map_bounds)
 
         stage = {
             "template": template,

@@ -137,3 +137,69 @@ def raw_dadda_map(bits: int) -> list[list[str]]:
         row = (["00"] * (bits - i)) + dadda + (["00"] * bits)
         matrix.append(row)
     return matrix
+
+def unify_bounds(bounds: dict) -> dict:
+    """Returns a simplified bound for non empty characters
+
+    Parameters
+    ----------
+    bounds : dict
+        Bounding box for each arithmetic unit in Template object
+
+    Returns
+    -------
+    dict
+        Unified bounds where  {y : [x0, x1]}
+
+    See Also
+    --------
+    :func:`update_bounding_box`
+    """
+    if not isinstance(bounds, dict):
+        raise TypeError(f"Expected dict got {type(bounds)}")
+    if bounds.get("_") is None:
+        raise ValueError("Bounds must have a `_` key")
+
+    unified_row_bounds = {}
+    for k, unit_bounds in bounds.items():
+        if k == "_":
+            continue
+        for item, row in unit_bounds:
+            if unified_row_bounds.get(row) is None:
+                unified_row_bounds[row] = []
+            unified_row_bounds[row].append(item)
+
+    return unified_row_bounds
+
+
+def apply_complex_map(matrix: list[list[str]], map: Map, bounds: dict) -> None:
+    """Applies a complex mapping to source Matrix
+
+    Parameters
+    ----------
+    matrix : mp.Matrix
+        Matrix to apply mapping to
+
+    map : mp.Map
+        Multiplied Map object to apply mapping from
+
+    bounds : dict[str: list[int]]
+        Unified bounds for all arithmetic units
+    """
+    if not all([isinstance(r, int) for r in bounds]):
+        raise TypeError("Expected all row bounds to be integers")
+
+    for row in sorted(bounds.keys()):
+        if not isinstance(bounds[row], list):
+            raise TypeError("Expected row bounds to be a list")
+
+        for col in range(bounds[row][0], bounds[row][1] + 1):
+            if map.map[row][col] == "00":
+                continue
+            if (offset := int(map.map[row][col], 16)) & 128:
+                offset = (~offset + 1) & 255  # 2s complement
+
+            matrix[row - offset][col] = matrix[row][col]
+            matrix[row][col] = "_"
+
+    return None

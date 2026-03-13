@@ -16,6 +16,8 @@ from .core.map import (
     build_dadda_map,
     raw_zero_map,
     raw_dadda_map,
+    unify_bounds,
+    apply_complex_map,
 )
 
 from .core.matrix import (
@@ -126,6 +128,8 @@ __all__ = [
     "empty_map",
     "raw_zero_map",
     "raw_dadda_map",
+    "unify_bounds",
+    "apply_complex_map",
     "Matrix",
     "Slice",
     "Pattern",
