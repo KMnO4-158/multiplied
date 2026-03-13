@@ -103,9 +103,9 @@ def _batch_truth_scope(
 
 
 def main() -> None:
-    from multiplied.core.truth import truth_multi_parquet
-    import pandas as pd
-    from pathlib import Path
+    # from multiplied.core.truth import truth_multi_parquet
+    # import pandas as pd
+    # from pathlib import Path
 
     DOMAIN = (1, (2**8) - 1)
     RANGE = (1, (2**16) - 1)
