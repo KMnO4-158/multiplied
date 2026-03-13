@@ -138,6 +138,7 @@ def raw_dadda_map(bits: int) -> list[list[str]]:
         matrix.append(row)
     return matrix
 
+
 def unify_bounds(bounds: dict) -> dict:
     """Returns a simplified bound for non empty characters
 

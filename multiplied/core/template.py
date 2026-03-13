@@ -371,7 +371,6 @@ class Template(MultipliedMeta):
         self.pattern = Pattern(pattern)
         return None
 
-
     def _reduce_template(self) -> None:
         """Produce Template result and it's bounding box."""
         units, bounds = self.collect_template_units()

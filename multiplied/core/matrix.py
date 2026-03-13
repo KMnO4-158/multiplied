@@ -229,7 +229,9 @@ class Matrix(MultipliedMeta):
             rmap.append(f"{val:02X}"[-2:])
         return Map(rmap)
 
-    def apply_map(self, map_: Map, *, unified_bounds: dict[str, list[int]] = {}) -> None:
+    def apply_map(
+        self, map_: Map, *, unified_bounds: dict[str, list[int]] = {}
+    ) -> None:
         """Use Multiplied Map object to apply mapping to matrix
 
         Parameters
@@ -332,12 +334,14 @@ def empty_rows(matrix: Matrix) -> int:
     empty_row = ["_" for i in range(matrix.bits * 2)]
     return sum([matrix.matrix[i] == empty_row for i in range(matrix.bits)])
 
+
 def raw_empty_rows(matrix: list[list[str]]) -> int:
     """Return the number of empty rows in a raw matrix"""
     if not isppm(matrix):
         raise TypeError(f"Expected partial product matrix, got {matrix}")
     empty_row = ["_" for i in range(len(matrix[0]))]
     return sum([matrix[i] == empty_row for i in range(len(matrix))])
+
 
 def raw_empty_row_pos(matrix: list[list[str]], row: int) -> list[int]:
     """Return positions of empty rows in a raw matrix"""
@@ -349,8 +353,6 @@ def raw_empty_row_pos(matrix: list[list[str]], row: int) -> list[int]:
         if matrix[i] == empty_row:
             pos.append(i)
     return pos
-
-
 
 
 def raw_empty_matrix(bits: int) -> list[list[str]]:
@@ -529,9 +531,7 @@ def matrix_scatter(
 
     if fmt == "auto":
         _litmus = source[0][0]
-        if ischar(_litmus) or (
-            isint(_litmus) and (_litmus == "0" or _litmus == "1")
-        ):
+        if ischar(_litmus) or (isint(_litmus) and (_litmus == "0" or _litmus == "1")):
             fmt = "empty"
         elif ishex2(_litmus):
             fmt = "map"

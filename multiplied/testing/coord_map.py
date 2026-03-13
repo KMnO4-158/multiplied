@@ -9,6 +9,7 @@ Strategy:
 
 """
 
+
 def unify_bounds(bounds: dict) -> dict:
     """Returns a simplified bound for non empty characters
 
@@ -41,6 +42,7 @@ def unify_bounds(bounds: dict) -> dict:
             unified_row_bounds[row].append(item)
 
     return unified_row_bounds
+
 
 def apply_complex_map(matrix: mp.Matrix, map: mp.Map, bounds: dict) -> None:
     """Applies a complex mapping to source Matrix
@@ -75,7 +77,6 @@ def apply_complex_map(matrix: mp.Matrix, map: mp.Map, bounds: dict) -> None:
     return None
 
 
-
 def main() -> None:
     ref_dadda_map = REFERENCE["dadda_map"][8]
     print(mp.Map(ref_dadda_map))
@@ -100,13 +101,11 @@ def main() -> None:
     unified_bounds = unify_bounds(template.re_bounds)
     print(unified_bounds)
 
-    matrix = mp.Matrix(8, a=128, b = 255)
+    matrix = mp.Matrix(8, a=128, b=255)
     noop_template = mp.Template(mp.Pattern(REFERENCE["noop_pattern"][8]))
     print(matrix)
     apply_complex_map(matrix, mp.Map(ref_dadda_map), unify_bounds(noop_template.bounds))
     print(matrix)
-
-
 
 
 if __name__ == "__main__":

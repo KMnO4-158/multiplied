@@ -155,9 +155,7 @@ class Algorithm(MultipliedMeta):
         if any(test):
             # flood bits within boundary
             saturated_value = [["0"] * self.bits + ["1"] * self.bits]
-            self.matrix = Matrix(
-                saturated_value + raw_empty_matrix(self.bits)[1:]
-            )
+            self.matrix = Matrix(saturated_value + raw_empty_matrix(self.bits)[1:])
             return True
         else:
             return False
@@ -224,7 +222,6 @@ class Algorithm(MultipliedMeta):
 
                     # -- sum columns -------------------------------
                     for i in range(start, n):
-
                         # -- row checksum ---------------------------
                         if operand_a[i] != "_" or operand_b[i] != "_":
                             checksum[i] = True
@@ -297,7 +294,6 @@ class Algorithm(MultipliedMeta):
                     raise ValueError(
                         f"Unsupported unit type, len={bounds[ch][-1][1] - bounds[ch][0][1]}"
                     )
-
 
             # -- build unit into matrix -----------------------------
             unit_result = [[]] * self.bits

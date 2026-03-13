@@ -291,7 +291,7 @@ def _batch_truth_scope(
 
     slope = (max_in - min_in) / (max_out - min_out)
 
-    if (max_in - min_in)**2 < 1000 or (max_out - min_out) < 256:
+    if (max_in - min_in) ** 2 < 1000 or (max_out - min_out) < 256:
         if workers > 1:
             warnings.warn("workers > 1 not recommended for small domains/ranges")
         yield (domain_, range_)
@@ -299,11 +299,9 @@ def _batch_truth_scope(
 
     if workers == 2:
         adjusted_min_out = int((max_out - min_out) >> int(2 / (1 + slope)))  # heuristic
-        yield (domain_, (min_out, adjusted_min_out) )
+        yield (domain_, (min_out, adjusted_min_out))
         yield (domain_, (adjusted_min_out + 1, max_out))
         return
-
-
 
     # heuristic balances operands / batch ===========================
     #
@@ -322,17 +320,15 @@ def _batch_truth_scope(
     acc = 0
     for n in range(min_out, max_out + 1):
         # over/under estimate is accounted for later
-        acc += (out_batch_size//n)
+        acc += out_batch_size // n
 
     # -- distribute linear offsets ----------------------------------
     for i in range((workers)):
-        balance[i] = -int(((acc) * (1 - (slope))) // ((i + 12)))
+        balance[i] = -int(((acc) * (1 - (slope))) // (i + 12))
 
     # -- distribute dyadic (?) offsets ------------------------------
-    for i in range((workers) >> ((max_in - min_in + 2) >> workers )):
+    for i in range((workers) >> ((max_in - min_in + 2) >> workers)):
         balance[-i - 1] += int(((acc) * (1 - slope))) >> (i + 3)
-
-
 
     # -- clamp to original range ------------------------------------
     rem = -sum(balance)
@@ -340,23 +336,23 @@ def _batch_truth_scope(
     # domain far from range
     if slope < 0.01:
         for i in range((workers)):
-            balance[-i - 1] += (rem >> int(log2(workers) + i))
+            balance[-i - 1] += rem >> int(log2(workers) + i)
 
         final = sum(balance)
         balance[-1] += -int(final * 0.95) + 1  # collect 95% of remainder to final batch
-        balance[(workers >> 1) -1] += -int(final * 0.05) # 5% applied to low midpoint
+        balance[(workers >> 1) - 1] += -int(final * 0.05)  # 5% applied to low midpoint
 
     # domain close to range
     else:
         for i in range((workers)):
-            balance[i] += (rem >> int(log2(workers)))
+            balance[i] += rem >> int(log2(workers))
 
     # ==============================================================
 
     r_min_chunk = min_out
     for w in range(workers):
         if w == 0:
-            r_max_chunk = out_batch_size  + balance[w]
+            r_max_chunk = out_batch_size + balance[w]
         else:
             r_max_chunk = r_min_chunk + out_batch_size + balance[w]
         if r_max_chunk > max_out:

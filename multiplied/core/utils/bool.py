@@ -64,6 +64,7 @@ def isalpha(ch: str) -> bool:
     except (ValueError, TypeError):
         return False
 
+
 def isppm(nested_list: list[list[str]]) -> bool:
     """Return True if nested list represents a Partial Product matrix"""
     if not isinstance(nested_list, list):

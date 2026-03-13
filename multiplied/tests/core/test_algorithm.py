@@ -12,6 +12,9 @@ metadata:
     len:
         input.__len__()
 """
+# block ruff format:
+# fmt: off
+
 TEST_ALGORITHM_INSTANCE = [
     # TC(name, input, expected_output, metadata)
     TestCase("auto_alg_len", None, None, {"len": True, "all": True}),
@@ -25,9 +28,7 @@ TEST_ALGORITHM_EXECUTION = [
     TestCase("alg_exec", None, mp.Matrix, {"all": True, "exec": True}),
     TestCase("alg_step_one", 1, mp.Matrix, {"all": True, "step": True}),
     TestCase("alg_step_all", 0, mp.Matrix, {"all": True, "step": True}),
-    TestCase(
-        "alg_exec_complex", (REFERENCE["complex_template"][8]["T"], REFERENCE["complex_map"][8]), None, {"exec": True}
-    ),
+    TestCase("alg_exec_complex", (REFERENCE["complex_template"][8]["T"], REFERENCE["complex_map"][8]), None, {"exec": True}),
 ]
 
 # --
@@ -36,6 +37,7 @@ TEST_BOOLEAN = []
 TEST_ITER = []
 
 TEST_ERROR = []
+# fmt: on
 
 
 @pytest.fixture(params=TEST_ALGORITHM_INSTANCE, ids=lambda tc: tc.name)
@@ -150,8 +152,8 @@ def process_value(value, metadata, supported_bitwidths):
 
 def process_algorithm(value: list | tuple, metadata):
     if isinstance(value, list):
-       if not isinstance(value[0], list):
-           raise TypeError(f"Expected [list[list]] got {type(value)}")
+        if not isinstance(value[0], list):
+            raise TypeError(f"Expected [list[list]] got {type(value)}")
     elif isinstance(value, tuple):
         if not (isinstance(value[0], list) and isinstance(value[1], list)):
             raise TypeError(f"Expected tuple[list, list] got {type(value)}")
@@ -173,8 +175,6 @@ def process_algorithm(value: list | tuple, metadata):
         case _:
             raise TypeError("Unexpected TestCase values")
 
-
-
     print(map_)
     alg = mp.Algorithm(bits)
 
@@ -182,7 +182,6 @@ def process_algorithm(value: list | tuple, metadata):
         alg.push(mp.Template(template), mp.Map(map_))
     else:
         alg.push(mp.Template(template))
-
 
     alg.auto_resolve_stage()
 
