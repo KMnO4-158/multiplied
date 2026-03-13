@@ -7,7 +7,7 @@ from typing import Any, Iterator
 
 from .dtypes.base import MultipliedMeta
 from .map import Map, apply_complex_map
-from .utils.bool import ischar, ishex2, isint, validate_bitwidth
+from .utils.bool import ischar, ishex2, isint, isppm, validate_bitwidth
 from .utils.pretty import pretty
 
 
@@ -116,9 +116,14 @@ class Matrix(MultipliedMeta):
             validate_bitwidth(self.bits)
             self.__build_matrix(a, b)
             return
-        elif isinstance(source, (list, Slice)) and isinstance(source[0], list):
+        elif isinstance(source, list) and isinstance(source[0], list):
+            if not isppm(source):
+                raise TypeError(f"Expected partial product matrix, got {source}")
             self.bits = len(source)
             validate_bitwidth(self.bits)
+        elif isinstance(source, Slice):
+            # ! matrix scatter Slice -> list[list[str]]
+            raise NotImplementedError("Slice initialization not supported")
         else:
             raise TypeError(f"Expected integer or nested list, got {type(source)}")
 
@@ -326,6 +331,26 @@ def empty_rows(matrix: Matrix) -> int:
 
     empty_row = ["_" for i in range(matrix.bits * 2)]
     return sum([matrix.matrix[i] == empty_row for i in range(matrix.bits)])
+
+def raw_empty_rows(matrix: list[list[str]]) -> int:
+    """Return the number of empty rows in a raw matrix"""
+    if not isppm(matrix):
+        raise TypeError(f"Expected partial product matrix, got {matrix}")
+    empty_row = ["_" for i in range(len(matrix[0]))]
+    return sum([matrix[i] == empty_row for i in range(len(matrix))])
+
+def raw_empty_row_pos(matrix: list[list[str]], row: int) -> list[int]:
+    """Return positions of empty rows in a raw matrix"""
+    if not isppm(matrix):
+        raise TypeError(f"Expected partial product matrix, got {matrix}")
+    empty_row = ["_" for i in range(len(matrix[0]))]
+    pos = []
+    for i in range(len(matrix)):
+        if matrix[i] == empty_row:
+            pos.append(i)
+    return pos
+
+
 
 
 def raw_empty_matrix(bits: int) -> list[list[str]]:
