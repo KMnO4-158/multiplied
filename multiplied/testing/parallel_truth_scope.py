@@ -117,7 +117,7 @@ def main() -> None:
 
     DOMAIN = (1, (2**8) - 1)
     RANGE = (1, (2**16) - 1)
-    WORKERS = 8
+    # WORKERS = 8
 
 
 
@@ -156,20 +156,22 @@ def main() -> None:
     # # print(pkl_alg)
     alg = mp.Algorithm(8)
     alg.auto_resolve_stage()
+    for i in alg.exec(255, 255).values():
+        print(i)
+    print(alg)
+    # path = Path(__file__).parent.parent.parent / "examples/datasets/test_multi_new_map"
 
-    path = Path(__file__).parent.parent.parent / "examples/datasets/test_multi_balanced_batch"
+    # start = perf_counter()
+    # truth_multi_parquet(path, DOMAIN, RANGE, alg)
+    # end = perf_counter()
+    # print(f"\tTime: {end - start}")
 
-    start = perf_counter()
-    truth_multi_parquet(path, DOMAIN, RANGE, alg)
-    end = perf_counter()
-    print(f"\tTime: {end - start}")
+    # df = pd.read_parquet(path)
+    # pd.set_option("display.max_rows", None)
 
-    df = pd.read_parquet(path)
-    pd.set_option("display.max_rows", None)
-
-    print(df.head())
-    print(df.tail())
-    # print(df)
+    # print(df.head())
+    # print(df.tail())
+    # # print(df)
 
     # start = perf_counter()
     # scope = mp.truth_scope(DOMAIN, RANGE)
