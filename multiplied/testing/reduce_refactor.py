@@ -231,7 +231,7 @@ def main() -> None:
     alg = mp.Algorithm(8)
     ref_complex_template = mp.Template(REFERENCE["complex_template"][8]["T"])
     print(ref_complex_template)
-    alg.push(ref_complex_template)
+    alg.push(ref_complex_template, mp.Map(REFERENCE["complex_map"][8]))
     alg.auto_resolve_stage()
     print(alg)
     output = alg.exec(127, 255)
