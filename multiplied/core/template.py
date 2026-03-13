@@ -9,7 +9,7 @@ from .dtypes.base import MultipliedMeta
 from .matrix import Matrix, Slice, empty_rows, matrix_merge, matrix_scatter
 from .utils.char import allchars, chargen, chartff
 from .utils.pretty import pretty
-from .utils.bool import isalpha, ischar, validate_bitwidth
+from .utils.bool import isalpha, ischar, isppm, validate_bitwidth
 
 # -- Template and Slice dependencies  ------------------------------- #
 
@@ -329,29 +329,51 @@ class Template(MultipliedMeta):
         # -- pattern handling ---------------------------------------
         if isinstance(source, Pattern):
             self.pattern = source
-            self.checksum = [1 if ch != "_" else 0 for ch in source]
             if matrix is None:
                 matrix = Matrix(self.bits)
             self.build_from_pattern(self.pattern, matrix)
 
         # -- template handling ---------------------------------------
         elif isinstance(source, list) and all([isinstance(i, list) for i in source]):
+            if not isppm(source):
+                raise TypeError(f"Expected partial product matrix, got {source}")
             self.template = source
-            self.pattern = None # ! resolve pattern
+            self._resolve_template_pattern()
 
         else:
-            raise TypeError
+            raise TypeError(f"Expected Pattern or list[list[str]] got {source}")
 
         if result is None:
             self._reduce_template()
+
         self.bounds = self.update_bounding_box(self.template)
         self.re_bounds = self.update_bounding_box(self.result.matrix)
 
-        self._soft_type = list
+        self._soft_type = list()
         return None
 
+    def _resolve_template_pattern(self) -> None:
+        """Attempt to resolve pattern from template source"""
+
+        pattern = ["_"] * self.bits
+        for i in range(self.bits):
+            chars = set(deepcopy(self.template[i]))
+            chars = {ch.upper() for ch in chars}
+            if 2 < len(chars):
+                self.pattern = None
+                return None
+
+            for char in chars:
+                if char != "_":
+                    print(char)
+                    pattern[i] = char
+
+        self.pattern = Pattern(pattern)
+        return None
+
+
     def _reduce_template(self) -> None:
-        """"""
+        """Produce Template result and it's bounding box."""
         units, bounds = self.collect_template_units()
         re_bound = {}
         results = {}
@@ -608,7 +630,9 @@ class Template(MultipliedMeta):
         ...
 
     def __str__(self) -> str:
-        return f"{pretty(self.template)}\n{pretty(self.result)}"
+
+        # ! figure out why ``pretty(self.result)`` prints twice
+        return f"{pretty(self.template)}\n{pretty(self.result.matrix)}"
 
     def __repr__(self) -> str:
         return f"<multiplied.{self.__class__.__name__} object at {hex(id(self))}>"

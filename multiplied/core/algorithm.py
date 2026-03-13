@@ -112,6 +112,9 @@ class Algorithm(MultipliedMeta):
         if isinstance(source, Pattern):
             template = Template(source)
         elif isinstance(source, Template):
+            has_pattern = getattr(source, "pattern", None)
+            if has_pattern is None and map_ is None:
+                raise ValueError("Complex template without map")
             template = deepcopy(source)
         else:
             raise TypeError("Invalid argument type. Expected Template")
