@@ -337,8 +337,7 @@ class Template(MultipliedMeta):
         # -- template handling ---------------------------------------
         elif isinstance(source, list) and all([isinstance(i, list) for i in source]):
             self.template = source
-            self.pattern = []
-            self._checksum()
+            self.pattern = None # ! resolve pattern
 
         else:
             raise TypeError
@@ -349,27 +348,6 @@ class Template(MultipliedMeta):
         self.re_bounds = self.update_bounding_box(self.result.matrix)
 
         self._soft_type = list
-        return None
-
-    def _checksum(self) -> None:
-        row_len = self.bits << 1
-        checksum = [0] * self.bits
-        for i, row in enumerate(self.template):
-            if len(row) != row_len:
-                raise ValueError("Inconsistent row length")
-
-            empty = 0
-            for ch in row:
-                if not ischar(ch):
-                    raise TypeError(f"Expected character, got {ch}")
-                if ch == "_":
-                    empty += 1
-                else:
-                    break
-
-            if empty != row_len:
-                checksum[i] = 1
-        self.checksum = checksum
         return None
 
     def _reduce_template(self) -> None:
