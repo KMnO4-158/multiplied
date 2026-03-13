@@ -71,6 +71,7 @@ from .core.utils.pretty import (
 )
 
 from .core.utils.bool import (
+    isppm,
     isint,
     ishex2,
     ischar,
@@ -151,6 +152,7 @@ __all__ = [
     "truth_dataframe",
     "shallow_truth_table",
     "truth_multi_parquet",
+    "isppm",
     "ischar",
     "isalpha",
     "ishex2",
