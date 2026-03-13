@@ -4,7 +4,8 @@
 
 from pathlib import Path
 
-from multiplied import Algorithm, Matrix
+from .algorithm import Algorithm
+from .matrix import Matrix
 from multiprocessing import Pool, Process, Queue, cpu_count
 from collections.abc import Generator
 import pandas as pd

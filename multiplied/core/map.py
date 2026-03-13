@@ -5,9 +5,9 @@
 
 from typing import Any, Iterator
 
-from multiplied.core.dtypes.base import MultipliedMeta
-from multiplied.core.utils.bool import ishex2, validate_bitwidth
-from multiplied.core.utils.pretty import pretty
+from .dtypes.base import MultipliedMeta
+from .utils.bool import ishex2, validate_bitwidth
+from .utils.pretty import pretty
 
 
 class Map(MultipliedMeta):

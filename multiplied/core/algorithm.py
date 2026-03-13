@@ -4,8 +4,13 @@
 
 from copy import deepcopy
 from typing import Any, Iterable
-import multiplied as mp
-from multiplied.core.dtypes.base import MultipliedMeta
+from .dtypes.base import MultipliedMeta
+from .map import Map
+from .matrix import Matrix, empty_rows, matrix_merge, matrix_scatter, raw_empty_matrix
+from .template import Pattern, Template, resolve_pattern
+from .utils.bool import validate_bitwidth
+from .utils.char import to_int_matrix
+from .utils.pretty import pretty
 
 
 # -- TODO: sanity checks --------------------------------------------
@@ -41,17 +46,17 @@ class Algorithm(MultipliedMeta):
         dadda: bool = False,
     ) -> None:
 
-        mp.validate_bitwidth(bits)
+        validate_bitwidth(bits)
         if not isinstance(dadda, bool):
             raise TypeError(f"Expected dadda: bool, got {type(dadda)}")
         if not isinstance(saturation, bool):
             raise TypeError(f"Expected saturation: bool, got {type(saturation)}")
         if matrix is not None:
-            if not isinstance(matrix, mp.Matrix):
+            if not isinstance(matrix, Matrix):
                 raise TypeError(f"Expected Matrix, got {type(matrix)}")
             self.matrix = matrix
         else:
-            self.matrix = mp.Matrix(bits)
+            self.matrix = Matrix(bits)
 
         self.bits = bits
         self.dadda = dadda
@@ -71,14 +76,14 @@ class Algorithm(MultipliedMeta):
         return None
 
     def push(
-        self, source: mp.Template | mp.Pattern, map_: Any = None, dadda: bool = False
+        self, source: Template | Pattern, map_: Any = None, dadda: bool = False
     ) -> None:
         """Populate algorithm stage based on template. Generates pseudo
         result to represent output matrix
 
         Parameters
         ----------
-        source : mp.Template | mp.Pattern
+        source : Template | Pattern
             The template or pattern to be used for the algorithm stage.
         map_ : Any, optional
             The map to be used for the algorithm stage, by default None
@@ -94,24 +99,24 @@ class Algorithm(MultipliedMeta):
 
         Layout:
         >>> self.algorithm[x] = {
-        >>>     "template" : mp.Template,
-        >>>     "pseudo"   : mp.Matrix,
-        >>>     "map"      : mp.Map}
+        >>>     "template" : Template,
+        >>>     "pseudo"   : Matrix,
+        >>>     "map"      : Map}
         """
 
         if source.bits != self.bits:
             raise ValueError("Template bitwidth must match Algorithm bitwidth.")
-        if map_ and not (isinstance(map_, (mp.Map))):
+        if map_ and not (isinstance(map_, (Map))):
             raise TypeError("Invalid argument type. Expected Map")
 
-        if isinstance(source, mp.Pattern):
-            template = mp.Template(source)
-        elif isinstance(source, mp.Template):
+        if isinstance(source, Pattern):
+            template = Template(source)
+        elif isinstance(source, Template):
             template = deepcopy(source)
         else:
-            raise TypeError("Invalid argument type. Expected mp.Template")
+            raise TypeError("Invalid argument type. Expected Template")
 
-        if not isinstance(template.result, (mp.Matrix)):
+        if not isinstance(template.result, (Matrix)):
             raise ValueError("Template result is unset")
 
         from multiplied.core.map import unify_bounds
@@ -141,14 +146,14 @@ class Algorithm(MultipliedMeta):
         """Saturates matrix if current matrix has carried past original bitwidth"""
 
         boundary = (2**self.bits) - 1
-        as_int = mp.to_int_matrix(self.matrix.matrix)
+        as_int = to_int_matrix(self.matrix.matrix)
         test = [boundary < i for i in as_int]
 
         if any(test):
             # flood bits within boundary
             saturated_value = [["0"] * self.bits + ["1"] * self.bits]
-            self.matrix = mp.Matrix(
-                saturated_value + mp.raw_empty_matrix(self.bits)[1:]
+            self.matrix = Matrix(
+                saturated_value + raw_empty_matrix(self.bits)[1:]
             )
             return True
         else:
@@ -186,19 +191,22 @@ class Algorithm(MultipliedMeta):
         # -- isolate units -----------------------------------------
 
         bounds = self.algorithm[self.state]["template"].bounds
-        units = mp.matrix_scatter(self.matrix.matrix, bounds)
+        units = matrix_scatter(self.matrix.matrix, bounds)
 
         # -- reduce -------------------------------------------------
         n = self.bits << 1
         results = {}
         chars = list(bounds.keys())
         for ch in chars:
-            base_index = bounds[ch][0][1]
             matrix = units[ch]
-
+            if ch == "_":
+                results[ch] = Matrix(matrix)
+                continue
+            base_index = bounds[ch][0][1]
+            unit_bounds = sorted(bounds[ch], key=lambda x: x[1])
             match bounds[ch][-1][1] - bounds[ch][0][1] + 1:  # row height
                 case 1:  # NOOP
-                    output = results[ch] = mp.Matrix(matrix)
+                    output = results[ch] = Matrix(matrix)
                     continue
 
                 case 2:  # ADD
@@ -209,11 +217,11 @@ class Algorithm(MultipliedMeta):
                     checksum = [False] * n
 
                     # -- skip empty rows ----------------------------
-                    start = 0
-                    while operand_a[start] == "_" and operand_b[start] == "_":
-                        start += 1
+                    start = min(unit_bounds[0][0], unit_bounds[2][0])
 
+                    # -- sum columns -------------------------------
                     for i in range(start, n):
+
                         # -- row checksum ---------------------------
                         if operand_a[i] != "_" or operand_b[i] != "_":
                             checksum[i] = True
@@ -250,12 +258,7 @@ class Algorithm(MultipliedMeta):
                     start = 0
 
                     # -- skip empty rows ----------------------------
-                    while (
-                        operand_a[start] == "_"
-                        and operand_b[start] == "_"
-                        and operand_c[start] == "_"
-                    ):
-                        start += 1
+                    start = min(unit_bounds[0][0], unit_bounds[2][0], unit_bounds[4][0])
 
                     # -- sum columns -------------------------------
                     for i in range(start, n):
@@ -288,12 +291,10 @@ class Algorithm(MultipliedMeta):
                         except IndexError:
                             pass
                 case _:
-                    if ch != "_":
-                        raise ValueError(
-                            f"Unsupported unit type, len={bounds[ch][-1][1] - bounds[ch][0][1]}"
-                        )
-                    results[ch] = mp.Matrix(matrix)
-                    continue
+                    raise ValueError(
+                        f"Unsupported unit type, len={bounds[ch][-1][1] - bounds[ch][0][1]}"
+                    )
+
 
             # -- build unit into matrix -----------------------------
             unit_result = [[]] * self.bits
@@ -307,7 +308,7 @@ class Algorithm(MultipliedMeta):
             while i < self.bits:
                 unit_result[i] = ["_"] * n
                 i += 1
-            results[ch] = mp.Matrix(unit_result)
+            results[ch] = Matrix(unit_result)
 
         # ! difficult sanity checks --------------------------------- ! #
         # Complex scenarios, where NOOP, CSA and ADD units intersect
@@ -335,7 +336,7 @@ class Algorithm(MultipliedMeta):
         re_bounds = self.algorithm[self.state]["template"].re_bounds
 
         if 1 < len(results):
-            self.matrix = mp.matrix_merge(results, re_bounds)
+            self.matrix = matrix_merge(results, re_bounds)
         else:
             self.matrix = list(results.values())[0]
 
@@ -368,26 +369,26 @@ class Algorithm(MultipliedMeta):
             pseudo = deepcopy(self.matrix)
         else:
             pseudo = deepcopy(self.algorithm[stage - 1]["pseudo"])
-        pattern = mp.resolve_pattern(pseudo)
-        self.push(mp.Template(pattern, matrix=pseudo), dadda=self.dadda)
+        pattern = resolve_pattern(pseudo)
+        self.push(Template(pattern, matrix=pseudo), dadda=self.dadda)
         if not recursive:
             return None
 
         # -- main loop ----------------------------------------------
         stage = len(self.algorithm)
-        while self.bits - 1 > mp.empty_rows(self.algorithm[stage - 1]["pseudo"]):
+        while self.bits - 1 > empty_rows(self.algorithm[stage - 1]["pseudo"]):
             if 10 < stage:
                 raise IndexError("Maximum stage limit reached")
             # Stage generation
             pseudo = deepcopy(self.algorithm[stage - 1]["pseudo"])
-            new_pattern = mp.resolve_pattern(pseudo)
-            self.push(mp.Template(new_pattern, matrix=pseudo))
+            new_pattern = resolve_pattern(pseudo)
+            self.push(Template(new_pattern, matrix=pseudo))
 
             # Condition based on generated stage
             stage += 1
         return None
 
-    def step(self) -> mp.Matrix:
+    def step(self) -> Matrix:
         """Execute the next stage of the algorithm and update internal matrix"""
         if self.state == len(self.algorithm):
             print("Algorithm completed")
@@ -400,7 +401,7 @@ class Algorithm(MultipliedMeta):
         # getattr for matrix, template and map to peek algorithm
         return self.matrix
 
-    def exec(self, a: int, b: int) -> dict[int, mp.Matrix]:
+    def exec(self, a: int, b: int) -> dict[int, Matrix]:
         """Run entire algorithm with a single set of inputs then reset internal state.
 
         Parameters
@@ -412,15 +413,15 @@ class Algorithm(MultipliedMeta):
 
         Returns
         -------
-        dict[int, mp.Matrix]
+        dict[int, Matrix]
             resultant matrix indexed by stage, including initial state
         """
         if not isinstance(a, int) or not isinstance(b, int):
             raise TypeError(f"Expected int, got {type(a)} and {type(b)}")
 
         if a == 0 or b == 0:
-            return {0: mp.Matrix(self.bits)}
-        self.matrix = mp.Matrix(self.bits, a=a, b=b)
+            return {0: Matrix(self.bits)}
+        self.matrix = Matrix(self.bits, a=a, b=b)
         if self.dadda:
             hoist(self.matrix)
 
@@ -438,10 +439,10 @@ class Algorithm(MultipliedMeta):
         self.state = 0
         return truth
 
-    def reset(self, matrix: mp.Matrix) -> None:
+    def reset(self, matrix: Matrix) -> None:
         """Reset internal state and submit new initial matrix"""
 
-        if not isinstance(matrix, mp.Matrix):
+        if not isinstance(matrix, Matrix):
             raise TypeError(f"Expected Matrix, got {type(matrix)}")
         self.matrix = matrix
         self.state = 0
@@ -450,7 +451,7 @@ class Algorithm(MultipliedMeta):
     # ! getattr for matrix, template and map to peek algorithm
 
     def __str__(self) -> str:
-        return mp.pretty(self.algorithm)
+        return pretty(self.algorithm)
 
     def __repr__(self) -> str:
         return f"<multiplied.{self.__class__.__name__} object at {hex(id(self))}>"
@@ -480,8 +481,8 @@ class Algorithm(MultipliedMeta):
 # - Should help when error checking, though I don't see a use for y_signature
 #
 def collect_template_units(
-    source: mp.Template,
-) -> tuple[dict[str, mp.Template], dict[str, list[tuple[int, int]]]]:
+    source: Template,
+) -> tuple[dict[str, Template], dict[str, list[tuple[int, int]]]]:
     """Return dict of isolated arithmetic units and their bounding box.
 
     Parameters
@@ -491,7 +492,7 @@ def collect_template_units(
 
     Returns
     -------
-    tuple[dict[str, mp.Template], dict[str, list[tuple[int,int]]]]
+    tuple[dict[str, Template], dict[str, list[tuple[int,int]]]]
         A tuple containing a dictionary of isolated arithmetic units and their bounding box.
 
     Raises
@@ -501,7 +502,7 @@ def collect_template_units(
 
     """
 
-    if not isinstance(source, (mp.Template, mp.Matrix)):
+    if not isinstance(source, (Template, Matrix)):
         raise TypeError(f"Expected type Template, Matrix got {type(source)}")
 
     from .utils.char import chartff
@@ -512,7 +513,7 @@ def collect_template_units(
 
     units = {}
     for ch in allchars:
-        matrix = mp.raw_empty_matrix(source.bits)
+        matrix = raw_empty_matrix(source.bits)
         tff = chartff(ch)  # toggle flip flop
         next(tff)  # sync to template case sensitivity
         i = 0  # coordinate index
@@ -546,7 +547,7 @@ def collect_template_units(
             # ======================================================= #
 
             i += 2
-        units[ch] = mp.Template(matrix)
+        units[ch] = Template(matrix)
     return (units, bounds)
 
 
@@ -568,16 +569,16 @@ def collect_template_units(
 #
 # - move to template.py
 def hoist(
-    source: mp.Matrix | mp.Template,
+    source: Matrix | Template,
     *,
     checksum: list[int] = [],
     relative: bool = False,
-) -> mp.Map:
+) -> Map:
     """collect bits to the top of the matrix and produce corresponding map.
 
     Parameters
     ----------
-    source : mp.Matrix | mp.Template
+    source : Matrix | Template
         The source matrix or template to hoist.
     checksum : list[int], optional
         The checksum to use for hoisting, by default [].
@@ -586,7 +587,7 @@ def hoist(
 
     Returns
     -------
-    mp.Map
+    Map
         The resulting map after hoisting.
     """
 
@@ -594,9 +595,9 @@ def hoist(
         raise TypeError(f"checksum must be a list got {type(checksum)}")
 
     match source:
-        case mp.Matrix():
+        case Matrix():
             matrix = source.matrix
-        case mp.Template():
+        case Template():
             matrix = source.template
         case _:
             raise TypeError(
@@ -611,7 +612,7 @@ def hoist(
     y_start = 0  #
     y_end = bits  #
     # --------------------------------------------------------------- #
-    map_ = mp.raw_empty_matrix(bits)
+    map_ = raw_empty_matrix(bits)
 
     for y in range(y_start, y_end):
         map_[y] = ["00"] * (bits << 1)
@@ -637,4 +638,4 @@ def hoist(
         for y in range(k):
             matrix[y][x] = column[y]
 
-    return mp.Map(map_)
+    return Map(map_)

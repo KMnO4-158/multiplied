@@ -5,10 +5,10 @@
 from copy import deepcopy
 from typing import Any, Iterator
 
-from multiplied.core.dtypes.base import MultipliedMeta
-from multiplied.core.map import Map
-from multiplied.core.utils.bool import ischar, ishex2, isint, validate_bitwidth
-from multiplied.core.utils.pretty import pretty
+from .dtypes.base import MultipliedMeta
+from .map import Map, apply_complex_map
+from .utils.bool import ischar, ishex2, isint, validate_bitwidth
+from .utils.pretty import pretty
 
 
 # ! Review slices and their integration to the wider library
@@ -265,7 +265,6 @@ class Matrix(MultipliedMeta):
             return None
 
         # -- bounding box mapping -----------------------------------
-        from multiplied.core.map import apply_complex_map
 
         if unified_bounds:
             apply_complex_map(self.matrix, map_, unified_bounds)
