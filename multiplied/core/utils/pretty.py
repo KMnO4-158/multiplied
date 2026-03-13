@@ -30,14 +30,14 @@ def pretty(listy_object: Any) -> str:
         dtype = listy_object._soft_type
         print(listy_object)
     elif isinstance(listy_object, (list, dict)):
-        dtype = type(listy_object)
+        dtype = listy_object
     else:
         raise TypeError(f"Unsupported type {type(listy_object)}")
 
     match dtype:
-        case x if x is list:
+        case list():
             return pretty_nested_list(listy_object)
-        case x if x is dict:
+        case dict():
             return pretty_dict(listy_object)
         case _:
             raise TypeError(f"Unsupported type {type(listy_object)}")

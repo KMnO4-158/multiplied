@@ -7,7 +7,7 @@ from ... import __version__
 class MultipliedMeta:
     """base class for Multiplied types"""
     _dtype = ""
-    _soft_type = object
+    _soft_type = object()
     _multiplied_version = __version__
 
     @classmethod

@@ -220,7 +220,7 @@ class Pattern(MultipliedMeta):
         self.pattern = pattern
         self.bits = len(pattern)
 
-        self._soft_type = list
+        self._soft_type = list()
         return None
 
     def get_runs(self) -> list[tuple[int, int, int]]:

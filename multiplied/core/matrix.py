@@ -47,7 +47,7 @@ class Slice(MultipliedMeta):
         validate_bitwidth(self.bits)
         self.slice = matrix if isinstance(matrix[0], list) else [matrix]
 
-        self._soft_type = list
+        self._soft_type = list()
         return None
 
     # TODO:: look into overloads for accurate type usage
@@ -129,7 +129,7 @@ class Matrix(MultipliedMeta):
 
         self.matrix = source
 
-        self._soft_type = list
+        self._soft_type = list()
         return None
 
     def __zero_matrix(self, bits: int) -> None:

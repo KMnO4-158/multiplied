@@ -60,7 +60,7 @@ class Map(MultipliedMeta):
         self.map = self.build_map(map)
         self.rmap = map
 
-        self._soft_type = list
+        self._soft_type = list()
         self._dtype = "Map"
         return None
 
