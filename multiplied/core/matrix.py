@@ -438,7 +438,7 @@ def matrix_merge(
 def matrix_scatter(
     source: list[list], bounds: dict[str, list[tuple[int, int]]], fmt: str = "auto"
 ) -> dict[str, list[list]]:
-    """Return list of matrices containing subset of source matrix based on provided bounds.
+    """Cast matrix subsets to initialised matrix. Each subset based on provided bounds.
 
     Parameters
     ----------
@@ -476,8 +476,12 @@ def matrix_scatter(
     >>> bounds = {"A": [(0, 0), (0, 1)],
     >>>           "B": [(1, 1), (1, 2)]}
     >>> matrix_scatter(source, bounds, fmt=empty)
-    [[[0, 1, _], [_, _, _], [_, _, _]],
-     [[_, _, _], [_, 4, 5], [_, _, _]]]
+    [[[0, 1, _],
+      [_, _, _],
+      [_, _, _]],
+     [[_, _, _],
+      [_, 4, 5],
+      [_, _, _]]]
 
     """
 
