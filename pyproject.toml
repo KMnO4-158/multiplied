@@ -18,7 +18,7 @@ Homepage = "https://github.com/KMnO4-158/multiplied"
 Issues = "https://github.com/KMnO4-158/multiplied/issues"
 
 [build-system]
-requires = ["uv_build>=0.9.18,<0.10.8-1"]
+requires = ["uv_build>=0.9.18,<=0.10.9"]
 build-backend = "uv_build"
 
 [tool.uv.build-backend]
