@@ -3,8 +3,12 @@
 ################################################
 
 from copy import deepcopy
-import multiplied as mp
 from typing import Any, Iterator
+
+from .dtypes.base import MultipliedMeta
+from .map import Map, apply_complex_map
+from .utils.bool import ischar, ishex2, isint, isppm, validate_bitwidth
+from .utils.pretty import pretty
 
 
 # ! Review slices and their integration to the wider library
@@ -12,7 +16,7 @@ from typing import Any, Iterator
 # IDEAS:
 # - work exclusively with multiplied objects
 # - Slice also slices metadata from source object
-class Slice:
+class Slice(MultipliedMeta):
     """Matrix slice which adheres to multiplied formatting rules.
     Retains metadata slice from source object:
 
@@ -40,8 +44,10 @@ class Slice:
         elif isinstance(matrix, list) and isinstance(matrix[0], str):
             self.bits = len(matrix) >> 1
 
-        mp.validate_bitwidth(self.bits)
+        validate_bitwidth(self.bits)
         self.slice = matrix if isinstance(matrix[0], list) else [matrix]
+
+        self._soft_type = list()
         return None
 
     # TODO:: look into overloads for accurate type usage
@@ -64,7 +70,7 @@ class Slice:
         return f"<multiplied.{self.__class__.__name__} object at {hex(id(self))}>"
 
     def __str__(self):
-        return str(mp.pretty(self.slice))
+        return str(pretty(self.slice))
 
     def __len__(self) -> int:
         return len(self.slice)
@@ -82,7 +88,7 @@ class Slice:
 # ! Matrix.x_checksum is only useful in the context of Algorithm.__reduce()
 # - Maybe use bounds to create x_checksum within __reduce()'s unit collection
 # - OR within, the same scope, use bounds to execute a given arithmetic unit
-class Matrix:
+class Matrix(MultipliedMeta):
     """Partial Product Matrix
 
     Parameters
@@ -101,47 +107,27 @@ class Matrix:
         *,
         a: int = 0,
         b: int = 0,
-        # x_checksum=[], # Add handling if supplied
-        # y_checksum=[], # Add handling if supplied
     ) -> None:
         # -- sanity check -------------------------------------------
         if isinstance(source, int):
             self.bits = source
-            mp.validate_bitwidth(self.bits)
+            validate_bitwidth(self.bits)
             self.__build_matrix(a, b)
             return
-        elif isinstance(source, (list, Slice)) and isinstance(source[0], list):
+        elif isinstance(source, list) and isinstance(source[0], list):
+            if not isppm(source):
+                raise TypeError(f"Expected partial product matrix, got {source}")
             self.bits = len(source)
-            mp.validate_bitwidth(self.bits)
+            validate_bitwidth(self.bits)
+        elif isinstance(source, Slice):
+            # ! matrix scatter Slice -> list[list[str]]
+            raise NotImplementedError("Slice initialization not supported")
         else:
             raise TypeError(f"Expected integer or nested list, got {type(source)}")
 
         self.matrix = source
 
-        # -- process custom matrix ----------------------------------
-        # row_len  = self.bits << 1
-        # x_checksum = [0] * row_len
-        # y_checksum = [0] * self.bits
-        # # ! needs refactor
-        # for i, row in enumerate(source):
-        #     if not isinstance(row, (list, Slice)):
-        #         raise ValueError("Invalid input. Expected list or slice.")
-        #     if row_len != len(row):
-        #         raise ValueError("Inconsistent rows. Matrix must be 2m * m")
-        #     ch = 0
-        #     while ch < row_len:
-        #         if ch == row_len or row[ch] == '0' or row[ch] == '1':
-        #             for x in range(ch, row_len):
-        #                 if row[x] == '_':
-        #                     break
-        #                 x_checksum[x] = 1
-        #             y_checksum[i]
-        #             break
-        #         else:
-        #             ch += 1
-
-        # self.x_checksum = x_checksum
-        # self.y_checksum = y_checksum
+        self._soft_type = list()
         return None
 
     def __zero_matrix(self, bits: int) -> None:
@@ -156,65 +142,30 @@ class Matrix:
     def __build_matrix(self, operand_a: int, operand_b: int) -> None:
         """Build Logical AND matrix using source operands and it's checksum."""
 
-        mp.validate_bitwidth((bits := self.bits))
+        validate_bitwidth((bits := self.bits))
         if (operand_a > ((2**bits) - 1)) or (operand_b > ((2**bits) - 1)):
             raise ValueError("Operand bit width exceeds matrix bit width")
 
         # -- catch multiply by zero ---------------------------------
         if operand_a == 0 or operand_b == 0:
             self.__zero_matrix(bits)
-            # self.y_checksum = [0]*bits
-            # self.x_checksum = [0]*(bits*2)
             return None
 
         # -- generate -----------------------------------------------
         # convert to binary, removing '0b' and padding with zeros
         a = bin(operand_a)[2:].zfill(bits)
         b = bin(operand_b)[2:].zfill(bits)
-        # y_checksum = [0]*bits
-        # x_checksum = [0]*(bits*2)
         matrix = []
         for i in range(bits - 1, -1, -1):
             if b[i] == "0":
                 matrix.append(["_"] * (i + 1) + ["0"] * (bits) + ["_"] * (bits - i - 1))
             elif b[i] == "1":
                 matrix.append(["_"] * (i + 1) + list(a) + ["_"] * (bits - i - 1))
-                # y_checksum[i] = 1
-                # for j, bit in enumerate(list(a)):
-                # x_checksum[i+j] = 1
 
         self.matrix = matrix
-        # self.y_checksum = y_checksum
-        # self.x_checksum = x_checksum
         return None
 
-    def __checksum(self) -> None:
-        """Calculate checksums for rows and columns of the matrix"""
-
-        row_len = self.bits << 1
-        y_checksum = [0] * self.bits
-        x_checksum = [0] * row_len
-        for i, row in enumerate(self.matrix):
-            if len(row) != row_len:
-                raise ValueError("Inconsistent row length")
-
-            ch = 0
-            while ch < row_len:
-                if row[ch] == "0" or row[ch] == "1":
-                    y_checksum[ch] = 1
-                    for x in range(ch, row_len):
-                        if row[x] == "_":
-                            break
-                        x_checksum[x] = 1
-                    break
-                else:
-                    ch += 1
-
-        self.x_checksum = x_checksum
-        self.y_checksum = y_checksum
-        return None
-
-    def resolve_rmap(self, *, ignore_zeros: bool = True) -> mp.Map:
+    def resolve_rmap(self, *, ignore_zeros: bool = True) -> Map:
         """Find empty rows, create simple map to efficiently pack rows
 
         Parameters
@@ -239,10 +190,11 @@ class Matrix:
             else:
                 val = (offset ^ 255) + 1  # 2s complement
             rmap.append(f"{val:02X}"[-2:])
-        return mp.Map(rmap)
+        return Map(rmap)
 
-    # ! Update to use checksums  or coordinates
-    def apply_map(self, map_: mp.Map) -> None:
+    def apply_map(
+        self, map_: Map, *, unified_bounds: dict[str, list[int]] = {}
+    ) -> None:
         """Use Multiplied Map object to apply mapping to matrix
 
         Parameters
@@ -250,12 +202,15 @@ class Matrix:
         map_ : Map
             Map object containing the generated row mapping
 
+        bounds : dict[str: list[int]]
+            Unified bounds for all arithmetic units
+
         Returns
         -------
         None
 
         """
-        if not isinstance(map_, mp.Map):
+        if not isinstance(map_, Map):
             raise TypeError(f"Expected Map, got {type(map_)}")
         if map_.bits != self.bits:
             raise ValueError(
@@ -265,26 +220,28 @@ class Matrix:
         # -- row-wise mapping ---------------------------------------
 
         if rmap := map_.rmap:
-            # matrix = deepcopy(self.matrix) # TODO make this modify in-place
             for i in range(self.bits):
                 # convert signed hex to 2s complement if -ve
+                if rmap[i] == "00":
+                    continue
                 if (val := int(rmap[i], 16)) & 128:
                     val = (~val + 1) & 255  # 2s complement
-                # matrix[i]     = ["_"] * (self.bits*2)
+
                 self.matrix[i - val], self.matrix[i] = (
                     self.matrix[i],
                     self.matrix[i - val],
                 )
 
-                # deprecate checksum in favor of coordinates
-                # self.y_checksum[i]     = 0
-                # self.y_checksum[i-val] = 1
-            # self.matrix = matrix
+            return None
 
+        # -- bounding box mapping -----------------------------------
+
+        if unified_bounds:
+            apply_complex_map(self.matrix, map_, unified_bounds)
             return None
 
         # -- bit-wise mapping ---------------------------------------
-        # TODO Update to use coordinates -- way too expensive currently
+        # Expensive fallback
         for y in range(self.bits):
             for x in range(self.bits << 1):
                 # convert signed hex to 2s complement if -ve
@@ -294,14 +251,13 @@ class Matrix:
                     self.matrix[y - val][x] = self.matrix[y][x]
                     self.matrix[y][x] = "_"
 
-        self.checksum = [0] * self.bits
         return None
 
     def __repr__(self) -> str:
         return f"<multiplied.{self.__class__.__name__} object at {hex(id(self))}>"
 
     def __str__(self) -> str:
-        return mp.pretty(self.matrix)
+        return pretty(self.matrix)
 
     def __len__(self) -> int:
         return self.bits
@@ -342,6 +298,26 @@ def empty_rows(matrix: Matrix) -> int:
     return sum([matrix.matrix[i] == empty_row for i in range(matrix.bits)])
 
 
+def raw_empty_rows(matrix: list[list[str]]) -> int:
+    """Return the number of empty rows in a raw matrix"""
+    if not isppm(matrix):
+        raise TypeError(f"Expected partial product matrix, got {matrix}")
+    empty_row = ["_" for i in range(len(matrix[0]))]
+    return sum([matrix[i] == empty_row for i in range(len(matrix))])
+
+
+def raw_empty_row_pos(matrix: list[list[str]], row: int) -> list[int]:
+    """Return positions of empty rows in a raw matrix"""
+    if not isppm(matrix):
+        raise TypeError(f"Expected partial product matrix, got {matrix}")
+    empty_row = ["_" for i in range(len(matrix[0]))]
+    pos = []
+    for i in range(len(matrix)):
+        if matrix[i] == empty_row:
+            pos.append(i)
+    return pos
+
+
 def raw_empty_matrix(bits: int) -> list[list[str]]:
     """Build an empty 2d array for a given bitwidth
 
@@ -360,7 +336,7 @@ def raw_empty_matrix(bits: int) -> list[list[str]]:
     An empty matrix is completely filled with underscores, following Multipied's convention
 
     """
-    mp.validate_bitwidth(bits)
+    validate_bitwidth(bits)
     matrix = []
     for i in range(bits):
         matrix.append(["_"] * (bits * 2))
@@ -506,7 +482,7 @@ def matrix_scatter(
     """
 
     if isinstance(bounds, dict):
-        if not all([mp.ischar(k) for k in bounds.keys()]):
+        if not all([ischar(k) for k in bounds.keys()]):
             raise ValueError("Unrecognised Bounds")
     else:
         raise TypeError(f"Expected Dict got {type(bounds)}")
@@ -518,11 +494,9 @@ def matrix_scatter(
 
     if fmt == "auto":
         _litmus = source[0][0]
-        if mp.ischar(_litmus) or (
-            mp.isint(_litmus) and (_litmus == "0" or _litmus == "1")
-        ):
+        if ischar(_litmus) or (isint(_litmus) and (_litmus == "0" or _litmus == "1")):
             fmt = "empty"
-        elif mp.ishex2(_litmus):
+        elif ishex2(_litmus):
             fmt = "map"
         else:
             fmt = "zero"

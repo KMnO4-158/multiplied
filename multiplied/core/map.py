@@ -2,11 +2,15 @@
 # Map Bits Inside A Matrix #
 ############################
 
-import multiplied as mp
+
 from typing import Any, Iterator
 
+from .dtypes.base import MultipliedMeta
+from .utils.bool import ishex2, validate_bitwidth
+from .utils.pretty import pretty
 
-class Map:
+
+class Map(MultipliedMeta):
     """Generates Map object from row map or standard map.
 
     Each Mapping is defined by a 2-bit hexadecimal value. Positive
@@ -32,7 +36,7 @@ class Map:
         if not isinstance(map, (list, int)):
             raise TypeError(f"Map must be type list or int got {type(map)}")
         self.bits = map if isinstance(map, int) else len(map)
-        mp.validate_bitwidth(self.bits)
+        validate_bitwidth(self.bits)
 
         # -- handle bit defined maps --------------------------------
         if isinstance(map, int):
@@ -40,26 +44,24 @@ class Map:
             self.rmap = ["00"] * self.bits
             return None
 
-        # -- handle standard maps -------------------------------
+        # -- handle complex maps ------------------------------------
         self.map = map
         if isinstance(self.map[0], list):
             self.rmap = []
+
+            # -- sanity check ---------------------------------------
+            # ! Can be parallelised
+            for y in map:
+                for x in y:
+                    if not ishex2(x):
+                        raise ValueError(f"Invalid row map element {x}")
             return None
 
-        # -- handle row maps ----------------------------------------
-        # TODO: refactor -> coordinate based mapping
-        # TODO: calculate when map results in out-of-bound mapping(s)
-        checksum = [0] * self.bits
-        for i, x in enumerate(map):
-            if 2 != len(x) or not (0 <= int(x, 16) <= 255):
-                raise TypeError(
-                    f"Expected hex value in range '00' to 'FF', got mapping {x}"
-                )
-            checksum[i] = 1 if x != "00" else 0
-
-        self.checksum = checksum
         self.map = self.build_map(map)
         self.rmap = map
+
+        self._soft_type = list()
+        self._dtype = "Map"
         return None
 
     def build_map(self, rmap: list[str]) -> list[list[str]]:
@@ -77,10 +79,10 @@ class Map:
             Standard map of the multiplied matrix.
         """
 
-        mp.validate_bitwidth(n := len(rmap))
+        validate_bitwidth(n := len(rmap))
         map = []
         for i in range(n):
-            if len(rmap[i]) != 2 and not (isinstance(rmap[i], str)):
+            if not ishex2(rmap[i]):
                 raise ValueError(f"Invalid row map element {rmap[i]}")
             map.append([rmap[i] for _ in range(n * 2)])
         return map
@@ -93,7 +95,7 @@ class Map:
         return f"<multiplied.{self.__class__.__name__} object at {hex(id(self))}>"
 
     def __str__(self) -> str:
-        return mp.pretty(self.map)
+        return pretty(self.map)
 
     def __iter__(self) -> Iterator[list[str]]:
         return iter(self.map)
@@ -107,13 +109,13 @@ class Map:
 
 def empty_map(bits: int) -> Map:
     """Return empty Multiplied Map object"""
-    mp.validate_bitwidth(bits)
+    validate_bitwidth(bits)
     return Map(["00"] * bits)
 
 
 def build_dadda_map(bits: int) -> Map:
     """Return map representing the starting point of Dadda tree algorithm."""
-    mp.validate_bitwidth(bits)
+    validate_bitwidth(bits)
     return Map(raw_dadda_map(bits))
 
 
@@ -135,3 +137,70 @@ def raw_dadda_map(bits: int) -> list[list[str]]:
         row = (["00"] * (bits - i)) + dadda + (["00"] * bits)
         matrix.append(row)
     return matrix
+
+
+def unify_bounds(bounds: dict) -> dict:
+    """Returns a simplified bound for non empty characters
+
+    Parameters
+    ----------
+    bounds : dict
+        Bounding box for each arithmetic unit in Template object
+
+    Returns
+    -------
+    dict
+        Unified bounds where  {y : [x0, x1]}
+
+    See Also
+    --------
+    :func:`update_bounding_box`
+    """
+    if not isinstance(bounds, dict):
+        raise TypeError(f"Expected dict got {type(bounds)}")
+    if bounds.get("_") is None:
+        raise ValueError("Bounds must have a `_` key")
+
+    unified_row_bounds = {}
+    for k, unit_bounds in bounds.items():
+        if k == "_":
+            continue
+        for item, row in unit_bounds:
+            if unified_row_bounds.get(row) is None:
+                unified_row_bounds[row] = []
+            unified_row_bounds[row].append(item)
+
+    return unified_row_bounds
+
+
+def apply_complex_map(matrix: list[list[str]], map: Map, bounds: dict) -> None:
+    """Applies a complex mapping to source Matrix
+
+    Parameters
+    ----------
+    matrix : mp.Matrix
+        Matrix to apply mapping to
+
+    map : mp.Map
+        Multiplied Map object to apply mapping from
+
+    bounds : dict[str: list[int]]
+        Unified bounds for all arithmetic units
+    """
+    if not all([isinstance(r, int) for r in bounds]):
+        raise TypeError("Expected all row bounds to be integers")
+
+    for row in sorted(bounds.keys()):
+        if not isinstance(bounds[row], list):
+            raise TypeError("Expected row bounds to be a list")
+
+        for col in range(bounds[row][0], bounds[row][1] + 1):
+            if map.map[row][col] == "00":
+                continue
+            if (offset := int(map.map[row][col], 16)) & 128:
+                offset = (~offset + 1) & 255  # 2s complement
+
+            matrix[row - offset][col] = matrix[row][col]
+            matrix[row][col] = "_"
+
+    return None

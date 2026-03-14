@@ -72,7 +72,7 @@ Once the library is stable and optimised:
 
 - [x] Truth table generation -> json
 - [x] Algorithm -> json
-- [ ] json -> Algorithm -- will not implement
+- [ ] ~~json -> Algorithm~~ -- will not implement
 - [x] Implement I/O via [Parquet](https://parquet.apache.org/)
 - [x] Truth table generation -> Parquet
 

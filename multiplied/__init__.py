@@ -5,8 +5,8 @@
 
 # -- version --------------------------------------------------------
 
-__version_info__ = (0, 8, 1)
-__version__ = "0.8.1"
+__version_info__ = (0, 8, 2)
+__version__ = "0.8.2"
 
 # -- core -----------------------------------------------------------
 
@@ -16,12 +16,16 @@ from .core.map import (
     build_dadda_map,
     raw_zero_map,
     raw_dadda_map,
+    unify_bounds,
+    apply_complex_map,
 )
 
 from .core.matrix import (
     Matrix,
     Slice,
     empty_rows,
+    raw_empty_row_pos,
+    raw_empty_rows,
     raw_empty_matrix,
     raw_zero_matrix,
     matrix_scatter,
@@ -69,6 +73,7 @@ from .core.utils.pretty import (
 )
 
 from .core.utils.bool import (
+    isppm,
     isint,
     ishex2,
     ischar,
@@ -124,8 +129,12 @@ __all__ = [
     "Map",
     "build_dadda_map",
     "empty_map",
+    "raw_empty_row_pos",
+    "raw_empty_rows",
     "raw_zero_map",
     "raw_dadda_map",
+    "unify_bounds",
+    "apply_complex_map",
     "Matrix",
     "Slice",
     "Pattern",
@@ -147,6 +156,7 @@ __all__ = [
     "truth_dataframe",
     "shallow_truth_table",
     "truth_multi_parquet",
+    "isppm",
     "ischar",
     "isalpha",
     "ishex2",

@@ -4,7 +4,6 @@
 
 from typing import Any
 
-
 SUPPORTED_BITWIDTHS = {4, 8}
 
 
@@ -64,3 +63,17 @@ def isalpha(ch: str) -> bool:
         return False
     except (ValueError, TypeError):
         return False
+
+
+def isppm(nested_list: list[list[str]]) -> bool:
+    """Return True if nested list represents a Partial Product matrix"""
+    if not isinstance(nested_list, list):
+        return False
+    if not all(isinstance(row, list) for row in nested_list):
+        return False
+    bits = len(nested_list)
+    if not all(len(row) == (bits << 1) for row in nested_list):
+        return False
+    if not all(ischar(val) for row in nested_list for val in row):
+        return False
+    return True

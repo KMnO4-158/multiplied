@@ -12,6 +12,9 @@ metadata:
     len:
         input.__len__()
 """
+# block ruff format:
+# fmt: off
+
 TEST_ALGORITHM_INSTANCE = [
     # TC(name, input, expected_output, metadata)
     TestCase("auto_alg_len", None, None, {"len": True, "all": True}),
@@ -25,9 +28,7 @@ TEST_ALGORITHM_EXECUTION = [
     TestCase("alg_exec", None, mp.Matrix, {"all": True, "exec": True}),
     TestCase("alg_step_one", 1, mp.Matrix, {"all": True, "step": True}),
     TestCase("alg_step_all", 0, mp.Matrix, {"all": True, "step": True}),
-    TestCase(
-        "alg_exec_complex", REFERENCE["complex_template"][8]["T"], None, {"exec": True}
-    ),
+    TestCase("alg_exec_complex", (REFERENCE["complex_template"][8]["T"], REFERENCE["complex_map"][8]), None, {"exec": True}),
 ]
 
 # --
@@ -36,6 +37,7 @@ TEST_BOOLEAN = []
 TEST_ITER = []
 
 TEST_ERROR = []
+# fmt: on
 
 
 @pytest.fixture(params=TEST_ALGORITHM_INSTANCE, ids=lambda tc: tc.name)
@@ -148,19 +150,47 @@ def process_value(value, metadata, supported_bitwidths):
         return alg  # to assert instance
 
 
-def process_algorithm(value, metadata):
-    if not isinstance(value, list) or not isinstance(value[0], list):
-        raise TypeError(f"Expected [list[list]] got {type(value)}")
-    bits = len(value)
-    mp.validate_bitwidth(bits)
+def process_algorithm(value: list | tuple, metadata):
+    if isinstance(value, list):
+        if not isinstance(value[0], list):
+            raise TypeError(f"Expected [list[list]] got {type(value)}")
+    elif isinstance(value, tuple):
+        if not (isinstance(value[0], list) and isinstance(value[1], list)):
+            raise TypeError(f"Expected tuple[list, list] got {type(value)}")
+    else:
+        raise TypeError("Unexpected TestCase values")
 
+    match value:
+        case list():
+            bits = len(value)
+            mp.validate_bitwidth(bits)
+            map_ = None
+            template = value
+        case tuple():
+            if len(value[0]) != len(value[1]):
+                raise ValueError("Template bitwidth must match Map bitwidth")
+            bits = len(value[0])
+            template = value[0]
+            map_ = value[1]
+        case _:
+            raise TypeError("Unexpected TestCase values")
+
+    print(map_)
     alg = mp.Algorithm(bits)
-    alg.push(mp.Template(value))
+
+    if map_ is not None:
+        alg.push(mp.Template(template), mp.Map(map_))
+    else:
+        alg.push(mp.Template(template))
+
     alg.auto_resolve_stage()
 
     if metadata.get("exec"):
         output = alg.exec((2**bits) - 1, (2**bits) - 1)
         print(list(output.values())[-1][0][0])
+        print(alg)
+        for i in output.values():
+            print(i)
         result = int("".join(list(output.values())[-1][0][0]), 2)
         product = ((2**bits) - 1) * ((2**bits) - 1)
         return (result, product)
