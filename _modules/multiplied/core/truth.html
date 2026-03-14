@@ -9,7 +9,7 @@
       ? (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
       : m;
   })();
-  </script><link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8e8a900e" /><link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" /><link rel="stylesheet" type="text/css" href="../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" /><link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" /><link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=5037cee9" /><link rel="stylesheet" type="text/css" href="../../../_static/light-dark.css?v=9721c31d" /><link rel="stylesheet" type="text/css" href="../../../_static/styles/breeze.css?v=227fd4f7" /><script defer="defer" src="../../../_static/scripts/breeze.js?v=dac9f8c6"></script></head>
+  </script><link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8e8a900e" /><link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" /><link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" /><link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" /><link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=5037cee9" /><link rel="stylesheet" type="text/css" href="../../../_static/light-dark.css?v=9721c31d" /><link rel="stylesheet" type="text/css" href="../../../_static/styles/breeze.css?v=227fd4f7" /><script defer="defer" src="../../../_static/scripts/breeze.js?v=dac9f8c6"></script></head>
 <body>
   
   
@@ -132,7 +132,8 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">multiplied</span><span class="w"> </span><span class="kn">import</span> <span class="n">Algorithm</span><span class="p">,</span> <span class="n">Matrix</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.algorithm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Algorithm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.matrix</span><span class="w"> </span><span class="kn">import</span> <span class="n">Matrix</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">multiprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pool</span><span class="p">,</span> <span class="n">Process</span><span class="p">,</span> <span class="n">Queue</span><span class="p">,</span> <span class="n">cpu_count</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Generator</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
@@ -174,7 +175,7 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Minimum input and output values must be greater than zero.&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">min_in</span> <span class="o">&gt;</span> <span class="n">max_in</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">min_out</span> <span class="o">&gt;</span> <span class="n">max_out</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;Domain: (a, b) and range: (c, d) must satisfy a &lt;= b and c &lt;= d.&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Domain: </span><span class="si">{</span><span class="n">domain_</span><span class="si">}</span><span class="s2"> and range: </span><span class="si">{</span><span class="n">range_</span><span class="si">}</span><span class="s2"> must satisfy a &lt;= b and c &lt;= d.&quot;</span>
         <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">max_in</span><span class="o">**</span><span class="mi">2</span> <span class="o">&lt;</span> <span class="n">min_out</span><span class="p">:</span>
@@ -422,17 +423,84 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">_batch_truth_scope</span><span class="p">(</span>
     <span class="n">domain_</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">range_</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">workers</span><span class="p">:</span> <span class="nb">int</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">log2</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
     <span class="n">min_in</span><span class="p">,</span> <span class="n">max_in</span> <span class="o">=</span> <span class="n">domain_</span>
     <span class="n">min_out</span><span class="p">,</span> <span class="n">max_out</span> <span class="o">=</span> <span class="n">range_</span>
-    <span class="n">batch_size</span> <span class="o">=</span> <span class="p">(</span><span class="n">max_out</span> <span class="o">-</span> <span class="n">min_out</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="n">workers</span>
 
+    <span class="n">slope</span> <span class="o">=</span> <span class="p">(</span><span class="n">max_in</span> <span class="o">-</span> <span class="n">min_in</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">max_out</span> <span class="o">-</span> <span class="n">min_out</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">max_in</span> <span class="o">-</span> <span class="n">min_in</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">&lt;</span> <span class="mi">1000</span> <span class="ow">or</span> <span class="p">(</span><span class="n">max_out</span> <span class="o">-</span> <span class="n">min_out</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">256</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">workers</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;workers &gt; 1 not recommended for small domains/ranges&quot;</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="p">(</span><span class="n">domain_</span><span class="p">,</span> <span class="n">range_</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="n">workers</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">adjusted_min_out</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">max_out</span> <span class="o">-</span> <span class="n">min_out</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="nb">int</span><span class="p">(</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">slope</span><span class="p">)))</span>  <span class="c1"># heuristic</span>
+        <span class="k">yield</span> <span class="p">(</span><span class="n">domain_</span><span class="p">,</span> <span class="p">(</span><span class="n">min_out</span><span class="p">,</span> <span class="n">adjusted_min_out</span><span class="p">))</span>
+        <span class="k">yield</span> <span class="p">(</span><span class="n">domain_</span><span class="p">,</span> <span class="p">(</span><span class="n">adjusted_min_out</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">max_out</span><span class="p">))</span>
+        <span class="k">return</span>
+
+    <span class="c1"># heuristic balances operands / batch ===========================</span>
+    <span class="c1">#</span>
+    <span class="c1"># The first batch of a given scope(DOMAIN, RANGE), will always</span>
+    <span class="c1"># produce the most operands. For complete truth tables the</span>
+    <span class="c1"># difference is at least one order of magnitude.</span>
+    <span class="c1">#</span>
+    <span class="c1"># Using an estimate (acc)</span>
+    <span class="c1">#</span>
+
+    <span class="n">balance</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">workers</span>  <span class="c1"># heuristic scaling per batch</span>
+
+    <span class="c1"># -- approximate operands in first batch ------------------------</span>
+    <span class="n">out_batch_size</span> <span class="o">=</span> <span class="p">(</span><span class="n">max_out</span> <span class="o">-</span> <span class="n">min_out</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="n">workers</span>
+
+    <span class="n">acc</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">min_out</span><span class="p">,</span> <span class="n">max_out</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="c1"># over/under estimate is accounted for later</span>
+        <span class="n">acc</span> <span class="o">+=</span> <span class="n">out_batch_size</span> <span class="o">//</span> <span class="n">n</span>
+
+    <span class="c1"># -- distribute linear offsets ----------------------------------</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">((</span><span class="n">workers</span><span class="p">)):</span>
+        <span class="n">balance</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="nb">int</span><span class="p">(((</span><span class="n">acc</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">slope</span><span class="p">)))</span> <span class="o">//</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">12</span><span class="p">))</span>
+
+    <span class="c1"># -- distribute dyadic (?) offsets ------------------------------</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">((</span><span class="n">workers</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="p">((</span><span class="n">max_in</span> <span class="o">-</span> <span class="n">min_in</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">workers</span><span class="p">)):</span>
+        <span class="n">balance</span><span class="p">[</span><span class="o">-</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(((</span><span class="n">acc</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">slope</span><span class="p">)))</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">3</span><span class="p">)</span>
+
+    <span class="c1"># -- clamp to original range ------------------------------------</span>
+    <span class="n">rem</span> <span class="o">=</span> <span class="o">-</span><span class="nb">sum</span><span class="p">(</span><span class="n">balance</span><span class="p">)</span>
+
+    <span class="c1"># domain far from range</span>
+    <span class="k">if</span> <span class="n">slope</span> <span class="o">&lt;</span> <span class="mf">0.01</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">((</span><span class="n">workers</span><span class="p">)):</span>
+            <span class="n">balance</span><span class="p">[</span><span class="o">-</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">rem</span> <span class="o">&gt;&gt;</span> <span class="nb">int</span><span class="p">(</span><span class="n">log2</span><span class="p">(</span><span class="n">workers</span><span class="p">)</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span>
+
+        <span class="n">final</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">balance</span><span class="p">)</span>
+        <span class="n">balance</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="o">-</span><span class="nb">int</span><span class="p">(</span><span class="n">final</span> <span class="o">*</span> <span class="mf">0.95</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c1"># collect 95% of remainder to final batch</span>
+        <span class="n">balance</span><span class="p">[(</span><span class="n">workers</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="o">-</span><span class="nb">int</span><span class="p">(</span><span class="n">final</span> <span class="o">*</span> <span class="mf">0.05</span><span class="p">)</span>  <span class="c1"># 5% applied to low midpoint</span>
+
+    <span class="c1"># domain close to range</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">((</span><span class="n">workers</span><span class="p">)):</span>
+            <span class="n">balance</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">rem</span> <span class="o">&gt;&gt;</span> <span class="nb">int</span><span class="p">(</span><span class="n">log2</span><span class="p">(</span><span class="n">workers</span><span class="p">))</span>
+
+    <span class="c1"># ==============================================================</span>
+
+    <span class="n">r_min_chunk</span> <span class="o">=</span> <span class="n">min_out</span>
     <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">workers</span><span class="p">):</span>
-        <span class="n">r_min_chunk</span> <span class="o">=</span> <span class="n">min_out</span> <span class="o">+</span> <span class="n">w</span> <span class="o">*</span> <span class="n">batch_size</span>
-        <span class="n">r_max_chunk</span> <span class="o">=</span> <span class="n">r_min_chunk</span> <span class="o">+</span> <span class="n">batch_size</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">w</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">r_max_chunk</span> <span class="o">=</span> <span class="n">out_batch_size</span> <span class="o">+</span> <span class="n">balance</span><span class="p">[</span><span class="n">w</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">r_max_chunk</span> <span class="o">=</span> <span class="n">r_min_chunk</span> <span class="o">+</span> <span class="n">out_batch_size</span> <span class="o">+</span> <span class="n">balance</span><span class="p">[</span><span class="n">w</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">r_max_chunk</span> <span class="o">&gt;</span> <span class="n">max_out</span><span class="p">:</span>
             <span class="n">r_max_chunk</span> <span class="o">=</span> <span class="n">max_out</span>
-        <span class="k">yield</span> <span class="p">(</span><span class="n">domain_</span><span class="p">,</span> <span class="p">(</span><span class="n">r_min_chunk</span><span class="p">,</span> <span class="n">r_max_chunk</span><span class="p">))</span>
+
+        <span class="n">adjust_max_in</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">max_in</span><span class="p">,</span> <span class="n">r_max_chunk</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="p">((</span><span class="n">min_in</span><span class="p">,</span> <span class="n">adjust_max_in</span><span class="p">),</span> <span class="p">(</span><span class="n">r_min_chunk</span><span class="p">,</span> <span class="n">r_max_chunk</span><span class="p">))</span>
+        <span class="n">r_min_chunk</span> <span class="o">=</span> <span class="n">r_max_chunk</span> <span class="o">+</span> <span class="mi">1</span>
 
 
 <div class="viewcode-block" id="truth_multi_parquet">
@@ -470,6 +538,10 @@
     <span class="k">if</span> <span class="nb">dir</span><span class="o">.</span><span class="n">suffix</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="nb">dir</span><span class="o">.</span><span class="n">suffix</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Output directory </span><span class="si">{</span><span class="nb">dir</span><span class="si">}</span><span class="s2"> must be a directory, not a file.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">workers</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;workers must be even&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">workers</span> <span class="o">&gt;</span> <span class="mi">64</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;workers must be less than or equal to 64&quot;</span><span class="p">)</span>
 
     <span class="nb">dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
@@ -567,5 +639,5 @@
   <label class="bz-overlay bz-overlay-primary" for="bz-sidebar-primary"></label>
   <label class="bz-overlay bz-overlay-secondary" for="bz-sidebar-secondary"></label>
   <input type="checkbox" name="bz-sidebar-primary" id="bz-sidebar-primary" aria-label="Toggle section navigation">
-  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../../../_static/documentation_options.js?v=cc929139"></script><script src="../../../_static/doctools.js?v=fd6eb6e6"></script><script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script><script src="../../../_static/clipboard.min.js?v=a7894cd8"></script><script src="../../../_static/copybutton.js?v=f281be69"></script><script src="../../../_static/design-tabs.js?v=f930bc37"></script></body>
+  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../../../_static/documentation_options.js?v=61c2e1f5"></script><script src="../../../_static/doctools.js?v=fd6eb6e6"></script><script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script><script src="../../../_static/clipboard.min.js?v=a7894cd8"></script><script src="../../../_static/copybutton.js?v=f281be69"></script><script src="../../../_static/design-tabs.js?v=f930bc37"></script></body>
 </html>
