@@ -10,7 +10,6 @@ Subpackages
    multiplied.analysis
    multiplied.core
    multiplied.io
-   multiplied.tests
 
 Module contents
 ---------------

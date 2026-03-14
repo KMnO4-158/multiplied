@@ -45,7 +45,7 @@ extensions = [
     "myst_nb",
 ]
 
-exclude_patterns = ["multiplied.tests.rst"]
+exclude_patterns = ["multiplied.tests.rst", "multiplied.core.dtypes.rst"]
 templates_path = ["_templates"]
 source_suffix = [".rst", ".md"]
 
