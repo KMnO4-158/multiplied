@@ -611,21 +611,7 @@ class Template(MultipliedMeta):
         units = matrix_scatter(self.template, bounds)
         return (units, bounds)
 
-    # To be used in complex template results
-    def merge(self, templates: list[Any]) -> None:
-        """
-        Merge multiple template slices into a single template.
-        """
-        assert isinstance(templates, list)
-        # This looks terrible... Works tho?
-        # templates[template[row[str]]]
-        assert isinstance(templates[0][0][0][0], str)
 
-        if len(templates) == 0:
-            raise ValueError("No templates provided")
-
-        self.merged = None  # PLACEHOLDER #
-        ...
 
     def __str__(self) -> str:
 
