@@ -604,7 +604,7 @@ class Template(MultipliedMeta):
     #
     def collect_template_units(
         self,
-    ) -> tuple[dict[str, list], dict[str, list[tuple[int, int]]]]:
+    ) -> tuple[dict[str, list[list[str]]], dict[str, list[tuple[int, int]]]]:
         """Return dict of isolated arithmetic units and their bounding box."""
 
         bounds = self.update_bounding_box(self.template)
