@@ -107,8 +107,6 @@ class Matrix(MultipliedMeta):
         *,
         a: int = 0,
         b: int = 0,
-        # x_checksum=[], # Add handling if supplied
-        # y_checksum=[], # Add handling if supplied
     ) -> None:
         # -- sanity check -------------------------------------------
         if isinstance(source, int):
@@ -151,55 +149,20 @@ class Matrix(MultipliedMeta):
         # -- catch multiply by zero ---------------------------------
         if operand_a == 0 or operand_b == 0:
             self.__zero_matrix(bits)
-            # self.y_checksum = [0]*bits
-            # self.x_checksum = [0]*(bits*2)
             return None
 
         # -- generate -----------------------------------------------
         # convert to binary, removing '0b' and padding with zeros
         a = bin(operand_a)[2:].zfill(bits)
         b = bin(operand_b)[2:].zfill(bits)
-        # y_checksum = [0]*bits
-        # x_checksum = [0]*(bits*2)
         matrix = []
         for i in range(bits - 1, -1, -1):
             if b[i] == "0":
                 matrix.append(["_"] * (i + 1) + ["0"] * (bits) + ["_"] * (bits - i - 1))
             elif b[i] == "1":
                 matrix.append(["_"] * (i + 1) + list(a) + ["_"] * (bits - i - 1))
-                # y_checksum[i] = 1
-                # for j, bit in enumerate(list(a)):
-                # x_checksum[i+j] = 1
 
         self.matrix = matrix
-        # self.y_checksum = y_checksum
-        # self.x_checksum = x_checksum
-        return None
-
-    def __checksum(self) -> None:
-        """Calculate checksums for rows and columns of the matrix"""
-
-        row_len = self.bits << 1
-        y_checksum = [0] * self.bits
-        x_checksum = [0] * row_len
-        for i, row in enumerate(self.matrix):
-            if len(row) != row_len:
-                raise ValueError("Inconsistent row length")
-
-            ch = 0
-            while ch < row_len:
-                if row[ch] == "0" or row[ch] == "1":
-                    y_checksum[ch] = 1
-                    for x in range(ch, row_len):
-                        if row[x] == "_":
-                            break
-                        x_checksum[x] = 1
-                    break
-                else:
-                    ch += 1
-
-        self.x_checksum = x_checksum
-        self.y_checksum = y_checksum
         return None
 
     def resolve_rmap(self, *, ignore_zeros: bool = True) -> Map:

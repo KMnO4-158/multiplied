@@ -365,7 +365,6 @@ class Template(MultipliedMeta):
 
             for char in chars:
                 if char != "_":
-                    print(char)
                     pattern[i] = char
 
         self.pattern = Pattern(pattern)

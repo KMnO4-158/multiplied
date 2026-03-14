@@ -189,7 +189,7 @@ class Algorithm(MultipliedMeta):
         #   ...00110110... | ..001100000...
         #   ...00101010... | ...________...
 
-        # -- isolate units -----------------------------------------
+        # -- isolate units ------------------------------------------
 
         bounds = self.algorithm[self.state]["template"].bounds
         units = matrix_scatter(self.matrix.matrix, bounds)
@@ -220,7 +220,7 @@ class Algorithm(MultipliedMeta):
                     # -- skip empty rows ----------------------------
                     start = min(unit_bounds[0][0], unit_bounds[2][0])
 
-                    # -- sum columns -------------------------------
+                    # -- sum columns --------------------------------
                     for i in range(start, n):
                         # -- row checksum ---------------------------
                         if operand_a[i] != "_" or operand_b[i] != "_":
@@ -260,7 +260,7 @@ class Algorithm(MultipliedMeta):
                     # -- skip empty rows ----------------------------
                     start = min(unit_bounds[0][0], unit_bounds[2][0], unit_bounds[4][0])
 
-                    # -- sum columns -------------------------------
+                    # -- sum columns --------------------------------
                     for i in range(start, n):
                         csa_sum = 0
                         csa_sum += 1 if operand_a[i] == "1" else 0
