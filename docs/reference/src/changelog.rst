@@ -5,10 +5,29 @@ Changelog
 =========
 
 
-
-
 v0.8
 =====
+
+`v0.8.2 <https://github.com/KMnO4-158/multiplied/releases/tag/v0.8.2>`_
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This patch focused on fully integrating complex Template objectsand improving performance.
+
+Updates
+
+    - Batched truth table generation now balanced (`c566789`_)
+    - Bounding box based mapping (`fece553`_)
+    - Simplified Partial Product Matrix(PPM) sanity check (`6e9104b`_)
+    - Finalised complex Template support (`fdf515b`_)
+    - Typing and import structure (`8bc35c0`_)
+
+See full changelog `here <https://github.com/KMnO4-158/multiplied/pull/125>`_
+
+.. _c566789: https://github.com/KMnO4-158/multiplied/commit/c566789
+.. _fece553: https://github.com/KMnO4-158/multiplied/commit/fece553
+.. _6e9104b: https://github.com/KMnO4-158/multiplied/commit/6e9104b
+.. _fdf515b: https://github.com/KMnO4-158/multiplied/commit/fdf515b
+.. _8bc35c0: https://github.com/KMnO4-158/multiplied/commit/8bc35c0
 
 `v0.8.1 <https://github.com/KMnO4-158/multiplied/releases/tag/v0.8.1>`_
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
