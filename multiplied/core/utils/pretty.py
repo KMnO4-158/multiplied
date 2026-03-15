@@ -106,4 +106,9 @@ def pretty_nested_list(listy_object: Any, *, whitespace=False) -> str:
 # Needs some work
 def mprint(matrix: Any):
     """Wrapper for print(mp.pretty)"""
-    print(pretty(matrix))
+
+    # sanity check stops prints being duplicated
+    if issubclass(type(matrix), MultipliedMeta):
+        print(matrix)
+    else:
+        print(pretty(matrix))
