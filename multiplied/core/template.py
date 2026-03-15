@@ -442,13 +442,14 @@ class Template(MultipliedMeta):
                 i += 1
             results[ch] = Matrix(unit_result)
 
+        # ! -- implement merge conflict resolution ------------------ ! #
         if 1 < len(results):
             self.result = matrix_merge(results, re_bound)
         else:
             self.result = list(results.values())[0]
 
         self.re_bounds = self.update_bounding_box(self.result.matrix)
-
+        # ! --------------------------------------------------------- ! #
         return None
 
     # Templates must be built using matrix
@@ -666,15 +667,14 @@ def resolve_pattern(matrix: Matrix) -> Pattern:
     return Pattern(new_pattern)
 
 
-def build_noop_template(self, pattern: Pattern, *, dadda=False) -> None:
-    """Create template for zeroed matrix using pattern"""
-
-
 """
-Complex templates implement decoders and bit-mapping.
+Decoders
+--------
 
-Decoders reduce 4 or more bits at a time.
+Complex templates will eventually allow for decoders.
 
-Bit mapping defines where bits are placed in each stage,
-enabling complex implementations and possible optimisations.
+Decoders can reduce 4 or more bits at a time, or be used to implement
+other encoding/decoding style operations.
+
+
 """
