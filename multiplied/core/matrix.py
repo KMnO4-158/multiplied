@@ -396,7 +396,8 @@ def matrix_merge(
 
     Examples
     --------
-    >>> source = {'A': Matrix([[1, _], [3, _]]), 'B': Matrix([[_, 6], [_, 8]])}
+    >>> source = {'A': Matrix([[1, _], [3, _]]),
+                  'B': Matrix([[_, 6], [_, 8]])}
     >>> bounds = {'A': [(0, 0), (0, 0), (1, 1), (1, 1)],
     >>>           'B': [(0, 1), (0, 1), (0, 1), (0, 1)]}
     >>> matrix_merge(source, bounds)
@@ -415,6 +416,12 @@ def matrix_merge(
 
     bits = list(source.values())[0].bits
     output = raw_empty_matrix(bits)
+
+    # ! check for conflicts ! #
+    # > find conflicting row
+    # > collect conflicts from each row, into sums for each column
+    # > allow matrices to merge with errors
+
     for unit, matrix in source.items():
         if bounds[unit] == "_":
             continue
@@ -422,6 +429,8 @@ def matrix_merge(
         # new bounding box covering whole result
         box_left = min(i[0] for i in bounds[unit])
         box_right = max(i[0] for i in bounds[unit])
+
+        # ! this could all be implemented via slices [:] -- maybe faster
         i = 0
         while i < len(bounds[unit]) - 1:
             # ..., left coord : right coord, ...
@@ -433,6 +442,11 @@ def matrix_merge(
                 output[left[1]][j] = matrix.matrix[left[1]][j]
 
             i += 2
+
+    # ! resolve conflicts ! #
+    # > distribute column conflict-sums into zero empty bits
+    # > update bounds with resolved columns to fix errors
+
     return Matrix(output)
 
 
