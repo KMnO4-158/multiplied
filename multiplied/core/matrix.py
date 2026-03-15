@@ -426,10 +426,11 @@ def matrix_merge(
         while i < len(bounds[unit]) - 1:
             # ..., left coord : right coord, ...
             left, right = bounds[unit][i], bounds[unit][i + 1]
-            if (y := left[1]) != right[1]:
-                raise ValueError(f"Missing bound pair for row {y}")
+
+            if left[1] != right[1]:
+                raise ValueError(f"Missing bound pair for row {left[1]}")
             for j in range(box_left, box_right + 1):
-                output[y][j] = matrix.matrix[y][j]
+                output[left[1]][j] = matrix.matrix[left[1]][j]
 
             i += 2
     return Matrix(output)
