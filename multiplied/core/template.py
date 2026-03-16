@@ -319,7 +319,6 @@ class Template(MultipliedMeta):
             case _:
                 raise TypeError("result must be a Matrix or list[list[str]]")
 
-
         # -- pattern handling ---------------------------------------
         if isinstance(source, Pattern):
             self.pattern = source
@@ -342,8 +341,6 @@ class Template(MultipliedMeta):
 
         else:
             raise TypeError(f"Expected Pattern or list[list[str]] got {source}")
-
-
 
         self._soft_type = list()
 
@@ -559,6 +556,13 @@ class Template(MultipliedMeta):
         """Returns dictionary of arithmetic unit and coordinates for their boundaries.
 
         No rigorous inter-row or intra-row boundary checking.
+
+        Notes
+        -----
+        Bounds are in the form:
+            {"<unit>": [(<start>, <end>), ...]}
+
+        Where `(<start>, <end>)` are coordinate points in the matrix.
         """
 
         rows = self.bits
@@ -601,16 +605,6 @@ class Template(MultipliedMeta):
         return bounds
 
 
-
-    # def collect_template_units(
-    #     self,
-    # ) -> tuple[dict[str, list[list[str]]], dict[str, list[tuple[int, int]]]]:
-    #     """Return dict of isolated arithmetic units and their bounding box."""
-
-    #     bounds = self.update_bounding_box(self.template)
-    #     units = matrix_scatter(self.template, bounds)
-    #     return (units, bounds)
-
     def _collect_template_units(
         self,
     ) -> tuple[dict[str, list[list[str]]], dict[str, list[tuple[int, int]]]]:
@@ -618,14 +612,19 @@ class Template(MultipliedMeta):
 
         Performs a rigorous inter-row and intra-row boundary check to ensure
         each arithmetic units are valid.
-        """
 
+        Notes
+        -----
+        Bounds are in the form:
+            {"<unit>": [(<start>, <end>), ...]}
+
+        Where `(<start>, <end>)` are coordinate points in the matrix.
+        """
 
         from .utils.char import chartff
 
         bounds = self.update_bounding_box(self.template)
         allchars = list(bounds.keys())
-        mprint(self.template)
         units = {}
         for ch in allchars:
             if ch == "_":
@@ -640,7 +639,9 @@ class Template(MultipliedMeta):
                 # bound[list_of_points][coord_i][y-axis]
                 # "if 2 < points have the same y for a given unit"
                 if 2 < sum([p[1] == bounds[ch][i][1] for p in bounds[ch]]):
-                    raise ValueError(f"Multiple arithmetic units found for unit '{ch}' \n{bounds}")
+                    raise ValueError(
+                        f"Multiple arithmetic units found for unit '{ch}' \n{bounds}"
+                    )
                 # ======================================================= #
                 start = bounds[ch][i]
                 end = bounds[ch][i + 1]
@@ -664,8 +665,7 @@ class Template(MultipliedMeta):
                 # ======================================================= #
 
                 i += 2
-            mprint(matrix)
-            print(bounds[ch])
+
             units[ch] = matrix
         return (units, bounds)
 
