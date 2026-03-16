@@ -288,7 +288,7 @@ class Matrix(MultipliedMeta):
 
 # -- helper functions -----------------------------------------------
 
-
+# ! DOCSTRING x3
 def empty_rows(matrix: Matrix) -> int:
     """Return the number of empty rows in a matrix"""
     if not isinstance(matrix, Matrix):
@@ -335,6 +335,16 @@ def raw_empty_matrix(bits: int) -> list[list[str]]:
     -----
     An empty matrix is completely filled with underscores, following Multipied's convention
 
+    Examples
+    --------
+    >>> raw_zero_matrix(4)
+    [['_', '_', '_', '_', '_', '_', '_', '_'],
+     ['_', '_', '_', '_', '_', '_', '_', '_'],
+     ['_', '_', '_', '_', '_', '_', '_', '_'],
+     ['_', '_', '_', '_', '_', '_', '_', '_']]
+
+
+
     """
     validate_bitwidth(bits)
     matrix = []
@@ -361,6 +371,14 @@ def raw_zero_matrix(bits: int) -> list[list[str]]:
     A zero matrix is filled with zeros on the diagonal and underscores elsewhere,
     following Multipied's convention
 
+    Examples
+    --------
+    >>> raw_zero_matrix(4)
+    [['_', '_', '_', '_', '0', '0', '0', '0'],
+     ['_', '_', '_', '0', '0', '0', '0', '_'],
+     ['_', '_', '0', '0', '0', '0', '_', '_'],
+     ['_', '0', '0', '0', '0', '_', '_', '_']]
+
     """
     matrix = []
     zero = ["0"] * bits
@@ -370,7 +388,99 @@ def raw_zero_matrix(bits: int) -> list[list[str]]:
     return matrix
 
 
-# TODO: update example
+def _detect_merge_conflicts(
+    bounds: dict[str, list[tuple[int, int]]],
+) -> dict[str, list[tuple[int, int]]] | None:
+    """Identify overlapping units in the given bounds.
+
+    Complex `Templates` may contain overlapping units resulting in
+    missing values in the matrix. This function detects overlapping
+    values to be resolved once the merge is complete.
+
+    Returns
+    -------
+    dict[str, list[tuple[int, int]]] | None
+        A dictionary of conflicts, or None if no conflicts are found
+
+    Notes
+    -----
+    Input bounds and output conflicts are in the form:
+        {"<unit>": [(<start>, <end>), ...]}
+
+    Where `(<start>, <end>)` are coordinate points in the matrix.
+    """
+
+    # Units can be merged in any order therefore both values which are
+    # overlapping must be added as conflicts.
+
+
+    # Strategy:
+    # > Testing for conflict
+    #   > Create a sum for each bit in matrix -> array
+    #   > iterate over each unit
+    #       > iterate over each pair
+    #       > find difference + 1 of pair
+    #       > add to array sum
+    #   > If array sum all equal 2*bits then no conflict
+    #       > Return None
+    #   > Else
+    #       > Collect conflicts
+    #
+    # > Collecting Conflict
+    #   > Find sum array index(es) where sum > 2*bits
+    #   > Find overlapping bits -> conflicts
+    #   > insert conflict coords into new bounds
+
+
+
+
+def _update_merge_conflicts(
+    matrix: list[list[str]],
+    bounds: dict[str, tuple[int, int]],
+    conflicts: dict[str, list[tuple[int, int]]]
+) -> None:
+    """Update the merge conflicts with the matrix values.
+
+    Parameters
+    ----------
+    matrix : list[list[str]]
+        The matrix to update the conflicts with
+
+    conflicts : dict[str, list[tuple[int, int]]]
+        The conflicts to update
+
+    Returns
+    -------
+    None
+        Updates the matrix in place with missing values
+
+    Notes
+    -----
+    Input bounds and output conflicts are in the form:
+        {"<unit>": [(<start>, <end>), ...]}
+
+    Where `(<start>, <end>)` are coordinate points in the matrix.
+    """
+
+    # Units can be merged in any order therefore both values which are
+    # overlapping must be added as conflicts.
+    #
+    # To resolved the missing values in the merged matrix, a check is
+    # performed ot find which value of the conflicts ended up in the
+    # final matrix. Then the missing value is inserted into any available
+    # empty cells in the same column as the conflict.
+
+
+    # Strategy:
+    # > Use conflict to check region for present unit
+    # > insert missing value into empty cells in same column
+    # > Update bounds to reflect resolved conflict
+
+
+
+
+
+
 def matrix_merge(
     source: dict[str, Matrix],
     bounds: dict[str, list[tuple[int, int]]],
