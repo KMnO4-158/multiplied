@@ -551,7 +551,7 @@ class Template(MultipliedMeta):
     #  > or just detect empty, '_', characters as the boundary
     #       > This option means figuring out the correct key to use
     def update_bounding_box(
-        self, matrix: list[list]
+        self, matrix: list[list[str]]
     ) -> dict[str, list[tuple[int, int]]]:
         """Returns dictionary of arithmetic unit and coordinates for their boundaries.
 
