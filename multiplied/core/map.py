@@ -166,9 +166,7 @@ def unify_bounds(bounds: dict) -> dict:
         if k == "_":
             continue
         for item, row in unit_bounds:
-            if unified_row_bounds.get(row) is None:
-                unified_row_bounds[row] = []
-            unified_row_bounds[row].append(item)
+            unified_row_bounds.setdefault(row, []).append(item)
 
     return unified_row_bounds
 
