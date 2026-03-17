@@ -8,7 +8,7 @@ from typing import Any
 from .dtypes.base import MultipliedMeta
 from .matrix import Matrix, Slice, empty_rows, matrix_merge, raw_empty_matrix
 from .utils.char import allchars, chargen, chartff
-from .utils.pretty import pretty
+from .utils.pretty import pretty, pretty_nested_list
 from .utils.bool import isalpha, ischar, isppm, validate_bitwidth
 
 # -- Template and Slice dependencies  ------------------------------- #
@@ -420,7 +420,8 @@ class Template(MultipliedMeta):
 
                 case _:
                     raise ValueError(
-                        f"Unsupported unit type, len={bounds[ch][-1][1] - bounds[ch][0][1]}"
+                        f"Unsupported unit type, len={bounds[ch][-1][1] - bounds[ch][0][1] + 1}"
+                        f"\nUnit: \n{pretty_nested_list(units[ch])}"
                     )
 
             unit_result = [[]] * self.bits
