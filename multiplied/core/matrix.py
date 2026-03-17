@@ -387,8 +387,71 @@ def raw_zero_matrix(bits: int) -> list[list[str]]:
         matrix.append(row)
     return matrix
 
+def aggregate_bounds(
+    source: dict[str, Matrix],
+    template_bounds: dict[str, list[tuple[int, int]]]
+) -> dict[str, list[tuple[int, int]]]:
+    """
+    """
+
+    if not isinstance(source, dict):
+        raise TypeError("source must be a dictionary")
+    if not all(isinstance(matrix, Matrix) for matrix in source.values()):
+        raise TypeError("all values in source must be Matrix instances")
+    if not isinstance(template_bounds, dict):
+        raise TypeError(f"Expected dict got {type(template_bounds)}")
+
+    from itertools import pairwise
+
+    for k, v in template_bounds.items():
+        if k == "_":
+            continue
+        print(k, v)
+
+
+    bounds = {}
+    for ch, matrix in source.items():
+        matrix_ = matrix.matrix
+        if ch == "_":
+            continue
+        print("ch:", ch)
+        base_index = template_bounds[ch][0][1]
+        print("base index:", base_index)
+        bounds[ch] = []
+        for row in range(base_index, template_bounds[ch][-1][1]+1):
+
+
+            # -- entry border --------------------------------------
+
+            if matrix_[row][0] != "_":
+                bounds[ch].append((0, row))
+
+            # -- central range --------------------------------------
+
+            for i, pair in enumerate(pairwise(matrix_[row])):
+                if pair == ("_", "_"):
+                    continue
+
+                if len(bounds[ch]) % 2 == 0:
+                    bounds[ch].append((i + 1, row))
+                    continue
+
+                if len(bounds[ch]) % 2 == 1 and "_" in pair:
+                    bounds[ch].append((i, row))
+                    break
+
+            # -- exit border ---------------------------------------
+
+            if len(bounds[ch]) % 2 == 1:
+                bounds[ch].append((len(matrix_[row]) - 1, row))
+
+    return bounds
+
+
+
 
 def _detect_merge_conflicts(
+    bits: int,
     bounds: dict[str, list[tuple[int, int]]],
 ) -> dict[str, list[tuple[int, int]]] | None:
     """Identify overlapping units in the given bounds.
@@ -396,6 +459,13 @@ def _detect_merge_conflicts(
     Complex `Templates` may contain overlapping units resulting in
     missing values in the matrix. This function detects overlapping
     values to be resolved once the merge is complete.
+
+    Parameters
+    ----------
+    bits : int
+        The number of bits in the target matrix.
+    bounds : dict[str, list[tuple[int, int]]]
+        A dictionary of bounds for each unit.
 
     Returns
     -------
@@ -413,23 +483,64 @@ def _detect_merge_conflicts(
     # Units can be merged in any order therefore both values which are
     # overlapping must be added as conflicts.
 
+    # ! bounds are aggregated from reduced matrices.
 
     # Strategy:
     # > Testing for conflict
-    #   > Create a sum for each bit in matrix -> array
-    #   > iterate over each unit
-    #       > iterate over each pair
-    #       > find difference + 1 of pair
-    #       > add to array sum
-    #   > If array sum all equal 2*bits then no conflict
-    #       > Return None
-    #   > Else
-    #       > Collect conflicts
+    #   > create an X-bit array for each row
+    #   > iterate through aggregated bounds
+    #       > assign a bound pair to given array index :: [y] = [(x0, x1), ...]
+    #       > when a new pair is assigned to array test if bound pair
+    #         lies within all present bound pairs in the array index.
     #
-    # > Collecting Conflict
-    #   > Find sum array index(es) where sum > 2*bits
-    #   > Find overlapping bits -> conflicts
-    #   > insert conflict coords into new bounds
+    #       [ non conflict ]
+    #
+    #           inbound_pair = (3, y), (7, y), unit = "B"
+    #
+    #         check inbound_pair conflicts:
+    #           [y] = [(0, 2)] -> 2 < 3 and 7 < inf -> True -> no conflict
+    #
+    #       [ conflict ]
+    #
+    #           inbound_pair = (6, y), (15, y), unit = "C"
+    #
+    #         check inbound_pair conflicts:
+    #
+    #           [y] = [(0, 2), (3, 7)] -> 7 < 6 and 15 < inf -> False -> conflict
+    #
+    #       > if conflicts, take conflicting region and units present:
+    #
+    #           {"B": [(6, y), (7, y)], "C": [(6, y), (7, y)]}
+    #
+
+
+    validate_bitwidth(bits)
+    from itertools import batched
+
+
+    row_sum = [0] * bits
+    row_units = [[]] * bits
+    conflicts = {}
+
+    # for unit, coords in bounds.items():
+    #     for start, end in batched(coords, 2, strict=False):
+    #         row_units[start[1]].append(unit)
+    #         if start[1] != end[1]:
+    #             raise ValueError(f"Missing bound pair for row {start[1]}")
+    #         row_sum[start[1]] += end[0] - start[0] + 1
+
+    # valid_rows = [row == bits << 1 for row in row_sum]
+    # if all(valid_rows):
+    #     return None
+
+    print(valid_rows)
+    return conflicts
+
+
+
+
+
+
 
 
 
@@ -485,7 +596,7 @@ def matrix_merge(
     source: dict[str, Matrix],
     bounds: dict[str, list[tuple[int, int]]],
     *,
-    carry: bool = True,
+    complex: bool = False,
 ) -> Matrix:
     """Merge multiple matrices into a single matrix using pre calculated bounds
 
@@ -497,8 +608,8 @@ def matrix_merge(
     bounds : dict[str, list[tuple[int, int]]]
         A dictionary of bounds for each matrix
 
-    carry : bool=True, optional, default: True
-        Whether to carry over the carry bit
+    complex : bool, optional, default: False
+        Performs additional checks during merge
 
     Returns
     -------
@@ -531,6 +642,15 @@ def matrix_merge(
     # > find conflicting row
     # > collect conflicts from each row, into sums for each column
     # > allow matrices to merge with errors
+
+    compiled_bounds = aggregate_bounds(source, bounds)
+    print(compiled_bounds)
+    for i in source.values():
+        print(i)
+    print("----end----")
+
+    conflicts = _detect_merge_conflicts(bits, compiled_bounds)
+    print(conflicts)
 
     for unit, matrix in source.items():
         if bounds[unit] == "_":
