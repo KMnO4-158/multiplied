@@ -3,6 +3,7 @@
 ################################################
 
 from copy import deepcopy
+from itertools import pairwise
 from typing import Any, Iterator
 
 from .dtypes.base import MultipliedMeta
@@ -406,7 +407,6 @@ def aggregate_bounds(
     for k, v in template_bounds.items():
         if k == "_":
             continue
-        print(k, v)
 
 
     bounds = {}
@@ -518,30 +518,56 @@ def _detect_merge_conflicts(
     from itertools import batched
 
 
-    row_sum = [0] * bits
-    row_units = [[]] * bits
+    row_bounds = [[] for _ in range(bits)]
+    row_units = [[] for _ in range(bits)]
     conflicts = {}
 
-    # for unit, coords in bounds.items():
-    #     for start, end in batched(coords, 2, strict=False):
-    #         row_units[start[1]].append(unit)
-    #         if start[1] != end[1]:
-    #             raise ValueError(f"Missing bound pair for row {start[1]}")
-    #         row_sum[start[1]] += end[0] - start[0] + 1
+    # ! flaky code warning ! #
+    # the following highly depends on coordinate bounds arriving
+    # independent of which row. E.g. if bounds pair:
+    #       (3, 0), (_, 0)
+    # enter, the following is dependent that if any more bounds
+    # exist for row 0, then the bounds pair
+    #       (x < 3, 0), (_, 0)
+    # will NEVER arrive and new bounds will be on the right of
+    # the original bounds
 
-    # valid_rows = [row == bits << 1 for row in row_sum]
-    # if all(valid_rows):
-    #     return None
 
-    print(valid_rows)
+    # -- collecting bouds -------------------------------------------
+    #
+    #  (start, end, unit)
+    for unit, coords in bounds.items():
+        for start, end in batched(coords, 2, strict=False):
+            # print(start, end)
+            if start[1] != end[1]:
+                raise ValueError(f"Missing bound pair for row {start[1]}")
+
+            row_bounds[start[1]].append((start[0], end[0], unit))
+            row_units[start[1]].append(unit)
+
+
+    # -- find bounds ------------------------------------------------
+
+    for i, row in enumerate(row_bounds):
+        for pairs in pairwise(sorted(row, key=lambda x: x[0])):
+            print(pairs)
+            if len(pairs) == 1:
+                continue
+            curr_bound, next_bound = pairs
+            if curr_bound[1] >= next_bound[0]: # conflict
+                # print(sorted(row, key=lambda x: x[0]))
+
+                conflict_bound = (
+                    (curr_bound[1], next_bound[0]),
+                    [curr_bound[-1], next_bound[-1]]
+                )
+                conflicts[i] = conflict_bound
+
+
+
+    print("conflicts: \n",conflicts)
+
     return conflicts
-
-
-
-
-
-
-
 
 
 
