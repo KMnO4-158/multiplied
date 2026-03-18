@@ -6,9 +6,9 @@ from copy import deepcopy
 from typing import Any
 
 from .dtypes.base import MultipliedMeta
-from .matrix import Matrix, Slice, empty_rows, matrix_merge, raw_empty_matrix
+from .matrix import Matrix, Slice, empty_rows, matrix_merge, matrix_scatter, raw_empty_matrix, smart_matrix_merge
 from .utils.char import allchars, chargen, chartff
-from .utils.pretty import pretty, pretty_nested_list
+from .utils.pretty import mprint, pretty, pretty_nested_list
 from .utils.bool import isalpha, ischar, isppm, validate_bitwidth
 
 # -- Template and Slice dependencies  ------------------------------- #
@@ -319,6 +319,8 @@ class Template(MultipliedMeta):
             case _:
                 raise TypeError("result must be a Matrix or list[list[str]]")
 
+        self._complex = isinstance(source, Pattern)
+
         # -- pattern handling ---------------------------------------
         if isinstance(source, Pattern):
             self.pattern = source
@@ -334,7 +336,6 @@ class Template(MultipliedMeta):
             self.bounds = self.update_bounding_box(self.template)
             if result is None:
                 self._reduce_template()
-            self.re_bounds = self.update_bounding_box(self.result.matrix)
 
             # if pattern resolvable, future calculations are cheaper
             self._resolve_template_pattern()
@@ -342,8 +343,8 @@ class Template(MultipliedMeta):
         else:
             raise TypeError(f"Expected Pattern or list[list[str]] got {source}")
 
-        self._soft_type = list()
 
+        self._soft_type = list()
         return None
 
     def _resolve_template_pattern(self) -> None:
@@ -412,7 +413,7 @@ class Template(MultipliedMeta):
                         x_left -= 1
 
                     re_bound[ch] = [
-                        (x_left - 1, y),
+                        (x_left + 1, y),
                         (x_right, y),
                         (x_left, y + 1),
                         (x_right - 1, y + 1),
@@ -423,7 +424,7 @@ class Template(MultipliedMeta):
                         f"Unsupported unit type, len={bounds[ch][-1][1] - bounds[ch][0][1] + 1}"
                         f"\nUnit: \n{pretty_nested_list(units[ch])}"
                     )
-
+            print(ch, re_bound[ch])
             unit_result = [[]] * self.bits
             i = 0
             while i < base_index:
@@ -443,7 +444,7 @@ class Template(MultipliedMeta):
         else:
             self.result = list(results.values())[0]
 
-        self.re_bounds = self.update_bounding_box(self.result.matrix)
+        self.re_bounds = re_bound
         # ! --------------------------------------------------------- ! #
         return None
 

@@ -158,8 +158,6 @@ def unify_bounds(bounds: dict) -> dict:
     """
     if not isinstance(bounds, dict):
         raise TypeError(f"Expected dict got {type(bounds)}")
-    if bounds.get("_") is None:
-        raise ValueError("Bounds must have a `_` key")
 
     unified_row_bounds = {}
     for k, unit_bounds in bounds.items():
