@@ -113,7 +113,7 @@ class Algorithm(MultipliedMeta):
             template = Template(source)
         elif isinstance(source, Template):
             has_pattern = getattr(source, "pattern", None)
-            if has_pattern is None and map_ is None:
+            if has_pattern is None and map_ is None and not dadda:
                 raise ValueError("Complex template without map")
             template = deepcopy(source)
         else:
