@@ -5,11 +5,15 @@ from multiplied.tests import REFERENCE
 
 def main() -> None:
     alg = mp.Algorithm(8)
+    mp.mprint(REFERENCE["mosaic_template"][8]["T"])
     template = mp.Template(REFERENCE["mosaic_template"][8]["T"])
-    # alg.push(template, mp.Map(REFERENCE["complex_map"][8]))
-    alg.auto_resolve_stage()
+    print(template)
+    alg.push(template, mp.Map(REFERENCE["zero_map"][8]))
+    # # alg.auto_resolve_stage()
+    # print(template.result)
+    # print(template.re_bounds)
 
-    for i in alg.exec(4, 20).values():
+    for i in alg.exec(255, 128).values():
         print(i)
 
 
