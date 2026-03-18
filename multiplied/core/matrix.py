@@ -658,8 +658,11 @@ def matrix_merge(
     if len(source) < 2:
         raise ValueError("Source must contain at least two matrices")
     if len(bounds) != len(source):
-        # new error message needed
-        raise ValueError("Source must contain the same number of matrices as bounds")
+        raise ValueError(
+            "Source must contain the same number of matrices as bounds"
+            f"\nSources: \n{list(source.keys())}"
+            f"\nBounds: \n{list(bounds.keys())}"
+        )
 
     bits = list(source.values())[0].bits
     output = raw_empty_matrix(bits)
