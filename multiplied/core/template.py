@@ -6,13 +6,12 @@ from copy import deepcopy
 from typing import Any
 
 from .dtypes.base import MultipliedMeta
-from .matrix import Matrix, Slice, empty_rows, matrix_merge, matrix_scatter, raw_empty_matrix, smart_matrix_merge
+from .matrix import Matrix, Slice, empty_rows, matrix_merge, raw_empty_matrix
 from .utils.char import allchars, chargen, chartff
-from .utils.pretty import mprint, pretty, pretty_nested_list
+from .utils.pretty import pretty, pretty_nested_list
 from .utils.bool import isalpha, ischar, isppm, validate_bitwidth
 
-# -- Template and Slice dependencies  ------------------------------- #
-
+# == Template and Slice dependencies  =============================== #
 
 def build_csa(
     char: str, source_slice: Slice
@@ -201,6 +200,7 @@ def build_empty_slice(source_slice: Slice) -> tuple[Slice, Slice]:
         empty_slice.slice[row] = ["_"] * (empty_slice.bits << 1)
     return empty_slice, deepcopy(empty_slice)
 
+# =================================================================== #
 
 class Pattern(MultipliedMeta):
     """Simplified representation of a Template.
@@ -319,7 +319,7 @@ class Template(MultipliedMeta):
             case _:
                 raise TypeError("result must be a Matrix or list[list[str]]")
 
-        self._complex = isinstance(source, Pattern)
+        self._complex = not isinstance(source, Pattern)
 
         # -- pattern handling ---------------------------------------
         if isinstance(source, Pattern):
