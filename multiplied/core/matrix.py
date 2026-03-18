@@ -9,7 +9,7 @@ from typing import Any, Iterator
 from .dtypes.base import MultipliedMeta
 from .map import Map, apply_complex_map
 from .utils.bool import ischar, ishex2, isint, isppm, validate_bitwidth
-from .utils.pretty import mprint, pretty
+from .utils.pretty import pretty
 
 
 # ! Review slices and their integration to the wider library
@@ -289,6 +289,7 @@ class Matrix(MultipliedMeta):
 
 # -- helper functions -----------------------------------------------
 
+
 # ! DOCSTRING x3
 def empty_rows(matrix: Matrix) -> int:
     """Return the number of empty rows in a matrix"""
@@ -388,12 +389,11 @@ def raw_zero_matrix(bits: int) -> list[list[str]]:
         matrix.append(row)
     return matrix
 
+
 def aggregate_bounds(
-    source: dict[str, Matrix],
-    template_bounds: dict[str, list[tuple[int, int]]]
+    source: dict[str, Matrix], template_bounds: dict[str, list[tuple[int, int]]]
 ) -> dict[str, list[tuple[int, int]]]:
-    """
-    """
+    """ """
 
     if not isinstance(source, dict):
         raise TypeError("source must be a dictionary")
@@ -408,7 +408,6 @@ def aggregate_bounds(
         if k == "_":
             continue
 
-
     bounds = {}
     for ch, matrix in source.items():
         matrix_ = matrix.matrix
@@ -418,8 +417,7 @@ def aggregate_bounds(
         base_index = template_bounds[ch][0][1]
         # print("base index:", base_index)
         bounds[ch] = []
-        for row in range(base_index, template_bounds[ch][-1][1]+1):
-
+        for row in range(base_index, template_bounds[ch][-1][1] + 1):
             # -- entry border --------------------------------------
 
             if matrix_[row][0] != "_":
@@ -445,8 +443,6 @@ def aggregate_bounds(
                 bounds[ch].append((len(matrix_[row]) - 1, row))
 
     return bounds
-
-
 
 
 def _detect_merge_conflicts(
@@ -512,10 +508,8 @@ def _detect_merge_conflicts(
     #           {"B": [(6, y), (7, y)], "C": [(6, y), (7, y)]}
     #
 
-
     validate_bitwidth(bits)
     from itertools import batched
-
 
     row_bounds = [[] for _ in range(bits)]
     row_units = [[] for _ in range(bits)]
@@ -534,7 +528,6 @@ def _detect_merge_conflicts(
     #
     # By grouping units into the conflicting bounds this problem
     # can *mostly* be resolved
-
 
     # -- collecting bounds ------------------------------------------
     # (start_x, end_x, unit)
@@ -562,15 +555,15 @@ def _detect_merge_conflicts(
             if last[1] > curr_bound[1]:
                 curr_bound = last
 
-            if curr_bound[1] >= next_bound[0]: # conflict
+            if curr_bound[1] >= next_bound[0]:  # conflict
                 # print(sorted(row, key=lambda x: x[0]))
 
                 conflict_payload = (
                     (
                         max(curr_bound[0], next_bound[0]),
-                        min(curr_bound[1], next_bound[1])
+                        min(curr_bound[1], next_bound[1]),
                     ),
-                    (curr_bound[-1], next_bound[-1])
+                    (curr_bound[-1], next_bound[-1]),
                 )
                 conflicts.setdefault(i, []).append(conflict_payload)
                 last = curr_bound
@@ -617,7 +610,9 @@ def matrix_merge(
         raise TypeError("All values of source must be of type Matrix")
     if len(source) < 2:
         raise ValueError("Source must contain at least two matrices")
-    if not (len(bounds) == len(source) or ('_' in source and len(bounds) == len(source) -1)):
+    if not (
+        len(bounds) == len(source) or ("_" in source and len(bounds) == len(source) - 1)
+    ):
         raise ValueError(
             "Source must contain the same number of matrices as bounds"
             f"\nSources: \n{list(source.keys())}"
@@ -628,9 +623,7 @@ def matrix_merge(
     bits = litmus.bits
     conflicts = {}
 
-
-    if complex: # set upon Template instantiation
-
+    if complex:  # set upon Template instantiation
         # == expensive conflict search ==============================
         # ((over, lap), (units, present)) : ((int, int), (str, str))
         conflicts = _detect_merge_conflicts(bits, bounds)
@@ -649,7 +642,6 @@ def matrix_merge(
                 output[y][x] = matrix.matrix[y][x]
 
     if complex:
-
         # == cast missing values to columns =========================
         columns = [[] for _ in range(bits << 1)]
         for row, conflict_ in conflicts.items():
@@ -657,7 +649,10 @@ def matrix_merge(
                 start, end = overlap
 
                 # -- determine which unit was overwritten -----------
-                if source[units[0]].matrix[row][start:end+1] == output[row][start:end+1]:
+                if (
+                    source[units[0]].matrix[row][start : end + 1]
+                    == output[row][start : end + 1]
+                ):
                     # units[1] was overwritten
                     for i in range(start, end + 1):
                         columns[i].append((source[units[1]].matrix[row][i], units[1]))
@@ -671,7 +666,6 @@ def matrix_merge(
         # == insert missing values ==================================
         for x, recovered_bits in enumerate(columns):
             for bit_info in recovered_bits:
-
                 # highest y index of original bound
                 base_index = bounds[bit_info[1]][0][1]
 
@@ -680,7 +674,6 @@ def matrix_merge(
                     if output[(y + base_index) % bits][x] == "_":
                         output[(y + base_index) % bits][x] = bit_info[0]
                         break
-
 
     return Matrix(output)
 

@@ -13,6 +13,7 @@ from .utils.bool import isalpha, ischar, isppm, validate_bitwidth
 
 # == Template and Slice dependencies  =============================== #
 
+
 def build_csa(
     char: str, source_slice: Slice
 ) -> tuple[Slice, Slice]:  # Carry Save Adder -> (template, result)
@@ -200,7 +201,9 @@ def build_empty_slice(source_slice: Slice) -> tuple[Slice, Slice]:
         empty_slice.slice[row] = ["_"] * (empty_slice.bits << 1)
     return empty_slice, deepcopy(empty_slice)
 
+
 # =================================================================== #
+
 
 class Pattern(MultipliedMeta):
     """Simplified representation of a Template.
@@ -344,7 +347,6 @@ class Template(MultipliedMeta):
 
         else:
             raise TypeError(f"Expected Pattern or list[list[str]] got {source}")
-
 
         self._soft_type = list()
         return None
@@ -607,7 +609,6 @@ class Template(MultipliedMeta):
             x = 0
             y += 1
         return bounds
-
 
     def _collect_template_units(
         self,

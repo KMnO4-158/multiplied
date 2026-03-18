@@ -2,12 +2,13 @@ from itertools import batched
 import multiplied as mp
 from multiplied.tests import REFERENCE
 
+
 def smart_matrix_merge(
     source: dict[str, mp.Matrix],
     bounds: dict[str, list[tuple[int, int]]],
     *,
     complex: bool = False,
-) -> Matrix:
+) -> mp.Matrix:
     """Merge multiple matrices into a single matrix using pre calculated bounds
 
     Parameters
@@ -80,7 +81,6 @@ def main() -> None:
 
     for i in alg.exec(255, 128).values():
         print(i)
-
 
 
 if __name__ == "__main__":
