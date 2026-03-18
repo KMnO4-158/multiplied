@@ -333,9 +333,10 @@ class Algorithm(MultipliedMeta):
 
         # -- merge --------------------------------------------------
         re_bounds = self.algorithm[self.state]["template"].re_bounds
+        complex = self.algorithm[self.state]["template"]._complex
 
         if 1 < len(results):
-            self.matrix = matrix_merge(results, re_bounds)
+            self.matrix = matrix_merge(results, re_bounds, complex=complex)
         else:
             self.matrix = list(results.values())[0]
 

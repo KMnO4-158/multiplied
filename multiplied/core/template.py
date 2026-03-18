@@ -440,7 +440,7 @@ class Template(MultipliedMeta):
 
         # ! -- implement merge conflict resolution ------------------ ! #
         if 1 < len(results):
-            self.result = matrix_merge(results, re_bound)
+            self.result = matrix_merge(results, re_bound, complex=self._complex)
         else:
             self.result = list(results.values())[0]
 
