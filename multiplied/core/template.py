@@ -336,6 +336,8 @@ class Template(MultipliedMeta):
             self.bounds = self.update_bounding_box(self.template)
             if result is None:
                 self._reduce_template()
+            else:
+                self.re_bounds = self.update_bounding_box(self.result.matrix)
 
             # if pattern resolvable, future calculations are cheaper
             self._resolve_template_pattern()
