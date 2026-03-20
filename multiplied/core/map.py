@@ -169,7 +169,7 @@ def unify_bounds(bounds: dict) -> dict:
     return unified_row_bounds
 
 
-def apply_complex_map(matrix: list[list[str]], map: Map, bounds: dict) -> None:
+def apply_complex_map(matrix: list[list[str]], map: Map, unified_bounds: dict) -> None:
     """Applies a complex mapping to source Matrix
 
     Parameters
@@ -183,14 +183,14 @@ def apply_complex_map(matrix: list[list[str]], map: Map, bounds: dict) -> None:
     bounds : dict[str: list[int]]
         Unified bounds for all arithmetic units
     """
-    if not all([isinstance(r, int) for r in bounds]):
+    if not all([isinstance(r, int) for r in unified_bounds]):
         raise TypeError("Expected all row bounds to be integers")
 
-    for row in sorted(bounds.keys()):
-        if not isinstance(bounds[row], list):
+    for row in sorted(unified_bounds.keys()):
+        if not isinstance(unified_bounds[row], list):
             raise TypeError("Expected row bounds to be a list")
 
-        for col in range(bounds[row][0], bounds[row][1] + 1):
+        for col in range(unified_bounds[row][0], unified_bounds[row][-1] + 1):
             if map.map[row][col] == "00":
                 continue
             if (offset := int(map.map[row][col], 16)) & 128:
