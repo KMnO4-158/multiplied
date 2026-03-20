@@ -275,7 +275,7 @@ class Pattern(MultipliedMeta):
         return self.pattern[index]
 
 
-# -- ! [ Preparing For Decoders ] !-------------------------------- #
+# -- ! [ Preparing For Decoders ] !---------------------------------- #
 # > Make plan for assigning a function to a given unit even if
 #   they're the same run
 #
@@ -284,6 +284,10 @@ class Pattern(MultipliedMeta):
 # > How can this decoder function be preserved, assigned and called
 #   upon during template reduction AND matrix reduction?
 #
+# -- ! [ conflict data ] ! ------------------------------------------ #
+# TODO:
+# Like bounds and re_bounds, conflicts should be stored inside
+# Templates as a single source of truth instead of recalculation
 class Template(MultipliedMeta):
     """A structure representing collections of arithmetic units using characters.
     Generated using a partial product matrix and a Pattern or custom template
@@ -322,7 +326,6 @@ class Template(MultipliedMeta):
             case _:
                 raise TypeError("result must be a Matrix or list[list[str]]")
 
-        self._complex = not isinstance(source, Pattern)
 
         # -- pattern handling ---------------------------------------
         if isinstance(source, Pattern):
@@ -330,6 +333,7 @@ class Template(MultipliedMeta):
             if matrix is None:
                 matrix = Matrix(self.bits)
             self.build_from_pattern(self.pattern, matrix)
+            self._complex = False
 
         # -- template handling ---------------------------------------
         elif isinstance(source, list) and all([isinstance(i, list) for i in source]):
@@ -337,6 +341,7 @@ class Template(MultipliedMeta):
                 raise TypeError(f"Expected partial product matrix, got {source}")
             self.template = source
             self.bounds = self.update_bounding_box(self.template)
+            self._complex = True
             if result is None:
                 self._reduce_template()
             else:
@@ -344,6 +349,8 @@ class Template(MultipliedMeta):
 
             # if pattern resolvable, future calculations are cheaper
             self._resolve_template_pattern()
+            if self.pattern is not None:
+                self._complex = False
 
         else:
             raise TypeError(f"Expected Pattern or list[list[str]] got {source}")
@@ -383,7 +390,6 @@ class Template(MultipliedMeta):
             match bounds[ch][-1][1] - bounds[ch][0][1] + 1:  # row height
                 case 1:  # NOOP
                     output = Slice([units[ch][base_index]])
-
                     re_bound[ch] = bounds[ch]
 
                 case 2:  # ADD
@@ -413,8 +419,10 @@ class Template(MultipliedMeta):
                     y = bounds[ch][0][1]
                     x_right = bounds[ch][1][0]
                     x_left = bounds[ch][-2][0]
-                    while output[0][x_left] != "_" and -1 < x_left:
+                    while output[0][x_left] != "_" and 0 < x_left:
                         x_left -= 1
+
+
 
                     re_bound[ch] = [
                         (x_left + 1, y),
@@ -428,7 +436,6 @@ class Template(MultipliedMeta):
                         f"Unsupported unit type, len={bounds[ch][-1][1] - bounds[ch][0][1] + 1}"
                         f"\nUnit: \n{pretty_nested_list(units[ch])}"
                     )
-            print(ch, re_bound[ch])
             unit_result = [[]] * self.bits
             i = 0
             while i < base_index:
@@ -444,7 +451,9 @@ class Template(MultipliedMeta):
 
         # ! -- implement merge conflict resolution ------------------ ! #
         if 1 < len(results):
+            print(re_bound)
             self.result = matrix_merge(results, re_bound, complex=self._complex)
+            print(re_bound)
         else:
             self.result = list(results.values())[0]
 
