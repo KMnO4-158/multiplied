@@ -436,24 +436,28 @@ class Template(MultipliedMeta):
                         f"Unsupported unit type, len={bounds[ch][-1][1] - bounds[ch][0][1] + 1}"
                         f"\nUnit: \n{pretty_nested_list(units[ch])}"
                     )
-            unit_result = [[]] * self.bits
+            unit_result = [[] for _ in range(self.bits)]
             i = 0
             while i < base_index:
                 unit_result[i] = ["_"] * (self.bits << 1)
                 i += 1
             for row in output:
+                # print(row)
                 unit_result[i] = row
                 i += 1
             while i < self.bits:
                 unit_result[i] = ["_"] * (self.bits << 1)
                 i += 1
+            # mprint(unit_result)
             results[ch] = Matrix(unit_result)
 
         # ! -- implement merge conflict resolution ------------------ ! #
         if 1 < len(results):
-            print(re_bound)
+            # print("====merging====")
+            # print(re_bound)
             self.result = matrix_merge(results, re_bound, complex=self._complex)
-            print(re_bound)
+            # print(re_bound)
+            # print("====merging/ended====")
         else:
             self.result = list(results.values())[0]
 
@@ -547,6 +551,8 @@ class Template(MultipliedMeta):
 
             i += 1
 
+        # for x in template_slices.values():
+        #     print(x)
         # -- build template and result ------------------------------
         keys = sorted(template_slices.keys())
         template = []
