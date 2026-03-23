@@ -84,10 +84,10 @@ def main() -> None:
 
     mp.mprint(DADDA_TREE[8]["T"][0])
     alg.push(mp.Template(DADDA_TREE[8]["T"][0]))
-    # alg.push(mp.Template(DADDA_TREE[8]["T"][1]))
-    # alg.push(mp.Template(DADDA_TREE[8]["T"][2]))
-    # alg.push(mp.Template(DADDA_TREE[8]["T"][3]))
-    # alg.push(mp.Template(DADDA_TREE[8]["T"][4]))
+    alg.push(mp.Template(DADDA_TREE[8]["T"][1]))
+    alg.push(mp.Template(DADDA_TREE[8]["T"][2]))
+    alg.push(mp.Template(DADDA_TREE[8]["T"][3]))
+    alg.push(mp.Template(DADDA_TREE[8]["T"][4]))
 
 
     print(alg)
