@@ -1,6 +1,6 @@
 from itertools import batched
 import multiplied as mp
-from multiplied.tests import REFERENCE
+from multiplied.tests import REFERENCE, DADDA_TREE, WALLACE_TREE
 
 
 def smart_matrix_merge(
@@ -68,20 +68,31 @@ def smart_matrix_merge(
     print("smart")
     mp.mprint(output)
 
+ZERO_MAP = REFERENCE["zero_map"][8]
 
 def main() -> None:
-    alg = mp.Algorithm(8)
-    mp.mprint(REFERENCE["mosaic_template"][8]["T"])
-    template = mp.Template(REFERENCE["worst_template"][8]["T"])
-    print(template)
-    alg.push(template, mp.Map(REFERENCE["zero_map"][8]))
-    # # alg.auto_resolve_stage()
-    # print(template.result)
-    # print(template.re_bounds)
+    # alg = mp.Algorithm(8)
+    # mp.mprint(WALLACE_TREE[8]["T"][0])
 
-    for i in alg.exec(255, 128).values():
+    # alg.push(mp.Template(WALLACE_TREE[8]["T"][0]), mp.Map(WALLACE_TREE[8]["M"][0]))
+    # alg.push(mp.Template(WALLACE_TREE[8]["T"][1]), mp.Map(WALLACE_TREE[8]["M"][1]))
+    # alg.push(mp.Template(WALLACE_TREE[8]["T"][2]), mp.Map(WALLACE_TREE[8]["M"][2]))
+    # alg.push(mp.Template(WALLACE_TREE[8]["T"][3]), mp.Map(WALLACE_TREE[8]["M"][3]))
+    # alg.push(mp.Template(WALLACE_TREE[8]["T"][4]), mp.Map(ZERO_MAP))
+
+    alg = mp.Algorithm(8, dadda=True)
+
+    mp.mprint(DADDA_TREE[8]["T"][0])
+    alg.push(mp.Template(DADDA_TREE[8]["T"][0]))
+    # alg.push(mp.Template(DADDA_TREE[8]["T"][1]))
+    # alg.push(mp.Template(DADDA_TREE[8]["T"][2]))
+    # alg.push(mp.Template(DADDA_TREE[8]["T"][3]))
+    # alg.push(mp.Template(DADDA_TREE[8]["T"][4]))
+
+
+    print(alg)
+    for i in alg.exec(255, 255).values():
         print(i)
-
 
 if __name__ == "__main__":
     main()
