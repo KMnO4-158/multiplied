@@ -71,18 +71,20 @@ def smart_matrix_merge(
 ZERO_MAP = REFERENCE["zero_map"][8]
 
 def main() -> None:
-    # alg = mp.Algorithm(8)
-    # mp.mprint(WALLACE_TREE[8]["T"][0])
+    alg = mp.Algorithm(8)
 
-    # alg.push(mp.Template(WALLACE_TREE[8]["T"][0]), mp.Map(WALLACE_TREE[8]["M"][0]))
-    # alg.push(mp.Template(WALLACE_TREE[8]["T"][1]), mp.Map(WALLACE_TREE[8]["M"][1]))
-    # alg.push(mp.Template(WALLACE_TREE[8]["T"][2]), mp.Map(WALLACE_TREE[8]["M"][2]))
-    # alg.push(mp.Template(WALLACE_TREE[8]["T"][3]), mp.Map(WALLACE_TREE[8]["M"][3]))
-    # alg.push(mp.Template(WALLACE_TREE[8]["T"][4]), mp.Map(ZERO_MAP))
+    alg.push(mp.Template(WALLACE_TREE[8]["T"][0]), mp.Map(WALLACE_TREE[8]["M"][0]))
+    alg.push(mp.Template(WALLACE_TREE[8]["T"][1]), mp.Map(WALLACE_TREE[8]["M"][1]))
+    alg.push(mp.Template(WALLACE_TREE[8]["T"][2]), mp.Map(WALLACE_TREE[8]["M"][2]))
+    alg.push(mp.Template(WALLACE_TREE[8]["T"][3]), mp.Map(WALLACE_TREE[8]["M"][3]))
+    alg.push(mp.Template(WALLACE_TREE[8]["T"][4]), mp.Map(ZERO_MAP))
+
+    print(alg)
+    for i in alg.exec(255, 255).values():
+        print(i)
 
     alg = mp.Algorithm(8, dadda=True)
 
-    mp.mprint(DADDA_TREE[8]["T"][0])
     alg.push(mp.Template(DADDA_TREE[8]["T"][0]))
     alg.push(mp.Template(DADDA_TREE[8]["T"][1]))
     alg.push(mp.Template(DADDA_TREE[8]["T"][2]))
