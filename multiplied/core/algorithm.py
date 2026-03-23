@@ -112,8 +112,8 @@ class Algorithm(MultipliedMeta):
         if isinstance(source, Pattern):
             template = Template(source)
         elif isinstance(source, Template):
-            has_pattern = getattr(source, "pattern", None)
-            if has_pattern is None and map_ is None and not dadda:
+            if source._complex and (map_ is None and not self.dadda):
+                # print(source._complex, self.dadda)
                 raise ValueError("Complex template without map")
             template = deepcopy(source)
         else:
@@ -126,16 +126,28 @@ class Algorithm(MultipliedMeta):
 
         result = template.result
         res_copy = deepcopy(result)
-        map_bounds = unify_bounds(template.re_bounds)
+        # print("AHH")
+        # print(template.re_bounds)
         stage_index = len(self.algorithm)
-        if not map_ and result:
-            if dadda:
-                map_ = hoist(res_copy)
-            else:
-                map_ = result.resolve_rmap()
+
+        if self.dadda:
+            map_ = hoist(res_copy)
+
+        elif template._complex:
+            map_bounds = unify_bounds(template.re_bounds)
             res_copy.apply_map(map_, unified_bounds=map_bounds)
+
         else:
-            res_copy.apply_map(map_, unified_bounds=map_bounds)
+            map_ = result.resolve_rmap()
+            res_copy.apply_map(map_)
+
+
+
+        # if not map_ and result:
+        #     if dadda:
+        #         map_ = hoist(res_copy)
+        #     else:
+        # else:
 
         stage = {
             "template": template,
@@ -193,7 +205,7 @@ class Algorithm(MultipliedMeta):
 
         bounds = self.algorithm[self.state]["template"].bounds
         units = matrix_scatter(self.matrix.matrix, bounds)
-
+        print(bounds)
         # -- reduce -------------------------------------------------
         n = self.bits << 1
         results = {}
@@ -217,7 +229,10 @@ class Algorithm(MultipliedMeta):
                     operand_b = copy(matrix[base_index + 1])
                     checksum = [False] * n
 
+                    print(operand_a)
+                    print(operand_b)
                     # -- skip empty rows ----------------------------
+                    print(unit_bounds[0][0], unit_bounds[2][0])
                     start = min(unit_bounds[0][0], unit_bounds[2][0])
 
                     # -- sum columns --------------------------------
@@ -243,9 +258,14 @@ class Algorithm(MultipliedMeta):
                     int_a = int("".join(operand_a[start : start + bits_]), 2)
                     int_b = int("".join(operand_b[start : start + bits_]), 2)
 
+                    print(bits_)
                     output = [["_"] * (start - cout)]
                     output[0] += list(f"{int_a + int_b:0{bits_ + cout}b}")
                     output[0] += ["_"] * (n - bits_ - start)
+                    print(operand_a[start : start + bits_])
+                    print(operand_b[start : start + bits_])
+                    print(output)
+                    print("brrrrr")
 
                 case 3:  # CSA
                     # TODO: make use of checksums or use bounds
@@ -297,6 +317,7 @@ class Algorithm(MultipliedMeta):
 
             # -- build unit into matrix -----------------------------
             unit_result = [[]] * self.bits
+
             i = 0
             while i < base_index:
                 unit_result[i] = ["_"] * n
@@ -338,11 +359,15 @@ class Algorithm(MultipliedMeta):
         if 1 < len(results):
             self.matrix = matrix_merge(results, re_bounds, complex=complex)
         else:
+            print("AHHHHH")
             self.matrix = list(results.values())[0]
 
         # -- map ----------------------------------------------------
-
+        print("== merged, mapped ==")
+        print(self.matrix)
         self.matrix.apply_map(self.algorithm[self.state]["map"])
+        print(self.matrix)
+        print("====================")
 
         return None
 
@@ -445,6 +470,8 @@ class Algorithm(MultipliedMeta):
         if not isinstance(matrix, Matrix):
             raise TypeError(f"Expected Matrix, got {type(matrix)}")
         self.matrix = matrix
+        if self.dadda:
+            hoist(self.matrix)
         self.state = 0
         return None
 
