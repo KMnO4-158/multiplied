@@ -28,7 +28,6 @@ def pretty(listy_object: Any) -> str:
 
     if issubclass(type(listy_object), MultipliedMeta):
         dtype = listy_object._soft_type
-        print(listy_object)
     elif isinstance(listy_object, (list, dict)):
         dtype = listy_object
     else:

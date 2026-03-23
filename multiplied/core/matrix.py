@@ -532,7 +532,7 @@ def _detect_merge_conflicts(
     # -- collecting bounds ------------------------------------------
     # (start_x, end_x, unit)
     for unit, coords in bounds.items():
-        print(unit, coords)
+        # print(unit, coords)
         for start, end in batched(coords, 2, strict=False):
             # print(start, end)
             if start[1] != end[1]:
@@ -541,10 +541,10 @@ def _detect_merge_conflicts(
             row_bounds[start[1]].append((start[0], end[0], unit))
             row_units[start[1]].append(unit)
 
-    print("====row_bounds/units====")
-    print(row_bounds)
-    print(row_units)
-    print("========================")
+    # print("====row_bounds/units====")
+    # print(row_bounds)
+    # print(row_units)
+    # print("========================")
 
     # -- find + restrict conflict bounds ----------------------------
     # [(start_x, end_x, unit), ...] -> ((over, lap), (units, present))
@@ -634,15 +634,10 @@ def matrix_merge(
 
     # -- lossy merge ------------------------------------------------
     output = raw_empty_matrix(bits)
-    print(source)
     for unit, matrix in source.items():
-        print(unit)
-        print(matrix)
         if unit == "_":
             continue
-        print(bounds[unit])
         for start, end in batched(bounds[unit], 2):
-            print(start, end)
             if start[1] != end[1]:
                 raise ValueError(f"Missing bound pair for row {start[1]}")
             y = start[1]
@@ -650,16 +645,16 @@ def matrix_merge(
                 output[y][x] = matrix.matrix[y][x]
 
     if complex and conflicts != {}:
-        print("CONFLICT!")
-        print(conflicts)
+        # print("CONFLICT!")
+        # print(conflicts)
 
         # == cast missing values to columns =========================
         columns = [[] for _ in range(bits << 1)]
         for row, conflict_ in conflicts.items():
-            print("row: ",row)
+            # print("row: ",row)
             for overlap, units in conflict_:
                 start, end = overlap
-                print("start: ", start, "end: ", end)
+                # print("start: ", start, "end: ", end)
 
                 # -- determine which unit was overwritten -----------
                 if (
@@ -674,12 +669,12 @@ def matrix_merge(
                     for i in range(start, end + 1):
                         columns[i].append((source[units[0]].matrix[row][i], units[0]))
 
-        print(columns)
+        # print(columns)
 
         # == insert missing values ==================================
         for x, recovered_bits in enumerate(columns):
             for bit_info in recovered_bits:
-                print(x, "info", bit_info)
+                # print(x, "info", bit_info)
                 # highest y index of original bound - 1
                 base_index = bounds[bit_info[1]][0][1] - 1
                 if base_index < 0:
@@ -695,8 +690,6 @@ def matrix_merge(
                             bounds[bit_info[-1]].append((x, y))
                             bounds[bit_info[-1]].append((x, y))
                         break
-    print("output")
-    mprint(output)
     return Matrix(output)
 
 
@@ -782,11 +775,6 @@ def matrix_scatter(
 
     allchars = list(bounds.keys())
 
-    print("===============================")
-    print("SOURCE: \n")
-    mprint(source)
-    print(bounds)
-    print("===============================")
     output = {}
     for ch in allchars:
         if ch == "_":
@@ -798,7 +786,7 @@ def matrix_scatter(
         dest_matrix_copy = deepcopy(dest_matrix)
 
 
-        print("LEN", len(bounds[ch]) << 1)
+        # print("LEN", len(bounds[ch]) << 1)
         for start, end in batched(bounds[ch], 2, strict=True):
             if start[1] != end[1]:
                 raise ValueError(
@@ -812,9 +800,7 @@ def matrix_scatter(
                     # print(ch, col, row, "|" ,source[row][col])
                     dest_matrix_copy[row][col] = source[row][col]
 
-        print()
 
-        mprint(dest_matrix_copy)
         output[ch] = dest_matrix_copy
 
     return output
