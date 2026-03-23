@@ -67,6 +67,7 @@ def smart_matrix_merge(
 
     print("smart")
     mp.mprint(output)
+    return mp.Matrix(output)
 
 
 ZERO_MAP = REFERENCE["zero_map"][8]
