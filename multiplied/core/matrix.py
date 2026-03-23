@@ -8,8 +8,8 @@ from typing import Any, Iterator
 
 from .dtypes.base import MultipliedMeta
 from .map import Map, apply_complex_map
-from .utils.bool import ischar, ishex2, isint, isppm, validate_bitwidth
-from .utils.pretty import pretty
+from .utils.bool import isalpha, ischar, ishex2, isint, isppm, validate_bitwidth
+from .utils.pretty import mprint, pretty
 
 
 # ! Review slices and their integration to the wider library
@@ -117,7 +117,7 @@ class Matrix(MultipliedMeta):
             return
         elif isinstance(source, list) and isinstance(source[0], list):
             if not isppm(source):
-                raise TypeError(f"Expected partial product matrix, got {source}")
+                raise TypeError(f"Expected partial product matrix, got \n{pretty(source)}")
             self.bits = len(source)
             validate_bitwidth(self.bits)
         elif isinstance(source, Slice):
@@ -532,6 +532,7 @@ def _detect_merge_conflicts(
     # -- collecting bounds ------------------------------------------
     # (start_x, end_x, unit)
     for unit, coords in bounds.items():
+        print(unit, coords)
         for start, end in batched(coords, 2, strict=False):
             # print(start, end)
             if start[1] != end[1]:
@@ -540,15 +541,17 @@ def _detect_merge_conflicts(
             row_bounds[start[1]].append((start[0], end[0], unit))
             row_units[start[1]].append(unit)
 
+    print("====row_bounds/units====")
+    print(row_bounds)
+    print(row_units)
+    print("========================")
+
     # -- find + restrict conflict bounds ----------------------------
     # [(start_x, end_x, unit), ...] -> ((over, lap), (units, present))
     #
-    # TODO : Overlap determines which unit's output to move to resolve conflict
-    # CURR : just choose right most unit for simplicity
     for i, row in enumerate(row_bounds):
         last = (-1, -1)
         for pairs in pairwise(sorted(row, key=lambda x: x[0])):
-            print(pairs)
             if len(pairs) == 1:
                 continue
             curr_bound, next_bound = pairs
@@ -627,26 +630,36 @@ def matrix_merge(
         # == expensive conflict search ==============================
         # ((over, lap), (units, present)) : ((int, int), (str, str))
         conflicts = _detect_merge_conflicts(bits, bounds)
-        print(conflicts)
+        # ! CORRECT TO THIS POINT
 
     # -- lossy merge ------------------------------------------------
     output = raw_empty_matrix(bits)
+    print(source)
     for unit, matrix in source.items():
+        print(unit)
+        print(matrix)
         if unit == "_":
             continue
+        print(bounds[unit])
         for start, end in batched(bounds[unit], 2):
+            print(start, end)
             if start[1] != end[1]:
                 raise ValueError(f"Missing bound pair for row {start[1]}")
             y = start[1]
             for x in range(start[0], end[0] + 1):
                 output[y][x] = matrix.matrix[y][x]
 
-    if complex:
+    if complex and conflicts != {}:
+        print("CONFLICT!")
+        print(conflicts)
+
         # == cast missing values to columns =========================
         columns = [[] for _ in range(bits << 1)]
         for row, conflict_ in conflicts.items():
+            print("row: ",row)
             for overlap, units in conflict_:
                 start, end = overlap
+                print("start: ", start, "end: ", end)
 
                 # -- determine which unit was overwritten -----------
                 if (
@@ -666,15 +679,24 @@ def matrix_merge(
         # == insert missing values ==================================
         for x, recovered_bits in enumerate(columns):
             for bit_info in recovered_bits:
-                # highest y index of original bound
-                base_index = bounds[bit_info[1]][0][1]
+                print(x, "info", bit_info)
+                # highest y index of original bound - 1
+                base_index = bounds[bit_info[1]][0][1] - 1
+                if base_index < 0:
+                    base_index = 0
 
-                # cycle column until empty slot found
+                # -- find empty column slot -------------------------
                 for y in range(bits):
                     if output[(y + base_index) % bits][x] == "_":
                         output[(y + base_index) % bits][x] = bit_info[0]
-                        break
 
+                        # -- update bound ---------------------------
+                        if isalpha(bit_info[-1]):
+                            bounds[bit_info[-1]].append((x, y))
+                            bounds[bit_info[-1]].append((x, y))
+                        break
+    print("output")
+    mprint(output)
     return Matrix(output)
 
 
@@ -727,7 +749,6 @@ def matrix_scatter(
       [_, _, _]]]
 
     """
-
     if isinstance(bounds, dict):
         if not all([ischar(k) for k in bounds.keys()]):
             raise ValueError("Unrecognised Bounds")
@@ -748,43 +769,52 @@ def matrix_scatter(
         else:
             fmt = "zero"
 
+    bits = len(source)
     match fmt:
         case "empty":
-            dest_matrix = [["_" for _ in row] for row in source]
+            dest_matrix = [["_" for _ in range(bits << 1)] for row in range(bits)]
         case "zero":
-            dest_matrix = [["0" for _ in row] for row in source]
+            dest_matrix = [["0" for _ in range(bits << 1)] for row in range(bits)]
         case "map":
-            dest_matrix = [["00" for _ in row] for row in source]
+            dest_matrix = [["00" for _ in range(bits << 1)] for row in range(bits)]
         case _:
             raise ValueError(f"Unrecognised fmt: {fmt}")
 
     allchars = list(bounds.keys())
 
+    print("===============================")
+    print("SOURCE: \n")
+    mprint(source)
+    print(bounds)
+    print("===============================")
     output = {}
     for ch in allchars:
+        if ch == "_":
+            output[ch] = deepcopy(dest_matrix)
+            continue
         if len(bounds[ch]) % 2 != 0:
             raise ValueError(f"Odd number of bounds for {ch}")
 
         dest_matrix_copy = deepcopy(dest_matrix)
 
-        i = 0
-        while i < len(bounds[ch]):
-            if bounds[ch][i][1] != bounds[ch][i + 1][1]:
-                _start = bounds[ch][i]
-                _end = bounds[ch][i + 1]
+
+        print("LEN", len(bounds[ch]) << 1)
+        for start, end in batched(bounds[ch], 2, strict=True):
+            if start[1] != end[1]:
                 raise ValueError(
                     f"Bounding box error for unit '{ch}' "
-                    f"Points:{_start}, {_end}, error:  {_start[1]} != {_end[1]}"
+                    f"Points:{start}, {end}, error:  {start[1]} != {end[1]}"
                 )
-            start = bounds[ch][i][0]
-            end = bounds[ch][i + 1][0]
-            row = bounds[ch][i][1]
 
-            for col in range(start, end + 1):  # include end
-                dest_matrix_copy[row][col] = source[row][col]
+            for row in range(start[1], end[1] + 1):
 
-            i += 2
+                for col in range(start[0], end[0] + 1):  # include end
+                    # print(ch, col, row, "|" ,source[row][col])
+                    dest_matrix_copy[row][col] = source[row][col]
 
+        print()
+
+        mprint(dest_matrix_copy)
         output[ch] = dest_matrix_copy
 
     return output
