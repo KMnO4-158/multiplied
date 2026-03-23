@@ -68,7 +68,9 @@ def smart_matrix_merge(
     print("smart")
     mp.mprint(output)
 
+
 ZERO_MAP = REFERENCE["zero_map"][8]
+
 
 def main() -> None:
     alg = mp.Algorithm(8)
@@ -91,10 +93,10 @@ def main() -> None:
     alg.push(mp.Template(DADDA_TREE[8]["T"][3]))
     alg.push(mp.Template(DADDA_TREE[8]["T"][4]))
 
-
     print(alg)
     for i in alg.exec(255, 255).values():
         print(i)
+
 
 if __name__ == "__main__":
     main()

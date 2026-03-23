@@ -326,7 +326,6 @@ class Template(MultipliedMeta):
             case _:
                 raise TypeError("result must be a Matrix or list[list[str]]")
 
-
         # -- pattern handling ---------------------------------------
         if isinstance(source, Pattern):
             self.pattern = source
@@ -421,8 +420,6 @@ class Template(MultipliedMeta):
                     x_left = bounds[ch][-2][0]
                     while output[0][x_left] != "_" and 0 < x_left:
                         x_left -= 1
-
-
 
                     re_bound[ch] = [
                         (x_left + 1, y),

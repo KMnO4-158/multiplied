@@ -9,7 +9,7 @@ from typing import Any, Iterator
 from .dtypes.base import MultipliedMeta
 from .map import Map, apply_complex_map
 from .utils.bool import isalpha, ischar, ishex2, isint, isppm, validate_bitwidth
-from .utils.pretty import mprint, pretty
+from .utils.pretty import pretty
 
 
 # ! Review slices and their integration to the wider library
@@ -117,7 +117,9 @@ class Matrix(MultipliedMeta):
             return
         elif isinstance(source, list) and isinstance(source[0], list):
             if not isppm(source):
-                raise TypeError(f"Expected partial product matrix, got \n{pretty(source)}")
+                raise TypeError(
+                    f"Expected partial product matrix, got \n{pretty(source)}"
+                )
             self.bits = len(source)
             validate_bitwidth(self.bits)
         elif isinstance(source, Slice):
@@ -785,7 +787,6 @@ def matrix_scatter(
 
         dest_matrix_copy = deepcopy(dest_matrix)
 
-
         # print("LEN", len(bounds[ch]) << 1)
         for start, end in batched(bounds[ch], 2, strict=True):
             if start[1] != end[1]:
@@ -795,11 +796,9 @@ def matrix_scatter(
                 )
 
             for row in range(start[1], end[1] + 1):
-
                 for col in range(start[0], end[0] + 1):  # include end
                     # print(ch, col, row, "|" ,source[row][col])
                     dest_matrix_copy[row][col] = source[row][col]
-
 
         output[ch] = dest_matrix_copy
 

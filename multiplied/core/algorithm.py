@@ -138,8 +138,6 @@ class Algorithm(MultipliedMeta):
             map_ = result.resolve_rmap()
             res_copy.apply_map(map_)
 
-
-
         # if not map_ and result:
         #     if dadda:
         #         map_ = hoist(res_copy)
