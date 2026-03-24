@@ -9,7 +9,7 @@
       ? (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
       : m;
   })();
-  </script><link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8e8a900e" /><link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" /><link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" /><link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" /><link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=5037cee9" /><link rel="stylesheet" type="text/css" href="../../../_static/light-dark.css?v=9721c31d" /><link rel="stylesheet" type="text/css" href="../../../_static/styles/breeze.css?v=227fd4f7" /><script defer="defer" src="../../../_static/scripts/breeze.js?v=dac9f8c6"></script></head>
+  </script><link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8e8a900e" /><link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" /><link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" /><link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" /><link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=5037cee9" /><link rel="stylesheet" type="text/css" href="../../../_static/light-dark.css?v=9721c31d" /><link rel="stylesheet" type="text/css" href="../../../_static/styles/breeze.css?v=7c62c100" /><script defer="defer" src="../../../_static/scripts/breeze.js?v=dac9f8c6"></script></head>
 <body>
   
   
@@ -131,11 +131,12 @@
 <span class="c1">################################################</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">batched</span><span class="p">,</span> <span class="n">pairwise</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterator</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.dtypes.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultipliedMeta</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.map</span><span class="w"> </span><span class="kn">import</span> <span class="n">Map</span><span class="p">,</span> <span class="n">apply_complex_map</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.utils.bool</span><span class="w"> </span><span class="kn">import</span> <span class="n">ischar</span><span class="p">,</span> <span class="n">ishex2</span><span class="p">,</span> <span class="n">isint</span><span class="p">,</span> <span class="n">isppm</span><span class="p">,</span> <span class="n">validate_bitwidth</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils.bool</span><span class="w"> </span><span class="kn">import</span> <span class="n">isalpha</span><span class="p">,</span> <span class="n">ischar</span><span class="p">,</span> <span class="n">ishex2</span><span class="p">,</span> <span class="n">isint</span><span class="p">,</span> <span class="n">isppm</span><span class="p">,</span> <span class="n">validate_bitwidth</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.utils.pretty</span><span class="w"> </span><span class="kn">import</span> <span class="n">pretty</span>
 
 
@@ -249,7 +250,9 @@
             <span class="k">return</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">isppm</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected partial product matrix, got </span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Expected partial product matrix, got </span><span class="se">\n</span><span class="si">{</span><span class="n">pretty</span><span class="p">(</span><span class="n">source</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">bits</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
             <span class="n">validate_bitwidth</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bits</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">Slice</span><span class="p">):</span>
@@ -429,6 +432,7 @@
 <span class="c1"># -- helper functions -----------------------------------------------</span>
 
 
+<span class="c1"># ! DOCSTRING x3</span>
 <div class="viewcode-block" id="empty_rows">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.empty_rows">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">empty_rows</span><span class="p">(</span><span class="n">matrix</span><span class="p">:</span> <span class="n">Matrix</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
@@ -470,7 +474,7 @@
 <div class="viewcode-block" id="raw_empty_matrix">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.raw_empty_matrix">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">raw_empty_matrix</span><span class="p">(</span><span class="n">bits</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build an empty 2d array for a given bitwidth</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build an empty partial product matrix for a given bitwidth</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -486,6 +490,16 @@
 <span class="sd">    -----</span>
 <span class="sd">    An empty matrix is completely filled with underscores, following Multipied&#39;s convention</span>
 
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; raw_zero_matrix(4)</span>
+<span class="sd">    [[&#39;_&#39;, &#39;_&#39;, &#39;_&#39;, &#39;_&#39;, &#39;_&#39;, &#39;_&#39;, &#39;_&#39;, &#39;_&#39;],</span>
+<span class="sd">     [&#39;_&#39;, &#39;_&#39;, &#39;_&#39;, &#39;_&#39;, &#39;_&#39;, &#39;_&#39;, &#39;_&#39;, &#39;_&#39;],</span>
+<span class="sd">     [&#39;_&#39;, &#39;_&#39;, &#39;_&#39;, &#39;_&#39;, &#39;_&#39;, &#39;_&#39;, &#39;_&#39;, &#39;_&#39;],</span>
+<span class="sd">     [&#39;_&#39;, &#39;_&#39;, &#39;_&#39;, &#39;_&#39;, &#39;_&#39;, &#39;_&#39;, &#39;_&#39;, &#39;_&#39;]]</span>
+
+
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">validate_bitwidth</span><span class="p">(</span><span class="n">bits</span><span class="p">)</span>
     <span class="n">matrix</span> <span class="o">=</span> <span class="p">[]</span>
@@ -498,7 +512,7 @@
 <div class="viewcode-block" id="raw_zero_matrix">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.raw_zero_matrix">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">raw_zero_matrix</span><span class="p">(</span><span class="n">bits</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build a zero-filled 2d array for a given bitwidth</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build a zero-filled partial product matrix for a given bitwidth</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -515,6 +529,14 @@
 <span class="sd">    A zero matrix is filled with zeros on the diagonal and underscores elsewhere,</span>
 <span class="sd">    following Multipied&#39;s convention</span>
 
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; raw_zero_matrix(4)</span>
+<span class="sd">    [[&#39;_&#39;, &#39;_&#39;, &#39;_&#39;, &#39;_&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;],</span>
+<span class="sd">     [&#39;_&#39;, &#39;_&#39;, &#39;_&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;, &#39;_&#39;],</span>
+<span class="sd">     [&#39;_&#39;, &#39;_&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;, &#39;_&#39;, &#39;_&#39;],</span>
+<span class="sd">     [&#39;_&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;, &#39;_&#39;, &#39;_&#39;, &#39;_&#39;]]</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">matrix</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">zero</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;0&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">bits</span>
@@ -525,14 +547,200 @@
 
 
 
-<span class="c1"># TODO: update example</span>
+<div class="viewcode-block" id="aggregate_bounds">
+<a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.aggregate_bounds">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">aggregate_bounds</span><span class="p">(</span>
+    <span class="n">source</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Matrix</span><span class="p">],</span> <span class="n">template_bounds</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;source must be a dictionary&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">Matrix</span><span class="p">)</span> <span class="k">for</span> <span class="n">matrix</span> <span class="ow">in</span> <span class="n">source</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;all values in source must be Matrix instances&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">template_bounds</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected dict got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">template_bounds</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">pairwise</span>
+
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">template_bounds</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s2">&quot;_&quot;</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+    <span class="n">bounds</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">ch</span><span class="p">,</span> <span class="n">matrix</span> <span class="ow">in</span> <span class="n">source</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">matrix_</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">matrix</span>
+        <span class="k">if</span> <span class="n">ch</span> <span class="o">==</span> <span class="s2">&quot;_&quot;</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="c1"># print(&quot;ch:&quot;, ch)</span>
+        <span class="n">base_index</span> <span class="o">=</span> <span class="n">template_bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># print(&quot;base index:&quot;, base_index)</span>
+        <span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">base_index</span><span class="p">,</span> <span class="n">template_bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="c1"># -- entry border --------------------------------------</span>
+
+            <span class="k">if</span> <span class="n">matrix_</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;_&quot;</span><span class="p">:</span>
+                <span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="p">))</span>
+
+            <span class="c1"># -- central range --------------------------------------</span>
+
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">pair</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pairwise</span><span class="p">(</span><span class="n">matrix_</span><span class="p">[</span><span class="n">row</span><span class="p">])):</span>
+                <span class="k">if</span> <span class="n">pair</span> <span class="o">==</span> <span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">):</span>
+                    <span class="k">continue</span>
+
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">])</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="p">))</span>
+                    <span class="k">continue</span>
+
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">])</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="s2">&quot;_&quot;</span> <span class="ow">in</span> <span class="n">pair</span><span class="p">:</span>
+                    <span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">row</span><span class="p">))</span>
+                    <span class="k">break</span>
+
+            <span class="c1"># -- exit border ---------------------------------------</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">])</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">matrix_</span><span class="p">[</span><span class="n">row</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">bounds</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_detect_merge_conflicts</span><span class="p">(</span>
+    <span class="n">bits</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">bounds</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Identify overlapping units in the given bounds.</span>
+
+<span class="sd">    Complex `Templates` may contain overlapping units resulting in</span>
+<span class="sd">    missing values in the matrix. This function detects overlapping</span>
+<span class="sd">    values to be resolved once the merge is complete.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    bits : int</span>
+<span class="sd">        The number of bits in the target matrix.</span>
+<span class="sd">    bounds : dict[str, list[tuple[int, int]]]</span>
+<span class="sd">        A dictionary of bounds for each unit.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict[str, list[tuple[int, int]]] | None</span>
+<span class="sd">        A dictionary of conflicts, or None if no conflicts are found</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Input bounds and output conflicts are in the form:</span>
+<span class="sd">        {&quot;&lt;unit&gt;&quot;: [(&lt;start&gt;, &lt;end&gt;), ...]}</span>
+
+<span class="sd">    Where `(&lt;start&gt;, &lt;end&gt;)` are coordinate points in the matrix.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Units can be merged in any order therefore both values which are</span>
+    <span class="c1"># overlapping must be added as conflicts.</span>
+
+    <span class="c1"># ! bounds are aggregated from reduced matrices.</span>
+
+    <span class="c1"># Strategy:</span>
+    <span class="c1"># &gt; Testing for conflict</span>
+    <span class="c1">#   &gt; create an X-bit array for each row</span>
+    <span class="c1">#   &gt; iterate through aggregated bounds</span>
+    <span class="c1">#       &gt; assign a bound pair to given array index :: [y] = [(x0, x1), ...]</span>
+    <span class="c1">#       &gt; when a new pair is assigned to array test if bound pair</span>
+    <span class="c1">#         lies within all present bound pairs in the array index.</span>
+    <span class="c1">#</span>
+    <span class="c1">#       [ non conflict ]</span>
+    <span class="c1">#</span>
+    <span class="c1">#           inbound_pair = (3, y), (7, y), unit = &quot;B&quot;</span>
+    <span class="c1">#</span>
+    <span class="c1">#         check inbound_pair conflicts:</span>
+    <span class="c1">#           [y] = [(0, 2)] -&gt; 2 &lt; 3 and 7 &lt; inf -&gt; True -&gt; no conflict</span>
+    <span class="c1">#</span>
+    <span class="c1">#       [ conflict ]</span>
+    <span class="c1">#</span>
+    <span class="c1">#           inbound_pair = (6, y), (15, y), unit = &quot;C&quot;</span>
+    <span class="c1">#</span>
+    <span class="c1">#         check inbound_pair conflicts:</span>
+    <span class="c1">#</span>
+    <span class="c1">#           [y] = [(0, 2), (3, 7)] -&gt; 7 &lt; 6 and 15 &lt; inf -&gt; False -&gt; conflict</span>
+    <span class="c1">#</span>
+    <span class="c1">#       &gt; if conflicts, take conflicting region and units present:</span>
+    <span class="c1">#</span>
+    <span class="c1">#           {&quot;B&quot;: [(6, y), (7, y)], &quot;C&quot;: [(6, y), (7, y)]}</span>
+    <span class="c1">#</span>
+
+    <span class="n">validate_bitwidth</span><span class="p">(</span><span class="n">bits</span><span class="p">)</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">batched</span>
+
+    <span class="n">row_bounds</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bits</span><span class="p">)]</span>
+    <span class="n">row_units</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bits</span><span class="p">)]</span>
+    <span class="n">conflicts</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># ! flaky code warning ! #</span>
+    <span class="c1"># the following highly depends on coordinate bounds arriving</span>
+    <span class="c1"># independent of which row. E.g. if bounds pair:</span>
+    <span class="c1">#       (3, 0), (_, 0)</span>
+    <span class="c1"># enter, the following is dependent that if any more bounds</span>
+    <span class="c1"># exist for row 0, then the bounds pair</span>
+    <span class="c1">#       (x &lt; 3, 0), (_, 0)</span>
+    <span class="c1"># will NEVER arrive and new bounds will be on the right of</span>
+    <span class="c1"># the original bounds</span>
+    <span class="c1"># ! sorting only solves half the problem ! #</span>
+    <span class="c1">#</span>
+    <span class="c1"># By grouping units into the conflicting bounds this problem</span>
+    <span class="c1"># can *mostly* be resolved</span>
+
+    <span class="c1"># -- collecting bounds ------------------------------------------</span>
+    <span class="c1"># (start_x, end_x, unit)</span>
+    <span class="k">for</span> <span class="n">unit</span><span class="p">,</span> <span class="n">coords</span> <span class="ow">in</span> <span class="n">bounds</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="c1"># print(unit, coords)</span>
+        <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="ow">in</span> <span class="n">batched</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+            <span class="c1"># print(start, end)</span>
+            <span class="k">if</span> <span class="n">start</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">end</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Missing bound pair for row </span><span class="si">{</span><span class="n">start</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="n">row_bounds</span><span class="p">[</span><span class="n">start</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">start</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">end</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">unit</span><span class="p">))</span>
+            <span class="n">row_units</span><span class="p">[</span><span class="n">start</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
+
+    <span class="c1"># print(&quot;====row_bounds/units====&quot;)</span>
+    <span class="c1"># print(row_bounds)</span>
+    <span class="c1"># print(row_units)</span>
+    <span class="c1"># print(&quot;========================&quot;)</span>
+
+    <span class="c1"># -- find + restrict conflict bounds ----------------------------</span>
+    <span class="c1"># [(start_x, end_x, unit), ...] -&gt; ((over, lap), (units, present))</span>
+    <span class="c1">#</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">row_bounds</span><span class="p">):</span>
+        <span class="n">last</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">pairs</span> <span class="ow">in</span> <span class="n">pairwise</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pairs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">curr_bound</span><span class="p">,</span> <span class="n">next_bound</span> <span class="o">=</span> <span class="n">pairs</span>
+            <span class="k">if</span> <span class="n">last</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">curr_bound</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="n">curr_bound</span> <span class="o">=</span> <span class="n">last</span>
+
+            <span class="k">if</span> <span class="n">curr_bound</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">next_bound</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>  <span class="c1"># conflict</span>
+                <span class="c1"># print(sorted(row, key=lambda x: x[0]))</span>
+
+                <span class="n">conflict_payload</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="p">(</span>
+                        <span class="nb">max</span><span class="p">(</span><span class="n">curr_bound</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">next_bound</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                        <span class="nb">min</span><span class="p">(</span><span class="n">curr_bound</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">next_bound</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+                    <span class="p">),</span>
+                    <span class="p">(</span><span class="n">curr_bound</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">next_bound</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span>
+                <span class="p">)</span>
+                <span class="n">conflicts</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">conflict_payload</span><span class="p">)</span>
+                <span class="n">last</span> <span class="o">=</span> <span class="n">curr_bound</span>
+
+    <span class="k">return</span> <span class="n">conflicts</span>
+
+
 <div class="viewcode-block" id="matrix_merge">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.matrix_merge">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">matrix_merge</span><span class="p">(</span>
     <span class="n">source</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Matrix</span><span class="p">],</span>
     <span class="n">bounds</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]],</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">carry</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="nb">complex</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Matrix</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Merge multiple matrices into a single matrix using pre calculated bounds</span>
 
@@ -544,8 +752,8 @@
 <span class="sd">    bounds : dict[str, list[tuple[int, int]]]</span>
 <span class="sd">        A dictionary of bounds for each matrix</span>
 
-<span class="sd">    carry : bool=True, optional, default: True</span>
-<span class="sd">        Whether to carry over the carry bit</span>
+<span class="sd">    complex : bool, optional, default: False</span>
+<span class="sd">        Performs additional checks during merge</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -553,7 +761,8 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; source = {&#39;A&#39;: Matrix([[1, _], [3, _]]), &#39;B&#39;: Matrix([[_, 6], [_, 8]])}</span>
+<span class="sd">    &gt;&gt;&gt; source = {&#39;A&#39;: Matrix([[1, _], [3, _]]),</span>
+<span class="sd">                  &#39;B&#39;: Matrix([[_, 6], [_, 8]])}</span>
 <span class="sd">    &gt;&gt;&gt; bounds = {&#39;A&#39;: [(0, 0), (0, 0), (1, 1), (1, 1)],</span>
 <span class="sd">    &gt;&gt;&gt;           &#39;B&#39;: [(0, 1), (0, 1), (0, 1), (0, 1)]}</span>
 <span class="sd">    &gt;&gt;&gt; matrix_merge(source, bounds)</span>
@@ -566,29 +775,83 @@
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;All values of source must be of type Matrix&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">source</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Source must contain at least two matrices&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bounds</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
-        <span class="c1"># new error message needed</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Source must contain the same number of matrices as bounds&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
+        <span class="nb">len</span><span class="p">(</span><span class="n">bounds</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">source</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="s2">&quot;_&quot;</span> <span class="ow">in</span> <span class="n">source</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">bounds</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">source</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Source must contain the same number of matrices as bounds&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Sources: </span><span class="se">\n</span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Bounds: </span><span class="se">\n</span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">bounds</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
 
-    <span class="n">bits</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">bits</span>
+    <span class="n">litmus</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">source</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+    <span class="n">bits</span> <span class="o">=</span> <span class="n">litmus</span><span class="o">.</span><span class="n">bits</span>
+    <span class="n">conflicts</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">if</span> <span class="nb">complex</span><span class="p">:</span>  <span class="c1"># set upon Template instantiation</span>
+        <span class="c1"># == expensive conflict search ==============================</span>
+        <span class="c1"># ((over, lap), (units, present)) : ((int, int), (str, str))</span>
+        <span class="n">conflicts</span> <span class="o">=</span> <span class="n">_detect_merge_conflicts</span><span class="p">(</span><span class="n">bits</span><span class="p">,</span> <span class="n">bounds</span><span class="p">)</span>
+        <span class="c1"># ! CORRECT TO THIS POINT</span>
+
+    <span class="c1"># -- lossy merge ------------------------------------------------</span>
     <span class="n">output</span> <span class="o">=</span> <span class="n">raw_empty_matrix</span><span class="p">(</span><span class="n">bits</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">unit</span><span class="p">,</span> <span class="n">matrix</span> <span class="ow">in</span> <span class="n">source</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">bounds</span><span class="p">[</span><span class="n">unit</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;_&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">unit</span> <span class="o">==</span> <span class="s2">&quot;_&quot;</span><span class="p">:</span>
             <span class="k">continue</span>
+        <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="ow">in</span> <span class="n">batched</span><span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">start</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">end</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Missing bound pair for row </span><span class="si">{</span><span class="n">start</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">start</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">end</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">output</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span>
 
-        <span class="c1"># new bounding box covering whole result</span>
-        <span class="n">box_left</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">bounds</span><span class="p">[</span><span class="n">unit</span><span class="p">])</span>
-        <span class="n">box_right</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">bounds</span><span class="p">[</span><span class="n">unit</span><span class="p">])</span>
-        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="n">unit</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="c1"># ..., left coord : right coord, ...</span>
-            <span class="n">left</span><span class="p">,</span> <span class="n">right</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="n">unit</span><span class="p">][</span><span class="n">i</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="n">unit</span><span class="p">][</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">y</span> <span class="o">:=</span> <span class="n">left</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">!=</span> <span class="n">right</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Missing bound pair for row </span><span class="si">{</span><span class="n">y</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">box_left</span><span class="p">,</span> <span class="n">box_right</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-                <span class="n">output</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">complex</span> <span class="ow">and</span> <span class="n">conflicts</span> <span class="o">!=</span> <span class="p">{}:</span>
+        <span class="c1"># print(&quot;CONFLICT!&quot;)</span>
+        <span class="c1"># print(conflicts)</span>
 
-            <span class="n">i</span> <span class="o">+=</span> <span class="mi">2</span>
+        <span class="c1"># == cast missing values to columns =========================</span>
+        <span class="n">columns</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bits</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">row</span><span class="p">,</span> <span class="n">conflict_</span> <span class="ow">in</span> <span class="n">conflicts</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># print(&quot;row: &quot;,row)</span>
+            <span class="k">for</span> <span class="n">overlap</span><span class="p">,</span> <span class="n">units</span> <span class="ow">in</span> <span class="n">conflict_</span><span class="p">:</span>
+                <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="n">overlap</span>
+                <span class="c1"># print(&quot;start: &quot;, start, &quot;end: &quot;, end)</span>
+
+                <span class="c1"># -- determine which unit was overwritten -----------</span>
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="n">source</span><span class="p">[</span><span class="n">units</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">start</span> <span class="p">:</span> <span class="n">end</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                    <span class="o">==</span> <span class="n">output</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">start</span> <span class="p">:</span> <span class="n">end</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="p">):</span>
+                    <span class="c1"># units[1] was overwritten</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                        <span class="n">columns</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">source</span><span class="p">[</span><span class="n">units</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">i</span><span class="p">],</span> <span class="n">units</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># units[0] was overwritten</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                        <span class="n">columns</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">source</span><span class="p">[</span><span class="n">units</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">i</span><span class="p">],</span> <span class="n">units</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+
+        <span class="c1"># print(columns)</span>
+
+        <span class="c1"># == insert missing values ==================================</span>
+        <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">recovered_bits</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">columns</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">bit_info</span> <span class="ow">in</span> <span class="n">recovered_bits</span><span class="p">:</span>
+                <span class="c1"># print(x, &quot;info&quot;, bit_info)</span>
+                <span class="c1"># highest y index of original bound - 1</span>
+                <span class="n">base_index</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="n">bit_info</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">base_index</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">base_index</span> <span class="o">=</span> <span class="mi">0</span>
+
+                <span class="c1"># -- find empty column slot -------------------------</span>
+                <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bits</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">output</span><span class="p">[(</span><span class="n">y</span> <span class="o">+</span> <span class="n">base_index</span><span class="p">)</span> <span class="o">%</span> <span class="n">bits</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;_&quot;</span><span class="p">:</span>
+                        <span class="n">output</span><span class="p">[(</span><span class="n">y</span> <span class="o">+</span> <span class="n">base_index</span><span class="p">)</span> <span class="o">%</span> <span class="n">bits</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">bit_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+                        <span class="c1"># -- update bound ---------------------------</span>
+                        <span class="k">if</span> <span class="n">isalpha</span><span class="p">(</span><span class="n">bit_info</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+                            <span class="n">bounds</span><span class="p">[</span><span class="n">bit_info</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+                            <span class="n">bounds</span><span class="p">[</span><span class="n">bit_info</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+                        <span class="k">break</span>
     <span class="k">return</span> <span class="n">Matrix</span><span class="p">(</span><span class="n">output</span><span class="p">)</span></div>
 
 
@@ -598,7 +861,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">matrix_scatter</span><span class="p">(</span>
     <span class="n">source</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">],</span> <span class="n">bounds</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]],</span> <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;auto&quot;</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">]]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return list of matrices containing subset of source matrix based on provided bounds.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Cast matrix subsets to initialised matrix. Each subset based on provided bounds.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -636,11 +899,14 @@
 <span class="sd">    &gt;&gt;&gt; bounds = {&quot;A&quot;: [(0, 0), (0, 1)],</span>
 <span class="sd">    &gt;&gt;&gt;           &quot;B&quot;: [(1, 1), (1, 2)]}</span>
 <span class="sd">    &gt;&gt;&gt; matrix_scatter(source, bounds, fmt=empty)</span>
-<span class="sd">    [[[0, 1, _], [_, _, _], [_, _, _]],</span>
-<span class="sd">     [[_, _, _], [_, 4, 5], [_, _, _]]]</span>
+<span class="sd">    [[[0, 1, _],</span>
+<span class="sd">      [_, _, _],</span>
+<span class="sd">      [_, _, _]],</span>
+<span class="sd">     [[_, _, _],</span>
+<span class="sd">      [_, 4, 5],</span>
+<span class="sd">      [_, _, _]]]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bounds</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="n">ischar</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">bounds</span><span class="o">.</span><span class="n">keys</span><span class="p">()]):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unrecognised Bounds&quot;</span><span class="p">)</span>
@@ -661,13 +927,14 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;zero&quot;</span>
 
+    <span class="n">bits</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
     <span class="k">match</span> <span class="n">fmt</span><span class="p">:</span>
         <span class="k">case</span> <span class="s2">&quot;empty&quot;</span><span class="p">:</span>
-            <span class="n">dest_matrix</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;_&quot;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">row</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">source</span><span class="p">]</span>
+            <span class="n">dest_matrix</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;_&quot;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bits</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bits</span><span class="p">)]</span>
         <span class="k">case</span> <span class="s2">&quot;zero&quot;</span><span class="p">:</span>
-            <span class="n">dest_matrix</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;0&quot;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">row</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">source</span><span class="p">]</span>
+            <span class="n">dest_matrix</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;0&quot;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bits</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bits</span><span class="p">)]</span>
         <span class="k">case</span> <span class="s2">&quot;map&quot;</span><span class="p">:</span>
-            <span class="n">dest_matrix</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;00&quot;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">row</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">source</span><span class="p">]</span>
+            <span class="n">dest_matrix</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;00&quot;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bits</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bits</span><span class="p">)]</span>
         <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unrecognised fmt: </span><span class="si">{</span><span class="n">fmt</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
@@ -675,28 +942,26 @@
 
     <span class="n">output</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">allchars</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ch</span> <span class="o">==</span> <span class="s2">&quot;_&quot;</span><span class="p">:</span>
+            <span class="n">output</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">dest_matrix</span><span class="p">)</span>
+            <span class="k">continue</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">])</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Odd number of bounds for </span><span class="si">{</span><span class="n">ch</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="n">dest_matrix_copy</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">dest_matrix</span><span class="p">)</span>
 
-        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">]):</span>
-            <span class="k">if</span> <span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">][</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]:</span>
-                <span class="n">_start</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
-                <span class="n">_end</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">][</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># print(&quot;LEN&quot;, len(bounds[ch]) &lt;&lt; 1)</span>
+        <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="ow">in</span> <span class="n">batched</span><span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">],</span> <span class="mi">2</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">start</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">end</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;Bounding box error for unit &#39;</span><span class="si">{</span><span class="n">ch</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;Points:</span><span class="si">{</span><span class="n">_start</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">_end</span><span class="si">}</span><span class="s2">, error:  </span><span class="si">{</span><span class="n">_start</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> != </span><span class="si">{</span><span class="n">_end</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Points:</span><span class="si">{</span><span class="n">start</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">end</span><span class="si">}</span><span class="s2">, error:  </span><span class="si">{</span><span class="n">start</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> != </span><span class="si">{</span><span class="n">end</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="p">)</span>
-            <span class="n">start</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">end</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">][</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">row</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
 
-            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>  <span class="c1"># include end</span>
-                <span class="n">dest_matrix_copy</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">source</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">]</span>
-
-            <span class="n">i</span> <span class="o">+=</span> <span class="mi">2</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">end</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">end</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>  <span class="c1"># include end</span>
+                    <span class="c1"># print(ch, col, row, &quot;|&quot; ,source[row][col])</span>
+                    <span class="n">dest_matrix_copy</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">source</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">]</span>
 
         <span class="n">output</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span> <span class="o">=</span> <span class="n">dest_matrix_copy</span>
 
@@ -776,5 +1041,5 @@
   <label class="bz-overlay bz-overlay-primary" for="bz-sidebar-primary"></label>
   <label class="bz-overlay bz-overlay-secondary" for="bz-sidebar-secondary"></label>
   <input type="checkbox" name="bz-sidebar-primary" id="bz-sidebar-primary" aria-label="Toggle section navigation">
-  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../../../_static/documentation_options.js?v=61c2e1f5"></script><script src="../../../_static/doctools.js?v=fd6eb6e6"></script><script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script><script src="../../../_static/clipboard.min.js?v=a7894cd8"></script><script src="../../../_static/copybutton.js?v=f281be69"></script><script src="../../../_static/design-tabs.js?v=f930bc37"></script></body>
+  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../../../_static/documentation_options.js?v=ba9b7d67"></script><script src="../../../_static/doctools.js?v=fd6eb6e6"></script><script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script><script src="../../../_static/clipboard.min.js?v=a7894cd8"></script><script src="../../../_static/copybutton.js?v=f281be69"></script><script src="../../../_static/design-tabs.js?v=f930bc37"></script></body>
 </html>

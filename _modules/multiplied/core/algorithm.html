@@ -9,7 +9,7 @@
       ? (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
       : m;
   })();
-  </script><link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8e8a900e" /><link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" /><link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" /><link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" /><link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=5037cee9" /><link rel="stylesheet" type="text/css" href="../../../_static/light-dark.css?v=9721c31d" /><link rel="stylesheet" type="text/css" href="../../../_static/styles/breeze.css?v=227fd4f7" /><script defer="defer" src="../../../_static/scripts/breeze.js?v=dac9f8c6"></script></head>
+  </script><link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8e8a900e" /><link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" /><link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" /><link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" /><link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=5037cee9" /><link rel="stylesheet" type="text/css" href="../../../_static/light-dark.css?v=9721c31d" /><link rel="stylesheet" type="text/css" href="../../../_static/styles/breeze.css?v=7c62c100" /><script defer="defer" src="../../../_static/scripts/breeze.js?v=dac9f8c6"></script></head>
 <body>
   
   
@@ -244,8 +244,7 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">Pattern</span><span class="p">):</span>
             <span class="n">template</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">Template</span><span class="p">):</span>
-            <span class="n">has_pattern</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="s2">&quot;pattern&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">has_pattern</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">map_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">source</span><span class="o">.</span><span class="n">_complex</span> <span class="ow">and</span> <span class="p">(</span><span class="n">map_</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">dadda</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Complex template without map&quot;</span><span class="p">)</span>
             <span class="n">template</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -258,16 +257,24 @@
 
         <span class="n">result</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">result</span>
         <span class="n">res_copy</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-        <span class="n">map_bounds</span> <span class="o">=</span> <span class="n">unify_bounds</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">re_bounds</span><span class="p">)</span>
         <span class="n">stage_index</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">algorithm</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">map_</span> <span class="ow">and</span> <span class="n">result</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">dadda</span><span class="p">:</span>
-                <span class="n">map_</span> <span class="o">=</span> <span class="n">hoist</span><span class="p">(</span><span class="n">res_copy</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">map_</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">resolve_rmap</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dadda</span><span class="p">:</span>
+            <span class="n">map_</span> <span class="o">=</span> <span class="n">hoist</span><span class="p">(</span><span class="n">res_copy</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">template</span><span class="o">.</span><span class="n">_complex</span><span class="p">:</span>
+            <span class="n">map_bounds</span> <span class="o">=</span> <span class="n">unify_bounds</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">re_bounds</span><span class="p">)</span>
             <span class="n">res_copy</span><span class="o">.</span><span class="n">apply_map</span><span class="p">(</span><span class="n">map_</span><span class="p">,</span> <span class="n">unified_bounds</span><span class="o">=</span><span class="n">map_bounds</span><span class="p">)</span>
+
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">res_copy</span><span class="o">.</span><span class="n">apply_map</span><span class="p">(</span><span class="n">map_</span><span class="p">,</span> <span class="n">unified_bounds</span><span class="o">=</span><span class="n">map_bounds</span><span class="p">)</span>
+            <span class="n">map_</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">resolve_rmap</span><span class="p">()</span>
+            <span class="n">res_copy</span><span class="o">.</span><span class="n">apply_map</span><span class="p">(</span><span class="n">map_</span><span class="p">)</span>
+
+        <span class="c1"># if not map_ and result:</span>
+        <span class="c1">#     if dadda:</span>
+        <span class="c1">#         map_ = hoist(res_copy)</span>
+        <span class="c1">#     else:</span>
+        <span class="c1"># else:</span>
 
         <span class="n">stage</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;template&quot;</span><span class="p">:</span> <span class="n">template</span><span class="p">,</span>
@@ -326,7 +333,6 @@
 
         <span class="n">bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">algorithm</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">][</span><span class="s2">&quot;template&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">bounds</span>
         <span class="n">units</span> <span class="o">=</span> <span class="n">matrix_scatter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span> <span class="n">bounds</span><span class="p">)</span>
-
         <span class="c1"># -- reduce -------------------------------------------------</span>
         <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bits</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span>
         <span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
@@ -430,6 +436,7 @@
 
             <span class="c1"># -- build unit into matrix -----------------------------</span>
             <span class="n">unit_result</span> <span class="o">=</span> <span class="p">[[]]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">bits</span>
+
             <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">base_index</span><span class="p">:</span>
                 <span class="n">unit_result</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;_&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span>
@@ -466,14 +473,14 @@
 
         <span class="c1"># -- merge --------------------------------------------------</span>
         <span class="n">re_bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">algorithm</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">][</span><span class="s2">&quot;template&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">re_bounds</span>
+        <span class="nb">complex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">algorithm</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">][</span><span class="s2">&quot;template&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">_complex</span>
 
         <span class="k">if</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">matrix_merge</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">re_bounds</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">matrix_merge</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">re_bounds</span><span class="p">,</span> <span class="nb">complex</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="c1"># -- map ----------------------------------------------------</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">apply_map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">algorithm</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">][</span><span class="s2">&quot;map&quot;</span><span class="p">])</span>
 
         <span class="k">return</span> <span class="kc">None</span>
@@ -528,7 +535,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Matrix</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute the next stage of the algorithm and update internal matrix&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">algorithm</span><span class="p">):</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Algorithm completed&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Algorithm complete&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">saturation</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_clamp_bitwidth</span><span class="p">()</span>
@@ -588,6 +595,8 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">Matrix</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected Matrix, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">matrix</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dadda</span><span class="p">:</span>
+            <span class="n">hoist</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
@@ -864,5 +873,5 @@
   <label class="bz-overlay bz-overlay-primary" for="bz-sidebar-primary"></label>
   <label class="bz-overlay bz-overlay-secondary" for="bz-sidebar-secondary"></label>
   <input type="checkbox" name="bz-sidebar-primary" id="bz-sidebar-primary" aria-label="Toggle section navigation">
-  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../../../_static/documentation_options.js?v=61c2e1f5"></script><script src="../../../_static/doctools.js?v=fd6eb6e6"></script><script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script><script src="../../../_static/clipboard.min.js?v=a7894cd8"></script><script src="../../../_static/copybutton.js?v=f281be69"></script><script src="../../../_static/design-tabs.js?v=f930bc37"></script></body>
+  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../../../_static/documentation_options.js?v=ba9b7d67"></script><script src="../../../_static/doctools.js?v=fd6eb6e6"></script><script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script><script src="../../../_static/clipboard.min.js?v=a7894cd8"></script><script src="../../../_static/copybutton.js?v=f281be69"></script><script src="../../../_static/design-tabs.js?v=f930bc37"></script></body>
 </html>

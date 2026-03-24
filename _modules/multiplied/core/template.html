@@ -9,7 +9,7 @@
       ? (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
       : m;
   })();
-  </script><link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8e8a900e" /><link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" /><link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" /><link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" /><link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=5037cee9" /><link rel="stylesheet" type="text/css" href="../../../_static/light-dark.css?v=9721c31d" /><link rel="stylesheet" type="text/css" href="../../../_static/styles/breeze.css?v=227fd4f7" /><script defer="defer" src="../../../_static/scripts/breeze.js?v=dac9f8c6"></script></head>
+  </script><link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8e8a900e" /><link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" /><link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" /><link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" /><link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=5037cee9" /><link rel="stylesheet" type="text/css" href="../../../_static/light-dark.css?v=9721c31d" /><link rel="stylesheet" type="text/css" href="../../../_static/styles/breeze.css?v=7c62c100" /><script defer="defer" src="../../../_static/scripts/breeze.js?v=dac9f8c6"></script></head>
 <body>
   
   
@@ -134,12 +134,12 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.dtypes.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultipliedMeta</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.matrix</span><span class="w"> </span><span class="kn">import</span> <span class="n">Matrix</span><span class="p">,</span> <span class="n">Slice</span><span class="p">,</span> <span class="n">empty_rows</span><span class="p">,</span> <span class="n">matrix_merge</span><span class="p">,</span> <span class="n">matrix_scatter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.matrix</span><span class="w"> </span><span class="kn">import</span> <span class="n">Matrix</span><span class="p">,</span> <span class="n">Slice</span><span class="p">,</span> <span class="n">empty_rows</span><span class="p">,</span> <span class="n">matrix_merge</span><span class="p">,</span> <span class="n">raw_empty_matrix</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.utils.char</span><span class="w"> </span><span class="kn">import</span> <span class="n">allchars</span><span class="p">,</span> <span class="n">chargen</span><span class="p">,</span> <span class="n">chartff</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.utils.pretty</span><span class="w"> </span><span class="kn">import</span> <span class="n">pretty</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils.pretty</span><span class="w"> </span><span class="kn">import</span> <span class="n">pretty</span><span class="p">,</span> <span class="n">pretty_nested_list</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.utils.bool</span><span class="w"> </span><span class="kn">import</span> <span class="n">isalpha</span><span class="p">,</span> <span class="n">ischar</span><span class="p">,</span> <span class="n">isppm</span><span class="p">,</span> <span class="n">validate_bitwidth</span>
 
-<span class="c1"># -- Template and Slice dependencies  ------------------------------- #</span>
+<span class="c1"># == Template and Slice dependencies  =============================== #</span>
 
 
 <div class="viewcode-block" id="build_csa">
@@ -249,7 +249,12 @@
     <span class="n">carry</span> <span class="o">=</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">ch</span> <span class="o">==</span> <span class="s2">&quot;_&quot;</span> <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">adder_slice</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>  <span class="c1"># sanity check</span>
 
     <span class="c1"># find index of left most instance of char, regardless of case</span>
-    <span class="n">index</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">tff</span><span class="p">)),</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">tff</span><span class="p">)))</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">index</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">next</span><span class="p">(</span><span class="n">tff</span><span class="p">),</span> <span class="nb">next</span><span class="p">(</span><span class="n">tff</span><span class="p">)]:</span>
+            <span class="k">break</span>
+        <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="c1"># index = min(result[0].index(next(tff)), result[0].index(next(tff)))</span>
     <span class="k">if</span> <span class="n">carry</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">index</span><span class="p">:</span>
         <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">tff</span><span class="p">)</span>  <span class="c1"># Final carry place in result template</span>
 
@@ -337,6 +342,9 @@
 
 
 
+<span class="c1"># =================================================================== #</span>
+
+
 <div class="viewcode-block" id="Pattern">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.Pattern">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Pattern</span><span class="p">(</span><span class="n">MultipliedMeta</span><span class="p">):</span>
@@ -413,22 +421,19 @@
 
 
 
-<span class="c1"># -- ! [ Preparing For Decoders ] !-------------------------------- #</span>
+<span class="c1"># -- ! [ Preparing For Decoders ] !---------------------------------- #</span>
+<span class="c1"># &gt; Make plan for assigning a function to a given unit even if</span>
+<span class="c1">#   they&#39;re the same run</span>
 <span class="c1">#</span>
-<span class="c1"># 1st:</span>
+<span class="c1"># &gt; What character will they use?</span>
 <span class="c1">#</span>
-<span class="c1">#   Implement complex maps, arithmetic unit based isolation and</span>
-<span class="c1">#   partial product reduction.</span>
+<span class="c1"># &gt; How can this decoder function be preserved, assigned and called</span>
+<span class="c1">#   upon during template reduction AND matrix reduction?</span>
 <span class="c1">#</span>
-<span class="c1"># 2st: Adopt get_runs() within build_from_pattern()</span>
-<span class="c1">#</span>
-<span class="c1">#   get_runs can pass all information needed about a unit then</span>
-<span class="c1">#   pass it forward.</span>
-<span class="c1">#</span>
-<span class="c1"># 3nd: Use named tupes or other structures to pass information</span>
-<span class="c1">#</span>
-<span class="c1">#   Improves clarity as library becomes increasingly complex.</span>
-<span class="c1">#</span>
+<span class="c1"># -- ! [ conflict data ] ! ------------------------------------------ #</span>
+<span class="c1"># TODO:</span>
+<span class="c1"># Like bounds and re_bounds, conflicts should be stored inside</span>
+<span class="c1"># Templates as a single source of truth instead of recalculation</span>
 <div class="viewcode-block" id="Template">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.Template">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Template</span><span class="p">(</span><span class="n">MultipliedMeta</span><span class="p">):</span>
@@ -446,12 +451,6 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1"># ! THIS is where checksums need to be implemented ! #</span>
-    <span class="c1"># &gt; Move checksum logic from Matrix class to Template class</span>
-    <span class="c1"># &gt; make checksum a named tuple to easily identify x vs y?</span>
-    <span class="c1"># &gt; passing both checksums will be the first step in optimisation</span>
-    <span class="c1">#</span>
-
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">source</span><span class="p">:</span> <span class="n">Pattern</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
@@ -466,8 +465,9 @@
             <span class="k">case</span> <span class="n">Matrix</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">result</span>
             <span class="k">case</span> <span class="nb">list</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">allchars</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">==</span> <span class="p">{}:</span>
+                <span class="k">if</span> <span class="n">allchars</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">==</span> <span class="p">{}</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">isppm</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid resultant matrix&quot;</span><span class="p">)</span>
+
                 <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
             <span class="k">case</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">pass</span>
@@ -480,22 +480,27 @@
             <span class="k">if</span> <span class="n">matrix</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">matrix</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bits</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">build_from_pattern</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="p">,</span> <span class="n">matrix</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_complex</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="c1"># -- template handling ---------------------------------------</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">([</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">source</span><span class="p">]):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">isppm</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected partial product matrix, got </span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">template</span> <span class="o">=</span> <span class="n">source</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_bounding_box</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_complex</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_reduce_template</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">re_bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_bounding_box</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
+
+            <span class="c1"># if pattern resolvable, future calculations are cheaper</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_template_pattern</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_complex</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected Pattern or list[list[str]] got </span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_reduce_template</span><span class="p">()</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_bounding_box</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">re_bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_bounding_box</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_soft_type</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
         <span class="k">return</span> <span class="kc">None</span>
@@ -520,7 +525,7 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_reduce_template</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Produce Template result and it&#39;s bounding box.&quot;&quot;&quot;</span>
-        <span class="n">units</span><span class="p">,</span> <span class="n">bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collect_template_units</span><span class="p">()</span>
+        <span class="n">units</span><span class="p">,</span> <span class="n">bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collect_template_units</span><span class="p">()</span>
         <span class="n">re_bound</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">chars</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">bounds</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
@@ -532,7 +537,6 @@
             <span class="k">match</span> <span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># row height</span>
                 <span class="k">case</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># NOOP</span>
                     <span class="n">output</span> <span class="o">=</span> <span class="n">Slice</span><span class="p">([</span><span class="n">units</span><span class="p">[</span><span class="n">ch</span><span class="p">][</span><span class="n">base_index</span><span class="p">]])</span>
-
                     <span class="n">re_bound</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span>
 
                 <span class="k">case</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># ADD</span>
@@ -547,7 +551,7 @@
                     <span class="k">while</span> <span class="n">output</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">x_left</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;_&quot;</span> <span class="ow">and</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&lt;</span> <span class="n">x_left</span><span class="p">:</span>
                         <span class="n">x_left</span> <span class="o">-=</span> <span class="mi">1</span>
 
-                    <span class="n">re_bound</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span> <span class="o">=</span> <span class="p">[(</span><span class="n">x_left</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="p">(</span><span class="n">x_right</span><span class="p">,</span> <span class="n">y</span><span class="p">)]</span>
+                    <span class="n">re_bound</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span> <span class="o">=</span> <span class="p">[(</span><span class="n">x_left</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="p">(</span><span class="n">x_right</span><span class="p">,</span> <span class="n">y</span><span class="p">)]</span>
 
                 <span class="k">case</span> <span class="mi">3</span><span class="p">:</span>  <span class="c1"># CSA</span>
                     <span class="n">unit_slice</span> <span class="o">=</span> <span class="n">Slice</span><span class="p">(</span>
@@ -562,11 +566,11 @@
                     <span class="n">y</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
                     <span class="n">x_right</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
                     <span class="n">x_left</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">][</span><span class="o">-</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-                    <span class="k">while</span> <span class="n">output</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">x_left</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;_&quot;</span> <span class="ow">and</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&lt;</span> <span class="n">x_left</span><span class="p">:</span>
+                    <span class="k">while</span> <span class="n">output</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">x_left</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;_&quot;</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">x_left</span><span class="p">:</span>
                         <span class="n">x_left</span> <span class="o">-=</span> <span class="mi">1</span>
 
                     <span class="n">re_bound</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-                        <span class="p">(</span><span class="n">x_left</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span>
+                        <span class="p">(</span><span class="n">x_left</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span>
                         <span class="p">(</span><span class="n">x_right</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span>
                         <span class="p">(</span><span class="n">x_left</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
                         <span class="p">(</span><span class="n">x_right</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
@@ -574,29 +578,36 @@
 
                 <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Unsupported unit type, len=</span><span class="si">{</span><span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;Unsupported unit type, len=</span><span class="si">{</span><span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Unit: </span><span class="se">\n</span><span class="si">{</span><span class="n">pretty_nested_list</span><span class="p">(</span><span class="n">units</span><span class="p">[</span><span class="n">ch</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span>
                     <span class="p">)</span>
-
-            <span class="n">unit_result</span> <span class="o">=</span> <span class="p">[[]]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">bits</span>
+            <span class="n">unit_result</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bits</span><span class="p">)]</span>
             <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">base_index</span><span class="p">:</span>
                 <span class="n">unit_result</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;_&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bits</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span>
                 <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">output</span><span class="p">:</span>
+                <span class="c1"># print(row)</span>
                 <span class="n">unit_result</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span>
                 <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">bits</span><span class="p">:</span>
                 <span class="n">unit_result</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;_&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bits</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span>
                 <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="c1"># mprint(unit_result)</span>
             <span class="n">results</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">(</span><span class="n">unit_result</span><span class="p">)</span>
 
+        <span class="c1"># ! -- implement merge conflict resolution ------------------ ! #</span>
         <span class="k">if</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">matrix_merge</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">re_bound</span><span class="p">)</span>
+            <span class="c1"># print(&quot;====merging====&quot;)</span>
+            <span class="c1"># print(re_bound)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">matrix_merge</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">re_bound</span><span class="p">,</span> <span class="nb">complex</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_complex</span><span class="p">)</span>
+            <span class="c1"># print(re_bound)</span>
+            <span class="c1"># print(&quot;====merging/ended====&quot;)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">re_bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_bounding_box</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">re_bounds</span> <span class="o">=</span> <span class="n">re_bound</span>
+        <span class="c1"># ! --------------------------------------------------------- ! #</span>
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="c1"># Templates must be built using matrix</span>
@@ -687,6 +698,8 @@
 
             <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
 
+        <span class="c1"># for x in template_slices.values():</span>
+        <span class="c1">#     print(x)</span>
         <span class="c1"># -- build template and result ------------------------------</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">template_slices</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="n">template</span> <span class="o">=</span> <span class="p">[]</span>
@@ -696,6 +709,8 @@
             <span class="n">result</span> <span class="o">+=</span> <span class="n">template_slices</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">template</span><span class="p">,</span> <span class="n">Matrix</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="n">_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collect_template_units</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">re_bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_bounding_box</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
@@ -707,9 +722,19 @@
 <div class="viewcode-block" id="Template.update_bounding_box">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.Template.update_bounding_box">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">update_bounding_box</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">matrix</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">]</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">matrix</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns dictionary of arithmetic unit and coordinates for their boundaries.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns dictionary of arithmetic unit and coordinates for their boundaries.</span>
+
+<span class="sd">        No rigorous inter-row or intra-row boundary checking.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        Bounds are in the form:</span>
+<span class="sd">            {&quot;&lt;unit&gt;&quot;: [(&lt;start&gt;, &lt;end&gt;), ...]}</span>
+
+<span class="sd">        Where `(&lt;start&gt;, &lt;end&gt;)` are coordinate points in the matrix.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bits</span>
         <span class="n">items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bits</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span>
@@ -751,41 +776,69 @@
         <span class="k">return</span> <span class="n">bounds</span></div>
 
 
-    <span class="c1"># TODO: implement x_checksum (current checksum is y_checksum)</span>
-    <span class="c1"># IDEA: implement x_signature and maybe y_signature:</span>
-    <span class="c1"># - A given signature will create a set for all member of an axis</span>
-    <span class="c1"># - Should help when error checking, though I don&#39;t see a use for y_signature</span>
-    <span class="c1">#</span>
-<div class="viewcode-block" id="Template.collect_template_units">
-<a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.Template.collect_template_units">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">collect_template_units</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_collect_template_units</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">],</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return dict of isolated arithmetic units and their bounding box.&quot;&quot;&quot;</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]],</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return dict of isolated arithmetic units and their bounding box.</span>
+
+<span class="sd">        Performs a rigorous inter-row and intra-row boundary check to ensure</span>
+<span class="sd">        each arithmetic units are valid.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        Bounds are in the form:</span>
+<span class="sd">            {&quot;&lt;unit&gt;&quot;: [(&lt;start&gt;, &lt;end&gt;), ...]}</span>
+
+<span class="sd">        Where `(&lt;start&gt;, &lt;end&gt;)` are coordinate points in the matrix.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.utils.char</span><span class="w"> </span><span class="kn">import</span> <span class="n">chartff</span>
 
         <span class="n">bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_bounding_box</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="p">)</span>
-        <span class="n">units</span> <span class="o">=</span> <span class="n">matrix_scatter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="p">,</span> <span class="n">bounds</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">units</span><span class="p">,</span> <span class="n">bounds</span><span class="p">)</span></div>
+        <span class="n">allchars</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">bounds</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">units</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">allchars</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ch</span> <span class="o">==</span> <span class="s2">&quot;_&quot;</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">matrix</span> <span class="o">=</span> <span class="n">raw_empty_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bits</span><span class="p">)</span>
+            <span class="n">tff</span> <span class="o">=</span> <span class="n">chartff</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span>  <span class="c1"># toggle flip flop</span>
+            <span class="nb">next</span><span class="p">(</span><span class="n">tff</span><span class="p">)</span>  <span class="c1"># sync to template case sensitivity</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># coordinate index</span>
+            <span class="n">expected_y</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="c1"># == intra-row boundary ================================= #</span>
+                <span class="c1"># bound[list_of_points][coord_i][y-axis]</span>
+                <span class="c1"># &quot;if 2 &lt; points have the same y for a given unit&quot;</span>
+                <span class="k">if</span> <span class="mi">2</span> <span class="o">&lt;</span> <span class="nb">sum</span><span class="p">([</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">]]):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Multiple arithmetic units found for unit &#39;</span><span class="si">{</span><span class="n">ch</span><span class="si">}</span><span class="s2">&#39; </span><span class="se">\n</span><span class="si">{</span><span class="n">bounds</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                <span class="c1"># ======================================================= #</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">end</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="n">ch</span><span class="p">][</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">start</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">end</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Bounding box error for unit &#39;</span><span class="si">{</span><span class="n">ch</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;Points:</span><span class="si">{</span><span class="n">start</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">end</span><span class="si">}</span><span class="s2">, error:  </span><span class="si">{</span><span class="n">start</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> != </span><span class="si">{</span><span class="n">end</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                <span class="c1"># -- traverse row ---------------------------------------</span>
+                <span class="nb">next</span><span class="p">(</span><span class="n">tff</span><span class="p">)</span>  <span class="c1"># sync to template case sensitivity</span>
+                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">end</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="n">matrix</span><span class="p">[</span><span class="n">start</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">tff</span><span class="p">)</span>
 
+                <span class="c1"># == inter-row boundary test ============================ #</span>
+                <span class="k">if</span> <span class="n">expected_y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">expected_y</span> <span class="o">!=</span> <span class="n">start</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Arithmetic unit &#39;</span><span class="si">{</span><span class="n">ch</span><span class="si">}</span><span class="s2">&#39; spans multiple rows. &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;Expected row </span><span class="si">{</span><span class="n">expected_y</span><span class="si">}</span><span class="s2">, got row </span><span class="si">{</span><span class="n">start</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                <span class="n">expected_y</span> <span class="o">=</span> <span class="n">start</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="c1"># ======================================================= #</span>
 
-    <span class="c1"># To be used in complex template results</span>
-<div class="viewcode-block" id="Template.merge">
-<a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.Template.merge">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">merge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">templates</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Merge multiple template slices into a single template.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">templates</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
-        <span class="c1"># This looks terrible... Works tho?</span>
-        <span class="c1"># templates[template[row[str]]]</span>
-        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">templates</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="nb">str</span><span class="p">)</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">2</span>
 
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">templates</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No templates provided&quot;</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">merged</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># PLACEHOLDER #</span>
-        <span class="o">...</span></div>
-
+            <span class="n">units</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span> <span class="o">=</span> <span class="n">matrix</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">units</span><span class="p">,</span> <span class="n">bounds</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 
@@ -844,20 +897,16 @@
 
 
 
-<div class="viewcode-block" id="build_noop_template">
-<a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.build_noop_template">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">build_noop_template</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">:</span> <span class="n">Pattern</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">dadda</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create template for zeroed matrix using pattern&quot;&quot;&quot;</span></div>
-
-
-
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Complex templates implement decoders and bit-mapping.</span>
+<span class="sd">Decoders</span>
+<span class="sd">--------</span>
 
-<span class="sd">Decoders reduce 4 or more bits at a time.</span>
+<span class="sd">Complex templates will eventually allow for decoders.</span>
 
-<span class="sd">Bit mapping defines where bits are placed in each stage,</span>
-<span class="sd">enabling complex implementations and possible optimisations.</span>
+<span class="sd">Decoders can reduce 4 or more bits at a time, or be used to implement</span>
+<span class="sd">other encoding/decoding style operations.</span>
+
+
 <span class="sd">&quot;&quot;&quot;</span>
 </pre></div>
 </article><footer class="bz-article-footer">
@@ -933,5 +982,5 @@
   <label class="bz-overlay bz-overlay-primary" for="bz-sidebar-primary"></label>
   <label class="bz-overlay bz-overlay-secondary" for="bz-sidebar-secondary"></label>
   <input type="checkbox" name="bz-sidebar-primary" id="bz-sidebar-primary" aria-label="Toggle section navigation">
-  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../../../_static/documentation_options.js?v=61c2e1f5"></script><script src="../../../_static/doctools.js?v=fd6eb6e6"></script><script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script><script src="../../../_static/clipboard.min.js?v=a7894cd8"></script><script src="../../../_static/copybutton.js?v=f281be69"></script><script src="../../../_static/design-tabs.js?v=f930bc37"></script></body>
+  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../../../_static/documentation_options.js?v=ba9b7d67"></script><script src="../../../_static/doctools.js?v=fd6eb6e6"></script><script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script><script src="../../../_static/clipboard.min.js?v=a7894cd8"></script><script src="../../../_static/copybutton.js?v=f281be69"></script><script src="../../../_static/design-tabs.js?v=f930bc37"></script></body>
 </html>
