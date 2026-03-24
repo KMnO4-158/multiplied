@@ -4,6 +4,39 @@
 Changelog
 =========
 
+v0.9
+=====
+
+`v0.9.0 <https://github.com/KMnO4-158/multiplied/releases/tag/v0.9.0>`_
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Updates
+
+    - Added Conflict Detection (`22fbed1`_)
+    - Improved Default Merge Logic (`7bd696e`_)
+    - Merge Conflict Resolution (`3a93569`_) (`e7e73cb`_)
+
+Testing
+
+    - Add WALLACE_TREE, DADDA_TREE reference data (`297130d`_)
+    - Validate "Official" Wallace and Dadda Tree (`5ac6984`_)
+
+Fixes
+
+    - ``mprint`` Duplicating Prints (`ca51819`_)
+    - Algorithm ``dadda=True`` Option Inconsistency (`f1baf08`_)
+
+See full changelog `here <https://github.com/KMnO4-158/multiplied/pull/133>`_
+
+.. _22fbed1: https://github.com/KMnO4-158/multiplied/commit/22fbed1
+.. _7bd696e: https://github.com/KMnO4-158/multiplied/commit/7bd696e
+.. _3a93569: https://github.com/KMnO4-158/multiplied/commit/3a93569
+.. _e7e73cb: https://github.com/KMnO4-158/multiplied/commit/e7e73cb
+.. _297130d: https://github.com/KMnO4-158/multiplied/commit/297130d
+.. _5ac6984: https://github.com/KMnO4-158/multiplied/commit/5ac6984
+.. _ca51819: https://github.com/KMnO4-158/multiplied/commit/ca51819
+.. _f1baf08: https://github.com/KMnO4-158/multiplied/commit/f1baf08
+
 
 v0.8
 =====
@@ -11,7 +44,7 @@ v0.8
 `v0.8.2 <https://github.com/KMnO4-158/multiplied/releases/tag/v0.8.2>`_
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This patch focused on fully integrating complex Template objectsand improving performance.
+This patch focused on fully integrating complex Template objects and improving performance.
 
 Updates
 
