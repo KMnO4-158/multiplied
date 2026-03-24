@@ -28,7 +28,6 @@ def pretty(listy_object: Any) -> str:
 
     if issubclass(type(listy_object), MultipliedMeta):
         dtype = listy_object._soft_type
-        print(listy_object)
     elif isinstance(listy_object, (list, dict)):
         dtype = listy_object
     else:
@@ -106,4 +105,9 @@ def pretty_nested_list(listy_object: Any, *, whitespace=False) -> str:
 # Needs some work
 def mprint(matrix: Any):
     """Wrapper for print(mp.pretty)"""
-    print(pretty(matrix))
+
+    # sanity check stops prints being duplicated
+    if issubclass(type(matrix), MultipliedMeta):
+        print(matrix)
+    else:
+        print(pretty(matrix))

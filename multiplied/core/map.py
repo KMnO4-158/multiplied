@@ -158,22 +158,18 @@ def unify_bounds(bounds: dict) -> dict:
     """
     if not isinstance(bounds, dict):
         raise TypeError(f"Expected dict got {type(bounds)}")
-    if bounds.get("_") is None:
-        raise ValueError("Bounds must have a `_` key")
 
     unified_row_bounds = {}
     for k, unit_bounds in bounds.items():
         if k == "_":
             continue
         for item, row in unit_bounds:
-            if unified_row_bounds.get(row) is None:
-                unified_row_bounds[row] = []
-            unified_row_bounds[row].append(item)
+            unified_row_bounds.setdefault(row, []).append(item)
 
     return unified_row_bounds
 
 
-def apply_complex_map(matrix: list[list[str]], map: Map, bounds: dict) -> None:
+def apply_complex_map(matrix: list[list[str]], map: Map, unified_bounds: dict) -> None:
     """Applies a complex mapping to source Matrix
 
     Parameters
@@ -187,14 +183,14 @@ def apply_complex_map(matrix: list[list[str]], map: Map, bounds: dict) -> None:
     bounds : dict[str: list[int]]
         Unified bounds for all arithmetic units
     """
-    if not all([isinstance(r, int) for r in bounds]):
+    if not all([isinstance(r, int) for r in unified_bounds]):
         raise TypeError("Expected all row bounds to be integers")
 
-    for row in sorted(bounds.keys()):
-        if not isinstance(bounds[row], list):
+    for row in sorted(unified_bounds.keys()):
+        if not isinstance(unified_bounds[row], list):
             raise TypeError("Expected row bounds to be a list")
 
-        for col in range(bounds[row][0], bounds[row][1] + 1):
+        for col in range(unified_bounds[row][0], unified_bounds[row][-1] + 1):
             if map.map[row][col] == "00":
                 continue
             if (offset := int(map.map[row][col], 16)) & 128:

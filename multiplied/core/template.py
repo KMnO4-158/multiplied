@@ -6,12 +6,12 @@ from copy import deepcopy
 from typing import Any
 
 from .dtypes.base import MultipliedMeta
-from .matrix import Matrix, Slice, empty_rows, matrix_merge, matrix_scatter
+from .matrix import Matrix, Slice, empty_rows, matrix_merge, raw_empty_matrix
 from .utils.char import allchars, chargen, chartff
-from .utils.pretty import pretty
+from .utils.pretty import pretty, pretty_nested_list
 from .utils.bool import isalpha, ischar, isppm, validate_bitwidth
 
-# -- Template and Slice dependencies  ------------------------------- #
+# == Template and Slice dependencies  =============================== #
 
 
 def build_csa(
@@ -116,7 +116,12 @@ def build_adder(
     carry = not all(ch == "_" for ch in adder_slice[1])  # sanity check
 
     # find index of left most instance of char, regardless of case
-    index = min(result[0].index(next(tff)), result[0].index(next(tff)))
+    index = 0
+    while index < n:
+        if result[0][index] in [next(tff), next(tff)]:
+            break
+        index += 1
+    # index = min(result[0].index(next(tff)), result[0].index(next(tff)))
     if carry and 0 < index:
         result[0][index - 1] = next(tff)  # Final carry place in result template
 
@@ -197,6 +202,9 @@ def build_empty_slice(source_slice: Slice) -> tuple[Slice, Slice]:
     return empty_slice, deepcopy(empty_slice)
 
 
+# =================================================================== #
+
+
 class Pattern(MultipliedMeta):
     """Simplified representation of a Template.
 
@@ -267,22 +275,19 @@ class Pattern(MultipliedMeta):
         return self.pattern[index]
 
 
-# -- ! [ Preparing For Decoders ] !-------------------------------- #
+# -- ! [ Preparing For Decoders ] !---------------------------------- #
+# > Make plan for assigning a function to a given unit even if
+#   they're the same run
 #
-# 1st:
+# > What character will they use?
 #
-#   Implement complex maps, arithmetic unit based isolation and
-#   partial product reduction.
+# > How can this decoder function be preserved, assigned and called
+#   upon during template reduction AND matrix reduction?
 #
-# 2st: Adopt get_runs() within build_from_pattern()
-#
-#   get_runs can pass all information needed about a unit then
-#   pass it forward.
-#
-# 3nd: Use named tupes or other structures to pass information
-#
-#   Improves clarity as library becomes increasingly complex.
-#
+# -- ! [ conflict data ] ! ------------------------------------------ #
+# TODO:
+# Like bounds and re_bounds, conflicts should be stored inside
+# Templates as a single source of truth instead of recalculation
 class Template(MultipliedMeta):
     """A structure representing collections of arithmetic units using characters.
     Generated using a partial product matrix and a Pattern or custom template
@@ -298,12 +303,6 @@ class Template(MultipliedMeta):
 
     """
 
-    # ! THIS is where checksums need to be implemented ! #
-    # > Move checksum logic from Matrix class to Template class
-    # > make checksum a named tuple to easily identify x vs y?
-    # > passing both checksums will be the first step in optimisation
-    #
-
     def __init__(
         self,
         source: Pattern | list[list[str]],
@@ -318,8 +317,9 @@ class Template(MultipliedMeta):
             case Matrix():
                 self.result = result
             case list():
-                if allchars(result) == {}:
+                if allchars(result) == {} or not isppm(result):
                     raise ValueError("Invalid resultant matrix")
+
                 self.result = Matrix(result)
             case None:
                 pass
@@ -332,22 +332,27 @@ class Template(MultipliedMeta):
             if matrix is None:
                 matrix = Matrix(self.bits)
             self.build_from_pattern(self.pattern, matrix)
+            self._complex = False
 
         # -- template handling ---------------------------------------
         elif isinstance(source, list) and all([isinstance(i, list) for i in source]):
             if not isppm(source):
                 raise TypeError(f"Expected partial product matrix, got {source}")
             self.template = source
+            self.bounds = self.update_bounding_box(self.template)
+            self._complex = True
+            if result is None:
+                self._reduce_template()
+            else:
+                self.re_bounds = self.update_bounding_box(self.result.matrix)
+
+            # if pattern resolvable, future calculations are cheaper
             self._resolve_template_pattern()
+            if self.pattern is not None:
+                self._complex = False
 
         else:
             raise TypeError(f"Expected Pattern or list[list[str]] got {source}")
-
-        if result is None:
-            self._reduce_template()
-
-        self.bounds = self.update_bounding_box(self.template)
-        self.re_bounds = self.update_bounding_box(self.result.matrix)
 
         self._soft_type = list()
         return None
@@ -372,7 +377,7 @@ class Template(MultipliedMeta):
 
     def _reduce_template(self) -> None:
         """Produce Template result and it's bounding box."""
-        units, bounds = self.collect_template_units()
+        units, bounds = self._collect_template_units()
         re_bound = {}
         results = {}
         chars = list(bounds.keys())
@@ -384,7 +389,6 @@ class Template(MultipliedMeta):
             match bounds[ch][-1][1] - bounds[ch][0][1] + 1:  # row height
                 case 1:  # NOOP
                     output = Slice([units[ch][base_index]])
-
                     re_bound[ch] = bounds[ch]
 
                 case 2:  # ADD
@@ -399,7 +403,7 @@ class Template(MultipliedMeta):
                     while output[0][x_left] != "_" and -1 < x_left:
                         x_left -= 1
 
-                    re_bound[ch] = [(x_left, y), (x_right, y)]
+                    re_bound[ch] = [(x_left + 1, y), (x_right, y)]
 
                 case 3:  # CSA
                     unit_slice = Slice(
@@ -414,11 +418,11 @@ class Template(MultipliedMeta):
                     y = bounds[ch][0][1]
                     x_right = bounds[ch][1][0]
                     x_left = bounds[ch][-2][0]
-                    while output[0][x_left] != "_" and -1 < x_left:
+                    while output[0][x_left] != "_" and 0 < x_left:
                         x_left -= 1
 
                     re_bound[ch] = [
-                        (x_left - 1, y),
+                        (x_left + 1, y),
                         (x_right, y),
                         (x_left, y + 1),
                         (x_right - 1, y + 1),
@@ -426,29 +430,36 @@ class Template(MultipliedMeta):
 
                 case _:
                     raise ValueError(
-                        f"Unsupported unit type, len={bounds[ch][-1][1] - bounds[ch][0][1]}"
+                        f"Unsupported unit type, len={bounds[ch][-1][1] - bounds[ch][0][1] + 1}"
+                        f"\nUnit: \n{pretty_nested_list(units[ch])}"
                     )
-
-            unit_result = [[]] * self.bits
+            unit_result = [[] for _ in range(self.bits)]
             i = 0
             while i < base_index:
                 unit_result[i] = ["_"] * (self.bits << 1)
                 i += 1
             for row in output:
+                # print(row)
                 unit_result[i] = row
                 i += 1
             while i < self.bits:
                 unit_result[i] = ["_"] * (self.bits << 1)
                 i += 1
+            # mprint(unit_result)
             results[ch] = Matrix(unit_result)
 
+        # ! -- implement merge conflict resolution ------------------ ! #
         if 1 < len(results):
-            self.result = matrix_merge(results, re_bound)
+            # print("====merging====")
+            # print(re_bound)
+            self.result = matrix_merge(results, re_bound, complex=self._complex)
+            # print(re_bound)
+            # print("====merging/ended====")
         else:
             self.result = list(results.values())[0]
 
-        self.re_bounds = self.update_bounding_box(self.result.matrix)
-
+        self.re_bounds = re_bound
+        # ! --------------------------------------------------------- ! #
         return None
 
     # Templates must be built using matrix
@@ -537,6 +548,8 @@ class Template(MultipliedMeta):
 
             i += 1
 
+        # for x in template_slices.values():
+        #     print(x)
         # -- build template and result ------------------------------
         keys = sorted(template_slices.keys())
         template = []
@@ -546,6 +559,8 @@ class Template(MultipliedMeta):
             result += template_slices[k][1]
 
         self.template, self.result = template, Matrix(result)
+        _, self.bounds = self._collect_template_units()
+        self.re_bounds = self.update_bounding_box(self.result.matrix)
         return None
 
     # ! currently not generalised:
@@ -554,9 +569,19 @@ class Template(MultipliedMeta):
     #  > or just detect empty, '_', characters as the boundary
     #       > This option means figuring out the correct key to use
     def update_bounding_box(
-        self, matrix: list[list]
+        self, matrix: list[list[str]]
     ) -> dict[str, list[tuple[int, int]]]:
-        """Returns dictionary of arithmetic unit and coordinates for their boundaries."""
+        """Returns dictionary of arithmetic unit and coordinates for their boundaries.
+
+        No rigorous inter-row or intra-row boundary checking.
+
+        Notes
+        -----
+        Bounds are in the form:
+            {"<unit>": [(<start>, <end>), ...]}
+
+        Where `(<start>, <end>)` are coordinate points in the matrix.
+        """
 
         rows = self.bits
         items = self.bits << 1
@@ -597,35 +622,69 @@ class Template(MultipliedMeta):
             y += 1
         return bounds
 
-    # TODO: implement x_checksum (current checksum is y_checksum)
-    # IDEA: implement x_signature and maybe y_signature:
-    # - A given signature will create a set for all member of an axis
-    # - Should help when error checking, though I don't see a use for y_signature
-    #
-    def collect_template_units(
+    def _collect_template_units(
         self,
-    ) -> tuple[dict[str, list], dict[str, list[tuple[int, int]]]]:
-        """Return dict of isolated arithmetic units and their bounding box."""
+    ) -> tuple[dict[str, list[list[str]]], dict[str, list[tuple[int, int]]]]:
+        """Return dict of isolated arithmetic units and their bounding box.
+
+        Performs a rigorous inter-row and intra-row boundary check to ensure
+        each arithmetic units are valid.
+
+        Notes
+        -----
+        Bounds are in the form:
+            {"<unit>": [(<start>, <end>), ...]}
+
+        Where `(<start>, <end>)` are coordinate points in the matrix.
+        """
+
+        from .utils.char import chartff
 
         bounds = self.update_bounding_box(self.template)
-        units = matrix_scatter(self.template, bounds)
+        allchars = list(bounds.keys())
+        units = {}
+        for ch in allchars:
+            if ch == "_":
+                continue
+            matrix = raw_empty_matrix(self.bits)
+            tff = chartff(ch)  # toggle flip flop
+            next(tff)  # sync to template case sensitivity
+            i = 0  # coordinate index
+            expected_y = None
+            while i < len(bounds[ch]) - 1:
+                # == intra-row boundary ================================= #
+                # bound[list_of_points][coord_i][y-axis]
+                # "if 2 < points have the same y for a given unit"
+                if 2 < sum([p[1] == bounds[ch][i][1] for p in bounds[ch]]):
+                    raise ValueError(
+                        f"Multiple arithmetic units found for unit '{ch}' \n{bounds}"
+                    )
+                # ======================================================= #
+                start = bounds[ch][i]
+                end = bounds[ch][i + 1]
+                if start[1] != end[1]:
+                    raise ValueError(
+                        f"Bounding box error for unit '{ch}' "
+                        f"Points:{start}, {end}, error:  {start[1]} != {end[1]}"
+                    )
+                # -- traverse row ---------------------------------------
+                next(tff)  # sync to template case sensitivity
+                for x in range(start[0], end[0] + 1):
+                    matrix[start[1]][x] = next(tff)
+
+                # == inter-row boundary test ============================ #
+                if expected_y is not None and expected_y != start[1]:
+                    raise ValueError(
+                        f"Arithmetic unit '{ch}' spans multiple rows. "
+                        f"Expected row {expected_y}, got row {start[1]}"
+                    )
+                expected_y = start[1] + 1
+                # ======================================================= #
+
+                i += 2
+
+            units[ch] = matrix
         return (units, bounds)
-
-    # To be used in complex template results
-    def merge(self, templates: list[Any]) -> None:
-        """
-        Merge multiple template slices into a single template.
-        """
-        assert isinstance(templates, list)
-        # This looks terrible... Works tho?
-        # templates[template[row[str]]]
-        assert isinstance(templates[0][0][0][0], str)
-
-        if len(templates) == 0:
-            raise ValueError("No templates provided")
-
-        self.merged = None  # PLACEHOLDER #
-        ...
 
     def __str__(self) -> str:
 
@@ -680,15 +739,14 @@ def resolve_pattern(matrix: Matrix) -> Pattern:
     return Pattern(new_pattern)
 
 
-def build_noop_template(self, pattern: Pattern, *, dadda=False) -> None:
-    """Create template for zeroed matrix using pattern"""
-
-
 """
-Complex templates implement decoders and bit-mapping.
+Decoders
+--------
 
-Decoders reduce 4 or more bits at a time.
+Complex templates will eventually allow for decoders.
 
-Bit mapping defines where bits are placed in each stage,
-enabling complex implementations and possible optimisations.
+Decoders can reduce 4 or more bits at a time, or be used to implement
+other encoding/decoding style operations.
+
+
 """

@@ -394,7 +394,7 @@ def truth_multi_parquet(
     if not isinstance(dir, Path):
         dir = Path(dir)
     if dir.suffix != "":
-        print(dir.suffix)
+        # print(dir.suffix)
         raise ValueError(f"Output directory {dir} must be a directory, not a file.")
     if workers % 2 != 0:
         raise ValueError("workers must be even")

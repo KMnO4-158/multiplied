@@ -107,6 +107,12 @@ def main() -> None:
     apply_complex_map(matrix, mp.Map(ref_dadda_map), unify_bounds(noop_template.bounds))
     print(matrix)
 
+    template = mp.Template(REFERENCE["complex_template"][8]["T"])
+    unified_bounds = unify_bounds(template.bounds)
+    print(unified_bounds)
+    # apply_complex_map(matrix, mp.Map(ref_dadda_map), unified_bounds)
+    # print(matrix)
+
 
 if __name__ == "__main__":
     main()

@@ -112,8 +112,7 @@ class Algorithm(MultipliedMeta):
         if isinstance(source, Pattern):
             template = Template(source)
         elif isinstance(source, Template):
-            has_pattern = getattr(source, "pattern", None)
-            if has_pattern is None and map_ is None:
+            if source._complex and (map_ is None and not self.dadda):
                 raise ValueError("Complex template without map")
             template = deepcopy(source)
         else:
@@ -126,16 +125,24 @@ class Algorithm(MultipliedMeta):
 
         result = template.result
         res_copy = deepcopy(result)
-        map_bounds = unify_bounds(template.re_bounds)
         stage_index = len(self.algorithm)
-        if not map_ and result:
-            if dadda:
-                map_ = hoist(res_copy)
-            else:
-                map_ = result.resolve_rmap()
+
+        if self.dadda:
+            map_ = hoist(res_copy)
+
+        elif template._complex:
+            map_bounds = unify_bounds(template.re_bounds)
             res_copy.apply_map(map_, unified_bounds=map_bounds)
+
         else:
-            res_copy.apply_map(map_, unified_bounds=map_bounds)
+            map_ = result.resolve_rmap()
+            res_copy.apply_map(map_)
+
+        # if not map_ and result:
+        #     if dadda:
+        #         map_ = hoist(res_copy)
+        #     else:
+        # else:
 
         stage = {
             "template": template,
@@ -193,7 +200,6 @@ class Algorithm(MultipliedMeta):
 
         bounds = self.algorithm[self.state]["template"].bounds
         units = matrix_scatter(self.matrix.matrix, bounds)
-
         # -- reduce -------------------------------------------------
         n = self.bits << 1
         results = {}
@@ -297,6 +303,7 @@ class Algorithm(MultipliedMeta):
 
             # -- build unit into matrix -----------------------------
             unit_result = [[]] * self.bits
+
             i = 0
             while i < base_index:
                 unit_result[i] = ["_"] * n
@@ -333,14 +340,14 @@ class Algorithm(MultipliedMeta):
 
         # -- merge --------------------------------------------------
         re_bounds = self.algorithm[self.state]["template"].re_bounds
+        complex = self.algorithm[self.state]["template"]._complex
 
         if 1 < len(results):
-            self.matrix = matrix_merge(results, re_bounds)
+            self.matrix = matrix_merge(results, re_bounds, complex=complex)
         else:
             self.matrix = list(results.values())[0]
 
         # -- map ----------------------------------------------------
-
         self.matrix.apply_map(self.algorithm[self.state]["map"])
 
         return None
@@ -390,7 +397,7 @@ class Algorithm(MultipliedMeta):
     def step(self) -> Matrix:
         """Execute the next stage of the algorithm and update internal matrix"""
         if self.state == len(self.algorithm):
-            print("Algorithm completed")
+            print("Algorithm complete")
             return self.matrix
         if self.saturation:
             self._clamp_bitwidth()
@@ -444,6 +451,8 @@ class Algorithm(MultipliedMeta):
         if not isinstance(matrix, Matrix):
             raise TypeError(f"Expected Matrix, got {type(matrix)}")
         self.matrix = matrix
+        if self.dadda:
+            hoist(self.matrix)
         self.state = 0
         return None
 
