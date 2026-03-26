@@ -446,7 +446,12 @@ def aggregate_bounds(
 
     return bounds
 
-
+# ! THIS SHOULD BE INSIDE Template.conflicts AS A SINGLE SOURCE OF TRUTH ! #
+# The cost of calculating this is actually insane.
+#
+# A single template shoud never have multiple conflict scenarios
+#
+# TODO: Return a nicer looking object to hide complexity
 def _detect_merge_conflicts(
     bits: int,
     bounds: dict[str, list[tuple[int, int]]],
@@ -492,18 +497,23 @@ def _detect_merge_conflicts(
     #
     #       [ non conflict ]
     #
+    #           curr_pairs = [y] = [(0, 2)]
+    #
     #           inbound_pair = (3, y), (7, y), unit = "B"
     #
-    #         check inbound_pair conflicts:
-    #           [y] = [(0, 2)] -> 2 < 3 and 7 < inf -> True -> no conflict
+    #           check inbound_pair conflicts:
+    #
+    #               [y] = [(0, 2)] -> 2 < 3 and 7 < inf -> True -> no conflict
     #
     #       [ conflict ]
     #
+    #           curr_pairs = [y] = [(0, 2), (3, 7)]
+    #
     #           inbound_pair = (6, y), (15, y), unit = "C"
     #
-    #         check inbound_pair conflicts:
+    #           check inbound_pair conflicts:
     #
-    #           [y] = [(0, 2), (3, 7)] -> 7 < 6 and 15 < inf -> False -> conflict
+    #               [y] = [(0, 2), (3, 7)] -> 7 < 6 and 15 < inf -> False -> conflict
     #
     #       > if conflicts, take conflicting region and units present:
     #
@@ -516,20 +526,6 @@ def _detect_merge_conflicts(
     row_bounds = [[] for _ in range(bits)]
     row_units = [[] for _ in range(bits)]
     conflicts = {}
-
-    # ! flaky code warning ! #
-    # the following highly depends on coordinate bounds arriving
-    # independent of which row. E.g. if bounds pair:
-    #       (3, 0), (_, 0)
-    # enter, the following is dependent that if any more bounds
-    # exist for row 0, then the bounds pair
-    #       (x < 3, 0), (_, 0)
-    # will NEVER arrive and new bounds will be on the right of
-    # the original bounds
-    # ! sorting only solves half the problem ! #
-    #
-    # By grouping units into the conflicting bounds this problem
-    # can *mostly* be resolved
 
     # -- collecting bounds ------------------------------------------
     # (start_x, end_x, unit)
@@ -575,13 +571,13 @@ def _detect_merge_conflicts(
 
     return conflicts
 
-
 def matrix_merge(
     source: dict[str, Matrix],
     bounds: dict[str, list[tuple[int, int]]],
     *,
     complex: bool = False,
-) -> Matrix:
+    conflicts: dict[int, list[tuple[tuple[int, int], tuple[str, str]]]] =  {} # sorry for my sins
+) -> tuple[Matrix, dict]:
     """Merge multiple matrices into a single matrix using pre calculated bounds
 
     Parameters
@@ -624,15 +620,25 @@ def matrix_merge(
             f"\nBounds: \n{list(bounds.keys())}"
         )
 
+    # checking for a single object label is so much easier than checking every
+    # structure in a "classless" object. Damn.
+    if conflicts and isinstance(conflicts, dict):
+        if not all(isinstance(k, int) and 0 <= k for k in conflicts.keys()):
+            raise TypeError("Invalid key found in supplied conflicts")
+        if not all(isinstance(v, list) for v in conflicts.values()):
+            raise TypeError("Invalid value found in supplied conflicts")
+
+        complex = True
+
     litmus = next(i for i in source.values())
     bits = litmus.bits
-    conflicts = {}
 
-    if complex:  # set upon Template instantiation
+
+    if complex and not conflicts:  # set upon Template instantiation
+
         # == expensive conflict search ==============================
         # ((over, lap), (units, present)) : ((int, int), (str, str))
         conflicts = _detect_merge_conflicts(bits, bounds)
-        # ! CORRECT TO THIS POINT
 
     # -- lossy merge ------------------------------------------------
     output = raw_empty_matrix(bits)
@@ -667,7 +673,7 @@ def matrix_merge(
                     for i in range(start, end + 1):
                         columns[i].append((source[units[1]].matrix[row][i], units[1]))
                 else:
-                    # units[0] was overwritten
+                    # units[0] was overwrit[int, list[tuple[tuple[int, int], tuple[str, str]]]]ten
                     for i in range(start, end + 1):
                         columns[i].append((source[units[0]].matrix[row][i], units[0]))
 
@@ -692,7 +698,8 @@ def matrix_merge(
                             bounds[bit_info[-1]].append((x, y))
                             bounds[bit_info[-1]].append((x, y))
                         break
-    return Matrix(output)
+
+    return Matrix(output), conflicts
 
 
 def matrix_scatter(

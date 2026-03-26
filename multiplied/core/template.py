@@ -333,6 +333,7 @@ class Template(MultipliedMeta):
                 matrix = Matrix(self.bits)
             self.build_from_pattern(self.pattern, matrix)
             self._complex = False
+            self.conflicts = {}
 
         # -- template handling ---------------------------------------
         elif isinstance(source, list) and all([isinstance(i, list) for i in source]):
@@ -341,6 +342,7 @@ class Template(MultipliedMeta):
             self.template = source
             self.bounds = self.update_bounding_box(self.template)
             self._complex = True
+            self.conflicts = {}
             if result is None:
                 self._reduce_template()
             else:
@@ -452,7 +454,7 @@ class Template(MultipliedMeta):
         if 1 < len(results):
             # print("====merging====")
             # print(re_bound)
-            self.result = matrix_merge(results, re_bound, complex=self._complex)
+            self.result, self.conflicts = matrix_merge(results, re_bound, complex=self._complex)
             # print(re_bound)
             # print("====merging/ended====")
         else:
