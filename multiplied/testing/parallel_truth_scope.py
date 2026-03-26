@@ -2,6 +2,8 @@ from time import perf_counter
 from typing import Generator
 import warnings
 import multiplied as mp
+from multiplied.core.truth import truth_dataframe, truth_scope
+from multiplied.tests import DADDA_TREE
 
 
 def _batch_truth_scope(
@@ -103,34 +105,34 @@ def _batch_truth_scope(
 
 
 def main() -> None:
-    # from multiplied.core.truth import truth_multi_parquet
-    # import pandas as pd
-    # from pathlib import Path
+    from multiplied.core.truth import truth_multi_parquet
+    import pandas as pd
+    from pathlib import Path
 
     DOMAIN = (1, (2**8) - 1)
     RANGE = (1, (2**16) - 1)
-    WORKERS = 8
+    # WORKERS = 8
 
     # offset = (RANGE[1] + 1)// WORKERS
     # balance = [0] * WORKERS
     # balance = [-(offset) >> i for i in range(WORKERS)]
     # print(balance)
 
-    for i in _batch_truth_scope(DOMAIN, RANGE, WORKERS):
-        print(i)
-    count = 0
-    operands = set()
-    start = perf_counter()
-    for i in _batch_truth_scope(DOMAIN, RANGE, WORKERS):
-        scope = list(mp.truth_scope(i[0], i[1]))
-        count += len(scope)
-        print(len(scope))
-        operands |= set(scope)
-    end = perf_counter()
-    print(f"Elapsed: {end - start}s")
-    start = end
-    print(count)
-    print(len(operands))
+    # for i in _batch_truth_scope(DOMAIN, RANGE, WORKERS):
+    #     print(i)
+    # count = 0
+    # operands = set()
+    # start = perf_counter()
+    # for i in _batch_truth_scope(DOMAIN, RANGE, WORKERS):
+    #     scope = list(mp.truth_scope(i[0], i[1]))
+    #     count += len(scope)
+    #     print(len(scope))
+    #     operands |= set(scope)
+    # end = perf_counter()
+    # print(f"Elapsed: {end - start}s")
+    # start = end
+    # print(count)
+    # print(len(operands))
     # -------------------------------------------------------------------
 
     # for i in batch_truth_scope(DOMAIN, RANGE, WORKERS):
@@ -141,23 +143,32 @@ def main() -> None:
 
     # # pkl_alg = test_obj_pickling(alg)
     # # print(pkl_alg)
-    # alg = mp.Algorithm(8)
-    # alg.auto_resolve_stage()
-    # for i in alg.exec(255, 255).values():
-    #     print(i)
-    # print(alg)
-    # path = Path(__file__).parent.parent.parent / "examples/datasets/test_multi_new_map"
+    alg = mp.Algorithm(8, dadda=True)
 
-    # start = perf_counter()
-    # truth_multi_parquet(path, DOMAIN, RANGE, alg)
-    # end = perf_counter()
-    # print(f"\tTime: {end - start}")
+    alg.push(mp.Template(DADDA_TREE[8]["T"][0]))
+    alg.push(mp.Template(DADDA_TREE[8]["T"][1]))
+    alg.push(mp.Template(DADDA_TREE[8]["T"][2]))
+    alg.push(mp.Template(DADDA_TREE[8]["T"][3]))
+    alg.push(mp.Template(DADDA_TREE[8]["T"][4]))
 
-    # df = pd.read_parquet(path)
-    # pd.set_option("display.max_rows", None)
+    print(alg)
+    for i in alg.exec(255, 255).values():
+        print(i)
+    path = Path(__file__).parent.parent.parent / "examples/datasets/test_complex_merge_multi"
 
-    # print(df.head())
-    # print(df.tail())
+    start = perf_counter()
+    truth_multi_parquet(path, DOMAIN, RANGE, alg)
+    # scope = truth_scope(DOMAIN, RANGE)
+    # df = truth_dataframe(scope, alg)
+    # df.to_parquet(path)
+    end = perf_counter()
+    print(f"\tTime: {end - start}")
+
+    df = pd.read_parquet(path)
+    pd.set_option("display.max_rows", None)
+
+    print(df.head())
+    print(df.tail())
     # # print(df)
 
     # start = perf_counter()
