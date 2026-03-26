@@ -682,16 +682,11 @@ def matrix_merge(
         # == insert missing values ==================================
         for x, recovered_bits in enumerate(columns):
             for bit_info in recovered_bits:
-                # print(x, "info", bit_info)
-                # highest y index of original bound - 1
-                base_index = bounds[bit_info[1]][0][1] - 1
-                if base_index < 0:
-                    base_index = 0
 
                 # -- find empty column slot -------------------------
                 for y in range(bits):
-                    if output[(y + base_index) % bits][x] == "_":
-                        output[(y + base_index) % bits][x] = bit_info[0]
+                    if output[y][x] == "_":
+                        output[y][x] = bit_info[0]
 
                         # -- update bound ---------------------------
                         if isalpha(bit_info[-1]):
