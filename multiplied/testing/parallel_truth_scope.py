@@ -2,7 +2,6 @@ from time import perf_counter
 from typing import Generator
 import warnings
 import multiplied as mp
-from multiplied.core.truth import truth_dataframe, truth_scope
 from multiplied.tests import DADDA_TREE
 
 
@@ -105,6 +104,8 @@ def _batch_truth_scope(
 
 
 def main() -> None:
+    # from multiplied.core.truth import truth_dataframe, truth_scope
+
     from multiplied.core.truth import truth_multi_parquet
     import pandas as pd
     from pathlib import Path
@@ -154,7 +155,10 @@ def main() -> None:
     print(alg)
     for i in alg.exec(255, 255).values():
         print(i)
-    path = Path(__file__).parent.parent.parent / "examples/datasets/test_complex_merge_multi"
+    path = (
+        Path(__file__).parent.parent.parent
+        / "examples/datasets/test_complex_merge_multi"
+    )
 
     start = perf_counter()
     truth_multi_parquet(path, DOMAIN, RANGE, alg)

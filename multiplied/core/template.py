@@ -454,7 +454,9 @@ class Template(MultipliedMeta):
         if 1 < len(results):
             # print("====merging====")
             # print(re_bound)
-            self.result, self.conflicts = matrix_merge(results, re_bound, complex=self._complex)
+            self.result, self.conflicts = matrix_merge(
+                results, re_bound, complex=self._complex
+            )
             # print(re_bound)
             # print("====merging/ended====")
         else:

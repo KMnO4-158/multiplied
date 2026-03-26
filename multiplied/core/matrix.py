@@ -446,6 +446,7 @@ def aggregate_bounds(
 
     return bounds
 
+
 # ! THIS SHOULD BE INSIDE Template.conflicts AS A SINGLE SOURCE OF TRUTH ! #
 # The cost of calculating this is actually insane.
 #
@@ -571,12 +572,15 @@ def _detect_merge_conflicts(
 
     return conflicts
 
+
 def matrix_merge(
     source: dict[str, Matrix],
     bounds: dict[str, list[tuple[int, int]]],
     *,
     complex: bool = False,
-    conflicts: dict[int, list[tuple[tuple[int, int], tuple[str, str]]]] =  {} # sorry for my sins
+    conflicts: dict[
+        int, list[tuple[tuple[int, int], tuple[str, str]]]
+    ] = {},  # sorry for my sins
 ) -> tuple[Matrix, dict]:
     """Merge multiple matrices into a single matrix using pre calculated bounds
 
@@ -633,9 +637,7 @@ def matrix_merge(
     litmus = next(i for i in source.values())
     bits = litmus.bits
 
-
     if complex and not conflicts:  # set upon Template instantiation
-
         # == expensive conflict search ==============================
         # ((over, lap), (units, present)) : ((int, int), (str, str))
         conflicts = _detect_merge_conflicts(bits, bounds)
@@ -682,7 +684,6 @@ def matrix_merge(
         # == insert missing values ==================================
         for x, recovered_bits in enumerate(columns):
             for bit_info in recovered_bits:
-
                 # -- find empty column slot -------------------------
                 for y in range(bits):
                     if output[y][x] == "_":

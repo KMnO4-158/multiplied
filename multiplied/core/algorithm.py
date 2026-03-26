@@ -344,7 +344,9 @@ class Algorithm(MultipliedMeta):
         conflicts = self.algorithm[self.state]["template"].conflicts
 
         if 1 < len(results):
-            self.matrix, _ = matrix_merge(results, re_bounds, complex=complex, conflicts=conflicts)
+            self.matrix, _ = matrix_merge(
+                results, re_bounds, complex=complex, conflicts=conflicts
+            )
         else:
             self.matrix = list(results.values())[0]
 
