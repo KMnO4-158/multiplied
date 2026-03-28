@@ -10,6 +10,7 @@ from .utils.bool import ishex2, validate_bitwidth
 from .utils.pretty import pretty
 
 
+# ! Map objects should generate their own unified bounds upon creation
 class Map(MultipliedMeta):
     """Generates Map object from row map or standard map.
 

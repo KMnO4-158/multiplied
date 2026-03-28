@@ -197,6 +197,7 @@ class Matrix(MultipliedMeta):
             rmap.append(f"{val:02X}"[-2:])
         return Map(rmap)
 
+    # ! Map objects should generate their own unified bounds upon creation
     def apply_map(
         self, map_: Map, *, unified_bounds: dict[str, list[int]] = {}
     ) -> None:
