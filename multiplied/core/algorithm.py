@@ -130,7 +130,7 @@ class Algorithm(MultipliedMeta):
         if self.dadda:
             map_ = hoist(res_copy)
 
-        elif template._complex:
+        elif template._complex or isinstance(map_, Map):
             map_bounds = unify_bounds(template.re_bounds)
             res_copy.apply_map(map_, unified_bounds=map_bounds)
 
