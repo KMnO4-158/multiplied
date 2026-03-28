@@ -64,6 +64,7 @@ from .core.utils.char import (
     chartff,
     allchars,
     to_int_matrix,
+    infer_matrix_format,
 )
 
 
@@ -165,6 +166,7 @@ __all__ = [
     "chartff",
     "allchars",
     "to_int_matrix",
+    "infer_matrix_format",
     "pretty",
     "mprint",
     "validate_bitwidth",

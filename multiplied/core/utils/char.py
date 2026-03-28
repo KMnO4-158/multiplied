@@ -4,7 +4,7 @@
 
 from collections.abc import Generator
 
-from multiplied.core.utils.bool import isalpha
+from multiplied.core.utils.bool import isalpha, ischar, ishex2, isint, isppm
 
 
 def chargen(start: str = "A") -> Generator[str]:
@@ -166,3 +166,56 @@ def to_int_matrix(matrix: list[list[str]]) -> list[int]:
             tmp_row[j] = "0" if ch in ["_", "0"] else "1"
         output[i] = int("".join(tmp_row), 2)
     return output
+
+
+def infer_matrix_format(source: list[list[str]], fmt: str) -> list[list[str]]:
+    """Infers the format of a litmus test string and returns a matrix of characters.
+
+    Parameters
+    ----------
+    source : list[list[str]]
+        Source matrix to infer format from.
+    fmt : str
+        Default char used in each matrix cell.
+    l
+
+    Returns
+    -------
+    list[list[str]]
+
+    Examples
+    --------
+    >>> infer_matrix_format("auto", "FF")  # infer as "map"
+    [['00', '00', '00', '00'...
+
+    >>> infer_matrix_format("auto", "0")   # infer as "empty"
+    [['_', '_', '_', '_'...
+
+    >>> infer_matrix_format("zero", "")  # zero-filled
+    [['0', '0', '0', '0'...
+
+    """
+    if not isinstance(fmt, str):
+        raise TypeError(f"Expected str, got {type(fmt)}")
+    if not isppm(source):
+        raise TypeError(f"Expected list[list[str]], got {type(source)}")
+
+    if fmt == "auto":
+        _litmus = source[0][0]
+        if ischar(_litmus) or (isint(_litmus) and (_litmus == "0" or _litmus == "1")):
+            fmt = "empty"
+        elif ishex2(_litmus):
+            fmt = "map"
+        else:
+            fmt = "zero"
+
+    bits = len(source)
+    match fmt:
+        case "empty":
+            return [["_" for _ in range(bits << 1)] for row in range(bits)]
+        case "zero":
+            return [["0" for _ in range(bits << 1)] for row in range(bits)]
+        case "map":
+            return [["00" for _ in range(bits << 1)] for row in range(bits)]
+        case _:
+            raise ValueError(f"Unrecognised fmt: {fmt}")
