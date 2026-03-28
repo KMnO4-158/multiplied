@@ -6,9 +6,11 @@ from copy import deepcopy
 from itertools import batched, pairwise
 from typing import Any, Iterator
 
+from multiplied.core.utils.char import infer_matrix_format
+
 from .dtypes.base import MultipliedMeta
 from .map import Map, apply_complex_map
-from .utils.bool import isalpha, ischar, ishex2, isint, isppm, validate_bitwidth
+from .utils.bool import isalpha, ischar, isppm, validate_bitwidth
 from .utils.pretty import pretty
 
 
@@ -406,15 +408,15 @@ def aggregate_bounds(
 
     from itertools import pairwise
 
-    for k, v in template_bounds.items():
-        if k == "_":
-            continue
+    # for k, v in template_bounds.items():
+    #     if k == "_":
+    #         continue
 
     bounds = {}
     for ch, matrix in source.items():
         matrix_ = matrix.matrix
-        if ch == "_":
-            continue
+        # if ch == "_": # !
+        #     continue  # !
         # print("ch:", ch)
         base_index = template_bounds[ch][0][1]
         # print("base index:", base_index)
@@ -450,7 +452,7 @@ def aggregate_bounds(
 # ! THIS SHOULD BE INSIDE Template.conflicts AS A SINGLE SOURCE OF TRUTH ! #
 # The cost of calculating this is actually insane.
 #
-# A single template shoud never have multiple conflict scenarios
+# A single template should never have multiple conflict scenarios
 #
 # TODO: Return a nicer looking object to hide complexity
 def _detect_merge_conflicts(
@@ -645,8 +647,7 @@ def matrix_merge(
     # -- lossy merge ------------------------------------------------
     output = raw_empty_matrix(bits)
     for unit, matrix in source.items():
-        if unit == "_":
-            continue
+
         for start, end in batched(bounds[unit], 2):
             if start[1] != end[1]:
                 raise ValueError(f"Missing bound pair for row {start[1]}")
@@ -712,6 +713,8 @@ def matrix_scatter(
         The bounds for each unit to extract from the source.
 
     fmt : str, optional, default: "auto".
+        Default char used in new matrix
+
         "auto" : Infer format from source.
         "empty" : :func:`raw_empty_matrix`
         "zero" : :func:`raw_zero_matrix`
@@ -753,39 +756,16 @@ def matrix_scatter(
     else:
         raise TypeError(f"Expected Dict got {type(bounds)}")
 
-    if not isinstance(source, list) and not all(
-        [isinstance(row, list) for row in source]
-    ):
-        raise TypeError(f"Expected List[List] got {type(source)}")
-
-    if fmt == "auto":
-        _litmus = source[0][0]
-        if ischar(_litmus) or (isint(_litmus) and (_litmus == "0" or _litmus == "1")):
-            fmt = "empty"
-        elif ishex2(_litmus):
-            fmt = "map"
-        else:
-            fmt = "zero"
-
-    bits = len(source)
-    match fmt:
-        case "empty":
-            dest_matrix = [["_" for _ in range(bits << 1)] for row in range(bits)]
-        case "zero":
-            dest_matrix = [["0" for _ in range(bits << 1)] for row in range(bits)]
-        case "map":
-            dest_matrix = [["00" for _ in range(bits << 1)] for row in range(bits)]
-        case _:
-            raise ValueError(f"Unrecognised fmt: {fmt}")
+    dest_matrix = infer_matrix_format(source, fmt)
 
     allchars = list(bounds.keys())
 
     output = {}
     for ch in allchars:
-        if ch == "_":
-            output[ch] = deepcopy(dest_matrix)
-            continue
-        if len(bounds[ch]) % 2 != 0:
+        # if ch == "_":
+        #     output[ch] = deepcopy(dest_matrix)
+        #     continue
+        if not "_" and len(bounds[ch]) % 2 != 0:
             raise ValueError(f"Odd number of bounds for {ch}")
 
         dest_matrix_copy = deepcopy(dest_matrix)

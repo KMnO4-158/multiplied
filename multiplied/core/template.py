@@ -5,8 +5,9 @@
 from copy import deepcopy
 from typing import Any
 
+
 from .dtypes.base import MultipliedMeta
-from .matrix import Matrix, Slice, empty_rows, matrix_merge, raw_empty_matrix
+from .matrix import Matrix, Slice, empty_rows, matrix_merge, matrix_scatter, raw_empty_matrix
 from .utils.char import allchars, chargen, chartff
 from .utils.pretty import pretty, pretty_nested_list
 from .utils.bool import isalpha, ischar, isppm, validate_bitwidth
@@ -386,6 +387,8 @@ class Template(MultipliedMeta):
         for ch in chars:
             base_index = bounds[ch][0][1]
             if ch == "_":
+                results[ch] = Matrix(units["_"])
+                re_bound[ch] = bounds[ch]
                 continue
 
             match bounds[ch][-1][1] - bounds[ch][0][1] + 1:  # row height
@@ -647,8 +650,11 @@ class Template(MultipliedMeta):
         bounds = self.update_bounding_box(self.template)
         allchars = list(bounds.keys())
         units = {}
+
+        # -- find and collect units ---------------------------------
         for ch in allchars:
-            if ch == "_":
+            if ch == "_": # isolate non-unit area
+                units[ch] = matrix_scatter(self.template, {"_": bounds["_"]})["_"]
                 continue
             matrix = raw_empty_matrix(self.bits)
             tff = chartff(ch)  # toggle flip flop
@@ -671,7 +677,7 @@ class Template(MultipliedMeta):
                         f"Bounding box error for unit '{ch}' "
                         f"Points:{start}, {end}, error:  {start[1]} != {end[1]}"
                     )
-                # -- traverse row ---------------------------------------
+                # -- traverse row -----------------------------------
                 next(tff)  # sync to template case sensitivity
                 for x in range(start[0], end[0] + 1):
                     matrix[start[1]][x] = next(tff)
@@ -688,6 +694,24 @@ class Template(MultipliedMeta):
                 i += 2
 
             units[ch] = matrix
+
+        # -- isolate empty area -------------------------------------
+        # strat:
+        # > copy input template -> empty
+        # > traverse empty using bounds
+        #   > overlay empty chars over existing bound regions
+        #   > aggregate bounds of empty region
+        # ---
+        # > Empty region optimisations
+        # > start with bounds for each edge assuming full span:
+        #   > aka: (0, <y>), (bits << 1, <y>) for all y's / bits
+        # > find total span of units in a given row
+        # >
+
+        # unified = unify_bounds(bounds)
+        # for i in range(self.bits):
+
+
         return (units, bounds)
 
     def __str__(self) -> str:
