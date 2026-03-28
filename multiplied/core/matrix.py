@@ -647,7 +647,6 @@ def matrix_merge(
     # -- lossy merge ------------------------------------------------
     output = raw_empty_matrix(bits)
     for unit, matrix in source.items():
-
         for start, end in batched(bounds[unit], 2):
             if start[1] != end[1]:
                 raise ValueError(f"Missing bound pair for row {start[1]}")

@@ -7,7 +7,14 @@ from typing import Any
 
 
 from .dtypes.base import MultipliedMeta
-from .matrix import Matrix, Slice, empty_rows, matrix_merge, matrix_scatter, raw_empty_matrix
+from .matrix import (
+    Matrix,
+    Slice,
+    empty_rows,
+    matrix_merge,
+    matrix_scatter,
+    raw_empty_matrix,
+)
 from .utils.char import allchars, chargen, chartff
 from .utils.pretty import pretty, pretty_nested_list
 from .utils.bool import isalpha, ischar, isppm, validate_bitwidth
@@ -653,7 +660,7 @@ class Template(MultipliedMeta):
 
         # -- find and collect units ---------------------------------
         for ch in allchars:
-            if ch == "_": # isolate non-unit area
+            if ch == "_":  # isolate non-unit area
                 units[ch] = matrix_scatter(self.template, {"_": bounds["_"]})["_"]
                 continue
             matrix = raw_empty_matrix(self.bits)
@@ -710,7 +717,6 @@ class Template(MultipliedMeta):
 
         # unified = unify_bounds(bounds)
         # for i in range(self.bits):
-
 
         return (units, bounds)
 
