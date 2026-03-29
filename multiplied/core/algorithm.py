@@ -572,19 +572,7 @@ def collect_template_units(
 # _DBbBbBbB_______
 
 
-# TODO:
-# [ Optimisation ]
-#
-# - Implement checksum tuple in Template class
-# - output coordinates of moves
-#
-# - move to template.py
-def hoist(
-    source: Matrix | Template,
-    *,
-    checksum: list[int] = [],
-    relative: bool = False,
-) -> Map:
+def hoist(source: Matrix | Template) -> Map:
     """collect bits to the top of the matrix and produce corresponding map.
 
     Parameters
@@ -602,9 +590,6 @@ def hoist(
         The resulting map after hoisting.
     """
 
-    if not isinstance(checksum, list):
-        raise TypeError(f"checksum must be a list got {type(checksum)}")
-
     match source:
         case Matrix():
             matrix = source.matrix
@@ -616,34 +601,33 @@ def hoist(
             )
 
     bits = source.bits
-    if checksum == []:
-        checksum = [0] * bits
-
-    # -- update when checksum reimplemented ------------------------- #
-    y_start = 0  #
-    y_end = bits  #
-    # --------------------------------------------------------------- #
     map_ = raw_empty_matrix(bits)
 
-    for y in range(y_start, y_end):
+    # build empty map
+    for y in range(bits):
         map_[y] = ["00"] * (bits << 1)
-    # implement x_start, x_end when checksums moved
+
     for x in range(bits << 1):
-        y = y_start
+        y = 0
         k = 0
         offset = 0
-        column = ["0"] * (y_end - y_start)
-        while y < y_end:
+        column = ["0"] * (bits)  # per column, collect each char, leaving no gaps
+        while y < bits:
             if matrix[y][x] == "_":
                 offset += 1
                 val = 0
             else:
                 val = (offset ^ 255) + 1  # 2s complement
+
+                # assign to column
                 column[k] = matrix[y][x]
+
+                # replace with empty char to stop possible duplication
                 matrix[y][x] = "_"
+
                 k += 1
 
-            map_[y][x] = f"{val:02X}"[-2:]
+            map_[y][x] = f"{val:02X}"[-2:] # signed 2-bit hex
             y += 1
 
         for y in range(k):
