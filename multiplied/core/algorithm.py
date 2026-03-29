@@ -128,7 +128,7 @@ class Algorithm(MultipliedMeta):
         if self.dadda:
             map_ = hoist(res_copy)
 
-        elif template._complex or isinstance(map_, Map):
+        if template._complex or isinstance(map_, Map):
             res_copy.apply_map(map_)
 
         else:
