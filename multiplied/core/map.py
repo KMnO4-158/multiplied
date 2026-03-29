@@ -3,10 +3,11 @@
 ############################
 
 
+from itertools import batched
 from typing import Any, Iterator
 
 from .dtypes.base import MultipliedMeta
-from .utils.bool import ishex2, validate_bitwidth
+from .utils.bool import ishex2, isppm, validate_bitwidth
 from .utils.pretty import pretty
 
 
@@ -38,6 +39,9 @@ class Map(MultipliedMeta):
             raise TypeError(f"Map must be type list or int got {type(map)}")
         self.bits = map if isinstance(map, int) else len(map)
         validate_bitwidth(self.bits)
+        self.unified_bounds = {}
+        self._soft_type = list()
+        self._dtype = "Map"
 
         # -- handle bit defined maps --------------------------------
         if isinstance(map, int):
@@ -48,21 +52,22 @@ class Map(MultipliedMeta):
         # -- handle complex maps ------------------------------------
         self.map = map
         if isinstance(self.map[0], list):
+            if not isppm(self.map):
+                raise ValueError(f"Invalid row map\n\n{pretty(self.map)}")
             self.rmap = []
 
             # -- sanity check ---------------------------------------
-            # ! Can be parallelised
+            # ? Can be parallelised
             for y in map:
-                for x in y:
-                    if not ishex2(x):
-                        raise ValueError(f"Invalid row map element {x}")
+                if not all(ishex2(x) for x in y):
+                    raise ValueError(f"Invalid row map element in row {y} \n Source: {pretty(map)}")
+
+            self.unified_bounds = self._update_unified_bounds()
             return None
 
+        # -- handle patterns ----------------------------------------
         self.map = self.build_map(map)
         self.rmap = map
-
-        self._soft_type = list()
-        self._dtype = "Map"
         return None
 
     def build_map(self, rmap: list[str]) -> list[list[str]]:
