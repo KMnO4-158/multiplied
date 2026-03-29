@@ -97,6 +97,32 @@ class Map(MultipliedMeta):
         """Build a zero map of the specified size."""
         return [["00"] * (self.bits << 1) for _ in range(self.bits)]
 
+    def _update_unified_bounds(self) -> dict[str, list[int]]:
+        """Set unified bounds for Map object."""
+
+        unified = {}
+        for y, row in enumerate(self.map):
+            unified[y] = []
+            x = 0
+            # -- entry border -------------------------------------------
+            if self.map[y][0] != "00":
+                unified[y].append(x)
+
+            x += 1
+            # -- central region -----------------------------------------
+            while x < len(row):
+                if self.map[y][x - 1] != "00" and self.map[y][x] == "00":
+                    unified[y].append(x - 1)
+                if self.map[y][x - 1] == "00" and self.map[y][x] != "00":
+                    unified[y].append(x)
+                x += 1
+
+            # -- exit border --------------------------------------------
+            if self.map[y][-1] != "00":
+                unified[y].append(x)
+
+        return unified
+
     def __repr__(self) -> str:
         return f"<multiplied.{self.__class__.__name__} object at {hex(id(self))}>"
 

@@ -242,8 +242,8 @@ class Matrix(MultipliedMeta):
 
         # -- bounding box mapping -----------------------------------
 
-        if unified_bounds:
-            apply_complex_map(self.matrix, map_, unified_bounds)
+        if map_.unified_bounds:
+            apply_complex_map(self.matrix, map_, map_.unified_bounds)
             return None
 
         # -- bit-wise mapping ---------------------------------------
