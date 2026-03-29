@@ -196,13 +196,15 @@ def apply_complex_map(matrix: list[list[str]], map: Map, unified_bounds: dict) -
         if not isinstance(unified_bounds[row], list):
             raise TypeError("Expected row bounds to be a list")
 
-        for col in range(unified_bounds[row][0], unified_bounds[row][-1] + 1):
-            if map.map[row][col] == "00":
-                continue
-            if (offset := int(map.map[row][col], 16)) & 128:
-                offset = (~offset + 1) & 255  # 2s complement
 
-            matrix[row - offset][col] = matrix[row][col]
-            matrix[row][col] = "_"
+        for start, stop in batched(unified_bounds[row], 2, strict=True):
+            for col in range(start, stop + 1):
+                if map.map[row][col] == "00":
+                    continue
+                if (offset := int(map.map[row][col], 16)) & 128:
+                    offset = (~offset + 1) & 255  # 2s complement
+
+                matrix[row - offset][col] = matrix[row][col]
+                matrix[row][col] = "_"
 
     return None
