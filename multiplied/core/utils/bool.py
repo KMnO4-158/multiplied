@@ -74,6 +74,6 @@ def isppm(nested_list: list[list[str]]) -> bool:
     bits = len(nested_list)
     if not all(len(row) == (bits << 1) for row in nested_list):
         return False
-    if not all(ischar(val) for row in nested_list for val in row):
+    if not all(ischar(val) or ishex2(val) for row in nested_list for val in row):
         return False
     return True
