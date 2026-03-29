@@ -70,6 +70,7 @@ from .core.utils.char import (
 
 from .core.utils.pretty import (
     pretty,
+    pretty_nested_list,
     mprint,
 )
 
@@ -168,6 +169,7 @@ __all__ = [
     "to_int_matrix",
     "infer_matrix_format",
     "pretty",
+    "pretty_nested_list",
     "mprint",
     "validate_bitwidth",
     "export_algorithm",
