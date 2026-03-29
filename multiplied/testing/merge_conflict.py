@@ -103,7 +103,6 @@ ZERO_MAP = REFERENCE["zero_map"][8]
 
 def main() -> None:
 
-
     # print(mp.pretty_nested_list(WALLACE_TREE[8]["M"][0], whitespace=True))
     # unified_map_bounds = _update_unified_bounds(WALLACE_TREE[8]["M"][0])
 

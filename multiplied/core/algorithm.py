@@ -618,7 +618,7 @@ def hoist(source: Matrix | Template) -> Map:
 
                 k += 1
 
-            map_[y][x] = f"{val:02X}"[-2:] # signed 2-bit hex
+            map_[y][x] = f"{val:02X}"[-2:]  # signed 2-bit hex
             y += 1
 
         for y in range(k):

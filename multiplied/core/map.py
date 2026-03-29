@@ -60,7 +60,9 @@ class Map(MultipliedMeta):
             # ? Can be parallelised
             for y in map:
                 if not all(ishex2(x) for x in y):
-                    raise ValueError(f"Invalid row map element in row {y} \n Source: {pretty(map)}")
+                    raise ValueError(
+                        f"Invalid row map element in row {y} \n Source: {pretty(map)}"
+                    )
 
             self.unified_bounds = self._update_unified_bounds()
             return None
@@ -221,7 +223,6 @@ def apply_complex_map(matrix: list[list[str]], map: Map, unified_bounds: dict) -
     for row in sorted(unified_bounds.keys()):
         if not isinstance(unified_bounds[row], list):
             raise TypeError("Expected row bounds to be a list")
-
 
         for start, stop in batched(unified_bounds[row], 2, strict=True):
             for col in range(start, stop + 1):
