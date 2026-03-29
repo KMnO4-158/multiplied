@@ -121,8 +121,6 @@ class Algorithm(MultipliedMeta):
         if not isinstance(template.result, (Matrix)):
             raise ValueError("Template result is unset")
 
-        from multiplied.core.map import unify_bounds
-
         result = template.result
         res_copy = deepcopy(result)
         stage_index = len(self.algorithm)
@@ -131,18 +129,11 @@ class Algorithm(MultipliedMeta):
             map_ = hoist(res_copy)
 
         elif template._complex or isinstance(map_, Map):
-            map_bounds = unify_bounds(template.re_bounds)
-            res_copy.apply_map(map_, unified_bounds=map_bounds)
+            res_copy.apply_map(map_)
 
         else:
             map_ = result.resolve_rmap()
             res_copy.apply_map(map_)
-
-        # if not map_ and result:
-        #     if dadda:
-        #         map_ = hoist(res_copy)
-        #     else:
-        # else:
 
         stage = {
             "template": template,
