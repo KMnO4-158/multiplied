@@ -70,10 +70,43 @@ def smart_matrix_merge(
     return mp.Matrix(output)
 
 
+def _update_unified_bounds(map: list[list[str]]) -> dict[str, list[int]]:
+    """Set unified bounds for Map object."""
+
+    unified = {}
+    for y, row in enumerate(map):
+        unified[y] = []
+        x = 0
+        # -- entry border -------------------------------------------
+        if map[y][0] != "00":
+            unified[y].append(x)
+
+        x += 1
+        # -- central region -----------------------------------------
+        while x < len(row):
+            if map[y][x - 1] != "00" and map[y][x] == "00":
+                unified[y].append(x - 1)
+            if map[y][x - 1] == "00" and map[y][x] != "00":
+                unified[y].append(x)
+            x += 1
+
+        # -- exit border --------------------------------------------
+        if map[y][-1] != "00":
+            unified[y].append(x)
+
+    print(unified)
+    return unified
+
+
 ZERO_MAP = REFERENCE["zero_map"][8]
 
 
 def main() -> None:
+
+
+    # print(mp.pretty_nested_list(WALLACE_TREE[8]["M"][0], whitespace=True))
+    # unified_map_bounds = _update_unified_bounds(WALLACE_TREE[8]["M"][0])
+
     alg = mp.Algorithm(8)
 
     alg.push(mp.Template(WALLACE_TREE[8]["T"][0]), mp.Map(WALLACE_TREE[8]["M"][0]))
