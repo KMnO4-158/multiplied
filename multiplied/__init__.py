@@ -28,6 +28,7 @@ from .core.matrix import (
     raw_empty_rows,
     raw_empty_matrix,
     raw_zero_matrix,
+    raw_dadda_matrix,
     matrix_scatter,
     matrix_merge,
 )
@@ -145,6 +146,7 @@ __all__ = [
     "empty_rows",
     "raw_empty_matrix",
     "raw_zero_matrix",
+    "raw_dadda_matrix",
     "matrix_scatter",
     "matrix_merge",
     "hoist",

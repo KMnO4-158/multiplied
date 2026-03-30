@@ -396,6 +396,42 @@ def raw_zero_matrix(bits: int) -> list[list[str]]:
         matrix.append(row)
     return matrix
 
+def raw_dadda_matrix(bits: int) -> list[list[str]]:
+    """Return zero-filled partial product matrix with Dadda-Tree mapping
+
+    Parameters
+    ----------
+    bits : int
+        Bitwidth of the matrix
+
+    Returns
+    -------
+    list[list[str]]
+        A zero-filled 2d "Dadda array" for the given bitwidth
+
+    Notes
+    -----
+    A zero matrix is filled with zeros on the diagonal and underscores elsewhere,
+    following Multipied's convention
+
+    Examples
+    --------
+    >>> raw_dadda_matrix(4)
+    [['_', '0', '0', '0', '0', '0', '0', '0'],
+     ['_', '_', '0', '0', '0', '0', '0', '_'],
+     ['_', '_', '_', '0', '0', '0', '_', '_'],
+     ['_', '_', '_', '_', '0', '_', '_', '_']]
+
+    """
+
+    validate_bitwidth(bits)
+
+    matrix = []
+    for i in range(bits):
+        row = ["_"] * (i + 1) + ["0"] * ((bits << 1) - (i << 1) - 1) + ["_"] * i
+        matrix.append(row)
+
+    return matrix
 
 def aggregate_bounds(
     source: dict[str, Matrix], template_bounds: dict[str, list[tuple[int, int]]]
