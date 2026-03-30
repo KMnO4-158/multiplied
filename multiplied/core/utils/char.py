@@ -214,7 +214,12 @@ def infer_matrix_format(source: list[list[str]], fmt: str) -> list[list[str]]:
         case "empty":
             return [["_" for _ in range(bits << 1)] for row in range(bits)]
         case "zero":
-            return [["0" for _ in range(bits << 1)] for row in range(bits)]
+            matrix = []
+            zero = ["0"] * bits
+            for i in range(bits):
+                row = (["_"] * ((bits << 1) - bits - i)) + zero + (["_"] * i)
+                matrix.append(row)
+            return matrix
         case "map":
             return [["00" for _ in range(bits << 1)] for row in range(bits)]
         case _:
