@@ -396,6 +396,7 @@ def raw_zero_matrix(bits: int) -> list[list[str]]:
         matrix.append(row)
     return matrix
 
+
 def raw_dadda_matrix(bits: int) -> list[list[str]]:
     """Return zero-filled partial product matrix with Dadda-Tree mapping
 
@@ -432,6 +433,7 @@ def raw_dadda_matrix(bits: int) -> list[list[str]]:
         matrix.append(row)
 
     return matrix
+
 
 def aggregate_bounds(
     source: dict[str, Matrix], template_bounds: dict[str, list[tuple[int, int]]]
