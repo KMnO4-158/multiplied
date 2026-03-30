@@ -326,12 +326,12 @@ def raw_empty_row_pos(matrix: list[list[str]], row: int) -> list[int]:
 
 
 def raw_empty_matrix(bits: int) -> list[list[str]]:
-    """Build an empty partial product matrix for a given bitwidth
+    """Return an empty partial product matrix for a given bitwidth
 
     Parameters
     ----------
     bits : int
-        The bitwidth of the matrix
+        Bitwidth of the matrix
 
     Returns
     -------
@@ -361,12 +361,12 @@ def raw_empty_matrix(bits: int) -> list[list[str]]:
 
 
 def raw_zero_matrix(bits: int) -> list[list[str]]:
-    """Build a zero-filled partial product matrix for a given bitwidth
+    """Return a zero-filled partial product matrix for a given bitwidth
 
     Parameters
     ----------
     bits : int
-        The bitwidth of the matrix
+        Bitwidth of the matrix
 
     Returns
     -------
@@ -387,6 +387,8 @@ def raw_zero_matrix(bits: int) -> list[list[str]]:
      ['_', '0', '0', '0', '0', '_', '_', '_']]
 
     """
+    validate_bitwidth(bits)
+
     matrix = []
     zero = ["0"] * bits
     for i in range(bits):
