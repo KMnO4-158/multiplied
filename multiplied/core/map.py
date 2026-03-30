@@ -155,15 +155,13 @@ def build_dadda_map(bits: int) -> Map:
 
 def raw_zero_map(bits: int) -> list[list[str]]:
     """Returns a zero-filled map of size `bits`."""
-    matrix = []
-    for i in range(bits):
-        row = ["00"] * (bits << 1)
-        matrix.append(row)
-    return matrix
+    validate_bitwidth(bits)
+    return [["00" for _ in range(bits << 1)] for row in range(bits)]
 
 
 def raw_dadda_map(bits: int) -> list[list[str]]:
     """Returns a Dadda map of size `bits`."""
+    validate_bitwidth(bits)
     matrix = []
     for i in range(bits):
         # generate 2-bit hex values which result in "V" shape partial product tree
