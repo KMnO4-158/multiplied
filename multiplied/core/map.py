@@ -7,7 +7,7 @@ from itertools import batched
 from typing import Any, Iterator
 
 from .dtypes.base import MultipliedMeta
-from .utils.bool import ishex2, isppm, validate_bitwidth
+from .utils.bool import isbbox, ishex2, isppm, validate_bitwidth
 from .utils.pretty import pretty
 
 
@@ -99,7 +99,7 @@ class Map(MultipliedMeta):
         """Build a zero map of the specified size."""
         return [["00"] * (self.bits << 1) for _ in range(self.bits)]
 
-    def _update_unified_bounds(self) -> dict[str, list[int]]:
+    def _update_unified_bounds(self) -> dict[int, list[int]]:
         """Set unified bounds for Map object."""
 
         unified = {}
@@ -171,25 +171,28 @@ def raw_dadda_map(bits: int) -> list[list[str]]:
     return matrix
 
 
-def unify_bounds(bounds: dict) -> dict:
+def unify_bounds(bounds: dict[str, list[tuple[int, int]]]) -> dict[int, list[int]]:
     """Returns a simplified bound for non empty characters
 
     Parameters
     ----------
-    bounds : dict
+    bounds : dict[str, list[tuple[int, int]]]
         Bounding box for each arithmetic unit in Template object
 
     Returns
     -------
-    dict
+    dict : dict[int, list[int]]
         Unified bounds where  {y : [x0, x1]}
 
     See Also
     --------
     :func:`update_bounding_box`
     """
+
     if not isinstance(bounds, dict):
         raise TypeError(f"Expected dict got {type(bounds)}")
+    if not isbbox(bounds):
+        raise ValueError(f"Unrecognised bounds.\n\n{bounds}")
 
     unified_row_bounds = {}
     for k, unit_bounds in bounds.items():
@@ -201,7 +204,7 @@ def unify_bounds(bounds: dict) -> dict:
     return unified_row_bounds
 
 
-def apply_complex_map(matrix: list[list[str]], map: Map, unified_bounds: dict) -> None:
+def apply_complex_map(matrix: list[list[str]], map: Map) -> None:
     """Applies a complex mapping to source Matrix
 
     Parameters
@@ -212,11 +215,11 @@ def apply_complex_map(matrix: list[list[str]], map: Map, unified_bounds: dict) -
     map : mp.Map
         Multiplied Map object to apply mapping from
 
-    bounds : dict[str: list[int]]
+    unified_bounds : dict[str: list[int]]
         Unified bounds for all arithmetic units
     """
-    if not all([isinstance(r, int) for r in unified_bounds]):
-        raise TypeError("Expected all row bounds to be integers")
+
+    unified_bounds = map.unified_bounds
 
     for row in sorted(unified_bounds.keys()):
         if not isinstance(unified_bounds[row], list):
