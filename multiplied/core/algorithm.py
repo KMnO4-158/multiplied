@@ -9,8 +9,8 @@ from .dtypes.base import MultipliedMeta
 from .map import Map, raw_zero_map, unify_bounds
 from .matrix import Matrix, empty_rows, matrix_merge, matrix_scatter, raw_empty_matrix
 from .template import Pattern, Template, resolve_pattern
-from .utils.bool import isbbox, validate_bitwidth
-from .utils.char import to_int_matrix
+from .utils.bool import validate_bitwidth
+from .utils.char import to_int_array
 from .utils.pretty import pretty
 
 
@@ -152,7 +152,7 @@ class Algorithm(MultipliedMeta):
         """Saturates matrix if current matrix has carried past original bitwidth"""
 
         boundary = (2**self.bits) - 1
-        as_int = to_int_matrix(self.matrix.matrix)
+        as_int = to_int_array(self.matrix.matrix)
         test = [boundary < i for i in as_int]
 
         if any(test):

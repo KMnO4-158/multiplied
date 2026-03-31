@@ -131,8 +131,8 @@ def allchars(matrix: list[list[str]], *, hash: list[int | bool] = []) -> set[str
         return set(ch.upper() for ch in chars)
 
 
-def to_int_matrix(matrix: list[list[str]]) -> list[int]:
-    """Converts a matrix of characters to a matrix of integers
+def to_int_array(matrix: list[list[str]]) -> list[int]:
+    """Converts a matrix of characters to a array of integers
 
     Parameters
     ----------
@@ -146,7 +146,7 @@ def to_int_matrix(matrix: list[list[str]]) -> list[int]:
 
     Examples
     --------
-    >>> to_int_matrix([['_', '1', '_'], ['1', '0', '1']])
+    >>> to_int_array([['_', '1', '_'], ['1', '0', '1']])
     [2, 5]
 
     """

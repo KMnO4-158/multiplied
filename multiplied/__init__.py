@@ -64,7 +64,7 @@ from .core.utils.char import (
     chargen,
     chartff,
     allchars,
-    to_int_matrix,
+    to_int_array,
     infer_matrix_format,
 )
 
@@ -170,7 +170,7 @@ __all__ = [
     "chargen",
     "chartff",
     "allchars",
-    "to_int_matrix",
+    "to_int_array",
     "infer_matrix_format",
     "pretty",
     "pretty_nested_list",
