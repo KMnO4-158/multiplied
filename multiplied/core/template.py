@@ -320,6 +320,7 @@ class Template(MultipliedMeta):
     ) -> None:
 
         validate_bitwidth(len(source))
+        self._soft_type = list()
         self.bits = len(source)
         match result:
             case Matrix():
@@ -344,12 +345,13 @@ class Template(MultipliedMeta):
             self.conflicts = {}
 
         # -- template handling ---------------------------------------
-        elif isinstance(source, list) and all([isinstance(i, list) for i in source]):
+        elif isinstance(source, list):
             if not isppm(source):
                 raise TypeError(f"Expected partial product matrix, got {source}")
             self.template = source
             self.bounds = self.update_bounding_box(self.template)
             self._complex = True
+            self.pattern = None
             self.conflicts = {}
             if result is None:
                 self._reduce_template()
@@ -364,7 +366,6 @@ class Template(MultipliedMeta):
         else:
             raise TypeError(f"Expected Pattern or list[list[str]] got {source}")
 
-        self._soft_type = list()
         return None
 
     def _resolve_template_pattern(self) -> None:
