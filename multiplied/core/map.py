@@ -224,8 +224,15 @@ def apply_complex_map(matrix: list[list[str]], map: Map, unified_bounds: dict) -
 
         for start, stop in batched(unified_bounds[row], 2, strict=True):
             for col in range(start, stop + 1):
+
+                # ignore moving empty chars
+                if matrix[row][col] == "_":
+                    continue
+
+                # ignore zero offsets
                 if map.map[row][col] == "00":
                     continue
+
                 if (offset := int(map.map[row][col], 16)) & 128:
                     offset = (~offset + 1) & 255  # 2s complement
 

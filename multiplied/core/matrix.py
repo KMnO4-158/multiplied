@@ -215,6 +215,10 @@ class Matrix(MultipliedMeta):
         -------
         None
 
+        Notes
+        -----
+        Attempting to move an empty char will have no effect on the matrix.
+
         """
         if not isinstance(map_, Map):
             raise TypeError(f"Expected Map, got {type(map_)}")
@@ -250,6 +254,15 @@ class Matrix(MultipliedMeta):
         # Expensive fallback
         for y in range(self.bits):
             for x in range(self.bits << 1):
+
+                # ignore moving empty chars
+                if self.matrix[y][x] == "_":
+                    continue
+
+                # ignore zero offsets
+                if map_.map[y][x] == "00":
+                    continue
+
                 # convert signed hex to 2s complement if -ve
                 if (val := int(map_.map[y][x], 16)) & 128:
                     val = (~val + 1) & 255  # 2s complement
