@@ -772,6 +772,7 @@ def matrix_scatter(
         "empty" : :func:`raw_empty_matrix`
         "zero" : :func:`raw_zero_matrix`
         "map" : :func:`raw_map_matrix`
+        "char" : fill ppm with new char
 
     Returns
     -------

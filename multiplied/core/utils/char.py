@@ -222,5 +222,22 @@ def infer_matrix_format(source: list[list[str]], fmt: str) -> list[list[str]]:
             return matrix
         case "map":
             return [["00" for _ in range(bits << 1)] for row in range(bits)]
+
+        case "char": # expensive
+            chars = allchars(source)
+            ch = chargen()
+            count = 0
+            while ch in chars:
+                ch = next(ch)
+                if count > 26:
+                    raise ValueError("Too many characters in source")
+                count += 1
+                matrix = []
+
+                fill = [ch] * bits
+                for i in range(bits):
+                    row = (["_"] * ((bits << 1) - bits - i)) + fill + (["_"] * i)
+                    matrix.append(row)
+                return matrix
         case _:
             raise ValueError(f"Unrecognised fmt: {fmt}")
