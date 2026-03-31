@@ -10,7 +10,7 @@ from multiplied.core.utils.char import infer_matrix_format
 
 from .dtypes.base import MultipliedMeta
 from .map import Map, apply_complex_map
-from .utils.bool import isalpha, ischar, isppm, validate_bitwidth
+from .utils.bool import isalpha, isbbox, ischar, isppm, validate_bitwidth
 from .utils.pretty import pretty
 
 
@@ -803,11 +803,8 @@ def matrix_scatter(
       [_, _, _]]]
 
     """
-    if isinstance(bounds, dict):
-        if not all([ischar(k) for k in bounds.keys()]):
-            raise ValueError("Unrecognised Bounds")
-    else:
-        raise TypeError(f"Expected Dict got {type(bounds)}")
+    if not isbbox(bounds):
+        raise ValueError(f"Unrecognised Bounds\n\n{bounds}")
 
     dest_matrix = infer_matrix_format(source, fmt)
 
