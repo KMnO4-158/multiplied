@@ -1,5 +1,5 @@
 import multiplied as mp
-from multiplied.tests import REFERENCE
+from multiplied.tests import DADDA_TREE, REFERENCE
 
 """
 Strategy:
@@ -78,38 +78,42 @@ def apply_complex_map(matrix: mp.Matrix, map: mp.Map, bounds: dict) -> None:
 
 
 def main() -> None:
+
     ref_dadda_map = REFERENCE["dadda_map"][8]
     print(mp.Map(ref_dadda_map))
 
-    count = 0
-    for y in ref_dadda_map:
-        for x in y:
-            if x == "00":
-                count += 1
+    # count = 0
+    # for y in ref_dadda_map:
+    #     for x in y:
+    #         if x == "00":
+    #             count += 1
 
-    shape = (len(ref_dadda_map), len(ref_dadda_map[0]))
-    print(f"Cycles wasted: {count}")
-    print(f"Efficiency: % {100 * count / (shape[0] * shape[1])}")
+    # shape = (len(ref_dadda_map), len(ref_dadda_map[0]))
+    # print(f"Cycles wasted: {count}")
+    # print(f"Efficiency: % {100 * count / (shape[0] * shape[1])}")
 
-    template = mp.Template(mp.Pattern(REFERENCE["pattern"][8]))
+    template = mp.Template(DADDA_TREE[8]["T"][0])
     print(template)
     print(template.bounds)
     print(template.re_bounds)
+    print(template._hybrid)
+    print(template._complex)
     unified_bounds = unify_bounds(template.bounds)
     print(unified_bounds)
 
-    unified_bounds = unify_bounds(template.re_bounds)
-    print(unified_bounds)
+    # unified_bounds = unify_bounds(template.re_bounds)
+    # print(unified_bounds)
 
-    matrix = mp.Matrix(8, a=128, b=255)
-    noop_template = mp.Template(mp.Pattern(REFERENCE["noop_pattern"][8]))
-    print(matrix)
-    apply_complex_map(matrix, mp.Map(ref_dadda_map), unify_bounds(noop_template.bounds))
-    print(matrix)
+    # matrix = mp.Matrix(8, a=128, b=255)
+    # noop_template = mp.Template(mp.Pattern(REFERENCE["noop_pattern"][8]))
+    # print(matrix)
+    # apply_complex_map(matrix, mp.Map(ref_dadda_map), unify_bounds(noop_template.bounds))
+    # print(matrix)
 
-    template = mp.Template(REFERENCE["complex_template"][8]["T"])
-    unified_bounds = unify_bounds(template.bounds)
-    print(unified_bounds)
+    # template = mp.Template(REFERENCE["complex_template"][8]["T"])
+    # unified_bounds = unify_bounds(template.bounds)
+    # print(unified_bounds)
+
     # apply_complex_map(matrix, mp.Map(ref_dadda_map), unified_bounds)
     # print(matrix)
 

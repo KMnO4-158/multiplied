@@ -130,6 +130,12 @@ def main() -> None:
     for i in alg.exec(255, 255).values():
         print(i)
 
+    # for entry in alg.algorithm.values():
+    #     try:
+    #         mp.mprint(entry["template"]._hybrid)
+    #         mp.mprint(entry["map"])
+    #     except:
+    #         pass
 
 if __name__ == "__main__":
     main()
