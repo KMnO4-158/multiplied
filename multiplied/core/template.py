@@ -645,6 +645,13 @@ class Template(MultipliedMeta):
         Performs a rigorous inter-row and intra-row boundary check to ensure
         each arithmetic units are valid.
 
+        Return
+        ------
+        units : dict[str, list[list[str]]]
+            Dictionary of isolated arithmetic units.
+        bounds : dict[str, list[tuple[int, int]]]
+            Dictionary of arithmetic unit and coordinates for their boundaries.
+
         Notes
         -----
         Bounds are in the form:
@@ -662,6 +669,7 @@ class Template(MultipliedMeta):
         # -- find and collect units ---------------------------------
         for ch in allchars:
             if ch == "_":  # isolate non-unit area
+                # extract only empty, "_", bounding box to Matrix
                 units[ch] = matrix_scatter(self.template, {"_": bounds["_"]})["_"]
                 continue
             matrix = raw_empty_matrix(self.bits)
