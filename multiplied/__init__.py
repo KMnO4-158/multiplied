@@ -29,6 +29,7 @@ from .core.matrix import (
     raw_empty_matrix,
     raw_zero_matrix,
     raw_dadda_matrix,
+    raw_matrix_overlay,
     matrix_scatter,
     matrix_merge,
 )
@@ -137,6 +138,7 @@ __all__ = [
     "raw_empty_rows",
     "raw_zero_map",
     "raw_dadda_map",
+    "raw_matrix_overlay",
     "unify_bounds",
     "apply_complex_map",
     "Matrix",

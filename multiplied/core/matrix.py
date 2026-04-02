@@ -10,7 +10,7 @@ from multiplied.core.utils.char import infer_matrix_format
 
 from .dtypes.base import MultipliedMeta
 from .map import Map, apply_complex_map
-from .utils.bool import isalpha, isbbox, ischar, isppm, validate_bitwidth
+from .utils.bool import isalpha, isbbox, ischar, isint, isppm, validate_bitwidth
 from .utils.pretty import pretty
 
 
@@ -448,61 +448,6 @@ def raw_dadda_matrix(bits: int) -> list[list[str]]:
     return matrix
 
 
-def aggregate_bounds(
-    source: dict[str, Matrix], template_bounds: dict[str, list[tuple[int, int]]]
-) -> dict[str, list[tuple[int, int]]]:
-    """ """
-
-    if not isinstance(source, dict):
-        raise TypeError("source must be a dictionary")
-    if not all(isinstance(matrix, Matrix) for matrix in source.values()):
-        raise TypeError("all values in source must be Matrix instances")
-    if not isinstance(template_bounds, dict):
-        raise TypeError(f"Expected dict got {type(template_bounds)}")
-
-    from itertools import pairwise
-
-    # for k, v in template_bounds.items():
-    #     if k == "_":
-    #         continue
-
-    bounds = {}
-    for ch, matrix in source.items():
-        matrix_ = matrix.matrix
-        # if ch == "_": # !
-        #     continue  # !
-        # print("ch:", ch)
-        base_index = template_bounds[ch][0][1]
-        # print("base index:", base_index)
-        bounds[ch] = []
-        for row in range(base_index, template_bounds[ch][-1][1] + 1):
-            # -- entry border --------------------------------------
-
-            if matrix_[row][0] != "_":
-                bounds[ch].append((0, row))
-
-            # -- central range --------------------------------------
-
-            for i, pair in enumerate(pairwise(matrix_[row])):
-                if pair == ("_", "_"):
-                    continue
-
-                if len(bounds[ch]) % 2 == 0:
-                    bounds[ch].append((i + 1, row))
-                    continue
-
-                if len(bounds[ch]) % 2 == 1 and "_" in pair:
-                    bounds[ch].append((i, row))
-                    break
-
-            # -- exit border ---------------------------------------
-
-            if len(bounds[ch]) % 2 == 1:
-                bounds[ch].append((len(matrix_[row]) - 1, row))
-
-    return bounds
-
-
 # ! THIS SHOULD BE INSIDE Template.conflicts AS A SINGLE SOURCE OF TRUTH ! #
 # The cost of calculating this is actually insane.
 #
@@ -837,3 +782,96 @@ def matrix_scatter(
         output[ch] = dest_matrix_copy
 
     return output
+
+
+def raw_matrix_overlay(
+    source: list[list[str]],
+    unified_bounds: dict[int, list[int]],
+    char: str
+) -> None:
+    """Overlay chars over raw source matrix in-place"""
+
+    if not (ischar(char) or isint(char)):
+        raise TypeError(f"Unsupported string got {char}")
+    if not isppm(source):
+        raise TypeError(f"Unsupported partial product matrix\n\n{pretty(source)}")
+    if not isinstance(unified_bounds, dict):
+        raise TypeError(f"Expected dict got {type(unified_bounds)}")
+    if not all(isinstance(row, list) for row in unified_bounds.values()):
+        raise TypeError(f"Expected unified bounds <dict[int, list]> got {type(unified_bounds)}")
+
+
+    bits = len(unified_bounds.keys())
+    validate_bitwidth(bits)
+
+    for y, row in unified_bounds.items():
+        if not isint(y) or y < 0:
+            raise TypeError("Expected positive integer key")
+        if len(row) % 2:
+            raise TypeError("Odd number of bounds. Bounds must come in pairs")
+
+
+        for left, right in batched(row, 2):
+            # place within bounds
+            for x in range(left, right + 1):
+                source[y][x] = char
+
+    return None
+
+
+# == deprecated ==
+
+# ! why does this exist?
+def aggregate_bounds(
+    source: dict[str, Matrix], template_bounds: dict[str, list[tuple[int, int]]]
+) -> dict[str, list[tuple[int, int]]]:
+    """Char agnostic bounding box generation for each Matrix within source"""
+
+    if not isinstance(source, dict):
+        raise TypeError("source must be a dictionary")
+    if not all(isinstance(matrix, Matrix) for matrix in source.values()):
+        raise TypeError("all values in source must be Matrix instances")
+    if not isinstance(template_bounds, dict):
+        raise TypeError(f"Expected dict got {type(template_bounds)}")
+
+    from itertools import pairwise
+
+    # for k, v in template_bounds.items():
+    #     if k == "_":
+    #         continue
+
+    bounds = {}
+    for ch, matrix in source.items():
+        matrix_ = matrix.matrix
+        # if ch == "_": # !
+        #     continue  # !
+        # print("ch:", ch)
+        base_index = template_bounds[ch][0][1]
+        # print("base index:", base_index)
+        bounds[ch] = []
+        for row in range(base_index, template_bounds[ch][-1][1] + 1):
+            # -- entry border --------------------------------------
+
+            if matrix_[row][0] != "_":
+                bounds[ch].append((0, row))
+
+            # -- central range --------------------------------------
+
+            for i, pair in enumerate(pairwise(matrix_[row])):
+                if pair == ("_", "_"):
+                    continue
+
+                if len(bounds[ch]) % 2 == 0:
+                    bounds[ch].append((i + 1, row))
+                    continue
+
+                if len(bounds[ch]) % 2 == 1 and "_" in pair:
+                    bounds[ch].append((i, row))
+                    break
+
+            # -- exit border ---------------------------------------
+
+            if len(bounds[ch]) % 2 == 1:
+                bounds[ch].append((len(matrix_[row]) - 1, row))
+
+    return bounds
