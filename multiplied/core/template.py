@@ -17,9 +17,9 @@ from .matrix import (
     matrix_scatter,
     raw_dadda_matrix,
     raw_empty_matrix,
-    raw_zero_matrix,
+    raw_matrix_overlay,
 )
-from .utils.char import allchars, chargen, chartff, infer_matrix_format
+from .utils.char import allchars, chargen, chartff,
 from .utils.pretty import mprint, pretty, pretty_nested_list
 from .utils.bool import isalpha, ischar, isppm, validate_bitwidth
 

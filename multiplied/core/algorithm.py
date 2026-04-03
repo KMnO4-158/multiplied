@@ -125,20 +125,51 @@ class Algorithm(MultipliedMeta):
         stage_index = len(self.algorithm)
 
         if self.dadda:
-            if getattr(template, "_hybrid_bounds", False):
-                map_ = hoist(deepcopy(template._hybrid))
-                res_copy.apply_map(map_)
+            # if getattr(template, "_hybrid_bounds", False):
+            #     map_ = hoist(deepcopy(template._hybrid))
+            #     res_copy.apply_map(map_)
 
-            else:
-                map_ = hoist(res_copy)
+            # Strategy:
+            #
+            # [ SETUP FIRST TEMPLATE ]
+            # > If first template -> setup Template._hybrid
+            #
+            # [ UNIFIED BOUNDS ]
+            # > Use _hybrid to generate unified bounds
+            # > Store generated bounds within Template._hybrid_bounds
+            #
+            # [ APPLY MAP ]
+            # > Use Template._hybrid_bounds -> hoist Template._hybrid -> generate map
+            # > Template.result -> pseudo
+            # > Hoisted Template._hybrid -> Algorithm._hybrid_next
+            #
+            # [ NEXT TEMPLATE ]
+            # > If not first template -> setup map from previous stage's Template._hybrid
+            #
+            # > Use Algorithm._hybrid_next to setup Template._hybrid
+            #   > generate zeroed matrix of _hybrid_next
+            #   > use zeroed matrix -> setup Template._hybrid
+            # > Use Template_hybrid > _hybrid_bounds
+            # > Use Template._hybrid_bounds -> hoist Template.result -> generate map
+            #
+            #
+
+            if len(self.algorithm) == 0:
+                # setup Template._hybrid
+                ...
+
+            # setup map from previous stage's Template._hybrid
 
 
-        if (template._complex or isinstance(map_, Map)) and not self.dadda:
+        elif (template._complex or isinstance(map_, Map)) and not self.dadda:
             res_copy.apply_map(map_)
 
-        if template.pattern and not self.dadda:
+        elif template.pattern and not self.dadda:
             map_ = result.resolve_rmap()
             res_copy.apply_map(map_)
+
+        else:
+            ...
 
         stage = {
             "template": template,
