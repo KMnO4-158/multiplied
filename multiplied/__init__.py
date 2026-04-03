@@ -32,6 +32,7 @@ from .core.matrix import (
     raw_matrix_overlay,
     matrix_scatter,
     matrix_merge,
+    get_unified_bounds,
 )
 
 
@@ -152,6 +153,7 @@ __all__ = [
     "raw_dadda_matrix",
     "matrix_scatter",
     "matrix_merge",
+    "get_unified_bounds",
     "hoist",
     "build_csa",
     "build_adder",

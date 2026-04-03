@@ -819,6 +819,40 @@ def raw_matrix_overlay(
     return None
 
 
+def get_unified_bounds(source: list[list[str]]) -> dict[int, list[int]]:
+    """Return unified bounds of partial product matrix(ppm).
+
+
+
+    """
+
+    if not isppm(source):
+        raise TypeError("Unrecognised partial product matrix")
+
+    unified = {}
+    for y, row in enumerate(source):
+        unified[y] = []
+        x = 0
+        # -- entry border -------------------------------------------
+        if source[y][0] != "_":
+            unified[y].append(x)
+
+        x += 1
+        # -- central region -----------------------------------------
+        while x < len(row):
+            if source[y][x - 1] != "_" and source[y][x] == "_":
+                unified[y].append(x - 1)
+            if source[y][x - 1] == "_" and source[y][x] != "_":
+                unified[y].append(x)
+            x += 1
+
+        # -- exit border --------------------------------------------
+        if source[y][-1] != "_":
+            unified[y].append(x)
+
+    print(unified)
+    return unified
+
 # == deprecated ==
 
 # ! why does this exist?
