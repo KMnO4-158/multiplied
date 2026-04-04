@@ -663,7 +663,7 @@ def hoist(
     # -- expensive hoist --------------------------------------------
     for x in range(bits << 1):
         y = 0
-        k = 0
+        col_id = 0
         offset = 0
         column = ["0"] * (bits)  # per column, collect each char, leaving no gaps
         while y < bits:
@@ -674,17 +674,17 @@ def hoist(
                 val = (offset ^ 255) + 1  # 2s complement @ 8-bit
 
                 # assign to column
-                column[k] = matrix[y][x]
+                column[col_id] = matrix[y][x]
 
                 # replace with empty char to stop possible duplication
                 matrix[y][x] = "_"
 
-                k += 1
+                col_id += 1
 
             map_[y][x] = f"{val:02X}"[-2:]  # signed 2-bit hex
             y += 1
 
-        for y in range(k):
+        for y in range(col_id):
             matrix[y][x] = column[y]
 
     return Map(map_)
