@@ -6,7 +6,6 @@ from copy import deepcopy
 from typing import Any
 
 
-
 from .dtypes.base import MultipliedMeta
 from .matrix import (
     Matrix,
