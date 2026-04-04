@@ -7,7 +7,16 @@ from itertools import batched
 from typing import Any, Iterable
 from .dtypes.base import MultipliedMeta
 from .map import Map, raw_zero_map, unify_bounds
-from .matrix import Matrix, empty_rows, get_unified_bounds, matrix_merge, matrix_scatter, raw_dadda_matrix, raw_empty_matrix, raw_matrix_overlay, raw_zero_matrix
+from .matrix import (
+    Matrix,
+    empty_rows,
+    get_unified_bounds,
+    matrix_merge,
+    matrix_scatter,
+    raw_dadda_matrix,
+    raw_empty_matrix,
+    raw_matrix_overlay,
+)
 from .template import Pattern, Template, resolve_pattern
 from .utils.bool import validate_bitwidth
 from .utils.char import to_int_array
@@ -76,9 +85,7 @@ class Algorithm(MultipliedMeta):
         self._soft_type = dict
         return None
 
-    def push(
-        self, source: Template | Pattern, map_: Any = None
-    ) -> None:
+    def push(self, source: Template | Pattern, map_: Any = None) -> None:
         """Populate algorithm stage based on template. Generates pseudo
         result to represent output matrix
 
@@ -160,8 +167,9 @@ class Algorithm(MultipliedMeta):
                 # > overlay _s Template.bounds
                 raw_matrix_overlay(hybrid_template, unify_bounds(template.bounds), "_")
                 # > overlay 0s Template.re_bounds
-                raw_matrix_overlay(hybrid_template, unify_bounds(template.re_bounds), "0")
-
+                raw_matrix_overlay(
+                    hybrid_template, unify_bounds(template.re_bounds), "0"
+                )
 
             else:
                 # setup map from previous stage's Template._hybrid
@@ -182,8 +190,9 @@ class Algorithm(MultipliedMeta):
                 # > overlay _s Template.bounds
                 raw_matrix_overlay(hybrid_template, unify_bounds(template.bounds), "_")
                 # > overlay 0s Template.re_bounds
-                raw_matrix_overlay(hybrid_template, unify_bounds(template.re_bounds), "0")
-
+                raw_matrix_overlay(
+                    hybrid_template, unify_bounds(template.re_bounds), "0"
+                )
 
             template._hybrid = Matrix(hybrid_template)
             mprint(template._hybrid)
@@ -192,7 +201,6 @@ class Algorithm(MultipliedMeta):
 
             mprint(template._hybrid)
             res_copy.apply_map(map_)
-
 
         elif (template._complex or isinstance(map_, Map)) and not self.dadda:
             res_copy.apply_map(map_)
@@ -633,9 +641,10 @@ def collect_template_units(
 
 
 def hoist(
-    source: Matrix | Template, *,
-    bounds: dict[str, list[tuple[int, int]]]={},
-    unified_bounds: dict[int, list[int]]={}
+    source: Matrix | Template,
+    *,
+    bounds: dict[str, list[tuple[int, int]]] = {},
+    unified_bounds: dict[int, list[int]] = {},
 ) -> Map:
     """collect bits to the top of the matrix and produce corresponding map.
 
@@ -685,7 +694,6 @@ def hoist(
         for y, xs in unified_bounds.items():
             for left, right in batched(xs, 2):
                 for x in range(left, right + 1):
-
                     matrix[y][x], matrix[y][x] = "_", matrix[y][col_index[x]]
                     distance = ((y - col_index[x]) ^ 255) + 1  # 2s complement @ 8-bit
                     map_[y][x] = f"{distance:02X}"[-2:]

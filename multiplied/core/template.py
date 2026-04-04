@@ -5,7 +5,6 @@
 from copy import deepcopy
 from typing import Any
 
-from multiplied.core.map import unify_bounds
 
 
 from .dtypes.base import MultipliedMeta
@@ -15,12 +14,10 @@ from .matrix import (
     empty_rows,
     matrix_merge,
     matrix_scatter,
-    raw_dadda_matrix,
     raw_empty_matrix,
-    raw_matrix_overlay,
 )
 from .utils.char import allchars, chargen, chartff
-from .utils.pretty import mprint, pretty, pretty_nested_list
+from .utils.pretty import pretty, pretty_nested_list
 from .utils.bool import isalpha, ischar, isppm, validate_bitwidth
 
 # == Template and Slice dependencies  =============================== #

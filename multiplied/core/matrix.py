@@ -254,7 +254,6 @@ class Matrix(MultipliedMeta):
         # Expensive fallback
         for y in range(self.bits):
             for x in range(self.bits << 1):
-
                 # ignore moving empty chars
                 if self.matrix[y][x] == "_":
                     continue
@@ -785,9 +784,7 @@ def matrix_scatter(
 
 
 def raw_matrix_overlay(
-    source: list[list[str]],
-    unified_bounds: dict[int, list[int]],
-    char: str
+    source: list[list[str]], unified_bounds: dict[int, list[int]], char: str
 ) -> None:
     """Overlay chars over raw source matrix in-place"""
 
@@ -798,8 +795,9 @@ def raw_matrix_overlay(
     if not isinstance(unified_bounds, dict):
         raise TypeError(f"Expected dict got {type(unified_bounds)}")
     if not all(isinstance(row, list) for row in unified_bounds.values()):
-        raise TypeError(f"Expected unified bounds <dict[int, list]> got {type(unified_bounds)}")
-
+        raise TypeError(
+            f"Expected unified bounds <dict[int, list]> got {type(unified_bounds)}"
+        )
 
     bits = len(source)
     validate_bitwidth(bits)
@@ -810,7 +808,6 @@ def raw_matrix_overlay(
         if len(row) % 2:
             raise TypeError("Odd number of bounds. Bounds must come in pairs")
 
-
         for left, right in batched(row, 2):
             # place within bounds
             for x in range(left, right + 1):
@@ -820,11 +817,7 @@ def raw_matrix_overlay(
 
 
 def get_unified_bounds(source: list[list[str]]) -> dict[int, list[int]]:
-    """Return unified bounds of partial product matrix(ppm).
-
-
-
-    """
+    """Return unified bounds of partial product matrix(ppm)."""
 
     if not isppm(source):
         raise TypeError("Unrecognised partial product matrix")
@@ -852,7 +845,9 @@ def get_unified_bounds(source: list[list[str]]) -> dict[int, list[int]]:
 
     return unified
 
+
 # == deprecated ==
+
 
 # ! why does this exist?
 def aggregate_bounds(

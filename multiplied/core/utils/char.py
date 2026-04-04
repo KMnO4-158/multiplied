@@ -223,7 +223,7 @@ def infer_matrix_format(source: list[list[str]], fmt: str) -> list[list[str]]:
         case "map":
             return [["00" for _ in range(bits << 1)] for row in range(bits)]
 
-        case "char": # expensive
+        case "char":  # expensive
             chars = allchars(source)
             ch = chargen()
             count = 0

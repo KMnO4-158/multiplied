@@ -13,8 +13,8 @@ from typing import Any
 # This is a good place to start writing unit tests
 
 
-
 SUPPORTED_BITWIDTHS = {4, 8}
+
 
 def validate_bitwidth(bits: int) -> None:
     """Raise ValueError if bitwidth is supported by Multiplied"""
@@ -86,6 +86,7 @@ def isppm(nested_list: list[list[str]]) -> bool:
     if not all(ischar(val) or ishex2(val) for row in nested_list for val in row):
         return False
     return True
+
 
 def isbbox(bounds: dict[str, list[tuple[int, int]]]) -> bool:
     """Return True if dict represents a recognised bounding box.

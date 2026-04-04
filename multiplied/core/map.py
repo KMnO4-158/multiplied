@@ -227,7 +227,6 @@ def apply_complex_map(matrix: list[list[str]], map: Map) -> None:
 
         for start, stop in batched(unified_bounds[row], 2, strict=True):
             for col in range(start, stop + 1):
-
                 # ignore moving empty chars
                 if matrix[row][col] == "_":
                     continue
