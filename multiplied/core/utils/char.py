@@ -241,3 +241,5 @@ def infer_matrix_format(source: list[list[str]], fmt: str) -> list[list[str]]:
                 return matrix
         case _:
             raise ValueError(f"Unrecognised fmt: {fmt}")
+
+    raise ValueError("Something went wrong")
