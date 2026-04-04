@@ -7,11 +7,11 @@ from itertools import batched
 from typing import Any, Iterable
 from .dtypes.base import MultipliedMeta
 from .map import Map, raw_zero_map, unify_bounds
-from .matrix import Matrix, empty_rows, matrix_merge, matrix_scatter, raw_empty_matrix
+from .matrix import Matrix, empty_rows, get_unified_bounds, matrix_merge, matrix_scatter, raw_dadda_matrix, raw_empty_matrix, raw_matrix_overlay, raw_zero_matrix
 from .template import Pattern, Template, resolve_pattern
 from .utils.bool import validate_bitwidth
 from .utils.char import to_int_array
-from .utils.pretty import pretty
+from .utils.pretty import mprint, pretty
 
 
 # -- TODO: sanity checks --------------------------------------------
@@ -124,41 +124,70 @@ class Algorithm(MultipliedMeta):
         res_copy = deepcopy(result)
         stage_index = len(self.algorithm)
 
+        # -- hybrid setup -------------------------------------------
+        # Strategy:
+        #
+        # [ SETUP FIRST TEMPLATE ]
+        # > If first template -> setup Template._hybrid
+        #
+        # [ UNIFIED BOUNDS ]
+        # > Use _hybrid to generate unified bounds
+        # > Store generated bounds within Template._hybrid_bounds
+        #
+        # [ APPLY MAP ]
+        # > Use Template._hybrid_bounds -> hoist Template._hybrid -> generate map
+        # > Template.result -> pseudo
+        # > Hoisted Template._hybrid -> Algorithm._hybrid_next
+        #
+        # [ NEXT TEMPLATE ]
+        # > If not first template -> setup map from previous stage's Template._hybrid
+        #
+        # > Use Algorithm._hybrid_next to setup Template._hybrid
+        #   > generate zeroed matrix of _hybrid_next
+        #   > use zeroed matrix -> setup Template._hybrid
+        # > Use Template_hybrid > _hybrid_bounds
+        # > Use Template._hybrid_bounds -> hoist Template.result -> generate map
+
         if self.dadda:
-            # if getattr(template, "_hybrid_bounds", False):
-            #     map_ = hoist(deepcopy(template._hybrid))
-            #     res_copy.apply_map(map_)
-
-            # Strategy:
-            #
-            # [ SETUP FIRST TEMPLATE ]
-            # > If first template -> setup Template._hybrid
-            #
-            # [ UNIFIED BOUNDS ]
-            # > Use _hybrid to generate unified bounds
-            # > Store generated bounds within Template._hybrid_bounds
-            #
-            # [ APPLY MAP ]
-            # > Use Template._hybrid_bounds -> hoist Template._hybrid -> generate map
-            # > Template.result -> pseudo
-            # > Hoisted Template._hybrid -> Algorithm._hybrid_next
-            #
-            # [ NEXT TEMPLATE ]
-            # > If not first template -> setup map from previous stage's Template._hybrid
-            #
-            # > Use Algorithm._hybrid_next to setup Template._hybrid
-            #   > generate zeroed matrix of _hybrid_next
-            #   > use zeroed matrix -> setup Template._hybrid
-            # > Use Template_hybrid > _hybrid_bounds
-            # > Use Template._hybrid_bounds -> hoist Template.result -> generate map
-            #
-            #
-
-            if len(self.algorithm) == 0:
+            if self.algorithm == {}:
                 # setup Template._hybrid
-                ...
+                # > generate zero / dadda matrix
+                hybrid_template = raw_dadda_matrix(template.bits)
 
-            # setup map from previous stage's Template._hybrid
+
+                # > overlay _s Template.bounds
+                raw_matrix_overlay(hybrid_template, unify_bounds(template.bounds), "_")
+                # > overlay 0s Template.re_bounds
+                raw_matrix_overlay(hybrid_template, unify_bounds(template.re_bounds), "0")
+
+
+            else:
+                # setup map from previous stage's Template._hybrid
+                # > use Template._hybrid_unified -> overlay 0s to raw_empty_matrix
+                # > ...
+
+                last_template = self.algorithm[len(self.algorithm) - 1]["template"]
+                last_hybrid = last_template._hybrid
+
+                # > generate new setup
+                hybrid_template = raw_empty_matrix(last_template.bits)
+
+
+                # > overlay previous bounds
+                raw_matrix_overlay(hybrid_template, last_template._hybrid_bounds, "0")
+                # > overlay _s Template.bounds
+                raw_matrix_overlay(hybrid_template, unify_bounds(template.bounds), "_")
+                # > overlay 0s Template.re_bounds
+                raw_matrix_overlay(hybrid_template, unify_bounds(template.re_bounds), "0")
+
+
+            template._hybrid = Matrix(hybrid_template)
+            mprint(template._hybrid)
+            map_ = hoist(template._hybrid)  # expensive -- no bounds used
+            template._hybrid_bounds = get_unified_bounds(template._hybrid.matrix)
+
+            mprint(template._hybrid)
+            res_copy.apply_map(map_)
 
 
         elif (template._complex or isinstance(map_, Map)) and not self.dadda:

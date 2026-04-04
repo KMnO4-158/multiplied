@@ -19,7 +19,7 @@ from .matrix import (
     raw_empty_matrix,
     raw_matrix_overlay,
 )
-from .utils.char import allchars, chargen, chartff,
+from .utils.char import allchars, chargen, chartff
 from .utils.pretty import mprint, pretty, pretty_nested_list
 from .utils.bool import isalpha, ischar, isppm, validate_bitwidth
 
@@ -324,7 +324,9 @@ class Template(MultipliedMeta):
     ) -> None:
 
         validate_bitwidth(len(source))
-        self._soft_type = list()
+        self._soft_type = list()  # hacky method of telling ``pretty`` what to do
+        self._hybrid: Matrix  # used for maps + complex templates
+        self._hybrid_bounds: dict[int, list[int]]  # used for maps
         self.bits = len(source)
         match result:
             case Matrix():
@@ -361,42 +363,6 @@ class Template(MultipliedMeta):
                 self._reduce_template()
             else:
                 self.re_bounds = self.update_bounding_box(self.result.matrix)
-
-
-            # == hybrid template for Dadda logic ====================
-            # > use bounds to overlay empty chars
-            # > use re_bounds to overlay template results
-
-            # --
-            # spoof unit agnostic bounds to simplify merging
-            grouped_bounds = []
-            for k, bound in self.bounds.items():  # template result bounds
-                if k == "_":
-                    continue
-                grouped_bounds.extend(bound)
-
-            spoof_units = {
-                "_": Matrix(raw_dadda_matrix(self.bits)),
-                "a": Matrix(raw_empty_matrix(self.bits)),
-            }
-            spoof_bounds = {"_": self.bounds["_"], "a": grouped_bounds}
-
-            zero_plus_empty_overlay, _ = matrix_merge(spoof_units, spoof_bounds)
-            mprint(zero_plus_empty_overlay)
-            # spoof unit agnostic bounds to simplify merging
-            grouped_re_bounds = []
-            for k, bound in self.re_bounds.items():  # template result bounds
-                if k == "_":
-                    continue
-                grouped_re_bounds.extend(bound)
-
-            spoof_re_units = {"_": zero_plus_empty_overlay, "a": self.result}
-            spoof_re_bounds = {"_": self.re_bounds["_"], "a": grouped_re_bounds}
-
-            zero_empty_plus_results, _ = matrix_merge(spoof_re_units, spoof_re_bounds)
-            mprint(zero_empty_plus_results)
-
-            self._hybrid = zero_empty_plus_results
 
             # if pattern resolvable, future calculations are cheaper
             self._resolve_template_pattern()
