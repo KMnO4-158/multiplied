@@ -651,8 +651,9 @@ def hoist(
         col_index = [0] * (bits << 1)
         for y, xs in unified_bounds.items():
             for left, right in batched(xs, 2):
-                for x in range(left, right):
-                    matrix[y][x], matrix[y][col_index[x]] = "_", matrix[y][x]
+                for x in range(left, right + 1):
+
+                    matrix[y][x], matrix[y][x] = "_", matrix[y][col_index[x]]
                     distance = ((y - col_index[x]) ^ 255) + 1  # 2s complement @ 8-bit
                     map_[y][x] = f"{distance:02X}"[-2:]
                     col_index[x] += 1
