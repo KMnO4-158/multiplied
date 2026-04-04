@@ -154,6 +154,8 @@ class Algorithm(MultipliedMeta):
                 # > generate zero / dadda matrix
                 hybrid_template = raw_dadda_matrix(template.bits)
 
+                # ! these need to be merged -- requires true bounds
+                # ! merge :: < overlayed "_" matrix > + < result / rebound >
 
                 # > overlay _s Template.bounds
                 raw_matrix_overlay(hybrid_template, unify_bounds(template.bounds), "_")
@@ -172,6 +174,8 @@ class Algorithm(MultipliedMeta):
                 # > generate new setup
                 hybrid_template = raw_empty_matrix(last_template.bits)
 
+                # ! these need to be merged -- requires true bounds
+                # ! merge :: < overlayed "_" matrix > + < result / rebound >
 
                 # > overlay previous bounds
                 raw_matrix_overlay(hybrid_template, last_template._hybrid_bounds, "0")
