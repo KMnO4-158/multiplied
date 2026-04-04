@@ -92,7 +92,7 @@ def _update_unified_bounds(map: list[list[str]]) -> dict[str, list[int]]:
 
         # -- exit border --------------------------------------------
         if map[y][-1] != "00":
-            unified[y].append(x)
+            unified[y].append(x - 1)
 
     print(unified)
     return unified
