@@ -801,7 +801,7 @@ def raw_matrix_overlay(
         raise TypeError(f"Expected unified bounds <dict[int, list]> got {type(unified_bounds)}")
 
 
-    bits = len(unified_bounds.keys())
+    bits = len(source)
     validate_bitwidth(bits)
 
     for y, row in unified_bounds.items():
@@ -848,9 +848,8 @@ def get_unified_bounds(source: list[list[str]]) -> dict[int, list[int]]:
 
         # -- exit border --------------------------------------------
         if source[y][-1] != "_":
-            unified[y].append(x)
+            unified[y].append(x - 1)
 
-    print(unified)
     return unified
 
 # == deprecated ==
