@@ -17,7 +17,7 @@ from .matrix import (
 )
 from .utils.char import allchars, chargen, chartff
 from .utils.pretty import pretty, pretty_nested_list
-from .utils.bool import isalpha, ischar, isint, isppm, validate_bitwidth
+from .utils.bool import ischar, isint, isppm, validate_bitwidth
 
 # == Template and Slice dependencies  =============================== #
 
@@ -620,7 +620,6 @@ class Template(MultipliedMeta):
 
             # -- central range ------------------------------------------
             while x < items - 1:
-
                 if isint(matrix[y][x]):
                     curr = matrix[y][x]
                 else:
@@ -630,7 +629,6 @@ class Template(MultipliedMeta):
                     next = matrix[y][x + 1]
                 else:
                     next = matrix[y][x + 1].upper()
-
 
                 if curr == next:
                     x += 1

@@ -20,7 +20,7 @@ from .matrix import (
 from .template import Pattern, Template, resolve_pattern
 from .utils.bool import validate_bitwidth
 from .utils.char import to_int_array
-from .utils.pretty import mprint, pretty
+from .utils.pretty import pretty
 
 
 # -- TODO: sanity checks --------------------------------------------
@@ -159,7 +159,6 @@ class Algorithm(MultipliedMeta):
         if self.dadda:
             # -- algorithm's first stage ----------------------------
             if self.algorithm == {}:
-
                 # first stage => no reduction => use zeroed Dadda matrix
                 hybrid_template = raw_dadda_matrix(template.bits)
 
@@ -191,7 +190,6 @@ class Algorithm(MultipliedMeta):
                     continue
                 grouped_re_bounds.extend(bound)
 
-
             # == complex merging ====================================
             # dict keys must match for (source, bounds,...)
             # merge logic checks if multiple non empty, "_", chars clash
@@ -205,7 +203,8 @@ class Algorithm(MultipliedMeta):
             template._hybrid, _ = matrix_merge(
                 {"_": Matrix(hybrid_template), "0": Matrix(re_template)},
                 {"_": grouped_bounds, "0": grouped_re_bounds},
-                complex=True)
+                complex=True,
+            )
 
             map_ = hoist(template._hybrid)  # expensive -- no bounds used
             template._hybrid_bounds = get_unified_bounds(template._hybrid.matrix)
@@ -219,7 +218,6 @@ class Algorithm(MultipliedMeta):
         elif template.pattern and not self.dadda:
             map_ = result.resolve_rmap()
             res_copy.apply_map(map_)
-
 
         stage = {
             "template": template,
