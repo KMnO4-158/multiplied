@@ -132,7 +132,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Generator</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">multiplied.core.utils.bool</span><span class="w"> </span><span class="kn">import</span> <span class="n">isalpha</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">multiplied.core.utils.bool</span><span class="w"> </span><span class="kn">import</span> <span class="n">isalpha</span><span class="p">,</span> <span class="n">ischar</span><span class="p">,</span> <span class="n">ishex2</span><span class="p">,</span> <span class="n">isint</span><span class="p">,</span> <span class="n">isppm</span>
 
 
 <div class="viewcode-block" id="chargen">
@@ -268,10 +268,10 @@
 
 
 
-<div class="viewcode-block" id="to_int_matrix">
-<a class="viewcode-back" href="../../../../api/multiplied.core.utils.html#multiplied.to_int_matrix">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">to_int_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts a matrix of characters to a matrix of integers</span>
+<div class="viewcode-block" id="to_int_array">
+<a class="viewcode-back" href="../../../../api/multiplied.core.utils.html#multiplied.to_int_array">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">to_int_array</span><span class="p">(</span><span class="n">matrix</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts a matrix of characters to a array of integers</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -285,7 +285,7 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; to_int_matrix([[&#39;_&#39;, &#39;1&#39;, &#39;_&#39;], [&#39;1&#39;, &#39;0&#39;, &#39;1&#39;]])</span>
+<span class="sd">    &gt;&gt;&gt; to_int_array([[&#39;_&#39;, &#39;1&#39;, &#39;_&#39;], [&#39;1&#39;, &#39;0&#39;, &#39;1&#39;]])</span>
 <span class="sd">    [2, 5]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -305,6 +305,86 @@
             <span class="n">tmp_row</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;0&quot;</span> <span class="k">if</span> <span class="n">ch</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="s2">&quot;1&quot;</span>
         <span class="n">output</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmp_row</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">output</span></div>
+
+
+
+<div class="viewcode-block" id="infer_matrix_format">
+<a class="viewcode-back" href="../../../../api/multiplied.core.utils.html#multiplied.infer_matrix_format">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">infer_matrix_format</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Infers the format of a litmus test string and returns a matrix of characters.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    source : list[list[str]]</span>
+<span class="sd">        Source matrix to infer format from.</span>
+<span class="sd">    fmt : str</span>
+<span class="sd">        Default char used in each matrix cell.</span>
+<span class="sd">    l</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list[list[str]]</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; infer_matrix_format(&quot;auto&quot;, &quot;FF&quot;)  # infer as &quot;map&quot;</span>
+<span class="sd">    [[&#39;00&#39;, &#39;00&#39;, &#39;00&#39;, &#39;00&#39;...</span>
+
+<span class="sd">    &gt;&gt;&gt; infer_matrix_format(&quot;auto&quot;, &quot;0&quot;)   # infer as &quot;empty&quot;</span>
+<span class="sd">    [[&#39;_&#39;, &#39;_&#39;, &#39;_&#39;, &#39;_&#39;...</span>
+
+<span class="sd">    &gt;&gt;&gt; infer_matrix_format(&quot;zero&quot;, &quot;&quot;)  # zero-filled</span>
+<span class="sd">    [[&#39;0&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;...</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected str, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">fmt</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">isppm</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected list[list[str]], got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">source</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
+        <span class="n">_litmus</span> <span class="o">=</span> <span class="n">source</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">ischar</span><span class="p">(</span><span class="n">_litmus</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">isint</span><span class="p">(</span><span class="n">_litmus</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">_litmus</span> <span class="o">==</span> <span class="s2">&quot;0&quot;</span> <span class="ow">or</span> <span class="n">_litmus</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span><span class="p">)):</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;empty&quot;</span>
+        <span class="k">elif</span> <span class="n">ishex2</span><span class="p">(</span><span class="n">_litmus</span><span class="p">):</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;map&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;zero&quot;</span>
+
+    <span class="n">bits</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+    <span class="k">match</span> <span class="n">fmt</span><span class="p">:</span>
+        <span class="k">case</span> <span class="s2">&quot;empty&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[[</span><span class="s2">&quot;_&quot;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bits</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bits</span><span class="p">)]</span>
+        <span class="k">case</span> <span class="s2">&quot;zero&quot;</span><span class="p">:</span>
+            <span class="n">matrix</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">zero</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;0&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">bits</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bits</span><span class="p">):</span>
+                <span class="n">row</span> <span class="o">=</span> <span class="p">([</span><span class="s2">&quot;_&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">((</span><span class="n">bits</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">bits</span> <span class="o">-</span> <span class="n">i</span><span class="p">))</span> <span class="o">+</span> <span class="n">zero</span> <span class="o">+</span> <span class="p">([</span><span class="s2">&quot;_&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">i</span><span class="p">)</span>
+                <span class="n">matrix</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">matrix</span>
+        <span class="k">case</span> <span class="s2">&quot;map&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[[</span><span class="s2">&quot;00&quot;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bits</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bits</span><span class="p">)]</span>
+
+        <span class="k">case</span> <span class="s2">&quot;char&quot;</span><span class="p">:</span>  <span class="c1"># expensive</span>
+            <span class="n">chars</span> <span class="o">=</span> <span class="n">allchars</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+            <span class="n">ch</span> <span class="o">=</span> <span class="n">chargen</span><span class="p">()</span>
+            <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">while</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">chars</span><span class="p">:</span>
+                <span class="n">ch</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;</span> <span class="mi">26</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Too many characters in source&quot;</span><span class="p">)</span>
+                <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">matrix</span> <span class="o">=</span> <span class="p">[]</span>
+
+                <span class="n">fill</span> <span class="o">=</span> <span class="p">[</span><span class="n">ch</span><span class="p">]</span> <span class="o">*</span> <span class="n">bits</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bits</span><span class="p">):</span>
+                    <span class="n">row</span> <span class="o">=</span> <span class="p">([</span><span class="s2">&quot;_&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">((</span><span class="n">bits</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">bits</span> <span class="o">-</span> <span class="n">i</span><span class="p">))</span> <span class="o">+</span> <span class="n">fill</span> <span class="o">+</span> <span class="p">([</span><span class="s2">&quot;_&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">i</span><span class="p">)</span>
+                    <span class="n">matrix</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">matrix</span>
+        <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unrecognised fmt: </span><span class="si">{</span><span class="n">fmt</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Something went wrong&quot;</span><span class="p">)</span></div>
 
 </pre></div>
 </article><footer class="bz-article-footer">
@@ -380,5 +460,5 @@
   <label class="bz-overlay bz-overlay-primary" for="bz-sidebar-primary"></label>
   <label class="bz-overlay bz-overlay-secondary" for="bz-sidebar-secondary"></label>
   <input type="checkbox" name="bz-sidebar-primary" id="bz-sidebar-primary" aria-label="Toggle section navigation">
-  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../../../../_static/documentation_options.js?v=ba9b7d67"></script><script src="../../../../_static/doctools.js?v=fd6eb6e6"></script><script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script><script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script><script src="../../../../_static/copybutton.js?v=f281be69"></script><script src="../../../../_static/design-tabs.js?v=f930bc37"></script></body>
+  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../../../../_static/documentation_options.js?v=66f6ad91"></script><script src="../../../../_static/doctools.js?v=fd6eb6e6"></script><script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script><script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script><script src="../../../../_static/copybutton.js?v=f281be69"></script><script src="../../../../_static/design-tabs.js?v=f930bc37"></script></body>
 </html>

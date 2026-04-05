@@ -6,12 +6,12 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="changelog.html" />
 <meta property="og:site_name" content="multiplied" />
-<meta property="og:description" content="v0.9: v0.9.0: Updates Added Conflict Detection ( 22fbed1), Improved Default Merge Logic ( 7bd696e), Merge Conflict Resolution ( 3a93569) ( e7e73cb). Testing Add WALLACE_TREE, DADDA_TREE reference d..." />
+<meta property="og:description" content="v0.10: v0.10.0: Major Updates Move hybrid logic to Algorithm class ( 844fca2), Algorithms now handle sparse Wallace templates ( 40c9d18), Algorithms now handle sparse Dadda templates ( 235662a). Up..." />
 <meta property="og:image:width" content="1146" />
 <meta property="og:image:height" content="600" />
-<meta property="og:image" content="_images/social_previews/summary_changelog_aa1f8503.png" />
-<meta property="og:image:alt" content="v0.9: v0.9.0: Updates Added Conflict Detection ( 22fbed1), Improved Default Merge Logic ( 7bd696e), Merge Conflict Resolution ( 3a93569) ( e7e73cb). Testing Add WALLACE_TREE, DADDA_TREE reference d..." />
-<meta name="description" content="v0.9: v0.9.0: Updates Added Conflict Detection ( 22fbed1), Improved Default Merge Logic ( 7bd696e), Merge Conflict Resolution ( 3a93569) ( e7e73cb). Testing Add WALLACE_TREE, DADDA_TREE reference d..." />
+<meta property="og:image" content="_images/social_previews/summary_changelog_5cfb67cb.png" />
+<meta property="og:image:alt" content="v0.10: v0.10.0: Major Updates Move hybrid logic to Algorithm class ( 844fca2), Algorithms now handle sparse Wallace templates ( 40c9d18), Algorithms now handle sparse Dadda templates ( 235662a). Up..." />
+<meta name="description" content="v0.10: v0.10.0: Major Updates Move hybrid logic to Algorithm class ( 844fca2), Algorithms now handle sparse Wallace templates ( 40c9d18), Algorithms now handle sparse Dadda templates ( 235662a). Up..." />
 <meta name="twitter:card" content="summary_large_image" />
 <title>Changelog - multiplied</title><link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="API Reference" href="reference.html"><link rel="prev" title="Visualisation" href="guide/visualisation.html"><script data-cfasync="false">(function(){
     const m = localStorage.getItem("breeze-mode") || "auto";
@@ -137,10 +137,41 @@
   </svg>
 </label></header><article class="bz-article-main" role="main"><section id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Link to this heading">#</a></h1>
+<section id="v0-10">
+<h2>v0.10<a class="headerlink" href="#v0-10" title="Link to this heading">#</a></h2>
+<section id="id1">
+<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.10.0">v0.10.0</a><a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<p>Major Updates</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Move hybrid logic to Algorithm class (<a class="reference external" href="https://github.com/KMnO4-158/multiplied/commit/844fca2">844fca2</a>)</p></li>
+<li><p>Algorithms now handle sparse Wallace templates (<a class="reference external" href="https://github.com/KMnO4-158/multiplied/commit/40c9d18">40c9d18</a>)</p></li>
+<li><p>Algorithms now handle sparse Dadda templates (<a class="reference external" href="https://github.com/KMnO4-158/multiplied/commit/235662a">235662a</a>)</p></li>
+</ul>
+</div></blockquote>
+<p>Updates</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Use [Map] unified bounds efficiently (<a class="reference external" href="https://github.com/KMnO4-158/multiplied/commit/b5d92dd">b5d92dd</a>) (<a href="#id33"><span class="problematic" id="id34">`6d21f7a`_</span></a>)</p></li>
+<li><p>Add raw_dadda_matrix (<a class="reference external" href="https://github.com/KMnO4-158/multiplied/commit/bd4056e">bd4056e</a>)</p></li>
+<li><p>Rename to_int_matrix -&gt; to_int_array (<a class="reference external" href="https://github.com/KMnO4-158/multiplied/commit/158d969">158d969</a>)</p></li>
+</ul>
+</div></blockquote>
+<p>Fixes</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Map</span></code> initialisation (<a class="reference external" href="https://github.com/KMnO4-158/multiplied/commit/52c3be8">52c3be8</a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">isppm</span></code> flagging Map as false (<a class="reference external" href="https://github.com/KMnO4-158/multiplied/commit/c851ca5">c851ca5</a>)</p></li>
+<li><p>Improve and add sanity checks (<a class="reference external" href="https://github.com/KMnO4-158/multiplied/commit/0fe894e">0fe894e</a>) (<a class="reference external" href="https://github.com/KMnO4-158/multiplied/commit/bdd4368">bdd4368</a>) (<a class="reference external" href="https://github.com/KMnO4-158/multiplied/commit/b01775f">b01775f</a>) (<a class="reference external" href="https://github.com/KMnO4-158/multiplied/commit/9a8bf4d">9a8bf4d</a>)</p></li>
+</ul>
+</div></blockquote>
+<p>See full changelog <a class="reference external" href="https://github.com/KMnO4-158/multiplied/pull/139">here</a></p>
+</section>
+</section>
 <section id="v0-9">
 <h2>v0.9<a class="headerlink" href="#v0-9" title="Link to this heading">#</a></h2>
-<section id="id1">
-<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.9.0">v0.9.0</a><a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<section id="id2">
+<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.9.0">v0.9.0</a><a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
 <p>Updates</p>
 <blockquote>
 <div><ul class="simple">
@@ -168,8 +199,8 @@
 </section>
 <section id="v0-8">
 <h2>v0.8<a class="headerlink" href="#v0-8" title="Link to this heading">#</a></h2>
-<section id="id2">
-<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.8.2">v0.8.2</a><a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<section id="id4">
+<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.8.2">v0.8.2</a><a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
 <p>This patch focused on fully integrating complex Template objects and improving performance.</p>
 <p>Updates</p>
 <blockquote>
@@ -183,8 +214,8 @@
 </div></blockquote>
 <p>See full changelog <a class="reference external" href="https://github.com/KMnO4-158/multiplied/pull/125">here</a></p>
 </section>
-<section id="id4">
-<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.8.1">v0.8.1</a><a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<section id="id6">
+<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.8.1">v0.8.1</a><a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
 <p>Updates</p>
 <blockquote>
 <div><ul class="simple">
@@ -197,8 +228,8 @@
 </div></blockquote>
 <p>See full changelog <a class="reference external" href="https://github.com/KMnO4-158/multiplied/pull/124">here</a></p>
 </section>
-<section id="id6">
-<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.8.0">v0.8.0</a><a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<section id="id8">
+<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.8.0">v0.8.0</a><a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
 <p>Updates</p>
 <blockquote>
 <div><ul class="simple">
@@ -237,8 +268,8 @@
 </section>
 <section id="v0-7">
 <h2>v0.7<a class="headerlink" href="#v0-7" title="Link to this heading">#</a></h2>
-<section id="id8">
-<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.7.3">v0.7.3</a><a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<section id="id10">
+<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.7.3">v0.7.3</a><a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
 <p>Updates:</p>
 <blockquote>
 <div><ul class="simple">
@@ -261,8 +292,8 @@
 </div></blockquote>
 <p>See full changelog <a class="reference external" href="https://github.com/KMnO4-158/multiplied/pull/111">here</a></p>
 </section>
-<section id="id10">
-<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.7.2">v0.7.2</a><a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<section id="id12">
+<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.7.2">v0.7.2</a><a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
 <p>Added:</p>
 <blockquote>
 <div><ul class="simple">
@@ -285,8 +316,8 @@
 </div></blockquote>
 <p>See full changelog <a class="reference external" href="https://github.com/KMnO4-158/multiplied/pull/105">here</a></p>
 </section>
-<section id="id13">
-<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.7.1">v0.7.1</a><a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
+<section id="id15">
+<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.7.1">v0.7.1</a><a class="headerlink" href="#id15" title="Link to this heading">#</a></h3>
 <p>Updates:</p>
 <blockquote>
 <div><ul class="simple">
@@ -322,8 +353,8 @@
 </section>
 <section id="v0-6">
 <h2>v0.6<a class="headerlink" href="#v0-6" title="Link to this heading">#</a></h2>
-<section id="id15">
-<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.6.2">v0.6.2</a><a class="headerlink" href="#id15" title="Link to this heading">#</a></h3>
+<section id="id17">
+<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.6.2">v0.6.2</a><a class="headerlink" href="#id17" title="Link to this heading">#</a></h3>
 <p>Bug Fixes:</p>
 <blockquote>
 <div><ul class="simple">
@@ -334,8 +365,8 @@
 </div></blockquote>
 <p>See full changelog <a class="reference external" href="https://github.com/KMnO4-158/multiplied/pull/96">here</a>.</p>
 </section>
-<section id="id17">
-<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.6.0">v0.6.0</a><a class="headerlink" href="#id17" title="Link to this heading">#</a></h3>
+<section id="id19">
+<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.6.0">v0.6.0</a><a class="headerlink" href="#id19" title="Link to this heading">#</a></h3>
 <p>Updates:</p>
 <blockquote>
 <div><ul class="simple">
@@ -367,8 +398,8 @@
 </section>
 <section id="v0-5">
 <h2>v0.5<a class="headerlink" href="#v0-5" title="Link to this heading">#</a></h2>
-<section id="id19">
-<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.5.0">v0.5.0</a><a class="headerlink" href="#id19" title="Link to this heading">#</a></h3>
+<section id="id21">
+<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.5.0">v0.5.0</a><a class="headerlink" href="#id21" title="Link to this heading">#</a></h3>
 <p>Updates:</p>
 <blockquote>
 <div><ul class="simple">
@@ -402,8 +433,8 @@
 </section>
 <section id="v0-4">
 <h2>v0.4<a class="headerlink" href="#v0-4" title="Link to this heading">#</a></h2>
-<section id="id21">
-<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.4.0">v0.4.0</a><a class="headerlink" href="#id21" title="Link to this heading">#</a></h3>
+<section id="id23">
+<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.4.0">v0.4.0</a><a class="headerlink" href="#id23" title="Link to this heading">#</a></h3>
 <p>Updates:</p>
 <blockquote>
 <div><ul class="simple">
@@ -434,8 +465,8 @@
 </section>
 <section id="v0-3">
 <h2>v0.3<a class="headerlink" href="#v0-3" title="Link to this heading">#</a></h2>
-<section id="id23">
-<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.3.3">v0.3.3</a><a class="headerlink" href="#id23" title="Link to this heading">#</a></h3>
+<section id="id25">
+<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.3.3">v0.3.3</a><a class="headerlink" href="#id25" title="Link to this heading">#</a></h3>
 <p>Updates:</p>
 <blockquote>
 <div><ul class="simple">
@@ -466,8 +497,8 @@
 </div></blockquote>
 <p>See full changelog <a class="reference external" href="https://github.com/KMnO4-158/multiplied/commits/v0.3.3">here</a>.</p>
 </section>
-<section id="id25">
-<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.3.0">v0.3.0</a><a class="headerlink" href="#id25" title="Link to this heading">#</a></h3>
+<section id="id27">
+<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.3.0">v0.3.0</a><a class="headerlink" href="#id27" title="Link to this heading">#</a></h3>
 <p>Updates:</p>
 <blockquote>
 <div><ul class="simple">
@@ -500,8 +531,8 @@
 </section>
 <section id="v0-2">
 <h2>v0.2<a class="headerlink" href="#v0-2" title="Link to this heading">#</a></h2>
-<section id="id28">
-<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.2.0">v0.2.0</a><a class="headerlink" href="#id28" title="Link to this heading">#</a></h3>
+<section id="id30">
+<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.2.0">v0.2.0</a><a class="headerlink" href="#id30" title="Link to this heading">#</a></h3>
 <p>Updates:</p>
 <blockquote>
 <div><ul class="simple">
@@ -530,8 +561,8 @@
 </section>
 <section id="v0-1">
 <h2>v0.1<a class="headerlink" href="#v0-1" title="Link to this heading">#</a></h2>
-<section id="id29">
-<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.1.1">v0.1.1</a><a class="headerlink" href="#id29" title="Link to this heading">#</a></h3>
+<section id="id31">
+<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.1.1">v0.1.1</a><a class="headerlink" href="#id31" title="Link to this heading">#</a></h3>
 <p>This patch is focused on documentation and testing the api reference site locally</p>
 <p>Updates:</p>
 <blockquote>
@@ -544,8 +575,8 @@
 </ul>
 </div></blockquote>
 </section>
-<section id="id30">
-<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.1.0">v0.1.0</a><a class="headerlink" href="#id30" title="Link to this heading">#</a></h3>
+<section id="id32">
+<h3><a class="reference external" href="https://github.com/KMnO4-158/multiplied/releases/tag/v0.1.0">v0.1.0</a><a class="headerlink" href="#id32" title="Link to this heading">#</a></h3>
 <p>This release is a complete refactor of the original script, widening it’s scope and turning it into a library.</p>
 <p>Added:</p>
 <blockquote>
@@ -581,47 +612,51 @@
   
     <nav class="bz-sidebar-toc" aria-label="Table of contents">
   <p>On this page</p><ul>
+<li><a class="reference internal" href="#v0-10">v0​.10</a><ul>
+<li><a class="reference internal" href="#id1">v0​.10​.0</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#v0-9">v0​.9</a><ul>
-<li><a class="reference internal" href="#id1">v0​.9​.0</a></li>
+<li><a class="reference internal" href="#id2">v0​.9​.0</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v0-8">v0​.8</a><ul>
-<li><a class="reference internal" href="#id2">v0​.8​.2</a></li>
-<li><a class="reference internal" href="#id4">v0​.8​.1</a></li>
-<li><a class="reference internal" href="#id6">v0​.8​.0</a></li>
+<li><a class="reference internal" href="#id4">v0​.8​.2</a></li>
+<li><a class="reference internal" href="#id6">v0​.8​.1</a></li>
+<li><a class="reference internal" href="#id8">v0​.8​.0</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v0-7">v0​.7</a><ul>
-<li><a class="reference internal" href="#id8">v0​.7​.3</a></li>
-<li><a class="reference internal" href="#id10">v0​.7​.2</a></li>
-<li><a class="reference internal" href="#id13">v0​.7​.1</a></li>
+<li><a class="reference internal" href="#id10">v0​.7​.3</a></li>
+<li><a class="reference internal" href="#id12">v0​.7​.2</a></li>
+<li><a class="reference internal" href="#id15">v0​.7​.1</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v0-6">v0​.6</a><ul>
-<li><a class="reference internal" href="#id15">v0​.6​.2</a></li>
-<li><a class="reference internal" href="#id17">v0​.6​.0</a></li>
+<li><a class="reference internal" href="#id17">v0​.6​.2</a></li>
+<li><a class="reference internal" href="#id19">v0​.6​.0</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v0-5">v0​.5</a><ul>
-<li><a class="reference internal" href="#id19">v0​.5​.0</a></li>
+<li><a class="reference internal" href="#id21">v0​.5​.0</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v0-4">v0​.4</a><ul>
-<li><a class="reference internal" href="#id21">v0​.4​.0</a></li>
+<li><a class="reference internal" href="#id23">v0​.4​.0</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v0-3">v0​.3</a><ul>
-<li><a class="reference internal" href="#id23">v0​.3​.3</a></li>
-<li><a class="reference internal" href="#id25">v0​.3​.0</a></li>
+<li><a class="reference internal" href="#id25">v0​.3​.3</a></li>
+<li><a class="reference internal" href="#id27">v0​.3​.0</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v0-2">v0​.2</a><ul>
-<li><a class="reference internal" href="#id28">v0​.2​.0</a></li>
+<li><a class="reference internal" href="#id30">v0​.2​.0</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v0-1">v0​.1</a><ul>
-<li><a class="reference internal" href="#id29">v0​.1​.1</a></li>
-<li><a class="reference internal" href="#id30">v0​.1​.0</a></li>
+<li><a class="reference internal" href="#id31">v0​.1​.1</a></li>
+<li><a class="reference internal" href="#id32">v0​.1​.0</a></li>
 </ul>
 </li>
 </ul></nav>
@@ -693,5 +728,5 @@
   <label class="bz-overlay bz-overlay-primary" for="bz-sidebar-primary"></label>
   <label class="bz-overlay bz-overlay-secondary" for="bz-sidebar-secondary"></label>
   <input type="checkbox" name="bz-sidebar-primary" id="bz-sidebar-primary" aria-label="Toggle section navigation">
-  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="_static/documentation_options.js?v=ba9b7d67"></script><script src="_static/doctools.js?v=fd6eb6e6"></script><script src="_static/sphinx_highlight.js?v=6ffebe34"></script><script src="_static/clipboard.min.js?v=a7894cd8"></script><script src="_static/copybutton.js?v=f281be69"></script><script src="_static/design-tabs.js?v=f930bc37"></script></body>
+  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="_static/documentation_options.js?v=66f6ad91"></script><script src="_static/doctools.js?v=fd6eb6e6"></script><script src="_static/sphinx_highlight.js?v=6ffebe34"></script><script src="_static/clipboard.min.js?v=a7894cd8"></script><script src="_static/copybutton.js?v=f281be69"></script><script src="_static/design-tabs.js?v=f930bc37"></script></body>
 </html>

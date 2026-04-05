@@ -131,13 +131,15 @@
 <span class="c1">############################</span>
 
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">batched</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterator</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.dtypes.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultipliedMeta</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.utils.bool</span><span class="w"> </span><span class="kn">import</span> <span class="n">ishex2</span><span class="p">,</span> <span class="n">validate_bitwidth</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils.bool</span><span class="w"> </span><span class="kn">import</span> <span class="n">isbbox</span><span class="p">,</span> <span class="n">ishex2</span><span class="p">,</span> <span class="n">isppm</span><span class="p">,</span> <span class="n">validate_bitwidth</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.utils.pretty</span><span class="w"> </span><span class="kn">import</span> <span class="n">pretty</span>
 
 
+<span class="c1"># ! Map objects should generate their own unified bounds upon creation</span>
 <div class="viewcode-block" id="Map">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.Map">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Map</span><span class="p">(</span><span class="n">MultipliedMeta</span><span class="p">):</span>
@@ -167,6 +169,9 @@
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Map must be type list or int got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="nb">map</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bits</span> <span class="o">=</span> <span class="nb">map</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">map</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="nb">map</span><span class="p">)</span>
         <span class="n">validate_bitwidth</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bits</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unified_bounds</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_soft_type</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span> <span class="o">=</span> <span class="s2">&quot;Map&quot;</span>
 
         <span class="c1"># -- handle bit defined maps --------------------------------</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">map</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
@@ -177,21 +182,24 @@
         <span class="c1"># -- handle complex maps ------------------------------------</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">map</span> <span class="o">=</span> <span class="nb">map</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">isppm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid row map</span><span class="se">\n\n</span><span class="si">{</span><span class="n">pretty</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">rmap</span> <span class="o">=</span> <span class="p">[]</span>
 
             <span class="c1"># -- sanity check ---------------------------------------</span>
-            <span class="c1"># ! Can be parallelised</span>
+            <span class="c1"># ? Can be parallelised</span>
             <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">y</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">ishex2</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid row map element </span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">ishex2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">y</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Invalid row map element in row </span><span class="si">{</span><span class="n">y</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2"> Source: </span><span class="si">{</span><span class="n">pretty</span><span class="p">(</span><span class="nb">map</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">unified_bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_unified_bounds</span><span class="p">()</span>
             <span class="k">return</span> <span class="kc">None</span>
 
+        <span class="c1"># -- handle patterns ----------------------------------------</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_map</span><span class="p">(</span><span class="nb">map</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rmap</span> <span class="o">=</span> <span class="nb">map</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_soft_type</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span> <span class="o">=</span> <span class="s2">&quot;Map&quot;</span>
         <span class="k">return</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="Map.build_map">
@@ -226,6 +234,32 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Build a zero map of the specified size.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[[</span><span class="s2">&quot;00&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bits</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bits</span><span class="p">)]</span></div>
 
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_unified_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set unified bounds for Map object.&quot;&quot;&quot;</span>
+
+        <span class="n">unified</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">y</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">):</span>
+            <span class="n">unified</span><span class="p">[</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="c1"># -- entry border -------------------------------------------</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;00&quot;</span><span class="p">:</span>
+                <span class="n">unified</span><span class="p">[</span><span class="n">y</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+            <span class="n">x</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="c1"># -- central region -----------------------------------------</span>
+            <span class="k">while</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;00&quot;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;00&quot;</span><span class="p">:</span>
+                    <span class="n">unified</span><span class="p">[</span><span class="n">y</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;00&quot;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;00&quot;</span><span class="p">:</span>
+                    <span class="n">unified</span><span class="p">[</span><span class="n">y</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                <span class="n">x</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="c1"># -- exit border --------------------------------------------</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;00&quot;</span><span class="p">:</span>
+                <span class="n">unified</span><span class="p">[</span><span class="n">y</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">unified</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;multiplied.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> object at </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
@@ -266,11 +300,8 @@
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.raw_zero_map">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">raw_zero_map</span><span class="p">(</span><span class="n">bits</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a zero-filled map of size `bits`.&quot;&quot;&quot;</span>
-    <span class="n">matrix</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bits</span><span class="p">):</span>
-        <span class="n">row</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;00&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">bits</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">matrix</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">matrix</span></div>
+    <span class="n">validate_bitwidth</span><span class="p">(</span><span class="n">bits</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[[</span><span class="s2">&quot;00&quot;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bits</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bits</span><span class="p">)]</span></div>
 
 
 
@@ -278,6 +309,7 @@
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.raw_dadda_map">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">raw_dadda_map</span><span class="p">(</span><span class="n">bits</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a Dadda map of size `bits`.&quot;&quot;&quot;</span>
+    <span class="n">validate_bitwidth</span><span class="p">(</span><span class="n">bits</span><span class="p">)</span>
     <span class="n">matrix</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bits</span><span class="p">):</span>
         <span class="c1"># generate 2-bit hex values which result in &quot;V&quot; shape partial product tree</span>
@@ -290,25 +322,28 @@
 
 <div class="viewcode-block" id="unify_bounds">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.unify_bounds">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">unify_bounds</span><span class="p">(</span><span class="n">bounds</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">unify_bounds</span><span class="p">(</span><span class="n">bounds</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a simplified bound for non empty characters</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    bounds : dict</span>
+<span class="sd">    bounds : dict[str, list[tuple[int, int]]]</span>
 <span class="sd">        Bounding box for each arithmetic unit in Template object</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    dict</span>
+<span class="sd">    dict : dict[int, list[int]]</span>
 <span class="sd">        Unified bounds where  {y : [x0, x1]}</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
 <span class="sd">    :func:`update_bounding_box`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bounds</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected dict got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">bounds</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">isbbox</span><span class="p">(</span><span class="n">bounds</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unrecognised bounds.</span><span class="se">\n\n</span><span class="si">{</span><span class="n">bounds</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="n">unified_row_bounds</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">unit_bounds</span> <span class="ow">in</span> <span class="n">bounds</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -323,7 +358,7 @@
 
 <div class="viewcode-block" id="apply_complex_map">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.apply_complex_map">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">apply_complex_map</span><span class="p">(</span><span class="n">matrix</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="nb">map</span><span class="p">:</span> <span class="n">Map</span><span class="p">,</span> <span class="n">unified_bounds</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">apply_complex_map</span><span class="p">(</span><span class="n">matrix</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="nb">map</span><span class="p">:</span> <span class="n">Map</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Applies a complex mapping to source Matrix</span>
 
 <span class="sd">    Parameters</span>
@@ -334,24 +369,31 @@
 <span class="sd">    map : mp.Map</span>
 <span class="sd">        Multiplied Map object to apply mapping from</span>
 
-<span class="sd">    bounds : dict[str: list[int]]</span>
+<span class="sd">    unified_bounds : dict[str: list[int]]</span>
 <span class="sd">        Unified bounds for all arithmetic units</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">unified_bounds</span><span class="p">]):</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Expected all row bounds to be integers&quot;</span><span class="p">)</span>
+
+    <span class="n">unified_bounds</span> <span class="o">=</span> <span class="nb">map</span><span class="o">.</span><span class="n">unified_bounds</span>
 
     <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">unified_bounds</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">unified_bounds</span><span class="p">[</span><span class="n">row</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Expected row bounds to be a list&quot;</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">unified_bounds</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">unified_bounds</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-            <span class="k">if</span> <span class="nb">map</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;00&quot;</span><span class="p">:</span>
-                <span class="k">continue</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">offset</span> <span class="o">:=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">map</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">],</span> <span class="mi">16</span><span class="p">))</span> <span class="o">&amp;</span> <span class="mi">128</span><span class="p">:</span>
-                <span class="n">offset</span> <span class="o">=</span> <span class="p">(</span><span class="o">~</span><span class="n">offset</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">255</span>  <span class="c1"># 2s complement</span>
+        <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span> <span class="ow">in</span> <span class="n">batched</span><span class="p">(</span><span class="n">unified_bounds</span><span class="p">[</span><span class="n">row</span><span class="p">],</span> <span class="mi">2</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="c1"># ignore moving empty chars</span>
+                <span class="k">if</span> <span class="n">matrix</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;_&quot;</span><span class="p">:</span>
+                    <span class="k">continue</span>
 
-            <span class="n">matrix</span><span class="p">[</span><span class="n">row</span> <span class="o">-</span> <span class="n">offset</span><span class="p">][</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">]</span>
-            <span class="n">matrix</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span>
+                <span class="c1"># ignore zero offsets</span>
+                <span class="k">if</span> <span class="nb">map</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;00&quot;</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="k">if</span> <span class="p">(</span><span class="n">offset</span> <span class="o">:=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">map</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">],</span> <span class="mi">16</span><span class="p">))</span> <span class="o">&amp;</span> <span class="mi">128</span><span class="p">:</span>
+                    <span class="n">offset</span> <span class="o">=</span> <span class="p">(</span><span class="o">~</span><span class="n">offset</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">255</span>  <span class="c1"># 2s complement</span>
+
+                <span class="n">matrix</span><span class="p">[</span><span class="n">row</span> <span class="o">-</span> <span class="n">offset</span><span class="p">][</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">]</span>
+                <span class="n">matrix</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span>
 
     <span class="k">return</span> <span class="kc">None</span></div>
 
@@ -429,5 +471,5 @@
   <label class="bz-overlay bz-overlay-primary" for="bz-sidebar-primary"></label>
   <label class="bz-overlay bz-overlay-secondary" for="bz-sidebar-secondary"></label>
   <input type="checkbox" name="bz-sidebar-primary" id="bz-sidebar-primary" aria-label="Toggle section navigation">
-  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../../../_static/documentation_options.js?v=ba9b7d67"></script><script src="../../../_static/doctools.js?v=fd6eb6e6"></script><script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script><script src="../../../_static/clipboard.min.js?v=a7894cd8"></script><script src="../../../_static/copybutton.js?v=f281be69"></script><script src="../../../_static/design-tabs.js?v=f930bc37"></script></body>
+  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../../../_static/documentation_options.js?v=66f6ad91"></script><script src="../../../_static/doctools.js?v=fd6eb6e6"></script><script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script><script src="../../../_static/clipboard.min.js?v=a7894cd8"></script><script src="../../../_static/copybutton.js?v=f281be69"></script><script src="../../../_static/design-tabs.js?v=f930bc37"></script></body>
 </html>

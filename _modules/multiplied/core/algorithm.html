@@ -131,13 +131,23 @@
 <span class="c1">###########################################</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">batched</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.dtypes.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultipliedMeta</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.map</span><span class="w"> </span><span class="kn">import</span> <span class="n">Map</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.matrix</span><span class="w"> </span><span class="kn">import</span> <span class="n">Matrix</span><span class="p">,</span> <span class="n">empty_rows</span><span class="p">,</span> <span class="n">matrix_merge</span><span class="p">,</span> <span class="n">matrix_scatter</span><span class="p">,</span> <span class="n">raw_empty_matrix</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.map</span><span class="w"> </span><span class="kn">import</span> <span class="n">Map</span><span class="p">,</span> <span class="n">raw_zero_map</span><span class="p">,</span> <span class="n">unify_bounds</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.matrix</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Matrix</span><span class="p">,</span>
+    <span class="n">empty_rows</span><span class="p">,</span>
+    <span class="n">get_unified_bounds</span><span class="p">,</span>
+    <span class="n">matrix_merge</span><span class="p">,</span>
+    <span class="n">matrix_scatter</span><span class="p">,</span>
+    <span class="n">raw_dadda_matrix</span><span class="p">,</span>
+    <span class="n">raw_empty_matrix</span><span class="p">,</span>
+    <span class="n">raw_matrix_overlay</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.template</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pattern</span><span class="p">,</span> <span class="n">Template</span><span class="p">,</span> <span class="n">resolve_pattern</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.utils.bool</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate_bitwidth</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.utils.char</span><span class="w"> </span><span class="kn">import</span> <span class="n">to_int_matrix</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils.char</span><span class="w"> </span><span class="kn">import</span> <span class="n">to_int_array</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.utils.pretty</span><span class="w"> </span><span class="kn">import</span> <span class="n">pretty</span>
 
 
@@ -207,9 +217,7 @@
 
 <div class="viewcode-block" id="Algorithm.push">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.Algorithm.push">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">push</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="n">Template</span> <span class="o">|</span> <span class="n">Pattern</span><span class="p">,</span> <span class="n">map_</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dadda</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">push</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="n">Template</span> <span class="o">|</span> <span class="n">Pattern</span><span class="p">,</span> <span class="n">map_</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Populate algorithm stage based on template. Generates pseudo</span>
 <span class="sd">        result to represent output matrix</span>
 
@@ -219,8 +227,6 @@
 <span class="sd">            The template or pattern to be used for the algorithm stage.</span>
 <span class="sd">        map_ : Any, optional</span>
 <span class="sd">            The map to be used for the algorithm stage, by default None</span>
-<span class="sd">        dadda : bool, optional</span>
-<span class="sd">            Whether to use the Dadda-Tree algorithm, by default False</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -245,7 +251,7 @@
             <span class="n">template</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">Template</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">source</span><span class="o">.</span><span class="n">_complex</span> <span class="ow">and</span> <span class="p">(</span><span class="n">map_</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">dadda</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Complex template without map&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Complex template without map.</span><span class="se">\n\n</span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">template</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Invalid argument type. Expected Template&quot;</span><span class="p">)</span>
@@ -253,28 +259,97 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">result</span><span class="p">,</span> <span class="p">(</span><span class="n">Matrix</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Template result is unset&quot;</span><span class="p">)</span>
 
-        <span class="kn">from</span><span class="w"> </span><span class="nn">multiplied.core.map</span><span class="w"> </span><span class="kn">import</span> <span class="n">unify_bounds</span>
-
         <span class="n">result</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">result</span>
         <span class="n">res_copy</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
         <span class="n">stage_index</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">algorithm</span><span class="p">)</span>
 
+        <span class="c1"># -- hybrid setup -------------------------------------------</span>
+        <span class="c1"># Strategy:</span>
+        <span class="c1">#</span>
+        <span class="c1"># [ SETUP FIRST TEMPLATE ]</span>
+        <span class="c1"># &gt; If first template -&gt; setup Template._hybrid</span>
+        <span class="c1"># &gt; zeroed dadda matrix -&gt; overlay bound &quot;_&quot;s</span>
+        <span class="c1">#</span>
+        <span class="c1"># [ UNIFIED BOUNDS ]</span>
+        <span class="c1"># &gt; Use _hybrid to generate unified bounds</span>
+        <span class="c1"># &gt; Store generated bounds within Template._hybrid_bounds</span>
+        <span class="c1">#</span>
+        <span class="c1"># [ APPLY MAP ]</span>
+        <span class="c1"># &gt; Use Template._hybrid_bounds -&gt; hoist Template._hybrid -&gt; generate map</span>
+        <span class="c1"># &gt; Template.result -&gt; pseudo</span>
+        <span class="c1"># &gt; Hoisted Template._hybrid -&gt; Algorithm._hybrid_next</span>
+        <span class="c1">#</span>
+        <span class="c1"># [ NEXT TEMPLATE ]</span>
+        <span class="c1"># &gt; If not first template -&gt; setup map from previous stage&#39;s Template._hybrid</span>
+        <span class="c1">#</span>
+        <span class="c1"># &gt; Use Algorithm._hybrid_next to setup Template._hybrid</span>
+        <span class="c1">#   &gt; generate zeroed matrix of _hybrid_next</span>
+        <span class="c1">#   &gt; use zeroed matrix -&gt; setup Template._hybrid</span>
+        <span class="c1"># &gt; Use Template_hybrid &gt; _hybrid_bounds</span>
+        <span class="c1"># &gt; Use Template._hybrid_bounds -&gt; hoist Template.result -&gt; generate map</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dadda</span><span class="p">:</span>
-            <span class="n">map_</span> <span class="o">=</span> <span class="n">hoist</span><span class="p">(</span><span class="n">res_copy</span><span class="p">)</span>
+            <span class="c1"># -- algorithm&#39;s first stage ----------------------------</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">algorithm</span> <span class="o">==</span> <span class="p">{}:</span>
+                <span class="c1"># first stage =&gt; no reduction =&gt; use zeroed Dadda matrix</span>
+                <span class="n">hybrid_template</span> <span class="o">=</span> <span class="n">raw_dadda_matrix</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">bits</span><span class="p">)</span>
 
-        <span class="k">elif</span> <span class="n">template</span><span class="o">.</span><span class="n">_complex</span><span class="p">:</span>
-            <span class="n">map_bounds</span> <span class="o">=</span> <span class="n">unify_bounds</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">re_bounds</span><span class="p">)</span>
-            <span class="n">res_copy</span><span class="o">.</span><span class="n">apply_map</span><span class="p">(</span><span class="n">map_</span><span class="p">,</span> <span class="n">unified_bounds</span><span class="o">=</span><span class="n">map_bounds</span><span class="p">)</span>
+            <span class="c1"># -- use algorithm history ------------------------------</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">hybrid_template</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">algorithm</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">algorithm</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="s2">&quot;template&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">_hybrid</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">matrix</span>
 
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">map_</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">resolve_rmap</span><span class="p">()</span>
+            <span class="c1"># == overlay bits effected by reduction =================</span>
+            <span class="n">raw_matrix_overlay</span><span class="p">(</span><span class="n">hybrid_template</span><span class="p">,</span> <span class="n">unify_bounds</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">bounds</span><span class="p">),</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
+            <span class="n">spoof_hybrid_bounds</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">update_bounding_box</span><span class="p">(</span><span class="n">hybrid_template</span><span class="p">)</span>
+
+            <span class="c1"># -- spoof bounds as a single unit ----------------------</span>
+            <span class="n">grouped_bounds</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">bound</span> <span class="ow">in</span> <span class="n">spoof_hybrid_bounds</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s2">&quot;_&quot;</span><span class="p">:</span>  <span class="c1"># discard non-unit area</span>
+                    <span class="k">continue</span>
+                <span class="n">grouped_bounds</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">bound</span><span class="p">)</span>
+
+            <span class="c1"># == spoof result matrix ================================</span>
+            <span class="n">re_template</span> <span class="o">=</span> <span class="n">raw_empty_matrix</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">bits</span><span class="p">)</span>
+            <span class="n">raw_matrix_overlay</span><span class="p">(</span><span class="n">re_template</span><span class="p">,</span> <span class="n">unify_bounds</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">re_bounds</span><span class="p">),</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>
+
+            <span class="c1"># -- spoof re_bounds as a single unit -------------------</span>
+            <span class="n">grouped_re_bounds</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">bound</span> <span class="ow">in</span> <span class="n">template</span><span class="o">.</span><span class="n">re_bounds</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s2">&quot;_&quot;</span><span class="p">:</span>  <span class="c1"># discard non-unit area</span>
+                    <span class="k">continue</span>
+                <span class="n">grouped_re_bounds</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">bound</span><span class="p">)</span>
+
+            <span class="c1"># == complex merging ====================================</span>
+            <span class="c1"># dict keys must match for (source, bounds,...)</span>
+            <span class="c1"># merge logic checks if multiple non empty, &quot;_&quot;, chars clash</span>
+            <span class="c1">#</span>
+            <span class="c1"># This carries the possible bit positions of non reduced bits:</span>
+            <span class="c1"># &gt;&gt;&gt; {&quot;_&quot;: Matrix(hybrid_template), ...</span>
+            <span class="c1">#</span>
+            <span class="c1"># This carries possible bit positions of result</span>
+            <span class="c1"># &gt;&gt;&gt; ...&quot;0&quot;: Matrix(re_template)}</span>
+
+            <span class="n">template</span><span class="o">.</span><span class="n">_hybrid</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">matrix_merge</span><span class="p">(</span>
+                <span class="p">{</span><span class="s2">&quot;_&quot;</span><span class="p">:</span> <span class="n">Matrix</span><span class="p">(</span><span class="n">hybrid_template</span><span class="p">),</span> <span class="s2">&quot;0&quot;</span><span class="p">:</span> <span class="n">Matrix</span><span class="p">(</span><span class="n">re_template</span><span class="p">)},</span>
+                <span class="p">{</span><span class="s2">&quot;_&quot;</span><span class="p">:</span> <span class="n">grouped_bounds</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">:</span> <span class="n">grouped_re_bounds</span><span class="p">},</span>
+                <span class="nb">complex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="n">map_</span> <span class="o">=</span> <span class="n">hoist</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">_hybrid</span><span class="p">)</span>  <span class="c1"># expensive -- no bounds used</span>
+            <span class="n">template</span><span class="o">.</span><span class="n">_hybrid_bounds</span> <span class="o">=</span> <span class="n">get_unified_bounds</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">_hybrid</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
+
+            <span class="c1"># ! Should expand this to all types of templates / algorithms</span>
+            <span class="n">res_copy</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">_hybrid</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">_complex</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">map_</span><span class="p">,</span> <span class="n">Map</span><span class="p">))</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">dadda</span><span class="p">:</span>
             <span class="n">res_copy</span><span class="o">.</span><span class="n">apply_map</span><span class="p">(</span><span class="n">map_</span><span class="p">)</span>
 
-        <span class="c1"># if not map_ and result:</span>
-        <span class="c1">#     if dadda:</span>
-        <span class="c1">#         map_ = hoist(res_copy)</span>
-        <span class="c1">#     else:</span>
-        <span class="c1"># else:</span>
+        <span class="k">elif</span> <span class="n">template</span><span class="o">.</span><span class="n">pattern</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">dadda</span><span class="p">:</span>
+            <span class="n">map_</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">resolve_rmap</span><span class="p">()</span>
+            <span class="n">res_copy</span><span class="o">.</span><span class="n">apply_map</span><span class="p">(</span><span class="n">map_</span><span class="p">)</span>
 
         <span class="n">stage</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;template&quot;</span><span class="p">:</span> <span class="n">template</span><span class="p">,</span>
@@ -289,7 +364,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Saturates matrix if current matrix has carried past original bitwidth&quot;&quot;&quot;</span>
 
         <span class="n">boundary</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">bits</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
-        <span class="n">as_int</span> <span class="o">=</span> <span class="n">to_int_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
+        <span class="n">as_int</span> <span class="o">=</span> <span class="n">to_int_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
         <span class="n">test</span> <span class="o">=</span> <span class="p">[</span><span class="n">boundary</span> <span class="o">&lt;</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">as_int</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">test</span><span class="p">):</span>
@@ -474,9 +549,12 @@
         <span class="c1"># -- merge --------------------------------------------------</span>
         <span class="n">re_bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">algorithm</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">][</span><span class="s2">&quot;template&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">re_bounds</span>
         <span class="nb">complex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">algorithm</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">][</span><span class="s2">&quot;template&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">_complex</span>
+        <span class="n">conflicts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">algorithm</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">][</span><span class="s2">&quot;template&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">conflicts</span>
 
         <span class="k">if</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">matrix_merge</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">re_bounds</span><span class="p">,</span> <span class="nb">complex</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">matrix_merge</span><span class="p">(</span>
+                <span class="n">results</span><span class="p">,</span> <span class="n">re_bounds</span><span class="p">,</span> <span class="nb">complex</span><span class="o">=</span><span class="nb">complex</span><span class="p">,</span> <span class="n">conflicts</span><span class="o">=</span><span class="n">conflicts</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
 
@@ -511,7 +589,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">pseudo</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">algorithm</span><span class="p">[</span><span class="n">stage</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="s2">&quot;pseudo&quot;</span><span class="p">])</span>
         <span class="n">pattern</span> <span class="o">=</span> <span class="n">resolve_pattern</span><span class="p">(</span><span class="n">pseudo</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">Template</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">matrix</span><span class="o">=</span><span class="n">pseudo</span><span class="p">),</span> <span class="n">dadda</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dadda</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">Template</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">matrix</span><span class="o">=</span><span class="n">pseudo</span><span class="p">))</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">recursive</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
@@ -718,40 +796,28 @@
 <span class="c1"># _DBbBbBbB_______</span>
 
 
-<span class="c1"># TODO:</span>
-<span class="c1"># [ Optimisation ]</span>
-<span class="c1">#</span>
-<span class="c1"># - Implement checksum tuple in Template class</span>
-<span class="c1"># - output coordinates of moves</span>
-<span class="c1">#</span>
-<span class="c1"># - move to template.py</span>
 <div class="viewcode-block" id="hoist">
 <a class="viewcode-back" href="../../../api/multiplied.core.html#multiplied.hoist">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">hoist</span><span class="p">(</span>
     <span class="n">source</span><span class="p">:</span> <span class="n">Matrix</span> <span class="o">|</span> <span class="n">Template</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">checksum</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
-    <span class="n">relative</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">bounds</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">{},</span>
+    <span class="n">unified_bounds</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{},</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Map</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;collect bits to the top of the matrix and produce corresponding map.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    source : Matrix | Template</span>
-<span class="sd">        The source matrix or template to hoist.</span>
-<span class="sd">    checksum : list[int], optional</span>
-<span class="sd">        The checksum to use for hoisting, by default [].</span>
-<span class="sd">    relative : bool, optional</span>
-<span class="sd">        Whether to use relative coordinates, by default False.</span>
+<span class="sd">        The source matrix or template to hoist in-place.</span>
+<span class="sd">    bounds : dict[str, list[tuple[int, int]]]</span>
+<span class="sd">        The bounds of the arithmetic units to hoist.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    Map</span>
 <span class="sd">        The resulting map after hoisting.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">checksum</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;checksum must be a list got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">checksum</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">match</span> <span class="n">source</span><span class="p">:</span>
         <span class="k">case</span> <span class="n">Matrix</span><span class="p">():</span>
@@ -764,37 +830,60 @@
             <span class="p">)</span>
 
     <span class="n">bits</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">bits</span>
-    <span class="k">if</span> <span class="n">checksum</span> <span class="o">==</span> <span class="p">[]:</span>
-        <span class="n">checksum</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">bits</span>
+    <span class="n">map_</span> <span class="o">=</span> <span class="n">raw_zero_map</span><span class="p">(</span><span class="n">bits</span><span class="p">)</span>
 
-    <span class="c1"># -- update when checksum reimplemented ------------------------- #</span>
-    <span class="n">y_start</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1">#</span>
-    <span class="n">y_end</span> <span class="o">=</span> <span class="n">bits</span>  <span class="c1">#</span>
-    <span class="c1"># --------------------------------------------------------------- #</span>
-    <span class="n">map_</span> <span class="o">=</span> <span class="n">raw_empty_matrix</span><span class="p">(</span><span class="n">bits</span><span class="p">)</span>
+    <span class="c1"># -- BBox hoist -------------------------------------------------</span>
+    <span class="k">if</span> <span class="n">bounds</span> <span class="ow">or</span> <span class="n">unified_bounds</span><span class="p">:</span>
+        <span class="c1"># Strategy:</span>
+        <span class="c1"># &gt; unify bounds to ensure bits are mapped top-to-bottom</span>
+        <span class="c1"># &gt; use bounds to select and place bits into respective columns</span>
+        <span class="c1"># &gt; replace selected bit with &quot;_&quot;</span>
+        <span class="c1"># &gt; use current bit position to calculate the distance</span>
+        <span class="c1"># &gt; place mapped distance into map</span>
+        <span class="c1"># &gt; place columns back into matrix</span>
 
-    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">y_start</span><span class="p">,</span> <span class="n">y_end</span><span class="p">):</span>
-        <span class="n">map_</span><span class="p">[</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;00&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">bits</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="c1"># implement x_start, x_end when checksums moved</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">unified_bounds</span><span class="p">:</span>
+            <span class="n">unified_bounds</span> <span class="o">=</span> <span class="n">unify_bounds</span><span class="p">(</span><span class="n">bounds</span><span class="p">)</span>  <span class="c1"># sorts bounds by row</span>
+
+        <span class="c1"># since we have unified bounds, it maybe possible to keep everything in-place</span>
+        <span class="c1"># just keep a count of existing bits in each column</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">unified_bounds</span><span class="p">)</span>
+        <span class="n">col_index</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">bits</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">y</span><span class="p">,</span> <span class="n">xs</span> <span class="ow">in</span> <span class="n">unified_bounds</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span> <span class="ow">in</span> <span class="n">batched</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="n">matrix</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">],</span> <span class="n">matrix</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="n">matrix</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">col_index</span><span class="p">[</span><span class="n">x</span><span class="p">]]</span>
+                    <span class="n">distance</span> <span class="o">=</span> <span class="p">((</span><span class="n">y</span> <span class="o">-</span> <span class="n">col_index</span><span class="p">[</span><span class="n">x</span><span class="p">])</span> <span class="o">^</span> <span class="mi">255</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c1"># 2s complement @ 8-bit</span>
+                    <span class="n">map_</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">distance</span><span class="si">:</span><span class="s2">02X</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span>
+                    <span class="n">col_index</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">Map</span><span class="p">(</span><span class="n">map_</span><span class="p">)</span>
+
+    <span class="c1"># -- expensive hoist --------------------------------------------</span>
     <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bits</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">):</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="n">y_start</span>
-        <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">col_id</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">column</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;0&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">y_end</span> <span class="o">-</span> <span class="n">y_start</span><span class="p">)</span>
-        <span class="k">while</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">y_end</span><span class="p">:</span>
+        <span class="n">column</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;0&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">bits</span><span class="p">)</span>  <span class="c1"># per column, collect each char, leaving no gaps</span>
+        <span class="k">while</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">bits</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">matrix</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;_&quot;</span><span class="p">:</span>
                 <span class="n">offset</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="n">val</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">val</span> <span class="o">=</span> <span class="p">(</span><span class="n">offset</span> <span class="o">^</span> <span class="mi">255</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c1"># 2s complement</span>
-                <span class="n">column</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span>
-                <span class="n">matrix</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span>
-                <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="p">(</span><span class="n">offset</span> <span class="o">^</span> <span class="mi">255</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c1"># 2s complement @ 8-bit</span>
 
-            <span class="n">map_</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">val</span><span class="si">:</span><span class="s2">02X</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span>
+                <span class="c1"># assign to column</span>
+                <span class="n">column</span><span class="p">[</span><span class="n">col_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span>
+
+                <span class="c1"># replace with empty char to stop possible duplication</span>
+                <span class="n">matrix</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span>
+
+                <span class="n">col_id</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="n">map_</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">val</span><span class="si">:</span><span class="s2">02X</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span>  <span class="c1"># signed 2-bit hex</span>
             <span class="n">y</span> <span class="o">+=</span> <span class="mi">1</span>
 
-        <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">col_id</span><span class="p">):</span>
             <span class="n">matrix</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span><span class="p">[</span><span class="n">y</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="n">Map</span><span class="p">(</span><span class="n">map_</span><span class="p">)</span></div>
@@ -873,5 +962,5 @@
   <label class="bz-overlay bz-overlay-primary" for="bz-sidebar-primary"></label>
   <label class="bz-overlay bz-overlay-secondary" for="bz-sidebar-secondary"></label>
   <input type="checkbox" name="bz-sidebar-primary" id="bz-sidebar-primary" aria-label="Toggle section navigation">
-  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../../../_static/documentation_options.js?v=ba9b7d67"></script><script src="../../../_static/doctools.js?v=fd6eb6e6"></script><script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script><script src="../../../_static/clipboard.min.js?v=a7894cd8"></script><script src="../../../_static/copybutton.js?v=f281be69"></script><script src="../../../_static/design-tabs.js?v=f930bc37"></script></body>
+  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../../../_static/documentation_options.js?v=66f6ad91"></script><script src="../../../_static/doctools.js?v=fd6eb6e6"></script><script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script><script src="../../../_static/clipboard.min.js?v=a7894cd8"></script><script src="../../../_static/copybutton.js?v=f281be69"></script><script src="../../../_static/design-tabs.js?v=f930bc37"></script></body>
 </html>

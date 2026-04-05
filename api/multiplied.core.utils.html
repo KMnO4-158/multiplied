@@ -168,6 +168,41 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="multiplied.core.utils.bool.isbbox">
+<span class="sig-prename descclassname"><span class="pre">multiplied.core.utils.bool.</span></span><span class="sig-name descname"><span class="pre">isbbox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/multiplied/core/utils/bool.html#isbbox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.core.utils.bool.isbbox" title="Link to this definition">#</a></dt>
+<dd><p>Return True if dict represents a recognised bounding box.</p>
+<p class="rubric">Notes</p>
+<p>Tuple pairs are expected to be in the format:
+&gt;&gt;&gt; # (start, y), (end, y)
+&gt;&gt;&gt; […, (x0, y), (x1, y), …]</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">isbbox</span><span class="p">({</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]})</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">isbbox</span><span class="p">({</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">)],</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]})</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">isbbox</span><span class="p">({</span><span class="s2">&quot;aa&quot;</span><span class="p">:</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]})</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">isbbox</span><span class="p">({</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="p">[(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]})</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">isbbox</span><span class="p">({</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">)],</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="p">[(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]})</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="multiplied.core.utils.bool.ischar">
 <span class="sig-prename descclassname"><span class="pre">multiplied.core.utils.bool.</span></span><span class="sig-name descname"><span class="pre">ischar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/multiplied/core/utils/bool.html#ischar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.core.utils.bool.ischar" title="Link to this definition">#</a></dt>
 <dd><p>Return True if string is exactly one character</p>
@@ -290,9 +325,47 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="multiplied.core.utils.char.to_int_matrix">
-<span class="sig-prename descclassname"><span class="pre">multiplied.core.utils.char.</span></span><span class="sig-name descname"><span class="pre">to_int_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/multiplied/core/utils/char.html#to_int_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.core.utils.char.to_int_matrix" title="Link to this definition">#</a></dt>
-<dd><p>Converts a matrix of characters to a matrix of integers</p>
+<dt class="sig sig-object py" id="multiplied.core.utils.char.infer_matrix_format">
+<span class="sig-prename descclassname"><span class="pre">multiplied.core.utils.char.</span></span><span class="sig-name descname"><span class="pre">infer_matrix_format</span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>,</dd>
+</dl>
+
+<span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/multiplied/core/utils/char.html#infer_matrix_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.core.utils.char.infer_matrix_format" title="Link to this definition">#</a></dt>
+<dd><p>Infers the format of a litmus test string and returns a matrix of characters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>str</em><em>]</em><em>]</em>) – Source matrix to infer format from.</p></li>
+<li><p><strong>fmt</strong> (<em>str</em>) – Default char used in each matrix cell.</p></li>
+<li><p><strong>l</strong></p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[list[str]]</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">infer_matrix_format</span><span class="p">(</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="s2">&quot;FF&quot;</span><span class="p">)</span>  <span class="c1"># infer as &quot;map&quot;</span>
+<span class="go">[[&#39;00&#39;, &#39;00&#39;, &#39;00&#39;, &#39;00&#39;...</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">infer_matrix_format</span><span class="p">(</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>   <span class="c1"># infer as &quot;empty&quot;</span>
+<span class="go">[[&#39;_&#39;, &#39;_&#39;, &#39;_&#39;, &#39;_&#39;...</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">infer_matrix_format</span><span class="p">(</span><span class="s2">&quot;zero&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>  <span class="c1"># zero-filled</span>
+<span class="go">[[&#39;0&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;...</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="multiplied.core.utils.char.to_int_array">
+<span class="sig-prename descclassname"><span class="pre">multiplied.core.utils.char.</span></span><span class="sig-name descname"><span class="pre">to_int_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/multiplied/core/utils/char.html#to_int_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.core.utils.char.to_int_array" title="Link to this definition">#</a></dt>
+<dd><p>Converts a matrix of characters to a array of integers</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>matrix</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>str</em><em>]</em><em>]</em>) – Matrix of characters to convert from 2D Multiplied formatted matrix
@@ -303,7 +376,7 @@ into to list of integers.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">to_int_matrix</span><span class="p">([[</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">]])</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">to_int_array</span><span class="p">([[</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">]])</span>
 <span class="go">[2, 5]</span>
 </pre></div>
 </div>
@@ -410,6 +483,7 @@ into to list of integers.</p>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-multiplied.core.utils.bool">multiplied​.core​.utils​.bool module</a><ul>
 <li><a class="reference internal" href="#multiplied.core.utils.bool.isalpha"><code class="docutils literal notranslate"><span class="pre">isalpha()</span></code></a></li>
+<li><a class="reference internal" href="#multiplied.core.utils.bool.isbbox"><code class="docutils literal notranslate"><span class="pre">isbbox()</span></code></a></li>
 <li><a class="reference internal" href="#multiplied.core.utils.bool.ischar"><code class="docutils literal notranslate"><span class="pre">ischar()</span></code></a></li>
 <li><a class="reference internal" href="#multiplied.core.utils.bool.ishex2"><code class="docutils literal notranslate"><span class="pre">ishex2()</span></code></a></li>
 <li><a class="reference internal" href="#multiplied.core.utils.bool.isint"><code class="docutils literal notranslate"><span class="pre">isint()</span></code></a></li>
@@ -421,7 +495,8 @@ into to list of integers.</p>
 <li><a class="reference internal" href="#multiplied.core.utils.char.allchars"><code class="docutils literal notranslate"><span class="pre">allchars()</span></code></a></li>
 <li><a class="reference internal" href="#multiplied.core.utils.char.chargen"><code class="docutils literal notranslate"><span class="pre">chargen()</span></code></a></li>
 <li><a class="reference internal" href="#multiplied.core.utils.char.chartff"><code class="docutils literal notranslate"><span class="pre">chartff()</span></code></a></li>
-<li><a class="reference internal" href="#multiplied.core.utils.char.to_int_matrix"><code class="docutils literal notranslate"><span class="pre">to_​int_​matrix()</span></code></a></li>
+<li><a class="reference internal" href="#multiplied.core.utils.char.infer_matrix_format"><code class="docutils literal notranslate"><span class="pre">infer_​matrix_​format()</span></code></a></li>
+<li><a class="reference internal" href="#multiplied.core.utils.char.to_int_array"><code class="docutils literal notranslate"><span class="pre">to_​int_​array()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-multiplied.core.utils.pretty">multiplied​.core​.utils​.pretty module</a><ul>
@@ -501,5 +576,5 @@ into to list of integers.</p>
   <label class="bz-overlay bz-overlay-primary" for="bz-sidebar-primary"></label>
   <label class="bz-overlay bz-overlay-secondary" for="bz-sidebar-secondary"></label>
   <input type="checkbox" name="bz-sidebar-primary" id="bz-sidebar-primary" aria-label="Toggle section navigation">
-  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../_static/documentation_options.js?v=ba9b7d67"></script><script src="../_static/doctools.js?v=fd6eb6e6"></script><script src="../_static/sphinx_highlight.js?v=6ffebe34"></script><script src="../_static/clipboard.min.js?v=a7894cd8"></script><script src="../_static/copybutton.js?v=f281be69"></script><script src="../_static/design-tabs.js?v=f930bc37"></script></body>
+  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../_static/documentation_options.js?v=66f6ad91"></script><script src="../_static/doctools.js?v=fd6eb6e6"></script><script src="../_static/sphinx_highlight.js?v=6ffebe34"></script><script src="../_static/clipboard.min.js?v=a7894cd8"></script><script src="../_static/copybutton.js?v=f281be69"></script><script src="../_static/design-tabs.js?v=f930bc37"></script></body>
 </html>

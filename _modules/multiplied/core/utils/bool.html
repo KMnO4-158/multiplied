@@ -130,7 +130,16 @@
 <span class="c1"># Commonly Reused Sanity Checks #</span>
 <span class="c1">#################################</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">batched</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+
+<span class="c1"># ! [ numba ]</span>
+<span class="c1"># Nice little targets for understanding what works with the JIT and what doesn&#39;t</span>
+
+<span class="c1"># ! [ pytest ]</span>
+<span class="c1"># currently I only have integration tests.</span>
+<span class="c1"># This is a good place to start writing unit tests</span>
+
 
 <span class="n">SUPPORTED_BITWIDTHS</span> <span class="o">=</span> <span class="p">{</span><span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">}</span>
 
@@ -219,9 +228,71 @@
     <span class="n">bits</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">nested_list</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="n">bits</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">nested_list</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">False</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">ischar</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">nested_list</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">row</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">ischar</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="ow">or</span> <span class="n">ishex2</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">nested_list</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">row</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">False</span>
     <span class="k">return</span> <span class="kc">True</span></div>
+
+
+
+<div class="viewcode-block" id="isbbox">
+<a class="viewcode-back" href="../../../../api/multiplied.core.utils.html#multiplied.isbbox">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">isbbox</span><span class="p">(</span><span class="n">bounds</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return True if dict represents a recognised bounding box.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Tuple pairs are expected to be in the format:</span>
+<span class="sd">    &gt;&gt;&gt; # (start, y), (end, y)</span>
+<span class="sd">    &gt;&gt;&gt; [..., (x0, y), (x1, y), ...]</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    &gt;&gt;&gt; isbbox({&quot;a&quot;: [(0, 0), (4, 0)]})</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &gt;&gt;&gt; isbbox({</span>
+<span class="sd">    &gt;&gt;&gt;     &quot;a&quot;: [(0, 0), (4, 0)],</span>
+<span class="sd">    &gt;&gt;&gt;     &quot;b&quot;: [(0, 0), (4, 0)]})</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &gt;&gt;&gt; isbbox({&quot;aa&quot;: [(0, 0), (4, 0)]})</span>
+<span class="sd">    False</span>
+
+<span class="sd">    &gt;&gt;&gt; isbbox({&quot;a&quot;: [(4, 0)]})</span>
+<span class="sd">    False</span>
+
+<span class="sd">    &gt;&gt;&gt; isbbox({</span>
+<span class="sd">    &gt;&gt;&gt;     &quot;a&quot;: [(0, 0), (4, 0)],</span>
+<span class="sd">    &gt;&gt;&gt;     &quot;b&quot;: [(5, 0)]})</span>
+<span class="sd">    False</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bounds</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">bounds</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">ischar</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;char&quot;</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+            <span class="c1"># must be pairs</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;len&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+            <span class="c1"># pairs must sit on same y</span>
+            <span class="k">for</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span> <span class="ow">in</span> <span class="n">batched</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">left</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">!=</span> <span class="nb">int</span><span class="p">(</span><span class="n">right</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">left</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">right</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                        <span class="k">return</span> <span class="kc">False</span>
+                <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="n">left</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">right</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span></div>
 
 </pre></div>
 </article><footer class="bz-article-footer">
@@ -297,5 +368,5 @@
   <label class="bz-overlay bz-overlay-primary" for="bz-sidebar-primary"></label>
   <label class="bz-overlay bz-overlay-secondary" for="bz-sidebar-secondary"></label>
   <input type="checkbox" name="bz-sidebar-primary" id="bz-sidebar-primary" aria-label="Toggle section navigation">
-  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../../../../_static/documentation_options.js?v=ba9b7d67"></script><script src="../../../../_static/doctools.js?v=fd6eb6e6"></script><script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script><script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script><script src="../../../../_static/copybutton.js?v=f281be69"></script><script src="../../../../_static/design-tabs.js?v=f930bc37"></script></body>
+  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../../../../_static/documentation_options.js?v=66f6ad91"></script><script src="../../../../_static/doctools.js?v=fd6eb6e6"></script><script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script><script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script><script src="../../../../_static/copybutton.js?v=f281be69"></script><script src="../../../../_static/design-tabs.js?v=f930bc37"></script></body>
 </html>

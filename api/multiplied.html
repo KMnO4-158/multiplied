@@ -244,11 +244,14 @@
 <li class="toctree-l3"><a class="reference internal" href="multiplied.core.html#multiplied.core.matrix.Slice"><code class="docutils literal notranslate"><span class="pre">Slice</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="multiplied.core.html#multiplied.core.matrix.aggregate_bounds"><code class="docutils literal notranslate"><span class="pre">aggregate_bounds()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="multiplied.core.html#multiplied.core.matrix.empty_rows"><code class="docutils literal notranslate"><span class="pre">empty_rows()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="multiplied.core.html#multiplied.core.matrix.get_unified_bounds"><code class="docutils literal notranslate"><span class="pre">get_unified_bounds()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="multiplied.core.html#multiplied.core.matrix.matrix_merge"><code class="docutils literal notranslate"><span class="pre">matrix_merge()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="multiplied.core.html#multiplied.core.matrix.matrix_scatter"><code class="docutils literal notranslate"><span class="pre">matrix_scatter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="multiplied.core.html#multiplied.core.matrix.raw_dadda_matrix"><code class="docutils literal notranslate"><span class="pre">raw_dadda_matrix()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="multiplied.core.html#multiplied.core.matrix.raw_empty_matrix"><code class="docutils literal notranslate"><span class="pre">raw_empty_matrix()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="multiplied.core.html#multiplied.core.matrix.raw_empty_row_pos"><code class="docutils literal notranslate"><span class="pre">raw_empty_row_pos()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="multiplied.core.html#multiplied.core.matrix.raw_empty_rows"><code class="docutils literal notranslate"><span class="pre">raw_empty_rows()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="multiplied.core.html#multiplied.core.matrix.raw_matrix_overlay"><code class="docutils literal notranslate"><span class="pre">raw_matrix_overlay()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="multiplied.core.html#multiplied.core.matrix.raw_zero_matrix"><code class="docutils literal notranslate"><span class="pre">raw_zero_matrix()</span></code></a></li>
 </ul>
 </li>
@@ -434,7 +437,6 @@ stage.</p>
 <dl>
 <dd><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="multiplied.core.html#multiplied.core.template.Template" title="multiplied.core.template.Template"><span class="pre">Template</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="multiplied.core.html#multiplied.core.template.Pattern" title="multiplied.core.template.Pattern"><span class="pre">Pattern</span></a></span></em>,</dd>
 <dd><em class="sig-param"><span class="n"><span class="pre">map_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
-<dd><em class="sig-param"><span class="n"><span class="pre">dadda</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>,</dd>
 </dl>
 
 <span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/multiplied/core/algorithm.html#Algorithm.push"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.Algorithm.push" title="Link to this definition">#</a></dt>
@@ -445,7 +447,6 @@ result to represent output matrix</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>source</strong> (<a class="reference internal" href="#multiplied.Template" title="multiplied.Template"><em>Template</em></a><em> | </em><a class="reference internal" href="#multiplied.Pattern" title="multiplied.Pattern"><em>Pattern</em></a>) – The template or pattern to be used for the algorithm stage.</p></li>
 <li><p><strong>map</strong> (<em>Any</em><em>, </em><em>optional</em>) – The map to be used for the algorithm stage, by default None</p></li>
-<li><p><strong>dadda</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to use the Dadda-Tree algorithm, by default False</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -573,6 +574,8 @@ is a 2-bit, signed hex value. +ve = up, -ve = down.</p>
 <dd class="field-even"><p>None</p>
 </dd>
 </dl>
+<p class="rubric">Notes</p>
+<p>Attempting to move an empty char will have no effect on the matrix.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -786,7 +789,6 @@ on matrix. Defaults to empty matrix if matrix=None.</p>
 <dl>
 <dd><em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>,</dd>
 <dd><em class="sig-param"><span class="n"><span class="pre">map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="multiplied.core.html#multiplied.core.map.Map" title="multiplied.core.map.Map"><span class="pre">Map</span></a></span></em>,</dd>
-<dd><em class="sig-param"><span class="n"><span class="pre">unified_bounds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>,</dd>
 </dl>
 
 <span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/multiplied/core/map.html#apply_complex_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.apply_complex_map" title="Link to this definition">#</a></dt>
@@ -796,7 +798,7 @@ on matrix. Defaults to empty matrix if matrix=None.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>matrix</strong> (<em>mp.Matrix</em>) – Matrix to apply mapping to</p></li>
 <li><p><strong>map</strong> (<em>mp.Map</em>) – Multiplied Map object to apply mapping from</p></li>
-<li><p><strong>bounds</strong> (<em>dict</em><em>[</em><em>str: list</em><em>[</em><em>int</em><em>]</em><em>]</em>) – Unified bounds for all arithmetic units</p></li>
+<li><p><strong>unified_bounds</strong> (<em>dict</em><em>[</em><em>str: list</em><em>[</em><em>int</em><em>]</em><em>]</em>) – Unified bounds for all arithmetic units</p></li>
 </ul>
 </dd>
 </dl>
@@ -1117,14 +1119,26 @@ Underscores are used to represent empty spaces in the template.</p>
 <dd></dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="multiplied.get_unified_bounds">
+<span class="sig-prename descclassname"><span class="pre">multiplied.</span></span><span class="sig-name descname"><span class="pre">get_unified_bounds</span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>,</dd>
+</dl>
+
+<span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/multiplied/core/matrix.html#get_unified_bounds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.get_unified_bounds" title="Link to this definition">#</a></dt>
+<dd><p>Return unified bounds of partial product matrix(ppm).</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="multiplied.hoist">
 <span class="sig-prename descclassname"><span class="pre">multiplied.</span></span><span class="sig-name descname"><span class="pre">hoist</span></span><span class="sig-paren">(</span>
 
 <dl>
 <dd><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="multiplied.core.html#multiplied.core.matrix.Matrix" title="multiplied.core.matrix.Matrix"><span class="pre">Matrix</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="multiplied.core.html#multiplied.core.template.Template" title="multiplied.core.template.Template"><span class="pre">Template</span></a></span></em>,</dd>
 <dd><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>,</dd>
-<dd><em class="sig-param"><span class="n"><span class="pre">checksum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>,</dd>
-<dd><em class="sig-param"><span class="n"><span class="pre">relative</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">unified_bounds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em>,</dd>
 </dl>
 
 <span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="multiplied.core.html#multiplied.core.map.Map" title="multiplied.core.map.Map"><span class="pre">Map</span></a></span></span><a class="reference internal" href="../_modules/multiplied/core/algorithm.html#hoist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.hoist" title="Link to this definition">#</a></dt>
@@ -1132,9 +1146,8 @@ Underscores are used to represent empty spaces in the template.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>source</strong> (<a class="reference internal" href="#multiplied.Matrix" title="multiplied.Matrix"><em>Matrix</em></a><em> | </em><a class="reference internal" href="#multiplied.Template" title="multiplied.Template"><em>Template</em></a>) – The source matrix or template to hoist.</p></li>
-<li><p><strong>checksum</strong> (<em>list</em><em>[</em><em>int</em><em>]</em><em>, </em><em>optional</em>) – The checksum to use for hoisting, by default [].</p></li>
-<li><p><strong>relative</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to use relative coordinates, by default False.</p></li>
+<li><p><strong>source</strong> (<a class="reference internal" href="#multiplied.Matrix" title="multiplied.Matrix"><em>Matrix</em></a><em> | </em><a class="reference internal" href="#multiplied.Template" title="multiplied.Template"><em>Template</em></a>) – The source matrix or template to hoist in-place.</p></li>
+<li><p><strong>bounds</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>list</em><em>[</em><em>tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em><em>]</em><em>]</em>) – The bounds of the arithmetic units to hoist.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1171,9 +1184,82 @@ Underscores are used to represent empty spaces in the template.</p>
 <dd></dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="multiplied.infer_matrix_format">
+<span class="sig-prename descclassname"><span class="pre">multiplied.</span></span><span class="sig-name descname"><span class="pre">infer_matrix_format</span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>,</dd>
+</dl>
+
+<span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/multiplied/core/utils/char.html#infer_matrix_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.infer_matrix_format" title="Link to this definition">#</a></dt>
+<dd><p>Infers the format of a litmus test string and returns a matrix of characters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>str</em><em>]</em><em>]</em>) – Source matrix to infer format from.</p></li>
+<li><p><strong>fmt</strong> (<em>str</em>) – Default char used in each matrix cell.</p></li>
+<li><p><strong>l</strong></p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[list[str]]</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">infer_matrix_format</span><span class="p">(</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="s2">&quot;FF&quot;</span><span class="p">)</span>  <span class="c1"># infer as &quot;map&quot;</span>
+<span class="go">[[&#39;00&#39;, &#39;00&#39;, &#39;00&#39;, &#39;00&#39;...</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">infer_matrix_format</span><span class="p">(</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>   <span class="c1"># infer as &quot;empty&quot;</span>
+<span class="go">[[&#39;_&#39;, &#39;_&#39;, &#39;_&#39;, &#39;_&#39;...</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">infer_matrix_format</span><span class="p">(</span><span class="s2">&quot;zero&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>  <span class="c1"># zero-filled</span>
+<span class="go">[[&#39;0&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;...</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="multiplied.isalpha">
 <span class="sig-prename descclassname"><span class="pre">multiplied.</span></span><span class="sig-name descname"><span class="pre">isalpha</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/multiplied/core/utils/bool.html#isalpha"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.isalpha" title="Link to this definition">#</a></dt>
 <dd><p>Return True if string is exactly one alphabetic character</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="multiplied.isbbox">
+<span class="sig-prename descclassname"><span class="pre">multiplied.</span></span><span class="sig-name descname"><span class="pre">isbbox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/multiplied/core/utils/bool.html#isbbox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.isbbox" title="Link to this definition">#</a></dt>
+<dd><p>Return True if dict represents a recognised bounding box.</p>
+<p class="rubric">Notes</p>
+<p>Tuple pairs are expected to be in the format:
+&gt;&gt;&gt; # (start, y), (end, y)
+&gt;&gt;&gt; […, (x0, y), (x1, y), …]</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">isbbox</span><span class="p">({</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]})</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">isbbox</span><span class="p">({</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">)],</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]})</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">isbbox</span><span class="p">({</span><span class="s2">&quot;aa&quot;</span><span class="p">:</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]})</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">isbbox</span><span class="p">({</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="p">[(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]})</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">isbbox</span><span class="p">({</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">)],</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="p">[(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]})</span>
+<span class="go">False</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -1223,9 +1309,10 @@ Underscores are used to represent empty spaces in the template.</p>
 <dd><em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>,</dd>
 <dd><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>,</dd>
 <dd><em class="sig-param"><span class="n"><span class="pre">complex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">conflicts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em>,</dd>
 </dl>
 
-<span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="multiplied.core.html#multiplied.core.matrix.Matrix" title="multiplied.core.matrix.Matrix"><span class="pre">Matrix</span></a></span></span><a class="reference internal" href="../_modules/multiplied/core/matrix.html#matrix_merge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.matrix_merge" title="Link to this definition">#</a></dt>
+<span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="multiplied.core.html#multiplied.core.matrix.Matrix" title="multiplied.core.matrix.Matrix"><span class="pre">Matrix</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/multiplied/core/matrix.html#matrix_merge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.matrix_merge" title="Link to this definition">#</a></dt>
 <dd><p>Merge multiple matrices into a single matrix using pre calculated bounds</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1267,10 +1354,13 @@ Underscores are used to represent empty spaces in the template.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>source</strong> (<em>list</em><em>[</em><em>list</em><em>]</em>) – Partial Product matrix to scatter.</p></li>
 <li><p><strong>bounds</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>list</em><em>[</em><em>tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em><em>]</em><em>]</em>) – The bounds for each unit to extract from the source.</p></li>
-<li><p><strong>fmt</strong> (<em>str</em><em>, </em><em>optional</em><em>, </em><em>default: &quot;auto&quot;.</em>) – “auto” : Infer format from source.
+<li><p><strong>fmt</strong> (<em>str</em><em>, </em><em>optional</em><em>, </em><em>default: &quot;auto&quot;.</em>) – <p>Default char used in new matrix</p>
+<p>”auto” : Infer format from source.
 “empty” : <a class="reference internal" href="#multiplied.raw_empty_matrix" title="multiplied.raw_empty_matrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">raw_empty_matrix()</span></code></a>
 “zero” : <a class="reference internal" href="#multiplied.raw_zero_matrix" title="multiplied.raw_zero_matrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">raw_zero_matrix()</span></code></a>
-“map” : <code class="xref py py-func docutils literal notranslate"><span class="pre">raw_map_matrix()</span></code></p></li>
+“map” : <code class="xref py py-func docutils literal notranslate"><span class="pre">raw_map_matrix()</span></code>
+“char” : fill ppm with new char</p>
+</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1394,18 +1484,75 @@ with the same shape as the source.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="multiplied.pretty_nested_list">
+<span class="sig-prename descclassname"><span class="pre">multiplied.</span></span><span class="sig-name descname"><span class="pre">pretty_nested_list</span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><em class="sig-param"><span class="n"><span class="pre">listy_object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">whitespace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>,</dd>
+</dl>
+
+<span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/multiplied/core/utils/pretty.html#pretty_nested_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.pretty_nested_list" title="Link to this definition">#</a></dt>
+<dd><p>Format nested list as a string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>listy_object</strong> (<em>Any</em>) – The nested list to be formatted.</p></li>
+<li><p><strong>whitespace</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to add whitespace between elements, by default False.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pretty_nested_list</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">],[</span><span class="n">_</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">_</span><span class="p">],[</span><span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="mi">3</span><span class="p">]])</span>
+<span class="go">1__</span>
+<span class="go">_2_</span>
+<span class="go">__3</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="multiplied.raw_dadda_map">
 <span class="sig-prename descclassname"><span class="pre">multiplied.</span></span><span class="sig-name descname"><span class="pre">raw_dadda_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/multiplied/core/map.html#raw_dadda_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.raw_dadda_map" title="Link to this definition">#</a></dt>
 <dd><p>Returns a Dadda map of size <cite>bits</cite>.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="multiplied.raw_empty_matrix">
-<span class="sig-prename descclassname"><span class="pre">multiplied.</span></span><span class="sig-name descname"><span class="pre">raw_empty_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/multiplied/core/matrix.html#raw_empty_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.raw_empty_matrix" title="Link to this definition">#</a></dt>
-<dd><p>Build an empty partial product matrix for a given bitwidth</p>
+<dt class="sig sig-object py" id="multiplied.raw_dadda_matrix">
+<span class="sig-prename descclassname"><span class="pre">multiplied.</span></span><span class="sig-name descname"><span class="pre">raw_dadda_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/multiplied/core/matrix.html#raw_dadda_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.raw_dadda_matrix" title="Link to this definition">#</a></dt>
+<dd><p>Return zero-filled partial product matrix with Dadda-Tree mapping</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>bits</strong> (<em>int</em>) – The bitwidth of the matrix</p>
+<dd class="field-odd"><p><strong>bits</strong> (<em>int</em>) – Bitwidth of the matrix</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A zero-filled 2d “Dadda array” for the given bitwidth</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[list[str]]</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>A zero matrix is filled with zeros on the diagonal and underscores elsewhere,
+following Multipied’s convention</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">raw_dadda_matrix</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="go">[[&#39;_&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;],</span>
+<span class="go"> [&#39;_&#39;, &#39;_&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;, &#39;_&#39;],</span>
+<span class="go"> [&#39;_&#39;, &#39;_&#39;, &#39;_&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;, &#39;_&#39;, &#39;_&#39;],</span>
+<span class="go"> [&#39;_&#39;, &#39;_&#39;, &#39;_&#39;, &#39;_&#39;, &#39;0&#39;, &#39;_&#39;, &#39;_&#39;, &#39;_&#39;]]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="multiplied.raw_empty_matrix">
+<span class="sig-prename descclassname"><span class="pre">multiplied.</span></span><span class="sig-name descname"><span class="pre">raw_empty_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/multiplied/core/matrix.html#raw_empty_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.raw_empty_matrix" title="Link to this definition">#</a></dt>
+<dd><p>Return an empty partial product matrix for a given bitwidth</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>bits</strong> (<em>int</em>) – Bitwidth of the matrix</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>An empty 2d array for the given bitwidth</p>
@@ -1446,6 +1593,20 @@ with the same shape as the source.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="multiplied.raw_matrix_overlay">
+<span class="sig-prename descclassname"><span class="pre">multiplied.</span></span><span class="sig-name descname"><span class="pre">raw_matrix_overlay</span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">unified_bounds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">char</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>,</dd>
+</dl>
+
+<span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/multiplied/core/matrix.html#raw_matrix_overlay"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.raw_matrix_overlay" title="Link to this definition">#</a></dt>
+<dd><p>Overlay chars over raw source matrix in-place</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="multiplied.raw_zero_map">
 <span class="sig-prename descclassname"><span class="pre">multiplied.</span></span><span class="sig-name descname"><span class="pre">raw_zero_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/multiplied/core/map.html#raw_zero_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.raw_zero_map" title="Link to this definition">#</a></dt>
 <dd><p>Returns a zero-filled map of size <cite>bits</cite>.</p>
@@ -1454,10 +1615,10 @@ with the same shape as the source.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="multiplied.raw_zero_matrix">
 <span class="sig-prename descclassname"><span class="pre">multiplied.</span></span><span class="sig-name descname"><span class="pre">raw_zero_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/multiplied/core/matrix.html#raw_zero_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.raw_zero_matrix" title="Link to this definition">#</a></dt>
-<dd><p>Build a zero-filled partial product matrix for a given bitwidth</p>
+<dd><p>Return a zero-filled partial product matrix for a given bitwidth</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>bits</strong> (<em>int</em>) – The bitwidth of the matrix</p>
+<dd class="field-odd"><p><strong>bits</strong> (<em>int</em>) – Bitwidth of the matrix</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A zero-filled 2d array for the given bitwidth</p>
@@ -1516,9 +1677,9 @@ following Multipied’s convention</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="multiplied.to_int_matrix">
-<span class="sig-prename descclassname"><span class="pre">multiplied.</span></span><span class="sig-name descname"><span class="pre">to_int_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/multiplied/core/utils/char.html#to_int_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.to_int_matrix" title="Link to this definition">#</a></dt>
-<dd><p>Converts a matrix of characters to a matrix of integers</p>
+<dt class="sig sig-object py" id="multiplied.to_int_array">
+<span class="sig-prename descclassname"><span class="pre">multiplied.</span></span><span class="sig-name descname"><span class="pre">to_int_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/multiplied/core/utils/char.html#to_int_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.to_int_array" title="Link to this definition">#</a></dt>
+<dd><p>Converts a matrix of characters to a array of integers</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>matrix</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>str</em><em>]</em><em>]</em>) – Matrix of characters to convert from 2D Multiplied formatted matrix
@@ -1529,7 +1690,7 @@ into to list of integers.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">to_int_matrix</span><span class="p">([[</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">]])</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">to_int_array</span><span class="p">([[</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">]])</span>
 <span class="go">[2, 5]</span>
 </pre></div>
 </div>
@@ -1644,17 +1805,23 @@ set of operands a, b.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="multiplied.unify_bounds">
-<span class="sig-prename descclassname"><span class="pre">multiplied.</span></span><span class="sig-name descname"><span class="pre">unify_bounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../_modules/multiplied/core/map.html#unify_bounds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.unify_bounds" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">multiplied.</span></span><span class="sig-name descname"><span class="pre">unify_bounds</span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>,</dd>
+</dl>
+
+<span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/multiplied/core/map.html#unify_bounds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#multiplied.unify_bounds" title="Link to this definition">#</a></dt>
 <dd><p>Returns a simplified bound for non empty characters</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>bounds</strong> (<em>dict</em>) – Bounding box for each arithmetic unit in Template object</p>
+<dd class="field-odd"><p><strong>bounds</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>list</em><em>[</em><em>tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em><em>]</em><em>]</em>) – Bounding box for each arithmetic unit in Template object</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Unified bounds where  {y : [x0, x1]}</p>
+<dd class="field-even"><p><strong>dict</strong> – Unified bounds where  {y : [x0, x1]}</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dict</p>
+<dd class="field-odd"><p>dict[int, list[int]]</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -1738,10 +1905,13 @@ set of operands a, b.</p>
 <li><a class="reference internal" href="#multiplied.empty_rows"><code class="docutils literal notranslate"><span class="pre">empty_​rows()</span></code></a></li>
 <li><a class="reference internal" href="#multiplied.export_algorithm"><code class="docutils literal notranslate"><span class="pre">export_​algorithm()</span></code></a></li>
 <li><a class="reference internal" href="#multiplied.export_parquet"><code class="docutils literal notranslate"><span class="pre">export_​parquet()</span></code></a></li>
+<li><a class="reference internal" href="#multiplied.get_unified_bounds"><code class="docutils literal notranslate"><span class="pre">get_​unified_​bounds()</span></code></a></li>
 <li><a class="reference internal" href="#multiplied.hoist"><code class="docutils literal notranslate"><span class="pre">hoist()</span></code></a></li>
 <li><a class="reference internal" href="#multiplied.import_algorithm"><code class="docutils literal notranslate"><span class="pre">import_​algorithm()</span></code></a></li>
 <li><a class="reference internal" href="#multiplied.import_parquet"><code class="docutils literal notranslate"><span class="pre">import_​parquet()</span></code></a></li>
+<li><a class="reference internal" href="#multiplied.infer_matrix_format"><code class="docutils literal notranslate"><span class="pre">infer_​matrix_​format()</span></code></a></li>
 <li><a class="reference internal" href="#multiplied.isalpha"><code class="docutils literal notranslate"><span class="pre">isalpha()</span></code></a></li>
+<li><a class="reference internal" href="#multiplied.isbbox"><code class="docutils literal notranslate"><span class="pre">isbbox()</span></code></a></li>
 <li><a class="reference internal" href="#multiplied.ischar"><code class="docutils literal notranslate"><span class="pre">ischar()</span></code></a></li>
 <li><a class="reference internal" href="#multiplied.ishex2"><code class="docutils literal notranslate"><span class="pre">ishex2()</span></code></a></li>
 <li><a class="reference internal" href="#multiplied.isint"><code class="docutils literal notranslate"><span class="pre">isint()</span></code></a></li>
@@ -1755,15 +1925,18 @@ set of operands a, b.</p>
 <li><a class="reference internal" href="#multiplied.pq_extract_formatted_stages"><code class="docutils literal notranslate"><span class="pre">pq_​extract_​formatted_​stages()</span></code></a></li>
 <li><a class="reference internal" href="#multiplied.pq_extract_stages"><code class="docutils literal notranslate"><span class="pre">pq_​extract_​stages()</span></code></a></li>
 <li><a class="reference internal" href="#multiplied.pretty"><code class="docutils literal notranslate"><span class="pre">pretty()</span></code></a></li>
+<li><a class="reference internal" href="#multiplied.pretty_nested_list"><code class="docutils literal notranslate"><span class="pre">pretty_​nested_​list()</span></code></a></li>
 <li><a class="reference internal" href="#multiplied.raw_dadda_map"><code class="docutils literal notranslate"><span class="pre">raw_​dadda_​map()</span></code></a></li>
+<li><a class="reference internal" href="#multiplied.raw_dadda_matrix"><code class="docutils literal notranslate"><span class="pre">raw_​dadda_​matrix()</span></code></a></li>
 <li><a class="reference internal" href="#multiplied.raw_empty_matrix"><code class="docutils literal notranslate"><span class="pre">raw_​empty_​matrix()</span></code></a></li>
 <li><a class="reference internal" href="#multiplied.raw_empty_row_pos"><code class="docutils literal notranslate"><span class="pre">raw_​empty_​row_​pos()</span></code></a></li>
 <li><a class="reference internal" href="#multiplied.raw_empty_rows"><code class="docutils literal notranslate"><span class="pre">raw_​empty_​rows()</span></code></a></li>
+<li><a class="reference internal" href="#multiplied.raw_matrix_overlay"><code class="docutils literal notranslate"><span class="pre">raw_​matrix_​overlay()</span></code></a></li>
 <li><a class="reference internal" href="#multiplied.raw_zero_map"><code class="docutils literal notranslate"><span class="pre">raw_​zero_​map()</span></code></a></li>
 <li><a class="reference internal" href="#multiplied.raw_zero_matrix"><code class="docutils literal notranslate"><span class="pre">raw_​zero_​matrix()</span></code></a></li>
 <li><a class="reference internal" href="#multiplied.resolve_pattern"><code class="docutils literal notranslate"><span class="pre">resolve_​pattern()</span></code></a></li>
 <li><a class="reference internal" href="#multiplied.shallow_truth_table"><code class="docutils literal notranslate"><span class="pre">shallow_​truth_​table()</span></code></a></li>
-<li><a class="reference internal" href="#multiplied.to_int_matrix"><code class="docutils literal notranslate"><span class="pre">to_​int_​matrix()</span></code></a></li>
+<li><a class="reference internal" href="#multiplied.to_int_array"><code class="docutils literal notranslate"><span class="pre">to_​int_​array()</span></code></a></li>
 <li><a class="reference internal" href="#multiplied.truth_dataframe"><code class="docutils literal notranslate"><span class="pre">truth_​dataframe()</span></code></a></li>
 <li><a class="reference internal" href="#multiplied.truth_multi_parquet"><code class="docutils literal notranslate"><span class="pre">truth_​multi_​parquet()</span></code></a></li>
 <li><a class="reference internal" href="#multiplied.truth_scope"><code class="docutils literal notranslate"><span class="pre">truth_​scope()</span></code></a></li>
@@ -1841,5 +2014,5 @@ set of operands a, b.</p>
   <label class="bz-overlay bz-overlay-primary" for="bz-sidebar-primary"></label>
   <label class="bz-overlay bz-overlay-secondary" for="bz-sidebar-secondary"></label>
   <input type="checkbox" name="bz-sidebar-primary" id="bz-sidebar-primary" aria-label="Toggle section navigation">
-  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../_static/documentation_options.js?v=ba9b7d67"></script><script src="../_static/doctools.js?v=fd6eb6e6"></script><script src="../_static/sphinx_highlight.js?v=6ffebe34"></script><script src="../_static/clipboard.min.js?v=a7894cd8"></script><script src="../_static/copybutton.js?v=f281be69"></script><script src="../_static/design-tabs.js?v=f930bc37"></script></body>
+  <input type="checkbox" name="bz-sidebar-secondary" id="bz-sidebar-secondary" aria-label="Toggle table of contents"><script src="../_static/documentation_options.js?v=66f6ad91"></script><script src="../_static/doctools.js?v=fd6eb6e6"></script><script src="../_static/sphinx_highlight.js?v=6ffebe34"></script><script src="../_static/clipboard.min.js?v=a7894cd8"></script><script src="../_static/copybutton.js?v=f281be69"></script><script src="../_static/design-tabs.js?v=f930bc37"></script></body>
 </html>
