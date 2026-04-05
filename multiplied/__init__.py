@@ -5,8 +5,8 @@
 
 # -- version --------------------------------------------------------
 
-__version_info__ = (0, 9, 0)
-__version__ = "0.9.0"
+__version_info__ = (0, 10, 0)
+__version__ = "0.10.0"
 
 # -- core -----------------------------------------------------------
 
@@ -28,8 +28,11 @@ from .core.matrix import (
     raw_empty_rows,
     raw_empty_matrix,
     raw_zero_matrix,
+    raw_dadda_matrix,
+    raw_matrix_overlay,
     matrix_scatter,
     matrix_merge,
+    get_unified_bounds,
 )
 
 
@@ -63,12 +66,14 @@ from .core.utils.char import (
     chargen,
     chartff,
     allchars,
-    to_int_matrix,
+    to_int_array,
+    infer_matrix_format,
 )
 
 
 from .core.utils.pretty import (
     pretty,
+    pretty_nested_list,
     mprint,
 )
 
@@ -77,6 +82,7 @@ from .core.utils.bool import (
     isint,
     ishex2,
     ischar,
+    isbbox,
     isalpha,
     validate_bitwidth,
     SUPPORTED_BITWIDTHS,
@@ -133,6 +139,7 @@ __all__ = [
     "raw_empty_rows",
     "raw_zero_map",
     "raw_dadda_map",
+    "raw_matrix_overlay",
     "unify_bounds",
     "apply_complex_map",
     "Matrix",
@@ -143,8 +150,10 @@ __all__ = [
     "empty_rows",
     "raw_empty_matrix",
     "raw_zero_matrix",
+    "raw_dadda_matrix",
     "matrix_scatter",
     "matrix_merge",
+    "get_unified_bounds",
     "hoist",
     "build_csa",
     "build_adder",
@@ -161,11 +170,14 @@ __all__ = [
     "isalpha",
     "ishex2",
     "isint",
+    "isbbox",
     "chargen",
     "chartff",
     "allchars",
-    "to_int_matrix",
+    "to_int_array",
+    "infer_matrix_format",
     "pretty",
+    "pretty_nested_list",
     "mprint",
     "validate_bitwidth",
     "export_algorithm",

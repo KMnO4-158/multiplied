@@ -3,13 +3,23 @@
 ###########################################
 
 from copy import deepcopy
+from itertools import batched
 from typing import Any, Iterable
 from .dtypes.base import MultipliedMeta
-from .map import Map
-from .matrix import Matrix, empty_rows, matrix_merge, matrix_scatter, raw_empty_matrix
+from .map import Map, raw_zero_map, unify_bounds
+from .matrix import (
+    Matrix,
+    empty_rows,
+    get_unified_bounds,
+    matrix_merge,
+    matrix_scatter,
+    raw_dadda_matrix,
+    raw_empty_matrix,
+    raw_matrix_overlay,
+)
 from .template import Pattern, Template, resolve_pattern
 from .utils.bool import validate_bitwidth
-from .utils.char import to_int_matrix
+from .utils.char import to_int_array
 from .utils.pretty import pretty
 
 
@@ -75,9 +85,7 @@ class Algorithm(MultipliedMeta):
         self._soft_type = dict
         return None
 
-    def push(
-        self, source: Template | Pattern, map_: Any = None, dadda: bool = False
-    ) -> None:
+    def push(self, source: Template | Pattern, map_: Any = None) -> None:
         """Populate algorithm stage based on template. Generates pseudo
         result to represent output matrix
 
@@ -87,8 +95,6 @@ class Algorithm(MultipliedMeta):
             The template or pattern to be used for the algorithm stage.
         map_ : Any, optional
             The map to be used for the algorithm stage, by default None
-        dadda : bool, optional
-            Whether to use the Dadda-Tree algorithm, by default False
 
         Returns
         -------
@@ -113,7 +119,7 @@ class Algorithm(MultipliedMeta):
             template = Template(source)
         elif isinstance(source, Template):
             if source._complex and (map_ is None and not self.dadda):
-                raise ValueError("Complex template without map")
+                raise ValueError(f"Complex template without map.\n\n{source}")
             template = deepcopy(source)
         else:
             raise TypeError("Invalid argument type. Expected Template")
@@ -121,28 +127,97 @@ class Algorithm(MultipliedMeta):
         if not isinstance(template.result, (Matrix)):
             raise ValueError("Template result is unset")
 
-        from multiplied.core.map import unify_bounds
-
         result = template.result
         res_copy = deepcopy(result)
         stage_index = len(self.algorithm)
 
+        # -- hybrid setup -------------------------------------------
+        # Strategy:
+        #
+        # [ SETUP FIRST TEMPLATE ]
+        # > If first template -> setup Template._hybrid
+        # > zeroed dadda matrix -> overlay bound "_"s
+        #
+        # [ UNIFIED BOUNDS ]
+        # > Use _hybrid to generate unified bounds
+        # > Store generated bounds within Template._hybrid_bounds
+        #
+        # [ APPLY MAP ]
+        # > Use Template._hybrid_bounds -> hoist Template._hybrid -> generate map
+        # > Template.result -> pseudo
+        # > Hoisted Template._hybrid -> Algorithm._hybrid_next
+        #
+        # [ NEXT TEMPLATE ]
+        # > If not first template -> setup map from previous stage's Template._hybrid
+        #
+        # > Use Algorithm._hybrid_next to setup Template._hybrid
+        #   > generate zeroed matrix of _hybrid_next
+        #   > use zeroed matrix -> setup Template._hybrid
+        # > Use Template_hybrid > _hybrid_bounds
+        # > Use Template._hybrid_bounds -> hoist Template.result -> generate map
+
         if self.dadda:
-            map_ = hoist(res_copy)
+            # -- algorithm's first stage ----------------------------
+            if self.algorithm == {}:
+                # first stage => no reduction => use zeroed Dadda matrix
+                hybrid_template = raw_dadda_matrix(template.bits)
 
-        elif template._complex:
-            map_bounds = unify_bounds(template.re_bounds)
-            res_copy.apply_map(map_, unified_bounds=map_bounds)
+            # -- use algorithm history ------------------------------
+            else:
+                hybrid_template = deepcopy(
+                    self.algorithm[len(self.algorithm) - 1]["template"]._hybrid
+                ).matrix
 
-        else:
-            map_ = result.resolve_rmap()
+            # == overlay bits effected by reduction =================
+            raw_matrix_overlay(hybrid_template, unify_bounds(template.bounds), "_")
+            spoof_hybrid_bounds = template.update_bounding_box(hybrid_template)
+
+            # -- spoof bounds as a single unit ----------------------
+            grouped_bounds = []
+            for k, bound in spoof_hybrid_bounds.items():
+                if k == "_":  # discard non-unit area
+                    continue
+                grouped_bounds.extend(bound)
+
+            # == spoof result matrix ================================
+            re_template = raw_empty_matrix(template.bits)
+            raw_matrix_overlay(re_template, unify_bounds(template.re_bounds), "0")
+
+            # -- spoof re_bounds as a single unit -------------------
+            grouped_re_bounds = []
+            for k, bound in template.re_bounds.items():
+                if k == "_":  # discard non-unit area
+                    continue
+                grouped_re_bounds.extend(bound)
+
+            # == complex merging ====================================
+            # dict keys must match for (source, bounds,...)
+            # merge logic checks if multiple non empty, "_", chars clash
+            #
+            # This carries the possible bit positions of non reduced bits:
+            # >>> {"_": Matrix(hybrid_template), ...
+            #
+            # This carries possible bit positions of result
+            # >>> ..."0": Matrix(re_template)}
+
+            template._hybrid, _ = matrix_merge(
+                {"_": Matrix(hybrid_template), "0": Matrix(re_template)},
+                {"_": grouped_bounds, "0": grouped_re_bounds},
+                complex=True,
+            )
+
+            map_ = hoist(template._hybrid)  # expensive -- no bounds used
+            template._hybrid_bounds = get_unified_bounds(template._hybrid.matrix)
+
+            # ! Should expand this to all types of templates / algorithms
+            res_copy = deepcopy(template._hybrid)
+
+        elif (template._complex or isinstance(map_, Map)) and not self.dadda:
             res_copy.apply_map(map_)
 
-        # if not map_ and result:
-        #     if dadda:
-        #         map_ = hoist(res_copy)
-        #     else:
-        # else:
+        elif template.pattern and not self.dadda:
+            map_ = result.resolve_rmap()
+            res_copy.apply_map(map_)
 
         stage = {
             "template": template,
@@ -156,7 +231,7 @@ class Algorithm(MultipliedMeta):
         """Saturates matrix if current matrix has carried past original bitwidth"""
 
         boundary = (2**self.bits) - 1
-        as_int = to_int_matrix(self.matrix.matrix)
+        as_int = to_int_array(self.matrix.matrix)
         test = [boundary < i for i in as_int]
 
         if any(test):
@@ -341,9 +416,12 @@ class Algorithm(MultipliedMeta):
         # -- merge --------------------------------------------------
         re_bounds = self.algorithm[self.state]["template"].re_bounds
         complex = self.algorithm[self.state]["template"]._complex
+        conflicts = self.algorithm[self.state]["template"].conflicts
 
         if 1 < len(results):
-            self.matrix = matrix_merge(results, re_bounds, complex=complex)
+            self.matrix, _ = matrix_merge(
+                results, re_bounds, complex=complex, conflicts=conflicts
+            )
         else:
             self.matrix = list(results.values())[0]
 
@@ -376,7 +454,7 @@ class Algorithm(MultipliedMeta):
         else:
             pseudo = deepcopy(self.algorithm[stage - 1]["pseudo"])
         pattern = resolve_pattern(pseudo)
-        self.push(Template(pattern, matrix=pseudo), dadda=self.dadda)
+        self.push(Template(pattern, matrix=pseudo))
         if not recursive:
             return None
 
@@ -569,38 +647,26 @@ def collect_template_units(
 # _DBbBbBbB_______
 
 
-# TODO:
-# [ Optimisation ]
-#
-# - Implement checksum tuple in Template class
-# - output coordinates of moves
-#
-# - move to template.py
 def hoist(
     source: Matrix | Template,
     *,
-    checksum: list[int] = [],
-    relative: bool = False,
+    bounds: dict[str, list[tuple[int, int]]] = {},
+    unified_bounds: dict[int, list[int]] = {},
 ) -> Map:
     """collect bits to the top of the matrix and produce corresponding map.
 
     Parameters
     ----------
     source : Matrix | Template
-        The source matrix or template to hoist.
-    checksum : list[int], optional
-        The checksum to use for hoisting, by default [].
-    relative : bool, optional
-        Whether to use relative coordinates, by default False.
+        The source matrix or template to hoist in-place.
+    bounds : dict[str, list[tuple[int, int]]]
+        The bounds of the arithmetic units to hoist.
 
     Returns
     -------
     Map
         The resulting map after hoisting.
     """
-
-    if not isinstance(checksum, list):
-        raise TypeError(f"checksum must be a list got {type(checksum)}")
 
     match source:
         case Matrix():
@@ -613,37 +679,60 @@ def hoist(
             )
 
     bits = source.bits
-    if checksum == []:
-        checksum = [0] * bits
+    map_ = raw_zero_map(bits)
 
-    # -- update when checksum reimplemented ------------------------- #
-    y_start = 0  #
-    y_end = bits  #
-    # --------------------------------------------------------------- #
-    map_ = raw_empty_matrix(bits)
+    # -- BBox hoist -------------------------------------------------
+    if bounds or unified_bounds:
+        # Strategy:
+        # > unify bounds to ensure bits are mapped top-to-bottom
+        # > use bounds to select and place bits into respective columns
+        # > replace selected bit with "_"
+        # > use current bit position to calculate the distance
+        # > place mapped distance into map
+        # > place columns back into matrix
 
-    for y in range(y_start, y_end):
-        map_[y] = ["00"] * (bits << 1)
-    # implement x_start, x_end when checksums moved
+        if not unified_bounds:
+            unified_bounds = unify_bounds(bounds)  # sorts bounds by row
+
+        # since we have unified bounds, it maybe possible to keep everything in-place
+        # just keep a count of existing bits in each column
+        print(unified_bounds)
+        col_index = [0] * (bits << 1)
+        for y, xs in unified_bounds.items():
+            for left, right in batched(xs, 2):
+                for x in range(left, right + 1):
+                    matrix[y][x], matrix[y][x] = "_", matrix[y][col_index[x]]
+                    distance = ((y - col_index[x]) ^ 255) + 1  # 2s complement @ 8-bit
+                    map_[y][x] = f"{distance:02X}"[-2:]
+                    col_index[x] += 1
+
+        return Map(map_)
+
+    # -- expensive hoist --------------------------------------------
     for x in range(bits << 1):
-        y = y_start
-        k = 0
+        y = 0
+        col_id = 0
         offset = 0
-        column = ["0"] * (y_end - y_start)
-        while y < y_end:
+        column = ["0"] * (bits)  # per column, collect each char, leaving no gaps
+        while y < bits:
             if matrix[y][x] == "_":
                 offset += 1
                 val = 0
             else:
-                val = (offset ^ 255) + 1  # 2s complement
-                column[k] = matrix[y][x]
-                matrix[y][x] = "_"
-                k += 1
+                val = (offset ^ 255) + 1  # 2s complement @ 8-bit
 
-            map_[y][x] = f"{val:02X}"[-2:]
+                # assign to column
+                column[col_id] = matrix[y][x]
+
+                # replace with empty char to stop possible duplication
+                matrix[y][x] = "_"
+
+                col_id += 1
+
+            map_[y][x] = f"{val:02X}"[-2:]  # signed 2-bit hex
             y += 1
 
-        for y in range(k):
+        for y in range(col_id):
             matrix[y][x] = column[y]
 
     return Map(map_)

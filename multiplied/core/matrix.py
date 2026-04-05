@@ -6,9 +6,11 @@ from copy import deepcopy
 from itertools import batched, pairwise
 from typing import Any, Iterator
 
+from multiplied.core.utils.char import infer_matrix_format
+
 from .dtypes.base import MultipliedMeta
 from .map import Map, apply_complex_map
-from .utils.bool import isalpha, ischar, ishex2, isint, isppm, validate_bitwidth
+from .utils.bool import isalpha, isbbox, ischar, isint, isppm, validate_bitwidth
 from .utils.pretty import pretty
 
 
@@ -195,6 +197,7 @@ class Matrix(MultipliedMeta):
             rmap.append(f"{val:02X}"[-2:])
         return Map(rmap)
 
+    # ! Map objects should generate their own unified bounds upon creation
     def apply_map(
         self, map_: Map, *, unified_bounds: dict[str, list[int]] = {}
     ) -> None:
@@ -211,6 +214,10 @@ class Matrix(MultipliedMeta):
         Returns
         -------
         None
+
+        Notes
+        -----
+        Attempting to move an empty char will have no effect on the matrix.
 
         """
         if not isinstance(map_, Map):
@@ -239,14 +246,22 @@ class Matrix(MultipliedMeta):
 
         # -- bounding box mapping -----------------------------------
 
-        if unified_bounds:
-            apply_complex_map(self.matrix, map_, unified_bounds)
+        if map_.unified_bounds:
+            apply_complex_map(self.matrix, map_)
             return None
 
         # -- bit-wise mapping ---------------------------------------
         # Expensive fallback
         for y in range(self.bits):
             for x in range(self.bits << 1):
+                # ignore moving empty chars
+                if self.matrix[y][x] == "_":
+                    continue
+
+                # ignore zero offsets
+                if map_.map[y][x] == "00":
+                    continue
+
                 # convert signed hex to 2s complement if -ve
                 if (val := int(map_.map[y][x], 16)) & 128:
                     val = (~val + 1) & 255  # 2s complement
@@ -323,12 +338,12 @@ def raw_empty_row_pos(matrix: list[list[str]], row: int) -> list[int]:
 
 
 def raw_empty_matrix(bits: int) -> list[list[str]]:
-    """Build an empty partial product matrix for a given bitwidth
+    """Return an empty partial product matrix for a given bitwidth
 
     Parameters
     ----------
     bits : int
-        The bitwidth of the matrix
+        Bitwidth of the matrix
 
     Returns
     -------
@@ -358,12 +373,12 @@ def raw_empty_matrix(bits: int) -> list[list[str]]:
 
 
 def raw_zero_matrix(bits: int) -> list[list[str]]:
-    """Build a zero-filled partial product matrix for a given bitwidth
+    """Return a zero-filled partial product matrix for a given bitwidth
 
     Parameters
     ----------
     bits : int
-        The bitwidth of the matrix
+        Bitwidth of the matrix
 
     Returns
     -------
@@ -384,6 +399,8 @@ def raw_zero_matrix(bits: int) -> list[list[str]]:
      ['_', '0', '0', '0', '0', '_', '_', '_']]
 
     """
+    validate_bitwidth(bits)
+
     matrix = []
     zero = ["0"] * bits
     for i in range(bits):
@@ -392,61 +409,50 @@ def raw_zero_matrix(bits: int) -> list[list[str]]:
     return matrix
 
 
-def aggregate_bounds(
-    source: dict[str, Matrix], template_bounds: dict[str, list[tuple[int, int]]]
-) -> dict[str, list[tuple[int, int]]]:
-    """ """
+def raw_dadda_matrix(bits: int) -> list[list[str]]:
+    """Return zero-filled partial product matrix with Dadda-Tree mapping
 
-    if not isinstance(source, dict):
-        raise TypeError("source must be a dictionary")
-    if not all(isinstance(matrix, Matrix) for matrix in source.values()):
-        raise TypeError("all values in source must be Matrix instances")
-    if not isinstance(template_bounds, dict):
-        raise TypeError(f"Expected dict got {type(template_bounds)}")
+    Parameters
+    ----------
+    bits : int
+        Bitwidth of the matrix
 
-    from itertools import pairwise
+    Returns
+    -------
+    list[list[str]]
+        A zero-filled 2d "Dadda array" for the given bitwidth
 
-    for k, v in template_bounds.items():
-        if k == "_":
-            continue
+    Notes
+    -----
+    A zero matrix is filled with zeros on the diagonal and underscores elsewhere,
+    following Multipied's convention
 
-    bounds = {}
-    for ch, matrix in source.items():
-        matrix_ = matrix.matrix
-        if ch == "_":
-            continue
-        # print("ch:", ch)
-        base_index = template_bounds[ch][0][1]
-        # print("base index:", base_index)
-        bounds[ch] = []
-        for row in range(base_index, template_bounds[ch][-1][1] + 1):
-            # -- entry border --------------------------------------
+    Examples
+    --------
+    >>> raw_dadda_matrix(4)
+    [['_', '0', '0', '0', '0', '0', '0', '0'],
+     ['_', '_', '0', '0', '0', '0', '0', '_'],
+     ['_', '_', '_', '0', '0', '0', '_', '_'],
+     ['_', '_', '_', '_', '0', '_', '_', '_']]
 
-            if matrix_[row][0] != "_":
-                bounds[ch].append((0, row))
+    """
 
-            # -- central range --------------------------------------
+    validate_bitwidth(bits)
 
-            for i, pair in enumerate(pairwise(matrix_[row])):
-                if pair == ("_", "_"):
-                    continue
+    matrix = []
+    for i in range(bits):
+        row = ["_"] * (i + 1) + ["0"] * ((bits << 1) - (i << 1) - 1) + ["_"] * i
+        matrix.append(row)
 
-                if len(bounds[ch]) % 2 == 0:
-                    bounds[ch].append((i + 1, row))
-                    continue
-
-                if len(bounds[ch]) % 2 == 1 and "_" in pair:
-                    bounds[ch].append((i, row))
-                    break
-
-            # -- exit border ---------------------------------------
-
-            if len(bounds[ch]) % 2 == 1:
-                bounds[ch].append((len(matrix_[row]) - 1, row))
-
-    return bounds
+    return matrix
 
 
+# ! THIS SHOULD BE INSIDE Template.conflicts AS A SINGLE SOURCE OF TRUTH ! #
+# The cost of calculating this is actually insane.
+#
+# A single template should never have multiple conflict scenarios
+#
+# TODO: Return a nicer looking object to hide complexity
 def _detect_merge_conflicts(
     bits: int,
     bounds: dict[str, list[tuple[int, int]]],
@@ -492,18 +498,23 @@ def _detect_merge_conflicts(
     #
     #       [ non conflict ]
     #
+    #           curr_pairs = [y] = [(0, 2)]
+    #
     #           inbound_pair = (3, y), (7, y), unit = "B"
     #
-    #         check inbound_pair conflicts:
-    #           [y] = [(0, 2)] -> 2 < 3 and 7 < inf -> True -> no conflict
+    #           check inbound_pair conflicts:
+    #
+    #               [y] = [(0, 2)] -> 2 < 3 and 7 < inf -> True -> no conflict
     #
     #       [ conflict ]
     #
+    #           curr_pairs = [y] = [(0, 2), (3, 7)]
+    #
     #           inbound_pair = (6, y), (15, y), unit = "C"
     #
-    #         check inbound_pair conflicts:
+    #           check inbound_pair conflicts:
     #
-    #           [y] = [(0, 2), (3, 7)] -> 7 < 6 and 15 < inf -> False -> conflict
+    #               [y] = [(0, 2), (3, 7)] -> 7 < 6 and 15 < inf -> False -> conflict
     #
     #       > if conflicts, take conflicting region and units present:
     #
@@ -516,20 +527,6 @@ def _detect_merge_conflicts(
     row_bounds = [[] for _ in range(bits)]
     row_units = [[] for _ in range(bits)]
     conflicts = {}
-
-    # ! flaky code warning ! #
-    # the following highly depends on coordinate bounds arriving
-    # independent of which row. E.g. if bounds pair:
-    #       (3, 0), (_, 0)
-    # enter, the following is dependent that if any more bounds
-    # exist for row 0, then the bounds pair
-    #       (x < 3, 0), (_, 0)
-    # will NEVER arrive and new bounds will be on the right of
-    # the original bounds
-    # ! sorting only solves half the problem ! #
-    #
-    # By grouping units into the conflicting bounds this problem
-    # can *mostly* be resolved
 
     # -- collecting bounds ------------------------------------------
     # (start_x, end_x, unit)
@@ -581,7 +578,10 @@ def matrix_merge(
     bounds: dict[str, list[tuple[int, int]]],
     *,
     complex: bool = False,
-) -> Matrix:
+    conflicts: dict[
+        int, list[tuple[tuple[int, int], tuple[str, str]]]
+    ] = {},  # sorry for my sins
+) -> tuple[Matrix, dict]:
     """Merge multiple matrices into a single matrix using pre calculated bounds
 
     Parameters
@@ -624,21 +624,29 @@ def matrix_merge(
             f"\nBounds: \n{list(bounds.keys())}"
         )
 
+    # checking for a single object label is so much easier than checking every
+    # structure in a "classless" object. Damn.
+    if conflicts and isinstance(conflicts, dict):
+        if not all(isinstance(k, int) and 0 <= k for k in conflicts.keys()):
+            raise TypeError("Invalid key found in supplied conflicts")
+        if not all(isinstance(v, list) for v in conflicts.values()):
+            raise TypeError("Invalid value found in supplied conflicts")
+
+        complex = True
+
     litmus = next(i for i in source.values())
     bits = litmus.bits
-    conflicts = {}
 
-    if complex:  # set upon Template instantiation
+    if complex and not conflicts:  # set upon Template instantiation
         # == expensive conflict search ==============================
         # ((over, lap), (units, present)) : ((int, int), (str, str))
         conflicts = _detect_merge_conflicts(bits, bounds)
-        # ! CORRECT TO THIS POINT
 
     # -- lossy merge ------------------------------------------------
     output = raw_empty_matrix(bits)
     for unit, matrix in source.items():
-        if unit == "_":
-            continue
+        # if unit == "_":
+        #     continue
         for start, end in batched(bounds[unit], 2):
             if start[1] != end[1]:
                 raise ValueError(f"Missing bound pair for row {start[1]}")
@@ -667,7 +675,7 @@ def matrix_merge(
                     for i in range(start, end + 1):
                         columns[i].append((source[units[1]].matrix[row][i], units[1]))
                 else:
-                    # units[0] was overwritten
+                    # units[0] was overwrit[int, list[tuple[tuple[int, int], tuple[str, str]]]]ten
                     for i in range(start, end + 1):
                         columns[i].append((source[units[0]].matrix[row][i], units[0]))
 
@@ -676,23 +684,18 @@ def matrix_merge(
         # == insert missing values ==================================
         for x, recovered_bits in enumerate(columns):
             for bit_info in recovered_bits:
-                # print(x, "info", bit_info)
-                # highest y index of original bound - 1
-                base_index = bounds[bit_info[1]][0][1] - 1
-                if base_index < 0:
-                    base_index = 0
-
                 # -- find empty column slot -------------------------
                 for y in range(bits):
-                    if output[(y + base_index) % bits][x] == "_":
-                        output[(y + base_index) % bits][x] = bit_info[0]
+                    if output[y][x] == "_":
+                        output[y][x] = bit_info[0]
 
                         # -- update bound ---------------------------
                         if isalpha(bit_info[-1]):
                             bounds[bit_info[-1]].append((x, y))
                             bounds[bit_info[-1]].append((x, y))
                         break
-    return Matrix(output)
+
+    return Matrix(output), conflicts
 
 
 def matrix_scatter(
@@ -709,10 +712,13 @@ def matrix_scatter(
         The bounds for each unit to extract from the source.
 
     fmt : str, optional, default: "auto".
+        Default char used in new matrix
+
         "auto" : Infer format from source.
         "empty" : :func:`raw_empty_matrix`
         "zero" : :func:`raw_zero_matrix`
         "map" : :func:`raw_map_matrix`
+        "char" : fill ppm with new char
 
     Returns
     -------
@@ -744,45 +750,19 @@ def matrix_scatter(
       [_, _, _]]]
 
     """
-    if isinstance(bounds, dict):
-        if not all([ischar(k) for k in bounds.keys()]):
-            raise ValueError("Unrecognised Bounds")
-    else:
-        raise TypeError(f"Expected Dict got {type(bounds)}")
+    if not isbbox(bounds):
+        raise ValueError(f"Unrecognised Bounds\n\n{bounds}")
 
-    if not isinstance(source, list) and not all(
-        [isinstance(row, list) for row in source]
-    ):
-        raise TypeError(f"Expected List[List] got {type(source)}")
-
-    if fmt == "auto":
-        _litmus = source[0][0]
-        if ischar(_litmus) or (isint(_litmus) and (_litmus == "0" or _litmus == "1")):
-            fmt = "empty"
-        elif ishex2(_litmus):
-            fmt = "map"
-        else:
-            fmt = "zero"
-
-    bits = len(source)
-    match fmt:
-        case "empty":
-            dest_matrix = [["_" for _ in range(bits << 1)] for row in range(bits)]
-        case "zero":
-            dest_matrix = [["0" for _ in range(bits << 1)] for row in range(bits)]
-        case "map":
-            dest_matrix = [["00" for _ in range(bits << 1)] for row in range(bits)]
-        case _:
-            raise ValueError(f"Unrecognised fmt: {fmt}")
+    dest_matrix = infer_matrix_format(source, fmt)
 
     allchars = list(bounds.keys())
 
     output = {}
     for ch in allchars:
-        if ch == "_":
-            output[ch] = deepcopy(dest_matrix)
-            continue
-        if len(bounds[ch]) % 2 != 0:
+        # if ch == "_":
+        #     output[ch] = deepcopy(dest_matrix)
+        #     continue
+        if not "_" and len(bounds[ch]) % 2 != 0:
             raise ValueError(f"Odd number of bounds for {ch}")
 
         dest_matrix_copy = deepcopy(dest_matrix)
@@ -803,3 +783,125 @@ def matrix_scatter(
         output[ch] = dest_matrix_copy
 
     return output
+
+
+def raw_matrix_overlay(
+    source: list[list[str]], unified_bounds: dict[int, list[int]], char: str
+) -> None:
+    """Overlay chars over raw source matrix in-place"""
+
+    if not (ischar(char) or isint(char)):
+        raise TypeError(f"Unsupported string got {char}")
+    if not isppm(source):
+        raise TypeError(f"Unsupported partial product matrix\n\n{pretty(source)}")
+    if not isinstance(unified_bounds, dict):
+        raise TypeError(f"Expected dict got {type(unified_bounds)}")
+    if not all(isinstance(row, list) for row in unified_bounds.values()):
+        raise TypeError(
+            f"Expected unified bounds <dict[int, list]> got {type(unified_bounds)}"
+        )
+
+    bits = len(source)
+    validate_bitwidth(bits)
+
+    for y, row in unified_bounds.items():
+        if not isint(y) or y < 0:
+            raise TypeError("Expected positive integer key")
+        if len(row) % 2:
+            raise TypeError("Odd number of bounds. Bounds must come in pairs")
+
+        for left, right in batched(row, 2):
+            # place within bounds
+            for x in range(left, right + 1):
+                source[y][x] = char
+
+    return None
+
+
+def get_unified_bounds(source: list[list[str]]) -> dict[int, list[int]]:
+    """Return unified bounds of partial product matrix(ppm)."""
+
+    if not isppm(source):
+        raise TypeError("Unrecognised partial product matrix")
+
+    unified = {}
+    for y, row in enumerate(source):
+        unified[y] = []
+        x = 0
+        # -- entry border -------------------------------------------
+        if source[y][0] != "_":
+            unified[y].append(x)
+
+        x += 1
+        # -- central region -----------------------------------------
+        while x < len(row):
+            if source[y][x - 1] != "_" and source[y][x] == "_":
+                unified[y].append(x - 1)
+            if source[y][x - 1] == "_" and source[y][x] != "_":
+                unified[y].append(x)
+            x += 1
+
+        # -- exit border --------------------------------------------
+        if source[y][-1] != "_":
+            unified[y].append(x - 1)
+
+    return unified
+
+
+# == deprecated ==
+
+
+# ! why does this exist? -- keep, maybe useful
+def aggregate_bounds(
+    source: dict[str, Matrix], template_bounds: dict[str, list[tuple[int, int]]]
+) -> dict[str, list[tuple[int, int]]]:
+    """Char agnostic bounding box generation for each Matrix within source"""
+
+    if not isinstance(source, dict):
+        raise TypeError("source must be a dictionary")
+    if not all(isinstance(matrix, Matrix) for matrix in source.values()):
+        raise TypeError("all values in source must be Matrix instances")
+    if not isinstance(template_bounds, dict):
+        raise TypeError(f"Expected dict got {type(template_bounds)}")
+
+    from itertools import pairwise
+
+    # for k, v in template_bounds.items():
+    #     if k == "_":
+    #         continue
+
+    bounds = {}
+    for ch, matrix in source.items():
+        matrix_ = matrix.matrix
+        # if ch == "_": # !
+        #     continue  # !
+        # print("ch:", ch)
+        base_index = template_bounds[ch][0][1]  # !  why??
+        # print("base index:", base_index)
+        bounds[ch] = []
+        for row in range(base_index, template_bounds[ch][-1][1] + 1):
+            # -- entry border --------------------------------------
+
+            if matrix_[row][0] != "_":
+                bounds[ch].append((0, row))
+
+            # -- central range --------------------------------------
+
+            for i, pair in enumerate(pairwise(matrix_[row])):
+                if pair == ("_", "_"):
+                    continue
+
+                if len(bounds[ch]) % 2 == 0:
+                    bounds[ch].append((i + 1, row))
+                    continue
+
+                if len(bounds[ch]) % 2 == 1 and "_" in pair:
+                    bounds[ch].append((i, row))
+                    break
+
+            # -- exit border ---------------------------------------
+
+            if len(bounds[ch]) % 2 == 1:
+                bounds[ch].append((len(matrix_[row]) - 1, row))
+
+    return bounds

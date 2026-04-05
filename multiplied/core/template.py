@@ -5,11 +5,19 @@
 from copy import deepcopy
 from typing import Any
 
+
 from .dtypes.base import MultipliedMeta
-from .matrix import Matrix, Slice, empty_rows, matrix_merge, raw_empty_matrix
+from .matrix import (
+    Matrix,
+    Slice,
+    empty_rows,
+    matrix_merge,
+    matrix_scatter,
+    raw_empty_matrix,
+)
 from .utils.char import allchars, chargen, chartff
 from .utils.pretty import pretty, pretty_nested_list
-from .utils.bool import isalpha, ischar, isppm, validate_bitwidth
+from .utils.bool import ischar, isint, isppm, validate_bitwidth
 
 # == Template and Slice dependencies  =============================== #
 
@@ -312,6 +320,9 @@ class Template(MultipliedMeta):
     ) -> None:
 
         validate_bitwidth(len(source))
+        self._soft_type = list()  # hacky method of telling ``pretty`` what to do
+        self._hybrid: Matrix  # used for maps + complex templates
+        self._hybrid_bounds: dict[int, list[int]]  # used for maps
         self.bits = len(source)
         match result:
             case Matrix():
@@ -333,14 +344,17 @@ class Template(MultipliedMeta):
                 matrix = Matrix(self.bits)
             self.build_from_pattern(self.pattern, matrix)
             self._complex = False
+            self.conflicts = {}
 
         # -- template handling ---------------------------------------
-        elif isinstance(source, list) and all([isinstance(i, list) for i in source]):
+        elif isinstance(source, list):
             if not isppm(source):
                 raise TypeError(f"Expected partial product matrix, got {source}")
             self.template = source
             self.bounds = self.update_bounding_box(self.template)
             self._complex = True
+            self.pattern = None
+            self.conflicts = {}
             if result is None:
                 self._reduce_template()
             else:
@@ -354,7 +368,6 @@ class Template(MultipliedMeta):
         else:
             raise TypeError(f"Expected Pattern or list[list[str]] got {source}")
 
-        self._soft_type = list()
         return None
 
     def _resolve_template_pattern(self) -> None:
@@ -384,6 +397,8 @@ class Template(MultipliedMeta):
         for ch in chars:
             base_index = bounds[ch][0][1]
             if ch == "_":
+                results[ch] = Matrix(units["_"])
+                re_bound[ch] = bounds[ch]
                 continue
 
             match bounds[ch][-1][1] - bounds[ch][0][1] + 1:  # row height
@@ -449,10 +464,13 @@ class Template(MultipliedMeta):
             results[ch] = Matrix(unit_result)
 
         # ! -- implement merge conflict resolution ------------------ ! #
+        # ! AS OF PR #139 HYBRID LOGIC CAN REPLACE AND IMPROVE CONFLICT PRE-CALCULATION
         if 1 < len(results):
             # print("====merging====")
             # print(re_bound)
-            self.result = matrix_merge(results, re_bound, complex=self._complex)
+            self.result, self.conflicts = matrix_merge(
+                results, re_bound, complex=self._complex
+            )
             # print(re_bound)
             # print("====merging/ended====")
         else:
@@ -582,6 +600,8 @@ class Template(MultipliedMeta):
 
         Where `(<start>, <end>)` are coordinate points in the matrix.
         """
+        if not isppm(matrix):
+            raise TypeError("Unrecognised partial product matrix")
 
         rows = self.bits
         items = self.bits << 1
@@ -589,19 +609,31 @@ class Template(MultipliedMeta):
         x, y = 0, 0
         while y < rows:
             # -- entry border -------------------------------------------
-            key = matrix[y][0].upper()
+            if isint(matrix[y][0]):
+                key = matrix[y][0]
+            else:
+                key = matrix[y][0].upper()
+
             if key not in bounds:
                 bounds[key] = []
             bounds[key].append((0, y))
 
             # -- central range ------------------------------------------
             while x < items - 1:
-                curr = matrix[y][x].upper()
-                next = matrix[y][x + 1].upper()
-                if (curr == next) and isalpha(curr):
+                if isint(matrix[y][x]):
+                    curr = matrix[y][x]
+                else:
+                    curr = matrix[y][x].upper()
+
+                if isint(matrix[y][x + 1]):
+                    next = matrix[y][x + 1]
+                else:
+                    next = matrix[y][x + 1].upper()
+
+                if curr == next:
                     x += 1
                     continue
-                if curr != next and (isalpha(curr) or isalpha(next)):
+                if curr != next:
                     if curr not in bounds:
                         bounds[curr] = []
                     bounds[curr].append((x, y))
@@ -613,9 +645,13 @@ class Template(MultipliedMeta):
                 x += 1
 
             # -- exit border --------------------------------------------
-            key = matrix[y][x].upper()
-            if key not in bounds:
-                bounds[key] = []
+            if isint(matrix[y][x]):
+                key = matrix[y][x]
+            else:
+                key = matrix[y][x].upper()
+
+            # if key not in bounds:
+            #     bounds[key] = []
             bounds[key].append((x, y))
 
             x = 0
@@ -630,6 +666,13 @@ class Template(MultipliedMeta):
         Performs a rigorous inter-row and intra-row boundary check to ensure
         each arithmetic units are valid.
 
+        Return
+        ------
+        units : dict[str, list[list[str]]]
+            Dictionary of isolated arithmetic units.
+        bounds : dict[str, list[tuple[int, int]]]
+            Dictionary of arithmetic unit and coordinates for their boundaries.
+
         Notes
         -----
         Bounds are in the form:
@@ -643,8 +686,12 @@ class Template(MultipliedMeta):
         bounds = self.update_bounding_box(self.template)
         allchars = list(bounds.keys())
         units = {}
+
+        # -- find and collect units ---------------------------------
         for ch in allchars:
-            if ch == "_":
+            if ch == "_":  # isolate non-unit area
+                # extract only empty, "_", bounding box to Matrix
+                units[ch] = matrix_scatter(self.template, {"_": bounds["_"]})["_"]
                 continue
             matrix = raw_empty_matrix(self.bits)
             tff = chartff(ch)  # toggle flip flop
@@ -667,7 +714,7 @@ class Template(MultipliedMeta):
                         f"Bounding box error for unit '{ch}' "
                         f"Points:{start}, {end}, error:  {start[1]} != {end[1]}"
                     )
-                # -- traverse row ---------------------------------------
+                # -- traverse row -----------------------------------
                 next(tff)  # sync to template case sensitivity
                 for x in range(start[0], end[0] + 1):
                     matrix[start[1]][x] = next(tff)
@@ -684,6 +731,23 @@ class Template(MultipliedMeta):
                 i += 2
 
             units[ch] = matrix
+
+        # -- isolate empty area -------------------------------------
+        # strat:
+        # > copy input template -> empty
+        # > traverse empty using bounds
+        #   > overlay empty chars over existing bound regions
+        #   > aggregate bounds of empty region
+        # ---
+        # > Empty region optimisations
+        # > start with bounds for each edge assuming full span:
+        #   > aka: (0, <y>), (bits << 1, <y>) for all y's / bits
+        # > find total span of units in a given row
+        # >
+
+        # unified = unify_bounds(bounds)
+        # for i in range(self.bits):
+
         return (units, bounds)
 
     def __str__(self) -> str:

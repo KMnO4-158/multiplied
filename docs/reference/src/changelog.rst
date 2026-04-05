@@ -4,6 +4,46 @@
 Changelog
 =========
 
+v0.10
+=====
+
+`v0.10.0 <https://github.com/KMnO4-158/multiplied/releases/tag/v0.10.0>`_
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Major Updates
+
+    - Move hybrid logic to Algorithm class (`844fca2`_)
+    - Algorithms now handle sparse Wallace templates (`40c9d18`_)
+    - Algorithms now handle sparse Dadda templates (`235662a`_)
+
+Updates
+
+    - Use [Map] unified bounds efficiently (`b5d92dd`_) (`6d21f7a`_)
+    - Add raw_dadda_matrix (`bd4056e`_)
+    - Rename to_int_matrix -> to_int_array (`158d969`_)
+
+Fixes
+
+    - ``Map`` initialisation (`52c3be8`_)
+    - ``isppm`` flagging Map as false (`c851ca5`_)
+    - Improve and add sanity checks (`0fe894e`_) (`bdd4368`_) (`b01775f`_) (`9a8bf4d`_)
+
+
+See full changelog `here <https://github.com/KMnO4-158/multiplied/pull/139>`_
+
+.. _844fca2: https://github.com/KMnO4-158/multiplied/commit/844fca2
+.. _40c9d18: https://github.com/KMnO4-158/multiplied/commit/40c9d18
+.. _235662a: https://github.com/KMnO4-158/multiplied/commit/235662a
+.. _b5d92dd: https://github.com/KMnO4-158/multiplied/commit/b5d92dd
+.. _bd4056e: https://github.com/KMnO4-158/multiplied/commit/bd4056e
+.. _158d969: https://github.com/KMnO4-158/multiplied/commit/158d969
+.. _52c3be8: https://github.com/KMnO4-158/multiplied/commit/52c3be8
+.. _c851ca5: https://github.com/KMnO4-158/multiplied/commit/c851ca5
+.. _0fe894e: https://github.com/KMnO4-158/multiplied/commit/0fe894e
+.. _bdd4368: https://github.com/KMnO4-158/multiplied/commit/bdd4368
+.. _b01775f: https://github.com/KMnO4-158/multiplied/commit/b01775f
+.. _9a8bf4d: https://github.com/KMnO4-158/multiplied/commit/9a8bf4d
+
 v0.9
 =====
 

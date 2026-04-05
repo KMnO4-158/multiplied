@@ -4,7 +4,7 @@
 
 from collections.abc import Generator
 
-from multiplied.core.utils.bool import isalpha
+from multiplied.core.utils.bool import isalpha, ischar, ishex2, isint, isppm
 
 
 def chargen(start: str = "A") -> Generator[str]:
@@ -131,8 +131,8 @@ def allchars(matrix: list[list[str]], *, hash: list[int | bool] = []) -> set[str
         return set(ch.upper() for ch in chars)
 
 
-def to_int_matrix(matrix: list[list[str]]) -> list[int]:
-    """Converts a matrix of characters to a matrix of integers
+def to_int_array(matrix: list[list[str]]) -> list[int]:
+    """Converts a matrix of characters to a array of integers
 
     Parameters
     ----------
@@ -146,7 +146,7 @@ def to_int_matrix(matrix: list[list[str]]) -> list[int]:
 
     Examples
     --------
-    >>> to_int_matrix([['_', '1', '_'], ['1', '0', '1']])
+    >>> to_int_array([['_', '1', '_'], ['1', '0', '1']])
     [2, 5]
 
     """
@@ -166,3 +166,80 @@ def to_int_matrix(matrix: list[list[str]]) -> list[int]:
             tmp_row[j] = "0" if ch in ["_", "0"] else "1"
         output[i] = int("".join(tmp_row), 2)
     return output
+
+
+def infer_matrix_format(source: list[list[str]], fmt: str) -> list[list[str]]:
+    """Infers the format of a litmus test string and returns a matrix of characters.
+
+    Parameters
+    ----------
+    source : list[list[str]]
+        Source matrix to infer format from.
+    fmt : str
+        Default char used in each matrix cell.
+    l
+
+    Returns
+    -------
+    list[list[str]]
+
+    Examples
+    --------
+    >>> infer_matrix_format("auto", "FF")  # infer as "map"
+    [['00', '00', '00', '00'...
+
+    >>> infer_matrix_format("auto", "0")   # infer as "empty"
+    [['_', '_', '_', '_'...
+
+    >>> infer_matrix_format("zero", "")  # zero-filled
+    [['0', '0', '0', '0'...
+
+    """
+    if not isinstance(fmt, str):
+        raise TypeError(f"Expected str, got {type(fmt)}")
+    if not isppm(source):
+        raise TypeError(f"Expected list[list[str]], got {type(source)}")
+
+    if fmt == "auto":
+        _litmus = source[0][0]
+        if ischar(_litmus) or (isint(_litmus) and (_litmus == "0" or _litmus == "1")):
+            fmt = "empty"
+        elif ishex2(_litmus):
+            fmt = "map"
+        else:
+            fmt = "zero"
+
+    bits = len(source)
+    match fmt:
+        case "empty":
+            return [["_" for _ in range(bits << 1)] for row in range(bits)]
+        case "zero":
+            matrix = []
+            zero = ["0"] * bits
+            for i in range(bits):
+                row = (["_"] * ((bits << 1) - bits - i)) + zero + (["_"] * i)
+                matrix.append(row)
+            return matrix
+        case "map":
+            return [["00" for _ in range(bits << 1)] for row in range(bits)]
+
+        case "char":  # expensive
+            chars = allchars(source)
+            ch = chargen()
+            count = 0
+            while ch in chars:
+                ch = next(ch)
+                if count > 26:
+                    raise ValueError("Too many characters in source")
+                count += 1
+                matrix = []
+
+                fill = [ch] * bits
+                for i in range(bits):
+                    row = (["_"] * ((bits << 1) - bits - i)) + fill + (["_"] * i)
+                    matrix.append(row)
+                return matrix
+        case _:
+            raise ValueError(f"Unrecognised fmt: {fmt}")
+
+    raise ValueError("Something went wrong")

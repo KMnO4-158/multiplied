@@ -3,13 +3,15 @@
 ############################
 
 
+from itertools import batched
 from typing import Any, Iterator
 
 from .dtypes.base import MultipliedMeta
-from .utils.bool import ishex2, validate_bitwidth
+from .utils.bool import isbbox, ishex2, isppm, validate_bitwidth
 from .utils.pretty import pretty
 
 
+# ! Map objects should generate their own unified bounds upon creation
 class Map(MultipliedMeta):
     """Generates Map object from row map or standard map.
 
@@ -37,6 +39,9 @@ class Map(MultipliedMeta):
             raise TypeError(f"Map must be type list or int got {type(map)}")
         self.bits = map if isinstance(map, int) else len(map)
         validate_bitwidth(self.bits)
+        self.unified_bounds = {}
+        self._soft_type = list()
+        self._dtype = "Map"
 
         # -- handle bit defined maps --------------------------------
         if isinstance(map, int):
@@ -47,21 +52,24 @@ class Map(MultipliedMeta):
         # -- handle complex maps ------------------------------------
         self.map = map
         if isinstance(self.map[0], list):
+            if not isppm(self.map):
+                raise ValueError(f"Invalid row map\n\n{pretty(self.map)}")
             self.rmap = []
 
             # -- sanity check ---------------------------------------
-            # ! Can be parallelised
+            # ? Can be parallelised
             for y in map:
-                for x in y:
-                    if not ishex2(x):
-                        raise ValueError(f"Invalid row map element {x}")
+                if not all(ishex2(x) for x in y):
+                    raise ValueError(
+                        f"Invalid row map element in row {y} \n Source: {pretty(map)}"
+                    )
+
+            self.unified_bounds = self._update_unified_bounds()
             return None
 
+        # -- handle patterns ----------------------------------------
         self.map = self.build_map(map)
         self.rmap = map
-
-        self._soft_type = list()
-        self._dtype = "Map"
         return None
 
     def build_map(self, rmap: list[str]) -> list[list[str]]:
@@ -90,6 +98,32 @@ class Map(MultipliedMeta):
     def build_zero_map(self, bits: int) -> list[list[str]]:
         """Build a zero map of the specified size."""
         return [["00"] * (self.bits << 1) for _ in range(self.bits)]
+
+    def _update_unified_bounds(self) -> dict[int, list[int]]:
+        """Set unified bounds for Map object."""
+
+        unified = {}
+        for y, row in enumerate(self.map):
+            unified[y] = []
+            x = 0
+            # -- entry border -------------------------------------------
+            if self.map[y][0] != "00":
+                unified[y].append(x)
+
+            x += 1
+            # -- central region -----------------------------------------
+            while x < len(row):
+                if self.map[y][x - 1] != "00" and self.map[y][x] == "00":
+                    unified[y].append(x - 1)
+                if self.map[y][x - 1] == "00" and self.map[y][x] != "00":
+                    unified[y].append(x)
+                x += 1
+
+            # -- exit border --------------------------------------------
+            if self.map[y][-1] != "00":
+                unified[y].append(x)
+
+        return unified
 
     def __repr__(self) -> str:
         return f"<multiplied.{self.__class__.__name__} object at {hex(id(self))}>"
@@ -121,15 +155,13 @@ def build_dadda_map(bits: int) -> Map:
 
 def raw_zero_map(bits: int) -> list[list[str]]:
     """Returns a zero-filled map of size `bits`."""
-    matrix = []
-    for i in range(bits):
-        row = ["00"] * (bits << 1)
-        matrix.append(row)
-    return matrix
+    validate_bitwidth(bits)
+    return [["00" for _ in range(bits << 1)] for row in range(bits)]
 
 
 def raw_dadda_map(bits: int) -> list[list[str]]:
     """Returns a Dadda map of size `bits`."""
+    validate_bitwidth(bits)
     matrix = []
     for i in range(bits):
         # generate 2-bit hex values which result in "V" shape partial product tree
@@ -139,25 +171,28 @@ def raw_dadda_map(bits: int) -> list[list[str]]:
     return matrix
 
 
-def unify_bounds(bounds: dict) -> dict:
+def unify_bounds(bounds: dict[str, list[tuple[int, int]]]) -> dict[int, list[int]]:
     """Returns a simplified bound for non empty characters
 
     Parameters
     ----------
-    bounds : dict
+    bounds : dict[str, list[tuple[int, int]]]
         Bounding box for each arithmetic unit in Template object
 
     Returns
     -------
-    dict
+    dict : dict[int, list[int]]
         Unified bounds where  {y : [x0, x1]}
 
     See Also
     --------
     :func:`update_bounding_box`
     """
+
     if not isinstance(bounds, dict):
         raise TypeError(f"Expected dict got {type(bounds)}")
+    if not isbbox(bounds):
+        raise ValueError(f"Unrecognised bounds.\n\n{bounds}")
 
     unified_row_bounds = {}
     for k, unit_bounds in bounds.items():
@@ -169,7 +204,7 @@ def unify_bounds(bounds: dict) -> dict:
     return unified_row_bounds
 
 
-def apply_complex_map(matrix: list[list[str]], map: Map, unified_bounds: dict) -> None:
+def apply_complex_map(matrix: list[list[str]], map: Map) -> None:
     """Applies a complex mapping to source Matrix
 
     Parameters
@@ -180,23 +215,30 @@ def apply_complex_map(matrix: list[list[str]], map: Map, unified_bounds: dict) -
     map : mp.Map
         Multiplied Map object to apply mapping from
 
-    bounds : dict[str: list[int]]
+    unified_bounds : dict[str: list[int]]
         Unified bounds for all arithmetic units
     """
-    if not all([isinstance(r, int) for r in unified_bounds]):
-        raise TypeError("Expected all row bounds to be integers")
+
+    unified_bounds = map.unified_bounds
 
     for row in sorted(unified_bounds.keys()):
         if not isinstance(unified_bounds[row], list):
             raise TypeError("Expected row bounds to be a list")
 
-        for col in range(unified_bounds[row][0], unified_bounds[row][-1] + 1):
-            if map.map[row][col] == "00":
-                continue
-            if (offset := int(map.map[row][col], 16)) & 128:
-                offset = (~offset + 1) & 255  # 2s complement
+        for start, stop in batched(unified_bounds[row], 2, strict=True):
+            for col in range(start, stop + 1):
+                # ignore moving empty chars
+                if matrix[row][col] == "_":
+                    continue
 
-            matrix[row - offset][col] = matrix[row][col]
-            matrix[row][col] = "_"
+                # ignore zero offsets
+                if map.map[row][col] == "00":
+                    continue
+
+                if (offset := int(map.map[row][col], 16)) & 128:
+                    offset = (~offset + 1) & 255  # 2s complement
+
+                matrix[row - offset][col] = matrix[row][col]
+                matrix[row][col] = "_"
 
     return None
