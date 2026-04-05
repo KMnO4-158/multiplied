@@ -136,6 +136,7 @@ class Algorithm(MultipliedMeta):
         #
         # [ SETUP FIRST TEMPLATE ]
         # > If first template -> setup Template._hybrid
+        # > zeroed dadda matrix -> overlay bound "_"s
         #
         # [ UNIFIED BOUNDS ]
         # > Use _hybrid to generate unified bounds
@@ -156,51 +157,61 @@ class Algorithm(MultipliedMeta):
         # > Use Template._hybrid_bounds -> hoist Template.result -> generate map
 
         if self.dadda:
+            # -- algorithm's first stage ----------------------------
             if self.algorithm == {}:
-                # setup Template._hybrid
-                # > generate zero / dadda matrix
+
+                # first stage => no reduction => use zeroed Dadda matrix
                 hybrid_template = raw_dadda_matrix(template.bits)
 
-                # ! these need to be merged -- requires true bounds
-                # ! merge :: < overlayed "_" matrix > + < result / rebound >
-
-                # > overlay _s Template.bounds
-                raw_matrix_overlay(hybrid_template, unify_bounds(template.bounds), "_")
-                # > overlay 0s Template.re_bounds
-                raw_matrix_overlay(
-                    hybrid_template, unify_bounds(template.re_bounds), "0"
-                )
-
+            # -- use algorithm history ------------------------------
             else:
-                # setup map from previous stage's Template._hybrid
-                # > use Template._hybrid_unified -> overlay 0s to raw_empty_matrix
-                # > ...
+                hybrid_template = deepcopy(
+                    self.algorithm[len(self.algorithm) - 1]["template"]._hybrid
+                ).matrix
 
-                last_template = self.algorithm[len(self.algorithm) - 1]["template"]
-                last_hybrid = last_template._hybrid
+            # == overlay bits effected by reduction =================
+            raw_matrix_overlay(hybrid_template, unify_bounds(template.bounds), "_")
+            spoof_hybrid_bounds = template.update_bounding_box(hybrid_template)
 
-                # > generate new setup
-                hybrid_template = raw_empty_matrix(last_template.bits)
+            # -- spoof bounds as a single unit ----------------------
+            grouped_bounds = []
+            for k, bound in spoof_hybrid_bounds.items():
+                if k == "_":  # discard non-unit area
+                    continue
+                grouped_bounds.extend(bound)
 
-                # ! these need to be merged -- requires true bounds
-                # ! merge :: < overlayed "_" matrix > + < result / rebound >
+            # == spoof result matrix ================================
+            re_template = raw_empty_matrix(template.bits)
+            raw_matrix_overlay(re_template, unify_bounds(template.re_bounds), "0")
 
-                # > overlay previous bounds
-                raw_matrix_overlay(hybrid_template, last_template._hybrid_bounds, "0")
-                # > overlay _s Template.bounds
-                raw_matrix_overlay(hybrid_template, unify_bounds(template.bounds), "_")
-                # > overlay 0s Template.re_bounds
-                raw_matrix_overlay(
-                    hybrid_template, unify_bounds(template.re_bounds), "0"
-                )
+            # -- spoof re_bounds as a single unit -------------------
+            grouped_re_bounds = []
+            for k, bound in template.re_bounds.items():
+                if k == "_":  # discard non-unit area
+                    continue
+                grouped_re_bounds.extend(bound)
 
-            template._hybrid = Matrix(hybrid_template)
-            mprint(template._hybrid)
+
+            # == complex merging ====================================
+            # dict keys must match for (source, bounds,...)
+            # merge logic checks if multiple non empty, "_", chars clash
+            #
+            # This carries the possible bit positions of non reduced bits:
+            # >>> {"_": Matrix(hybrid_template), ...
+            #
+            # This carries possible bit positions of result
+            # >>> ..."0": Matrix(re_template)}
+
+            template._hybrid, _ = matrix_merge(
+                {"_": Matrix(hybrid_template), "0": Matrix(re_template)},
+                {"_": grouped_bounds, "0": grouped_re_bounds},
+                complex=True)
+
             map_ = hoist(template._hybrid)  # expensive -- no bounds used
             template._hybrid_bounds = get_unified_bounds(template._hybrid.matrix)
 
-            mprint(template._hybrid)
-            res_copy.apply_map(map_)
+            # ! Should expand this to all types of templates / algorithms
+            res_copy = deepcopy(template._hybrid)
 
         elif (template._complex or isinstance(map_, Map)) and not self.dadda:
             res_copy.apply_map(map_)
@@ -209,8 +220,6 @@ class Algorithm(MultipliedMeta):
             map_ = result.resolve_rmap()
             res_copy.apply_map(map_)
 
-        else:
-            ...
 
         stage = {
             "template": template,

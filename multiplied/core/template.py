@@ -17,7 +17,7 @@ from .matrix import (
 )
 from .utils.char import allchars, chargen, chartff
 from .utils.pretty import pretty, pretty_nested_list
-from .utils.bool import isalpha, ischar, isppm, validate_bitwidth
+from .utils.bool import isalpha, ischar, isint, isppm, validate_bitwidth
 
 # == Template and Slice dependencies  =============================== #
 
@@ -464,6 +464,7 @@ class Template(MultipliedMeta):
             results[ch] = Matrix(unit_result)
 
         # ! -- implement merge conflict resolution ------------------ ! #
+        # ! AS OF PR #139 HYBRID LOGIC CAN REPLACE AND IMPROVE CONFLICT PRE-CALCULATION
         if 1 < len(results):
             # print("====merging====")
             # print(re_bound)
@@ -599,6 +600,8 @@ class Template(MultipliedMeta):
 
         Where `(<start>, <end>)` are coordinate points in the matrix.
         """
+        if not isppm(matrix):
+            raise TypeError("Unrecognised partial product matrix")
 
         rows = self.bits
         items = self.bits << 1
@@ -606,19 +609,33 @@ class Template(MultipliedMeta):
         x, y = 0, 0
         while y < rows:
             # -- entry border -------------------------------------------
-            key = matrix[y][0].upper()
+            if isint(matrix[y][0]):
+                key = matrix[y][0]
+            else:
+                key = matrix[y][0].upper()
+
             if key not in bounds:
                 bounds[key] = []
             bounds[key].append((0, y))
 
             # -- central range ------------------------------------------
             while x < items - 1:
-                curr = matrix[y][x].upper()
-                next = matrix[y][x + 1].upper()
-                if (curr == next) and isalpha(curr):
+
+                if isint(matrix[y][x]):
+                    curr = matrix[y][x]
+                else:
+                    curr = matrix[y][x].upper()
+
+                if isint(matrix[y][x + 1]):
+                    next = matrix[y][x + 1]
+                else:
+                    next = matrix[y][x + 1].upper()
+
+
+                if curr == next:
                     x += 1
                     continue
-                if curr != next and (isalpha(curr) or isalpha(next)):
+                if curr != next:
                     if curr not in bounds:
                         bounds[curr] = []
                     bounds[curr].append((x, y))
@@ -630,9 +647,13 @@ class Template(MultipliedMeta):
                 x += 1
 
             # -- exit border --------------------------------------------
-            key = matrix[y][x].upper()
-            if key not in bounds:
-                bounds[key] = []
+            if isint(matrix[y][x]):
+                key = matrix[y][x]
+            else:
+                key = matrix[y][x].upper()
+
+            # if key not in bounds:
+            #     bounds[key] = []
             bounds[key].append((x, y))
 
             x = 0

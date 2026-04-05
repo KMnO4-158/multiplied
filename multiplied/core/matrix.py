@@ -645,6 +645,8 @@ def matrix_merge(
     # -- lossy merge ------------------------------------------------
     output = raw_empty_matrix(bits)
     for unit, matrix in source.items():
+        # if unit == "_":
+        #     continue
         for start, end in batched(bounds[unit], 2):
             if start[1] != end[1]:
                 raise ValueError(f"Missing bound pair for row {start[1]}")
@@ -849,7 +851,7 @@ def get_unified_bounds(source: list[list[str]]) -> dict[int, list[int]]:
 # == deprecated ==
 
 
-# ! why does this exist?
+# ! why does this exist? -- keep, maybe useful
 def aggregate_bounds(
     source: dict[str, Matrix], template_bounds: dict[str, list[tuple[int, int]]]
 ) -> dict[str, list[tuple[int, int]]]:
@@ -874,7 +876,7 @@ def aggregate_bounds(
         # if ch == "_": # !
         #     continue  # !
         # print("ch:", ch)
-        base_index = template_bounds[ch][0][1]
+        base_index = template_bounds[ch][0][1]  # !  why??
         # print("base index:", base_index)
         bounds[ch] = []
         for row in range(base_index, template_bounds[ch][-1][1] + 1):
